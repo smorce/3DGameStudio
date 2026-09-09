@@ -1,0 +1,11 @@
+{
+  "name": "@machine-studio/player",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "dependencies": {
+    "@machine-studio/engine-core": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/machine-system": "workspace:*"
+  }
+}

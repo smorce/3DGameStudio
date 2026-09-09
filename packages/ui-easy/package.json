@@ -1,0 +1,11 @@
+{
+  "name": "@machine-studio/ui-easy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/machine-system": "workspace:*"
+  }
+}

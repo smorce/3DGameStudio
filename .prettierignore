@@ -1,0 +1,11 @@
+node_modules
+pnpm-lock.yaml
+dist
+指示1.md
+PLANS.md
+AGENTS.md
+playwright-report
+test-results
+.data
+demos/assets/
+docs/evidence/*.log

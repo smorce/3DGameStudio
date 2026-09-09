@@ -1,0 +1,15 @@
+{
+  "name": "@machine-studio/asset-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/asset-providers": "workspace:*",
+    "@machine-studio/storage": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*"
+  }
+}

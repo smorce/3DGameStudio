@@ -1,0 +1,15 @@
+
+> machine-studio@ test:unit /home/smorce/env2/work/3DGameStudio
+> vitest run tests/unit
+
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+ ✓ tests/unit/model.test.ts (5 tests) 34ms
+ ✓ tests/unit/systems.test.ts (15 tests) 25ms
+
+ Test Files  2 passed (2)
+      Tests  20 passed (20)
+   Start at  06:11:38
+   Duration  351ms (transform 100ms, setup 0ms, collect 203ms, tests 59ms, environment 0ms, prepare 89ms)
+

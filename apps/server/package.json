@@ -1,0 +1,15 @@
+{
+  "name": "@machine-studio/server",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "dependencies": {
+    "express": "^5.1.0",
+    "zod": "^4.1.0",
+    "@machine-studio/asset-providers": "workspace:*",
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/storage": "workspace:*",
+    "@machine-studio/asset-pipeline": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*"
+  }
+}

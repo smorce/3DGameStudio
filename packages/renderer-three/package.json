@@ -1,0 +1,14 @@
+{
+  "name": "@machine-studio/renderer-three",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "three": "^0.180.0",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/physics-rapier": "workspace:*",
+    "@machine-studio/world-system": "workspace:*",
+    "@machine-studio/machine-system": "workspace:*"
+  }
+}

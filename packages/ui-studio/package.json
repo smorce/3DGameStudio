@@ -1,0 +1,16 @@
+{
+  "name": "@machine-studio/ui-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "react": "^19.1.1",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/command-system": "workspace:*",
+    "@machine-studio/course-system": "workspace:*",
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/ai-dummy": "workspace:*",
+    "@machine-studio/ai-core": "workspace:*"
+  }
+}

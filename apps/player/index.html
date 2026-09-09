@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23365b4e'/%3E%3Ctext x='6' y='23' fill='%23ffe4a0' font-size='26'%3Em%3C/text%3E%3C/svg%3E"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Machine Studio Player</title>
+  </head>
+  <body style="margin: 0">
+    <canvas style="width: 100vw; height: 100vh; display: block"></canvas>
+    <div
+      style="position: absolute; top: 15px; left: 15px; font-family: sans-serif"
+    >
+      <button id="play">▶ あそぶ</button
+      ><input id="file" type="file" accept=".json" /><span id="status"
+        >WASD：運転 / Space：ブレーキ</span
+      >
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

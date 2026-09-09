@@ -1,0 +1,12 @@
+{
+  "name": "@machine-studio/ui-creator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@machine-studio/machine-system": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/command-system": "workspace:*"
+  }
+}

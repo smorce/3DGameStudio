@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-09-08T21:10:11.264Z",
+  "renderer": "Chromium SwiftShader",
+  "scene": "demo-asset-world",
+  "viewport": [1280, 720],
+  "samples": [
+    30, 30, 20, 30, 20, 30, 30, 30, 20, 30, 20, 30, 30, 30, 30, 30, 30, 30, 30,
+    20
+  ],
+  "min": 20,
+  "average": 27.5,
+  "stats": "FPS 30 · Draw Calls 23 · Triangles 46348\nRigid Bodies 0 · Colliders 0 · Chunks 16\nAssets 1 · Texture ≈ 10 MiB\n位置 0.00, 0.00"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@machine-studio/ai-dummy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@machine-studio/ai-core": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/machine-system": "workspace:*",
+    "@machine-studio/course-system": "workspace:*"
+  }
+}

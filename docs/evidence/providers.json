@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-09-08T15:22:09.185Z",
+  "results": [
+    {
+      "provider": "polyhaven",
+      "status": "PASS",
+      "count": 24,
+      "asset": {
+        "id": "rock_07",
+        "name": "Rock 07",
+        "provider": "polyhaven",
+        "sourceUrl": "https://polyhaven.com/a/rock_07",
+        "author": "Jenelle van Heerden",
+        "license": "CC0",
+        "thumbnail": "https://cdn.polyhaven.com/asset_img/thumbs/rock_07.png?width=256&height=256&v=15fefa77",
+        "category": "Nature/Rocks & Stone/Boulders"
+      },
+      "imported": {
+        "id": "4482a6d3-3242-47da-886e-38e5fd30a485",
+        "name": "Rock 07",
+        "type": "model",
+        "source": {
+          "provider": "polyhaven",
+          "sourceAssetId": "rock_07",
+          "sourceUrl": "https://polyhaven.com/a/rock_07",
+          "author": "Jenelle van Heerden",
+          "retrievedAt": "2026-09-08T15:21:54.591Z"
+        },
+        "license": {
+          "id": "CC0",
+          "name": "CC0",
+          "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "attributionRequired": false,
+          "attributionText": ""
+        },
+        "files": {
+          "original": "/api/files/4482a6d3-3242-47da-886e-38e5fd30a485/original.glb",
+          "runtime": "/api/files/4482a6d3-3242-47da-886e-38e5fd30a485/runtime.glb",
+          "thumbnail": "/api/files/4482a6d3-3242-47da-886e-38e5fd30a485/thumbnail.svg"
+        },
+        "processing": {
+          "importedAt": "2026-09-08T15:21:54.591Z",
+          "optimizedAt": "2026-09-08T15:21:54.592Z",
+          "pipelineVersion": "1"
+        },
+        "ai": null,
+        "runtimeInfo": {
+          "bounds": {
+            "min": [
+              -0.0875801146030426, -0.00190715491771698, -0.17797498404979706
+            ],
+            "max": [
+              0.08130179345607758, 0.1418129950761795, 0.14230197668075562
+            ]
+          },
+          "triangles": 14844,
+          "collider": "box",
+          "lodLevels": [0]
+        }
+      }
+    },
+    {
+      "provider": "ambientcg",
+      "status": "PASS",
+      "count": 24,
+      "asset": {
+        "id": "Rock064",
+        "name": "Rock 064",
+        "provider": "ambientcg",
+        "sourceUrl": "https://ambientcg.com/view?id=Rock064",
+        "author": "ambientCG",
+        "license": "CC0",
+        "thumbnail": "https://acg-media.struffelproductions.com/file/ambientCG-Web/media/thumbnail/64-PNG/Rock064.png",
+        "category": "Rock"
+      }
+    }
+  ]
+}

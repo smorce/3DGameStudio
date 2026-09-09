@@ -1,0 +1,9 @@
+# ダミーAI
+
+AIProviderはcreateMachinePlan／createWorldPlan／createCoursePlan／createAssetSpec／diagnoseMachineを定義します。実装はDummyAIProviderのみです。ネットワーク・APIキー・外部AIクライアントは使用しません。
+
+自然言語をルールでテンプレートに対応させ、version／provider／title／explanation／commandsを返します。planSchemaで検証し、ユーザーがプレビューから承認した後にCommandBus.batchへ渡します。任意Shell／Pythonは実行しません。
+
+素材生成はGenerationQueue→GenerationWorker→MockBlenderWorker→Asset Pipelineという別境界です。pending、running、validating、completed、failedをUIで確認できます。Jobはメモリ内です。`fail`でエラーを試せます。
+
+将来の実AIやBlenderプロセスはinterfaceの実装として追加し、キー管理・Sandbox・費用承認は別Phaseで扱います。

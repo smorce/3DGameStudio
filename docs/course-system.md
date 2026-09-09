@@ -1,0 +1,9 @@
+# Course System
+
+CourseはWorld上の遊び方・経路を表します。点列、Start、Goal、順序付きCheckpoint、Jump等のObstacle、Respawn、metadataを保存します。
+
+道具を選び地面をクリックして追加できます。道路はドラッグした点列も受け取り、一回のCommandとして履歴へ記録します。キーボードで操作できる配置ボタンもあります。道路は幅4mの区間MeshとColliderへ変換します。地面を選んだ点は標高に合わせて配置します。
+
+`CourseProgress`はStart付近で計測を開始し、順番にCheckpointへ近づいた場合のみ進みます。最後のCheckpointの後にGoalへ到達すると完走します。Rまたは落下後の復帰に直前のCheckpointを使用します。
+
+一本道、サーキット、オフロード、島一周、空中経路のテンプレート関数を用意しています。Loop／Tunnel専用形状や複数コースの実行選択は未実装です。
