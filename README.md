@@ -55,7 +55,7 @@ Node.js 22.12以降、pnpm 10.9、WebGL2対応のブラウザーが必要です�
 
 ## Quick Start
 
-このリポジトリのルートで実行します。
+最短手順は [QUICKSTART.md](QUICKSTART.md) にまとめています。このリポジトリのルートで:
 
 ```sh
 pnpm install
