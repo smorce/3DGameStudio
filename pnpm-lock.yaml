@@ -14,18 +14,27 @@ importers:
       '@gltf-transform/core':
         specifier: ^4.5.0
         version: 4.5.0
+      '@gltf-transform/extensions':
+        specifier: 4.5.0
+        version: 4.5.0
       '@gltf-transform/functions':
         specifier: ^4.5.0
         version: 4.5.0(@types/node@22.20.1)
       express:
         specifier: ^5.1.0
         version: 5.2.1
+      meshoptimizer:
+        specifier: 0.22.0
+        version: 0.22.0
       react:
         specifier: ^19.1.1
         version: 19.2.8
       react-dom:
         specifier: ^19.1.1
         version: 19.2.8(react@19.2.8)
+      sharp:
+        specifier: 0.35.4
+        version: 0.35.4(@types/node@22.20.1)
       three:
         specifier: ^0.180.0
         version: 0.180.0
@@ -198,6 +207,9 @@ importers:
       '@gltf-transform/core':
         specifier: ^4.5.0
         version: 4.5.0
+      '@gltf-transform/extensions':
+        specifier: 4.5.0
+        version: 4.5.0
       '@gltf-transform/functions':
         specifier: ^4.5.0
         version: 4.5.0(@types/node@22.20.1)
@@ -213,6 +225,12 @@ importers:
       '@machine-studio/storage':
         specifier: workspace:*
         version: link:../storage
+      meshoptimizer:
+        specifier: 0.22.0
+        version: 0.22.0
+      sharp:
+        specifier: 0.35.4
+        version: 0.35.4(@types/node@22.20.1)
 
   packages/asset-providers:
     dependencies:
@@ -270,6 +288,9 @@ importers:
       '@dimforge/rapier3d-compat':
         specifier: ^0.19.0
         version: 0.19.3
+      '@machine-studio/asset-core':
+        specifier: workspace:*
+        version: link:../asset-core
       '@machine-studio/machine-system':
         specifier: workspace:*
         version: link:../machine-system
@@ -279,6 +300,9 @@ importers:
       '@machine-studio/water-system':
         specifier: workspace:*
         version: link:../water-system
+      '@machine-studio/world-system':
+        specifier: workspace:*
+        version: link:../world-system
 
   packages/plugin-sdk:
     dependencies:
@@ -294,6 +318,9 @@ importers:
 
   packages/renderer-three:
     dependencies:
+      '@machine-studio/asset-core':
+        specifier: workspace:*
+        version: link:../asset-core
       '@machine-studio/machine-system':
         specifier: workspace:*
         version: link:../machine-system

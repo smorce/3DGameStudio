@@ -17,7 +17,7 @@ E2Eはポート8788に専用Serverを起動し、`.data/e2e`を使用します�
 
 `tests/e2e/fixtures.ts`が未処理例外とconsole.errorを収集し、テストを失敗させます。ConsoleはPlaywright添付、失敗画像とTraceはtest-resultsに保存されます。必要な画面はテスト中にdocs/screenshotsへ撮影します。画像のピクセル差によるVisual Regression判定は導入していません。
 
-現在の機能テストは単体20件、統合6件、E2E9件、Smoke7件です。全Quality GateはPASSしました。最終チェックの実測合否は[evidence/quality-gates.json](evidence/quality-gates.json)と各logに保存します。`node scripts/verify.mjs`でインストール、型、Lint、Format、単体、統合、全Vitest、Build、E2E、Smokeをまとめて再実行できます。
+指示1の基準は単体20件、統合6件、E2E9件、Smoke7件でした。指示2では既存テストを維持し、追加の単体／統合テストと2件のSmokeを加えています。今回の確定結果は[evidence/world-runtime-quality-gates.json](evidence/world-runtime-quality-gates.json)を参照してください。最終チェックの実測合否は[evidence/quality-gates.json](evidence/quality-gates.json)と各logに保存します。`node scripts/verify.mjs`でインストール、型、Lint、Format、単体、統合、全Vitest、Build、E2E、Smokeをまとめて再実行できます。
 
 外部Provider障害はE2EのRoute Mock、Provider単体は固定応答、Asset Pipelineは自己生成GLBを使用します。有料AIはテストでも使用しません。実通信結果は[evidence/providers.json](evidence/providers.json)を参照してください。Poly Havenは検索・メタデータ・取得・GLB変換、ambientCGは検索・メタデータを確認しました。
 
@@ -34,3 +34,12 @@ E2Eはポート8788に専用Serverを起動し、`.data/e2e`を使用します�
 - Player: エディターなしの本番ページを起動しPlay。
 
 `tests/fixtures`にminimal-project、simple-car、island-world、simple-course、sample-assets、broken-project、old-schema-projectを保存しています。
+
+## 指示2の追加検証
+
+- `tests/unit/world-runtime.test.ts`: 旧3デモのMigration／Round-trip、Course Undo／Redo、ロード先行とヒステリシス、500個のInstancingとRaycaster選択、LOD距離、Collider Source共有、Runtime予算、展開後サイズの事前制限。
+- `tests/integration/world-streaming.test.ts`: 実Rapierで1024m地形・900物体を往復しCollider数を確認。境界通過中の落下を毎Step検査。選択外CourseのCollider除外。
+- `tests/integration/runtime-pipeline.test.ts`: Original完全一致、三段階LODを実GLTFLoader＋MeshoptDecoderで読込、三角形数とサイズ削減、Texture縮小、5MiB超Binary Upload、各安全上限、Storage回収、Hull／Trimesh／破損Box、非同期Stop、退化Hull。
+- `tests/e2e/world-runtime.spec.ts`: 大量岩の本番描画、B選択→保存→Reload→完走、実圧縮GLBとWebP、実表示中のLOD段階、Trimeshの坂道上での実走。
+
+`node scripts/world-benchmark.mjs after`は本番ビルドから再測定します。Beforeは元コミット`bc77656`の別worktreeで同じスクリプトを実行しました。フィクスチャは`tests/fixtures/benchmark-world.json`、結果はperformance-before／after.jsonです。詳しい条件と限界は[performance.md](performance.md)を参照してください。

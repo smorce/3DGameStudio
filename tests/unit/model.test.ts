@@ -47,7 +47,7 @@ describe("モデルとコマンド", () => {
   });
   it("旧スキーマと壊れた入力", () => {
     const p = emptyProject();
-    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(1);
+    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(2);
     expect(() => parseProject({ ...p, schemaVersion: 9 })).toThrow();
     expect(() => parseProject({})).toThrow();
   });

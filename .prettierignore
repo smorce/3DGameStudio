@@ -9,3 +9,7 @@ test-results
 .data
 demos/assets/
 docs/evidence/*.log
+
+# 作業指示と前回報告の原本は整形対象にしない。
+指示2.md
+2026_0909_0858_報告内容.md

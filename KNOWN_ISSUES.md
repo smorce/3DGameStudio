@@ -4,11 +4,12 @@
 
 - 車輪はRapierのRaycast Vehicleでシミュレーションします。独立した車輪Colliderによる側面衝突や実サスペンションのリンク機構はありません。可動Hingeは実Revolute Jointです。
 - 浮力・揚力は簡易近似です。Propeller、Servo、Spring、Suspension、Sensor、Battery、Logic、Ropeは未実装です。飛行機・ボートは工作の出発点であり、車と同等の操縦品質までは検証していません。
-- Worldの描画リソースはチャンク単位でロード／破棄しますが、地形データと物理Colliderは全体を保持します。大規模ワールドの本番性能は未検証です。Instancingのグループ化境界はありますが、InstancedMesh・LOD切替・Origin Rebasingは未実装です。
-- CourseのLoop／Tunnelはデータ種別のみで、専用の曲面・トンネル形状の生成は未実装です。複数コースの実行選択はなく、最初のコースを走ります。
+- 描画と静的Colliderはチャンク単位でロード／破棄します。Projectの地形格子・空間索引、配置済み素材のCollider SourceはCPU側に保持します。Origin Rebasingは未実装です。実GPU・モバイル・長時間運用での大規模性能は未検証です。
+- Instancingの描画範囲判定とLOD切替はバッチ単位です。個体ごとのFrustum Cullingより描画三角形数が増える画角があります。スキン／Morph等は通常描画へ戻り、複雑な素材のLOD生成はLOD0のみになる場合があります。
+- CourseのLoop／Tunnelはデータ種別のみで、専用の曲面・トンネル形状の生成は未実装です。複数コースの選択・保存・実行は対応しています。
 - オンライン素材の実取込はPoly HavenのglTF／GLBを対象とします。ambientCGの検索・メタデータは実動作確認済みですが、ZIPマテリアルの変換は未実装です。Kenneyは展開済みGLBを個別に読み込みます。
-- ローカルGLBアップロードは4MB、取得素材は合計64MB、テクスチャは8192px、100万triangleが上限です。高品質を維持するため、圧縮・リサイズ・LOD生成を自動実行しません。
-- アセットColliderはモデルの軸平行境界から作るBoxです。凸分解・凹形状に沿った自動Colliderは未実装です。
+- Importには設定可能な安全上限とStorage予算があります。Runtime Profileの値は初期値です。TextureはWebP、MeshはMeshoptを使用し、KTX2は未導入です。Runtime予算超過は監視表示であり、自動的な品質調整や強制退避は行いません。
+- Static AssetはBox／Convex Hull／Trimeshに対応します。自動の凸分解は未実装です。Collider SourceのRuntime読込は64MiB、各Geometry配列は300万要素までの安全上限があり、破損・未対応・過大なデータはBoxへ戻します。旧素材は元のBoxを保ち、再Importしない限りLODやColliderを自動生成しません。
 - 選択部品の簡単画面での移動は左右スナップです。任意軸・回転・大きさは詳細画面で編集します。複数マシンの編集選択や汎用Transform Gizmoは未実装です。
 - 保存履歴は最大100操作のメモリ内スナップショットです。保存／再読込で編集モデルは復元しますが履歴は復元しません。ブラウザーの保存容量を超えた場合はJSON書き出しを利用してください。
 - 素材ファイルはServerのデータディレクトリに保存します。JSONだけを別環境へ移しても、素材ファイルは自動転送されません。

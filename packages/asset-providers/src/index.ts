@@ -1,3 +1,4 @@
+import { assetLimits } from "../../asset-core/src/limits";
 import { get } from "node:https";
 import { z } from "zod";
 import {
@@ -9,7 +10,7 @@ import {
 const USER_AGENT = "MachineStudio/0.1 (browser-game-studio)";
 export async function safeFetch(
   url: string,
-  maxBytes = 64 * 1024 * 1024,
+  maxBytes = assetLimits().sourceBytes,
 ): Promise<Uint8Array> {
   const u = new URL(url);
   if (

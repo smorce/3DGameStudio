@@ -1,0 +1,24 @@
+{
+  "sourceBytes": 117140,
+  "lods": [
+    {
+      "level": 0,
+      "triangles": 3968,
+      "distance": 0,
+      "bytes": 38896
+    },
+    {
+      "level": 1,
+      "triangles": 1785,
+      "distance": 60,
+      "bytes": 19112
+    },
+    {
+      "level": 2,
+      "triangles": 475,
+      "distance": 150,
+      "bytes": 8164
+    }
+  ],
+  "profile": "balanced"
+}

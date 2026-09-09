@@ -1,5 +1,17 @@
+import { ColliderTemplateCache } from "../../asset-core/src/collider";
+import {
+  terrainChunks,
+  ChunkStreamer,
+  physicsStreaming,
+} from "../../world-system/src/streaming";
+import { chunkCoordinate } from "../../world-system/src/index";
 import type RAPIER from "@dimforge/rapier3d-compat";
-import type { Project, Vec3, Part } from "../../project-schema/src/index";
+import {
+  activeCourse,
+  type Project,
+  type Vec3,
+  type Part,
+} from "../../project-schema/src/index";
 import {
   submergedDepth,
   type WaterSurface,
@@ -25,7 +37,14 @@ const initialize = () =>
     return api;
   })());
 export class RapierPhysics {
+  readonly colliderTemplates = new ColliderTemplateCache();
   world!: RAPIER.World;
+  private generation = 0;
+  private streamer?: ChunkStreamer<string[]>;
+  private staticColliders = new Map<
+    string,
+    { collider: RAPIER.Collider; refs: number; kind: string }
+  >();
   vehicles: {
     id: string;
     body: RAPIER.RigidBody;
@@ -39,39 +58,82 @@ export class RapierPhysics {
     part: Part;
     damping: number;
   }[] = [];
-  async load(project: Project) {
-    const rapier = await initialize();
+  async load(project: Project, options: { courseId?: string | null } = {}) {
     this.dispose();
+    const generation = this.generation;
+    const rapier = await initialize();
+    if (generation !== this.generation) return;
     this.world = new rapier.World(vector(project.settings.gravity));
     this.water = structuredClone(project.world.water);
-    const t = project.world.terrain,
-      vertices: number[] = [],
-      indices: number[] = [];
-    for (let j = 0; j < t.resolution; j++)
-      for (let i = 0; i < t.resolution; i++) {
-        vertices.push(
-          (i / (t.resolution - 1) - 0.5) * t.size,
-          t.heights[j * t.resolution + i],
-          (j / (t.resolution - 1) - 0.5) * t.size,
-        );
-        if (i < t.resolution - 1 && j < t.resolution - 1) {
-          const k = j * t.resolution + i;
-          indices.push(
-            k,
-            k + t.resolution,
-            k + 1,
-            k + 1,
-            k + t.resolution,
-            k + t.resolution + 1,
-          );
-        }
+    type StaticEntry = {
+      kind: string;
+      create: () => RAPIER.ColliderDesc;
+      fallback?: () => RAPIER.ColliderDesc;
+    };
+    const spanning: {
+      id: string;
+      entry: StaticEntry;
+      min: number[];
+      max: number[];
+    }[] = [];
+    const builders = new Map<string, Map<string, StaticEntry>>();
+    const register = (
+      id: string,
+      kind: string,
+      min: Vec3,
+      max: Vec3,
+      create: () => RAPIER.ColliderDesc,
+      fallback?: () => RAPIER.ColliderDesc,
+    ) => {
+      const [x0, z0] = chunkCoordinate(min, project.world.chunkSize),
+        [x1, z1] = chunkCoordinate(max, project.world.chunkSize);
+      if ((x1 - x0 + 1) * (z1 - z0 + 1) > 4096) {
+        spanning.push({
+          id,
+          entry: { kind, create, fallback },
+          min: [x0, z0],
+          max: [x1, z1],
+        });
+        return;
       }
-    this.world.createCollider(
-      rapier.ColliderDesc.trimesh(
-        new Float32Array(vertices),
-        new Uint32Array(indices),
-      ).setFriction(1.4),
+      for (let x = x0; x <= x1; x++)
+        for (let z = z0; z <= z1; z++) {
+          const key = `${x},${z}`,
+            entries = builders.get(key) ?? new Map();
+          entries.set(id, { kind, create, fallback });
+          builders.set(key, entries);
+        }
+    };
+    for (const chunk of terrainChunks(project)) {
+      const xs = chunk.vertices.filter((_, i) => i % 3 === 0),
+        zs = chunk.vertices.filter((_, i) => i % 3 === 2);
+      register(
+        `terrain:${chunk.key}`,
+        "terrain",
+        [Math.min(...xs), 0, Math.min(...zs)],
+        [Math.max(...xs) - 1e-6, 0, Math.max(...zs) - 1e-6],
+        () =>
+          rapier.ColliderDesc.trimesh(
+            new Float32Array(chunk.vertices),
+            new Uint32Array(chunk.indices),
+          ).setFriction(1.4),
+      );
+    }
+    const usedAssets = new Set(project.world.entities.map((e) => e.assetId));
+    const templates = new Map(
+      await Promise.all(
+        project.assets
+          .filter((a) => usedAssets.has(a.id) && a.runtimeInfo?.colliderFile)
+          .map(
+            async (a) =>
+              [
+                a.id,
+                await this.colliderTemplates.get(a.runtimeInfo!.colliderFile!),
+              ] as const,
+          ),
+      ),
     );
+    if (generation !== this.generation) return;
     for (const e of project.world.entities) {
       const p = e.transform.position,
         s = e.transform.scale,
@@ -86,14 +148,47 @@ export class RapierPhysics {
         ? bounds.max.map((n, i) => ((n + bounds.min[i]) * s[i]) / 2)
         : [0, s[1] * 0.6, 0];
       const offset = rotate(center as Vec3, quaternion(e.transform.rotation));
-      this.world.createCollider(
+      const radius = Math.hypot(...half) + Math.hypot(...center);
+      const box = () =>
         rapier.ColliderDesc.cuboid(half[0], half[1], half[2])
           .setTranslation(p[0] + offset[0], p[1] + offset[1], p[2] + offset[2])
-          .setRotation(rotation(quaternion(e.transform.rotation))),
+          .setRotation(rotation(quaternion(e.transform.rotation)));
+      register(
+        `entity:${e.id}`,
+        "entity",
+        [p[0] - radius, 0, p[2] - radius],
+        [p[0] + radius, 0, p[2] + radius],
+        () => {
+          const asset = project.assets.find((a) => a.id === e.assetId),
+            template = templates.get(e.assetId ?? "");
+          if (template && asset?.runtimeInfo?.collider !== "box") {
+            try {
+              const vertices = new Float32Array(
+                template.vertices.map((n, i) => n * s[i % 3]),
+              );
+              const desc =
+                asset?.runtimeInfo?.collider === "trimesh"
+                  ? rapier.ColliderDesc.trimesh(
+                      vertices,
+                      new Uint32Array(template.indices),
+                    )
+                  : rapier.ColliderDesc.convexHull(vertices);
+              if (desc)
+                return desc
+                  .setTranslation(...p)
+                  .setRotation(rotation(quaternion(e.transform.rotation)));
+            } catch {
+              /* 壊れた素材は境界ボックスへ戻す。 */
+            }
+          }
+          return box();
+        },
+        box,
       );
     }
 
-    for (const c of project.courses) {
+    const selectedCourse = activeCourse(project, options.courseId);
+    for (const c of selectedCourse ? [selectedCourse] : []) {
       for (let i = 1; i < c.path.length; i++) {
         const a = c.path[i - 1],
           b = c.path[i],
@@ -107,34 +202,92 @@ export class RapierPhysics {
           Math.atan2(dx, dz),
           0,
         ]);
-        this.world.createCollider(
-          rapier.ColliderDesc.cuboid(2, 0.04, length / 2)
-            .setTranslation(
-              (a[0] + b[0]) / 2,
-              (a[1] + b[1]) / 2,
-              (a[2] + b[2]) / 2,
-            )
-            .setRotation(rotation(q)),
+        register(
+          `road:${c.id}:${i}`,
+          "course",
+          [Math.min(a[0], b[0]) - 3, 0, Math.min(a[2], b[2]) - 3],
+          [Math.max(a[0], b[0]) + 3, 0, Math.max(a[2], b[2]) + 3],
+          () =>
+            rapier.ColliderDesc.cuboid(2, 0.04, length / 2)
+              .setTranslation(
+                (a[0] + b[0]) / 2,
+                (a[1] + b[1]) / 2,
+                (a[2] + b[2]) / 2,
+              )
+              .setRotation(rotation(q)),
         );
       }
       for (const o of c.obstacles) {
-        this.world.createCollider(
-          rapier.ColliderDesc.cuboid(
-            o.size[0] / 2,
-            o.size[1] / 2,
-            o.size[2] / 2,
-          )
-            .setTranslation(
-              o.position[0],
-              o.position[1] + o.size[1] / 2,
-              o.position[2],
+        const radius = Math.hypot(...o.size);
+        register(
+          `obstacle:${c.id}:${o.id}`,
+          "course",
+          [o.position[0] - radius, 0, o.position[2] - radius],
+          [o.position[0] + radius, 0, o.position[2] + radius],
+          () =>
+            rapier.ColliderDesc.cuboid(
+              o.size[0] / 2,
+              o.size[1] / 2,
+              o.size[2] / 2,
             )
-            .setRotation(
-              rotation(quaternion([o.kind === "jump" ? -0.36 : 0, 0, 0])),
-            ),
+              .setTranslation(
+                o.position[0],
+                o.position[1] + o.size[1] / 2,
+                o.position[2],
+              )
+              .setRotation(
+                rotation(quaternion([o.kind === "jump" ? -0.36 : 0, 0, 0])),
+              ),
         );
       }
     }
+    this.streamer = new ChunkStreamer(
+      (key) => {
+        const entries = new Map(builders.get(key));
+        const [x, z] = key.split(",").map(Number);
+        for (const item of spanning)
+          if (
+            x >= item.min[0] &&
+            x <= item.max[0] &&
+            z >= item.min[1] &&
+            z <= item.max[1]
+          )
+            entries.set(item.id, item.entry);
+        if (!entries.size) return;
+        for (const [id, entry] of entries) {
+          const existing = this.staticColliders.get(id);
+          if (existing) existing.refs++;
+          else {
+            let collider: RAPIER.Collider;
+            try {
+              collider = this.world.createCollider(entry.create());
+            } catch (error) {
+              if (!entry.fallback) throw error;
+              collider = this.world.createCollider(entry.fallback());
+            }
+            this.staticColliders.set(id, {
+              collider,
+              refs: 1,
+              kind: entry.kind,
+            });
+          }
+        }
+        return [...entries.keys()];
+      },
+      (ids) => {
+        for (const id of ids) {
+          const entry = this.staticColliders.get(id)!;
+          if (--entry.refs === 0) {
+            this.world.removeCollider(entry.collider, true);
+            this.staticColliders.delete(id);
+          }
+        }
+      },
+      project.world.chunkSize,
+      physicsStreaming.loadRadius,
+      physicsStreaming.unloadRadius,
+    );
+    this.streamer.update(selectedCourse?.start ?? [0, 1, 0]);
     for (const machine of project.machines) {
       const m = compileMachine(machine);
       if (!m.bodies.length) continue;
@@ -221,6 +374,8 @@ export class RapierPhysics {
     }
   }
   step(throttle: number, steering: number, brake = false) {
+    const position = this.vehicles[0]?.body.translation();
+    if (position) this.streamer?.update([position.x, position.y, position.z]);
     for (const v of this.vehicles) {
       const extraPower =
         this.parts
@@ -346,6 +501,7 @@ export class RapierPhysics {
   }
   respawn(position: Vec3 = [0, 2, 0]) {
     if (!this.world) return;
+    this.streamer?.update(position);
     this.world.bodies.forEach((body) => {
       body.setTranslation(
         { x: position[0], y: position[1] + 1, z: position[2] },
@@ -358,12 +514,24 @@ export class RapierPhysics {
   }
   get stats() {
     return {
+      physicsChunksLoaded: this.streamer?.loaded.size ?? 0,
+      terrainChunkColliders: [...this.staticColliders.values()].filter(
+        (c) => c.kind === "terrain",
+      ).length,
+      worldEntityColliders: [...this.staticColliders.values()].filter(
+        (c) => c.kind === "entity",
+      ).length,
       rigidBodies: this.world?.bodies.len() ?? 0,
       colliders: this.world?.colliders.len() ?? 0,
       joints: this.world?.impulseJoints.len() ?? 0,
     };
   }
   dispose() {
+    this.generation++;
+    this.streamer?.dispose();
+    this.streamer = undefined;
+    this.staticColliders.clear();
+    this.colliderTemplates.clear();
     if (this.world) {
       this.world.free();
       this.world = undefined as unknown as RAPIER.World;

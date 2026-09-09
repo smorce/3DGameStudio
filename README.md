@@ -14,8 +14,9 @@
 
 - 板・ブロック・タイヤ・モーター・ハンドル・関節・ジェット・羽の配置、回転、色、コピー、削除。
 - 接続候補の表示、4輪の駆動・操舵設定、複合剛体、可動関節、キーボード／ゲームパッド／画面ボタンでの試走。
-- 6種類の地形ブラシ、水面、木・岩・建物、チャンク単位の描画リソース管理。
-- 道、スタート、順序付きチェックポイント、ゴール、ジャンプ台、走行時間とリスポーン。
+- 6種類の地形ブラシ、水面、木・岩・建物、チャンク単位の描画・物理管理、同一素材のInstancing、距離LOD。
+- 道、スタート、順序付きチェックポイント、ゴール、ジャンプ台、走行時間とリスポーン。複数コースから走行対象を選択・保存。
+- Originalを保持したGLB取込、Runtime専用Meshopt／WebP最適化、LOD生成、Static AssetのHull／Trimesh Collider。
 - 素材検索・プレビュー・GLB取込・ライブラリー保存・配置。Poly Haven、ambientCG、Local Library、Kenney Pack用の境界。
 - ダミーAIの提案→プレビュー→承認→Command適用、Mock Blender Workerの生成Job。
 - Undo / Redo、ブラウザー保存、JSON書き出し／読込、スキーマ検証と旧バージョン移行。
@@ -88,6 +89,8 @@ pnpm dev:player  # localhost:5184
 | `PORT`           | `8787`  | Serverの待受ポート     |
 | `ASSET_DATA_DIR` | `.data` | 素材とServer保存データ |
 
+Importの安全上限は`ASSET_MAX_SOURCE_MB`、`ASSET_MAX_AGGREGATE_MB`、`ASSET_MAX_TEXTURE_DIMENSION`、`ASSET_MAX_TRIANGLES`、保存予算は`ASSET_STORAGE_BUDGET_MB`で設定します。既定値とBinary Upload APIは[Asset Pipeline](docs/asset-pipeline.md)を参照してください。Runtime Profileはquality／balanced／performance、既定値balancedです。
+
 AIキーは不要です。実AIクライアントや有料APIのコードパスは含みません。
 
 ## Asset Providers
@@ -133,7 +136,7 @@ pnpm start:server
 
 ## Project File Format
 
-`schemaVersion: 1`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0は読込時に移行し、不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)に詳細があります。
+`schemaVersion: 2`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0／1は読込時に移行し、不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)に詳細があります。
 
 ## Asset Licensing
 
@@ -147,11 +150,11 @@ pnpm start:server
 
 ## Current Status
 
-要件51の初期マイルストーンは **COMPLETE**。単体20件、統合6件、本番ビルドのE2E9件、Smoke7件と全Static／BuildチェックがPASSです。[達成表と証拠](docs/progress.md)を参照してください。高度な拡張機能の未実装は[KNOWN_ISSUES.md](KNOWN_ISSUES.md)に明記しています。
+要件51の初期マイルストーンを維持し、指示2の6項目を実装しました。今回の最終結果は[実装報告](docs/world-runtime-report.md)と[品質ゲート](docs/evidence/world-runtime-quality-gates.json)を参照してください。[達成表と証拠](docs/progress.md)を参照してください。高度な拡張機能の未実装は[KNOWN_ISSUES.md](KNOWN_ISSUES.md)に明記しています。
 
 ## Roadmap
 
-Phase 0–10でモデル・物理・3段階UI・ワールド・コース・素材・ダミーAIを実装。Phase 11で描画チャンクのロード／破棄と固定部品の複合化を追加しました。今後は物理チャンクのストリーミング、空力／浮力の精度、ZIP素材変換、LOD、インスタンシング、センサー・ロジック編集を拡張します。
+Phase 0–10でモデル・物理・3段階UI・ワールド・コース・素材・ダミーAIを実装。Phase 11で描画チャンクのロード／破棄と固定部品の複合化を追加しました。指示2では物理チャンク、Instancing、LOD、Static Asset Collider、非破壊Runtime最適化と容量設計、コース選択を追加しました。空力／浮力の精度、ZIP素材変換、センサー・ロジック等は今回の対象外です。
 
 ## License
 

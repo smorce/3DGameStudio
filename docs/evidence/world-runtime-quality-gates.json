@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-09-09T02:38:49.865Z",
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 2066
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 1671
+    },
+    {
+      "name": "format",
+      "command": "pnpm format:check",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 1480
+    },
+    {
+      "name": "unit",
+      "command": "pnpm test:unit",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 774
+    },
+    {
+      "name": "integration",
+      "command": "pnpm test:integration",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 1871
+    },
+    {
+      "name": "test",
+      "command": "pnpm test",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 1903
+    },
+    {
+      "name": "build",
+      "command": "pnpm build",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 3495
+    },
+    {
+      "name": "e2e",
+      "command": "pnpm test:e2e",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 51419
+    },
+    {
+      "name": "smoke",
+      "command": "pnpm smoke",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 49206
+    }
+  ]
+}

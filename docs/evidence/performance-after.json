@@ -1,0 +1,15 @@
+{
+  "phase": "after",
+  "checkedAt": "2026-09-09T02:40:14.731Z",
+  "renderer": "Chromium SwiftShader",
+  "viewport": [1280, 720],
+  "entities": 1500,
+  "drawCalls": 32,
+  "triangles": 30668,
+  "loadedChunks": 25,
+  "physicsChunksLoaded": 25,
+  "colliders": 526,
+  "runtimeAssetBytes": 0,
+  "edit": "FPS 30 · Draw Calls 32 · Triangles 30668\nRigid Bodies 0 · Colliders 0 · Chunks 25 · Physics Chunks 0\nAssets 0 · Runtime 0 KiB · Budget超過 0 · Texture ≈ 0 MiB\nLOD0 15 · LOD1 1 · LOD2 0\n位置 0.00, 0.00 · 高さ 0.00",
+  "play": "FPS 30 · Draw Calls 32 · Triangles 30668\nRigid Bodies 1 · Colliders 526 · Chunks 25 · Physics Chunks 25\nAssets 0 · Runtime 0 KiB · Budget超過 0 · Texture ≈ 0 MiB\nLOD0 15 · LOD1 1 · LOD2 0\n位置 0.00, 0.00 · 高さ -0.01 チェックポイント 0/0 · 1.9 秒"
+}

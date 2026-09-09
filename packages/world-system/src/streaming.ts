@@ -51,18 +51,20 @@ export class ChunkStreamer<T> {
     private destroy: (value: T) => void,
     private size: number,
     private radius = 2,
+    private unloadRadius = radius + 1,
   ) {}
   update(position: Vec3) {
     const active = visibleChunks(position, this.size, this.radius);
-    for (const [key, value] of this.loaded)
-      if (!active.has(key)) {
-        this.destroy(value);
-        this.loaded.delete(key);
-      }
     for (const key of active)
       if (!this.loaded.has(key)) {
         const value = this.create(key);
         if (value !== undefined) this.loaded.set(key, value);
+      }
+    const retained = visibleChunks(position, this.size, this.unloadRadius);
+    for (const [key, value] of this.loaded)
+      if (!retained.has(key)) {
+        this.destroy(value);
+        this.loaded.delete(key);
       }
   }
   dispose() {
@@ -70,3 +72,5 @@ export class ChunkStreamer<T> {
     this.loaded.clear();
   }
 }
+
+export const physicsStreaming = { loadRadius: 2, unloadRadius: 3 };

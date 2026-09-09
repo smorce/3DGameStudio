@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  activeCourse,
   identity,
   uid,
   type Project,
@@ -42,7 +43,7 @@ export function WorldCoursePanel({
   tab: string;
   advanced: boolean;
 }) {
-  const course = project.courses[0];
+  const course = activeCourse(project);
   return (
     <section>
       <h3>{tab === "world" ? "世界をつくる" : "コースをつくる"}</h3>
@@ -489,18 +490,25 @@ export function AssetBrowser({
             const file = e.target.files?.[0];
             if (!file) return;
             try {
-              if (file.size > 4 * 1024 * 1024)
-                throw new Error("Upload exceeds 4 MB limit");
-              const bytes = new Uint8Array(await file.arrayBuffer());
-              let raw = "";
-              for (const b of bytes) raw += String.fromCharCode(b);
-              const a = await api<AssetRecord>("/api/upload", {
+              const limits = await api<{ sourceBytes: number }>(
+                "/api/asset-limits",
+              );
+              if (file.size > limits.sourceBytes)
+                throw new Error("Upload exceeds configured source limit");
+              const query = new URLSearchParams({
                 name: file.name,
-                data: btoa(raw),
                 provider: provider === "kenney" ? "kenney" : "local",
                 sourceUrl: "user-supplied",
                 license: "unknown",
+                profile: project.settings.runtimeProfile,
               });
+              const response = await fetch(`/api/upload?${query}`, {
+                method: "POST",
+                headers: { "Content-Type": "model/gltf-binary" },
+                body: file,
+              });
+              const a = await response.json();
+              if (!response.ok) throw new Error(a.error ?? "Upload failed");
               execute({ type: "asset.import", asset: a });
               await loadLibrary();
             } catch (error) {

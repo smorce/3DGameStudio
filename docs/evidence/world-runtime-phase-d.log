@@ -1,0 +1,21 @@
+
+> machine-studio@ test /home/smorce/env2/work/3DGameStudio
+> vitest run
+
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+ ✓ tests/unit/model.test.ts (5 tests) 34ms
+stderr | tests/integration/physics.test.ts > 4輪車が物理世界で前進し編集・保存データを変更しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/unit/systems.test.ts (15 tests) 26ms
+ ✓ tests/integration/physics.test.ts (2 tests) 80ms
+ ✓ tests/integration/pipelines.test.ts (4 tests) 523ms
+   ✓ 生成Jobが成功・失敗を報告する  451ms
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+   Start at  09:46:12
+   Duration  1.02s (transform 198ms, setup 0ms, collect 618ms, tests 663ms, environment 0ms, prepare 221ms)
+

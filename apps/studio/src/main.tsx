@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import {
   emptyProject,
   uid,
+  activeCourse,
   identity,
   type Part,
   type Vec3,
@@ -80,7 +81,12 @@ function App() {
     e.onFrame = () => {
       if (performance.now() - lastStats > 250) {
         lastStats = performance.now();
-        setStats({ ...e.stats, x: e.position[0], z: e.position[2] });
+        setStats({
+          ...e.stats,
+          x: e.position[0],
+          y: e.position[1],
+          z: e.position[2],
+        });
         setRuntime(
           e.course
             ? `${e.course.finished ? "ゴール！" : "チェックポイント"} ${e.course.next}/${e.course.course.checkpoints.length} · ${e.course.elapsed.toFixed(1)} 秒`
@@ -90,7 +96,7 @@ function App() {
     };
     e.renderer.onStroke = (points) => {
       const p = bus.project;
-      let course = p.courses[0];
+      let course = activeCourse(p);
       const commands: Command[] = [];
       if (!course) {
         course = createCourse();
@@ -206,7 +212,7 @@ function App() {
         },
       });
     } else if (t !== "select") {
-      let c = p.courses[0];
+      let c = activeCourse(p);
       if (!c) {
         c = createCourse();
         c.path = [];
@@ -305,6 +311,29 @@ function App() {
             Studio
           </button>
         </div>
+        {level !== "easy" && (
+          <label>
+            走るコース
+            <select
+              aria-label="走るコース"
+              disabled={playing}
+              value={activeCourse(project)?.id ?? ""}
+              onChange={(e) =>
+                execute({
+                  type: "course.activate",
+                  courseId: e.target.value || null,
+                })
+              }
+            >
+              <option value="">フリー走行</option>
+              {project.courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <button
           className="save"
           onClick={() =>
@@ -469,15 +498,24 @@ function App() {
             {stats.triangles}
             <br />
             Rigid Bodies {stats.rigidBodies} · Colliders {stats.colliders} ·
-            Chunks {stats.loadedChunks}
+            Chunks {stats.loadedChunks} · Physics Chunks{" "}
+            {stats.physicsChunksLoaded}
             <br />
             <span>
-              Assets {stats.loadedAssets} · Texture ≈{" "}
+              Assets {stats.loadedAssets} · Runtime{" "}
+              {Math.round((stats.runtimeAssetBytes ?? 0) / 1024)} KiB ·
+              Budget超過 {stats.runtimeBudgetExceeded ?? 0} · Texture ≈{" "}
               {Math.round((stats.textureMemoryEstimate ?? 0) / 1048576)} MiB
             </span>
             <br />
+            <span>
+              LOD0 {stats.lod0Batches ?? 0} · LOD1 {stats.lod1Batches ?? 0} ·
+              LOD2 {stats.lod2Batches ?? 0}
+            </span>
+            <br />
             <span data-testid="runtime-position">
-              位置 {stats.x?.toFixed(2)}, {stats.z?.toFixed(2)}
+              位置 {stats.x?.toFixed(2)}, {stats.z?.toFixed(2)} · 高さ{" "}
+              {stats.y?.toFixed(2)}
             </span>{" "}
             {runtime}
           </output>
@@ -489,7 +527,14 @@ function App() {
           <button disabled={playing || !bus.canRedo} onClick={() => bus.redo()}>
             ↷ やり直す
           </button>
-          <button disabled={playing} onClick={() => start(false)}>
+          <button
+            disabled={playing}
+            onClick={() => {
+              setStarted(false);
+              setSelected(undefined);
+              setTool("select");
+            }}
+          >
             新しくつくる
           </button>
         </div>

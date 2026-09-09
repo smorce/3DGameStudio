@@ -9,6 +9,7 @@
     "@machine-studio/project-schema": "workspace:*",
     "@machine-studio/physics-rapier": "workspace:*",
     "@machine-studio/world-system": "workspace:*",
-    "@machine-studio/machine-system": "workspace:*"
+    "@machine-studio/machine-system": "workspace:*",
+    "@machine-studio/asset-core": "workspace:*"
   }
 }

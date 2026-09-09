@@ -1,11 +1,23 @@
-# Project Model
+# Project Model v2
 
-`Project`はschemaVersion、id、name、world、courses、machines、assets、missions、settingsを持ちます。座標は右手系でYが上、マシン前方が+Z、寸法はメートルです。回転はXYZ Eulerラジアンです。
+ProjectはschemaVersion、id、name、world、courses、machines、assets、missions、settingsを持ちます。Three.js／Rapierのオブジェクトや大きなGeometry配列を保存モデルへ埋め込みません。座標は右手系でYが上、前方が+Z、単位はメートル、回転はXYZ Eulerラジアンです。
 
-Machineはparts／connections／controlBindingsを保持します。Partには種類、transform、visual、physics、connectors、actuator、metadataがあります。Worldは地形格子、水、配置物、照明、環境、スポーン地点とチャンク寸法を保持します。Courseは道の点列、開始／終了、順序付きチェックポイント、障害物、リスポーン候補を保持します。
+## 今回の追加
 
-Assetはファイル参照とProvenanceを保存し、バイナリーを埋め込みません。`runtimeInfo`に境界寸法・三角形数・Box Collider方針を追加できます。GLBの実行参照は内部の `/api/files/...` に制限します。
+- `schemaVersion: 2`。
+- `settings.activeCourseId`: コースIDまたはnull。欠落時のみ互換フォールバックを許容します。
+- `settings.runtimeProfile`: quality／balanced／performance。既定値balanced。
+- `runtimeInfo.collider`: box／convexHull／trimesh。
+- `runtimeInfo.colliderFile`／`colliderBytes`: 別ファイルのCollider Geometry参照とサイズ。
+- `runtimeInfo.lods[]`: level、file、triangles、distance、bytes。旧`lodLevels`も読み書きできます。
+- `runtimeInfo.optimization`: profile、sourceBytes、runtimeBytes、textureBytes、warnings。
 
-`parseProject(unknown)`はバージョン0を1へ移行します。バージョン0にmissionsがなければ空配列を追加します。未対応バージョン、不正な数値、配列長、重複ID、存在しない接続・素材・コース参照は拒否します。読込に失敗しても現在のCommandBusを置き換えません。未知の新バージョンを推測して解釈しません。
+ファイルURLは従来と同じ内部の`/api/files/<asset>/<file>`に制限します。Bounds、Collider方式、LOD情報だけをProjectへ保存し、Original／Runtime／Collider本体はAsset Storageへ置きます。MachineのCollider型には変更を加えていません。
 
-固定例は `tests/fixtures`、生成スクリプトは `scripts/prepare-demos.ts` にあります。
+## Migration
+
+`parseProject(unknown)`はv0→v1→v2の順で移行します。v0にmissionsがなければ空配列を追加します。v1では`courses[0]?.id ?? null`をactiveCourseIdへ設定し、runtimeProfileをbalancedへ補完します。旧Assetの`collider: "box"`、`lodLevels: [0]`、`runtime.glb`はそのまま使えます。古いファイルを自動的に再処理することはありません。
+
+未対応バージョン、不正な数値、地形配列長、重複ID、不正な接続・素材・コース参照を拒否します。activeCourseIdも参照整合性を検証します。読込失敗時は現在のCommandBusを置き換えません。
+
+Machineのparts／connections／controlBindings、Worldの地形・水・照明・スポーン・環境、Courseの点列やチェックポイントなど既存構造は維持しています。単体テストで3つの既存デモのv0／v1移行→保存→再読込を検証します。

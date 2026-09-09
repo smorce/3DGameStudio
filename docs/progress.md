@@ -1,5 +1,7 @@
 # 実装進捗と完成条件
 
+以下は指示1の初期マイルストーン記録です。指示2の現行結果は[実装報告](world-runtime-report.md)と[今回の品質ゲート](evidence/world-runtime-quality-gates.json)を参照してください。
+
 更新日: 2026-09-09。空のリポジトリから実装した。最終品質ゲートはすべてPASS。単体20件、統合6件、本番E2E9件、Smoke7件が成功した。確定結果は `evidence/quality-gates.json` と各logに保存した。
 
 ## Phase記録
@@ -43,7 +45,7 @@
 
 最低限の車制作・実走行、地形・コース制作、素材取得、ダミーAI、3段階UIは実装した。仕様全体に含まれる高度な機能まで一括して完成とは扱わない。詳細な未実装は `KNOWN_ISSUES.md` に列挙している。
 
-次に優先するのは、物理Chunk StreamingとLOD／Instancing、Loop／Tunnelと高度なCourse編集、ZIP素材変換、センサー／ロジック／詳細マシン制御である。実AI接続は有料呼出しの承認を伴う別Phaseであり、本実装には含めない。
+物理Chunk StreamingとLOD／Instancingは指示2で実装した。Loop／Tunnelと高度なCourse編集、ZIP素材変換、センサー／ロジック／詳細マシン制御は今回の対象外として残る。実AI接続は有料呼出しの承認を伴う別Phaseであり、本実装には含めない。
 
 ## 提出物
 
@@ -68,3 +70,21 @@ README、13種類のシステム／進捗文書、8件のADR、.env.example、�
 Rapier初期化の依存ライブラリ警告、Viteの大きなWASMチャンク警告、ZodのPUREコメント警告は残る。ブラウザーの未処理例外とconsole.errorはテストの失敗条件であり、検証対象の全シナリオで発生しなかった。
 
 外部素材デモの描画性能はSwiftShader／1280×720で20サンプルを測定し、平均27.5FPS・最小20FPSだった。これはソフトウェアGPUによる限定測定であり、大規模世界やモバイルの性能保証ではない。
+
+## 指示2のPhase記録
+
+| Phase | 実装・確認                                                              | 既存テストの結果                                |
+| ----- | ----------------------------------------------------------------------- | ----------------------------------------------- |
+| A     | 全対象Packageとtests／docsを調査、専用ブランチ、既存E2Eと性能基準を測定 | 26件PASS、E2E9件PASS                            |
+| B     | Schema v2、Migration、activeCourseId、Command、Engine、UI               | 26件PASS                                        |
+| C     | Machine基準の物理チャンク、地形／Entity／選択コース、ヒステリシス       | 26件PASS                                        |
+| D     | Collider Source別ファイル、Hull／Trimesh、素材共有、Boxフォールバック   | 26件PASS                                        |
+| E     | glTF Primitiveと内蔵木／岩のInstance Batch、Picking、GPU解放            | 26件PASS                                        |
+| F     | LOD生成、バッチ距離切替、非同期切替保護                                 | 26件PASS                                        |
+| G     | 3 Profile、Meshopt、WebP、原本からの再生成                              | 26件PASS                                        |
+| H     | Binary Upload、安全上限設定、StorageとRuntimeの予算分離                 | 既存26件を維持し追加検証へ                      |
+| I     | 境界・Collider・LOD・Upload・Migration・新規Smoke、実測と文書           | 28単体＋19統合、E2E11件、Smoke9件、全ゲートPASS |
+
+実装中のテストで見つかった頂点展開によるサイズ増大を修正し、元ファイルからの再生成と同じ前処理を共有した。追加の安全検査、退化したHullのRapier生成失敗、ロード中Stop、Storage不足の回収も検証している。
+
+指示2の完成条件28項目はすべてPASS、判定は **COMPLETE**。全ファイル一覧、性能比較、各条件のEvidenceは[実装報告](world-runtime-report.md)へ収録しました。

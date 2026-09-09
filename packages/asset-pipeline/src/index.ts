@@ -1,10 +1,14 @@
+import { validateDocumentHeader } from "./safety";
+import { assetLimits } from "../../asset-core/src/limits";
+import type { RuntimeProfile } from "../../asset-core/src/profiles";
+import { generateRuntime, runtimeIO } from "./runtime";
 import {
   NodeIO,
   Document,
   Accessor,
   type JSONDocument,
 } from "@gltf-transform/core";
-import { dedup, prune, getBounds, normals } from "@gltf-transform/functions";
+import { getBounds } from "@gltf-transform/functions";
 import {
   makeRecord,
   type AssetCandidate,
@@ -14,7 +18,7 @@ import { safeFetch } from "../../asset-providers/src/index";
 import type { AssetStorage } from "../../storage/src/index";
 import { uid, type Vec3 } from "../../project-schema/src/index";
 export function validateGlb(bytes: Uint8Array) {
-  if (bytes.length < 20 || bytes.length > 64 * 1024 * 1024)
+  if (bytes.length < 20 || bytes.length > assetLimits().aggregateBytes)
     throw new Error("Invalid GLB size");
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   if (
@@ -57,13 +61,20 @@ export async function placeholderGlb() {
   d.createScene().addChild(d.createNode().setMesh(mesh));
   return new NodeIO().writeBinary(d);
 }
-export async function importAsset(
+async function importAssetData(
   candidate: AssetCandidate,
   bytes: Uint8Array,
   storage: AssetStorage,
   option?: DownloadOption,
+  settings: {
+    profile?: RuntimeProfile;
+    collider?: "box" | "convexHull" | "trimesh";
+  } = {},
 ) {
-  const io = new NodeIO();
+  const limits = assetLimits();
+  if (bytes.length > limits.sourceBytes || bytes.length > limits.aggregateBytes)
+    throw new Error("Asset exceeds source size limit");
+  const io = runtimeIO();
   let doc: Document;
   const id = uid();
   if (option?.format === "gltf") {
@@ -72,6 +83,7 @@ export async function importAsset(
     ) as JSONDocument["json"];
     if (json.asset?.version !== "2.0")
       throw new Error("Unsupported glTF version");
+    validateDocumentHeader(json, limits);
     const resources: JSONDocument["resources"] = {};
     let size = bytes.length;
     for (const item of [...(json.buffers ?? []), ...(json.images ?? [])]) {
@@ -81,9 +93,12 @@ export async function importAsset(
         throw new Error("Unsafe glTF resource path");
       const resource = option.resources?.[uri];
       if (!resource) throw new Error(`Missing resource: ${uri}`);
-      const data = await safeFetch(resource.url);
+      const data = await safeFetch(
+        resource.url,
+        Math.min(limits.sourceBytes, limits.aggregateBytes - size),
+      );
       size += data.length;
-      if (size > 64 * 1024 * 1024)
+      if (size > limits.aggregateBytes)
         throw new Error("Asset exceeds aggregate size limit");
       resources[uri] = new Uint8Array(data);
     }
@@ -93,11 +108,38 @@ export async function importAsset(
       await storage.save(`${id}/source/${uri}`, data);
   } else {
     validateGlb(bytes);
+    const header = new DataView(
+        bytes.buffer,
+        bytes.byteOffset,
+        bytes.byteLength,
+      ),
+      jsonLength = header.getUint32(12, true);
+    if (
+      header.getUint32(16, true) !== 0x4e4f534a ||
+      jsonLength % 4 !== 0 ||
+      jsonLength > bytes.length - 20
+    )
+      throw new Error("Invalid GLB JSON chunk");
+    const json = JSON.parse(
+      new TextDecoder().decode(bytes.subarray(20, 20 + jsonLength)),
+    ) as JSONDocument["json"];
+    if (
+      [...(json.buffers ?? []), ...(json.images ?? [])].some((item) => item.uri)
+    )
+      throw new Error("External GLB resource paths are not allowed");
+    validateDocumentHeader(json, limits);
     doc = await io.readBinary(bytes);
+  }
+  for (const accessor of doc.getRoot().listAccessors()) {
+    const array = accessor.getArray();
+    if (array)
+      for (const value of array)
+        if (!Number.isFinite(value))
+          throw new Error("Invalid numeric attribute");
   }
   for (const texture of doc.getRoot().listTextures()) {
     const size = texture.getSize();
-    if (size && Math.max(...size) > 8192)
+    if (size && Math.max(...size) > limits.textureDimension)
       throw new Error("Texture exceeds dimension limit");
   }
   const scene =
@@ -117,25 +159,94 @@ export async function importAsset(
       const indices = primitive.getIndices()?.getArray();
       if (
         indices &&
-        Array.from(indices).some((n) => Number(n) >= positions.getCount())
+        Array.from(indices).some(
+          (n) =>
+            !Number.isInteger(n) ||
+            Number(n) < 0 ||
+            Number(n) >= positions.getCount(),
+        )
       )
         throw new Error("Invalid mesh index");
+      if (
+        primitive.getMode() === 4 &&
+        (indices?.length ?? positions.getCount()) % 3 !== 0
+      )
+        throw new Error("Invalid triangle indices");
       triangles += (indices?.length ?? positions.getCount()) / 3;
     }
-  if (triangles > 1000000) throw new Error("Mesh exceeds triangle limit");
+  if (triangles > limits.triangles)
+    throw new Error("Mesh exceeds triangle limit");
   const original =
     option?.format === "gltf" ? await io.writeBinary(doc) : bytes;
   await storage.save(`${id}/original.glb`, original);
-  await doc.transform(dedup(), prune(), normals());
-  const runtime = await io.writeBinary(doc);
+  const colliderVertices: number[] = [],
+    colliderIndices: number[] = [];
+  scene.traverse((node) => {
+    const matrix = node.getWorldMatrix();
+    for (const primitive of node.getMesh()?.listPrimitives() ?? []) {
+      if (primitive.getMode() !== 4) continue;
+      const positions = primitive.getAttribute("POSITION")!;
+      const base = colliderVertices.length / 3;
+      for (let i = 0; i < positions.getCount(); i++) {
+        const v = positions.getElement(i, []);
+        for (let axis = 0; axis < 3; axis++)
+          colliderVertices.push(
+            matrix[axis] * v[0] +
+              matrix[axis + 4] * v[1] +
+              matrix[axis + 8] * v[2] +
+              matrix[axis + 12],
+          );
+      }
+      const indices = primitive.getIndices();
+      for (let i = 0; i < (indices?.getCount() ?? positions.getCount()); i++)
+        colliderIndices.push(base + (indices ? indices.getScalar(i) : i));
+    }
+  });
+  const colliderData = new TextEncoder().encode(
+    JSON.stringify({
+      version: 1,
+      vertices: colliderVertices,
+      indices: colliderIndices,
+    }),
+  );
+  if (colliderIndices.length)
+    await storage.save(`${id}/collider.json`, colliderData);
+  const generated = await generateRuntime(doc, settings.profile);
+  const runtime = generated.levels[0].bytes;
+  for (const lod of generated.levels)
+    await storage.save(`${id}/runtime-lod${lod.level}.glb`, lod.bytes);
   validateGlb(runtime);
   await storage.save(`${id}/runtime.glb`, runtime);
   const record = makeRecord(candidate, id);
   record.runtimeInfo = {
     bounds: { min: bounds.min as Vec3, max: bounds.max as Vec3 },
     triangles: Math.floor(triangles),
-    collider: "box",
-    lodLevels: [0],
+    collider:
+      settings.collider ??
+      (colliderIndices.length
+        ? /building|road|jump|environment|tunnel/i.test(candidate.category)
+          ? "trimesh"
+          : "convexHull"
+        : "box"),
+    colliderFile: colliderIndices.length
+      ? `/api/files/${id}/collider.json`
+      : undefined,
+    colliderBytes: colliderIndices.length ? colliderData.length : 0,
+    optimization: {
+      profile: settings.profile ?? "balanced",
+      sourceBytes: original.length,
+      runtimeBytes: runtime.length,
+      textureBytes: generated.textureBytes,
+      warnings: generated.warnings,
+    },
+    lodLevels: generated.levels.map((l) => l.level),
+    lods: generated.levels.map((l) => ({
+      level: l.level,
+      file: `/api/files/${id}/runtime-lod${l.level}.glb`,
+      triangles: l.triangles,
+      distance: l.distance,
+      bytes: l.bytes.length,
+    })),
   };
   const extent = Math.max(...bounds.max.map((n, i) => n - bounds.min[i]), 0.01);
   const projected: string[] = [];
@@ -190,6 +301,7 @@ export async function importAsset(
     new TextEncoder().encode(thumbnail),
   );
   record.files.thumbnail = `/api/files/${id}/thumbnail.svg`;
+  record.processing.pipelineVersion = "2";
   record.processing.optimizedAt = new Date().toISOString();
   return record;
 }
@@ -242,4 +354,30 @@ export class GenerationQueue {
     });
     return job;
   }
+}
+
+let importTail: Promise<unknown> = Promise.resolve();
+export function importAsset(...args: Parameters<typeof importAssetData>) {
+  const run = importTail.then(async () => {
+    const storage = args[2],
+      saved: string[] = [];
+    const tracked: AssetStorage = {
+      save: async (key, bytes) => {
+        await storage.save(key, bytes);
+        saved.push(key);
+      },
+      load: (key) => storage.load(key),
+      exists: (key) => storage.exists(key),
+      remove: (key) => storage.remove(key),
+      getUrl: (key) => storage.getUrl(key),
+    };
+    try {
+      return await importAssetData(args[0], args[1], tracked, args[3], args[4]);
+    } catch (error) {
+      await Promise.allSettled(saved.map((key) => storage.remove(key)));
+      throw error;
+    }
+  });
+  importTail = run.catch(() => {});
+  return run;
 }

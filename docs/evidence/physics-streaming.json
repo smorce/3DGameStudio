@@ -1,0 +1,51 @@
+{
+  "worldEntities": 900,
+  "terrainChunks": 1024,
+  "samples": [
+    {
+      "position": [320, 2, 0],
+      "physicsChunksLoaded": 25,
+      "terrainChunkColliders": 25,
+      "worldEntityColliders": 36,
+      "rigidBodies": 1,
+      "colliders": 62,
+      "joints": 0
+    },
+    {
+      "position": [-320, 2, 0],
+      "physicsChunksLoaded": 25,
+      "terrainChunkColliders": 25,
+      "worldEntityColliders": 36,
+      "rigidBodies": 1,
+      "colliders": 62,
+      "joints": 0
+    },
+    {
+      "position": [0, 2, 0],
+      "physicsChunksLoaded": 25,
+      "terrainChunkColliders": 25,
+      "worldEntityColliders": 36,
+      "rigidBodies": 1,
+      "colliders": 62,
+      "joints": 0
+    },
+    {
+      "position": [320, 2, 0],
+      "physicsChunksLoaded": 25,
+      "terrainChunkColliders": 25,
+      "worldEntityColliders": 36,
+      "rigidBodies": 1,
+      "colliders": 62,
+      "joints": 0
+    },
+    {
+      "position": [-320, 2, 0],
+      "physicsChunksLoaded": 25,
+      "terrainChunkColliders": 25,
+      "worldEntityColliders": 36,
+      "rigidBodies": 1,
+      "colliders": 62,
+      "joints": 0
+    }
+  ]
+}

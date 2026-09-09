@@ -1,0 +1,37 @@
+
+> machine-studio@ test:integration /home/smorce/env2/work/3DGameStudio
+> vitest run tests/integration
+
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+stderr | tests/integration/world-streaming.test.ts > Machineの移動で近傍Colliderだけを維持し、遠方は増え続けない
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/physics.test.ts > 4輪車が物理世界で前進し編集・保存データを変更しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/integration/physics.test.ts (2 tests) 81ms
+ ✓ tests/integration/world-streaming.test.ts (3 tests) 137ms
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+ ✓ tests/integration/pipelines.test.ts (4 tests) 490ms
+   ✓ 生成Jobが成功・失敗を報告する  402ms
+stderr | tests/integration/runtime-pipeline.test.ts > 生成したHull/TrimeshをRapierに反映し、破損ColliderはBoxへ戻す
+using deprecated parameters for the initialization function; pass a single object instead
+
+stdout | tests/integration/runtime-pipeline.test.ts > LODに不向きなモデルはLOD0だけを生成し元データは変更しない
+prune: Removed types... Animation (1), Accessor (1)
+
+ ✓ tests/integration/runtime-pipeline.test.ts (10 tests) 969ms
+   ✓ performanceのRuntime Textureだけを縮小し元PNGを保持する  491ms
+
+ Test Files  4 passed (4)
+      Tests  19 passed (19)
+   Start at  11:37:02
+   Duration  1.50s (transform 235ms, setup 0ms, collect 868ms, tests 1.68s, environment 1ms, prepare 200ms)
+

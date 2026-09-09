@@ -1,3 +1,4 @@
+import { assetLimits } from "../../../packages/asset-core/src/limits";
 import express from "express";
 import { mkdir, readFile, writeFile, cp } from "node:fs/promises";
 import path from "node:path";
@@ -28,7 +29,10 @@ export async function createApp(
   dataDir = process.env.ASSET_DATA_DIR ?? ".data",
 ) {
   const app = express(),
-    storage = new LocalAssetStorage(path.join(dataDir, "assets"));
+    storage = new LocalAssetStorage(
+      path.join(dataDir, "assets"),
+      assetLimits().storageBytes,
+    );
   await mkdir(dataDir, { recursive: true });
   let records: AssetRecord[] = [];
   try {
@@ -103,6 +107,28 @@ export async function createApp(
       return;
     }
     res.setHeader("X-Content-Type-Options", "nosniff");
+    next();
+  });
+  let importing = false;
+  app.use(["/api/upload", "/api/import"], (req, res, next) => {
+    if (req.method !== "POST") {
+      next();
+      return;
+    }
+    if (importing) {
+      res.status(429).json({ error: "Another asset import is in progress" });
+      return;
+    }
+    importing = true;
+    let released = false;
+    const release = () => {
+      if (!released) {
+        released = true;
+        importing = false;
+      }
+    };
+    res.once("finish", release);
+    res.once("close", release);
     next();
   });
   app.use(express.json({ limit: "8mb" }));
@@ -180,33 +206,49 @@ export async function createApp(
     await saveRecord(record);
     res.json(record);
   });
-  app.post("/api/upload", async (req, res) => {
-    const input = z
-      .object({
-        name: z.string().max(120),
-        data: z.string().max(6 * 1024 * 1024),
-        provider: z.enum(["local", "kenney"]),
-        sourceUrl: z.string().max(500),
-        license: z.enum(["CC0", "unknown"]),
-      })
-      .parse(req.body);
-    const candidate = {
-      ...localCandidate,
-      id: crypto.randomUUID(),
-      name: input.name,
-      provider: input.provider,
-      sourceUrl: input.sourceUrl,
-      author: input.provider === "kenney" ? "Kenney" : "User supplied",
-      license: input.license,
-    };
-    const record = await importAsset(
-      candidate,
-      new Uint8Array(Buffer.from(input.data, "base64")),
-      storage,
-    );
-    await saveRecord(record);
-    res.json(record);
-  });
+  app.get("/api/asset-limits", (_req, res) => res.json(assetLimits()));
+  app.post(
+    "/api/upload",
+    express.raw({
+      type: ["model/gltf-binary", "application/octet-stream"],
+      limit: assetLimits().sourceBytes,
+      inflate: false,
+    }),
+    async (req, res) => {
+      if (!Buffer.isBuffer(req.body))
+        throw new Error("Expected binary GLB body");
+      const input = z
+        .object({
+          name: z.string().max(120),
+          profile: z
+            .enum(["quality", "balanced", "performance"])
+            .default("balanced"),
+          collider: z.enum(["box", "convexHull", "trimesh"]).optional(),
+          provider: z.enum(["local", "kenney"]),
+          sourceUrl: z.string().max(500),
+          license: z.enum(["CC0", "unknown"]),
+        })
+        .parse(req.query);
+      const candidate = {
+        ...localCandidate,
+        id: crypto.randomUUID(),
+        name: input.name,
+        provider: input.provider,
+        sourceUrl: input.sourceUrl,
+        author: input.provider === "kenney" ? "Kenney" : "User supplied",
+        license: input.license,
+      };
+      const record = await importAsset(
+        candidate,
+        new Uint8Array(req.body),
+        storage,
+        undefined,
+        { profile: input.profile, collider: input.collider },
+      );
+      await saveRecord(record);
+      res.json(record);
+    },
+  );
   app.post("/api/jobs", async (req, res) => {
     const spec = z
       .object({ prompt: z.string().min(1).max(500) })

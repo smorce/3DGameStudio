@@ -103,7 +103,29 @@ export const assetSchema = z.object({
     .object({
       bounds: z.object({ min: vec3, max: vec3 }),
       triangles: z.number().int().nonnegative(),
-      collider: z.literal("box"),
+      collider: z.enum(["box", "convexHull", "trimesh"]),
+      colliderFile: assetFile.optional(),
+      colliderBytes: z.number().int().nonnegative().optional(),
+      lods: z
+        .array(
+          z.object({
+            level: z.number().int().min(0).max(2),
+            file: assetFile,
+            triangles: z.number().int().nonnegative(),
+            distance: z.number().nonnegative(),
+            bytes: z.number().int().nonnegative(),
+          }),
+        )
+        .optional(),
+      optimization: z
+        .object({
+          profile: z.enum(["quality", "balanced", "performance"]),
+          sourceBytes: z.number().int().nonnegative(),
+          runtimeBytes: z.number().int().nonnegative(),
+          textureBytes: z.number().int().nonnegative(),
+          warnings: z.array(z.string()),
+        })
+        .optional(),
       lodLevels: z.array(z.number()),
     })
     .optional(),
@@ -175,7 +197,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -190,7 +212,13 @@ export const projectSchema = z
         targetSeconds: z.number().positive(),
       }),
     ),
-    settings: z.object({ gravity: vec3 }),
+    settings: z.object({
+      gravity: vec3,
+      activeCourseId: z.string().nullable().optional(),
+      runtimeProfile: z
+        .enum(["quality", "balanced", "performance"])
+        .default("balanced"),
+    }),
   })
   .superRefine((p, ctx) => {
     const issue = (message: string) =>
@@ -229,6 +257,11 @@ export const projectSchema = z
     for (const e of p.world.entities)
       if (e.kind === "asset" && !p.assets.some((a) => a.id === e.assetId))
         issue("Missing asset reference");
+    if (
+      p.settings.activeCourseId &&
+      !p.courses.some((c) => c.id === p.settings.activeCourseId)
+    )
+      issue("Missing active course reference");
     for (const m of p.missions)
       if (!p.courses.some((c) => c.id === m.courseId))
         issue("Missing course reference");
@@ -247,13 +280,29 @@ export function parseProject(input: unknown): Project {
       missions: "missions" in input ? input.missions : [],
     };
   }
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    "schemaVersion" in input &&
+    input.schemaVersion === 1
+  ) {
+    const old = input as { settings?: object; courses?: { id: string }[] };
+    input = {
+      ...input,
+      schemaVersion: 2,
+      settings: {
+        ...old.settings,
+        activeCourseId: old.courses?.[0]?.id ?? null,
+      },
+    };
+  }
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     id: uid(),
     name: "わたしのスタジオ",
     world: {
@@ -277,6 +326,20 @@ export function emptyProject(): Project {
     machines: [],
     assets: [],
     missions: [],
-    settings: { gravity: [0, -9.81, 0] },
+    settings: {
+      gravity: [0, -9.81, 0],
+      activeCourseId: null,
+      runtimeProfile: "balanced",
+    },
   };
+}
+
+export function activeCourse(project: Project, courseId?: string | null) {
+  const id =
+    courseId !== undefined ? courseId : project.settings.activeCourseId;
+  if (id === null) return undefined;
+  if (id === undefined) return project.courses[0];
+  const course = project.courses.find((c) => c.id === id);
+  if (!course) throw new Error("Course not found");
+  return course;
 }

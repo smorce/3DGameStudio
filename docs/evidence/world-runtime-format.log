@@ -1,0 +1,6 @@
+
+> machine-studio@ format:check /home/smorce/env2/work/3DGameStudio
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

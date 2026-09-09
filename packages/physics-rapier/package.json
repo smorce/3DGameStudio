@@ -8,6 +8,8 @@
     "@dimforge/rapier3d-compat": "^0.19.0",
     "@machine-studio/project-schema": "workspace:*",
     "@machine-studio/water-system": "workspace:*",
-    "@machine-studio/machine-system": "workspace:*"
+    "@machine-studio/machine-system": "workspace:*",
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/world-system": "workspace:*"
   }
 }

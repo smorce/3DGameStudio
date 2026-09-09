@@ -84,6 +84,7 @@ export const commandSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("asset.import"), asset: assetSchema }),
   z.object({ type: z.literal("asset.place"), entity: entitySchema }),
   z.object({ type: z.literal("asset.remove"), entityId: id }),
+  z.object({ type: z.literal("course.activate"), courseId: id.nullable() }),
   z.object({ type: z.literal("course.create"), course: courseSchema }),
   z.object({
     type: z.literal("course.path.update"),
@@ -276,8 +277,13 @@ function apply(p: Project, c: Command) {
     case "asset.remove":
       p.world.entities = p.world.entities.filter((a) => a.id !== c.entityId);
       break;
+    case "course.activate":
+      if (c.courseId !== null) course();
+      p.settings.activeCourseId = c.courseId;
+      break;
     case "course.create":
       p.courses.push(c.course);
+      p.settings.activeCourseId = c.course.id;
       break;
     case "course.path.update":
       course().path = c.path;

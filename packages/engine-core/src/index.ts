@@ -1,5 +1,6 @@
 import {
   parseProject,
+  activeCourse,
   type Project,
   type Vec3,
 } from "../../project-schema/src/index";
@@ -51,19 +52,19 @@ export class Engine {
     this.ticket++;
     this.project = parsed;
     if (this.mode === "PLAY") this.stop();
+    else this.physics.dispose();
     this.renderer.load(this.project);
   }
-  async play() {
+  async play(options: { courseId?: string | null } = {}) {
     if (!this.project || this.mode === "PLAY") return;
     const ticket = ++this.ticket;
-    await this.physics.load(structuredClone(this.project));
-    if (this.disposed || ticket !== this.ticket) {
-      this.physics.dispose();
-      return;
-    }
-    this.course = this.project.courses[0]
-      ? new CourseProgress(this.project.courses[0])
-      : undefined;
+    const course = activeCourse(this.project, options.courseId);
+    await this.physics.load(structuredClone(this.project), {
+      courseId: course?.id ?? null,
+    });
+    if (this.disposed || ticket !== this.ticket) return;
+    this.course = course ? new CourseProgress(course) : undefined;
+    this.renderer.load(this.project, { courseId: course?.id ?? null });
     if (this.course) this.physics.respawn(this.course.course.start);
     this.mode = "PLAY";
     this.accumulator = 0;

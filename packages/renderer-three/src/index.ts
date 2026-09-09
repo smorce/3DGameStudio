@@ -1,9 +1,14 @@
+import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import type { Project, Vec3 } from "../../project-schema/src/index";
+import { AssetTemplates, WorldAssetBatch } from "./instances";
+import {
+  activeCourse,
+  type Project,
+  type Vec3,
+} from "../../project-schema/src/index";
 import type { Pose } from "../../physics-rapier/src/index";
-import { chunkCoordinate } from "../../world-system/src/index";
+import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
 import { quaternion, rotate } from "../../machine-system/src/math";
 export interface RendererAdapter {
@@ -22,6 +27,7 @@ export class ThreeRenderer implements RendererAdapter {
   chunks = new Map<string, THREE.Group>();
   private observer: ResizeObserver;
   private generation = 0;
+  private templates = new AssetTemplates();
   private selected?: string;
   private project?: Project;
   private streamer?: ChunkStreamer<THREE.Group>;
@@ -91,7 +97,12 @@ export class ThreeRenderer implements RendererAdapter {
     if (h) {
       let o: THREE.Object3D | null = h.object;
       while (o && !o.userData.id) o = o.parent;
-      this.onPick?.(o?.userData.id, [h.point.x, h.point.y, h.point.z]);
+      this.onPick?.(
+        h.instanceId !== undefined
+          ? h.object.userData.entityIds?.[h.instanceId]
+          : o?.userData.id,
+        [h.point.x, h.point.y, h.point.z],
+      );
     }
   };
   constructor(readonly canvas: HTMLCanvasElement) {
@@ -141,6 +152,10 @@ export class ThreeRenderer implements RendererAdapter {
   }
   private clear(group: THREE.Group) {
     group.traverse((o) => {
+      o.userData.release?.();
+      if (o instanceof THREE.InstancedMesh) o.dispose();
+      if (o instanceof THREE.SkinnedMesh) o.skeleton.dispose();
+      if (o.userData.shared) return;
       if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) {
         o.geometry.dispose();
         const materials = Array.isArray(o.material) ? o.material : [o.material];
@@ -153,9 +168,9 @@ export class ThreeRenderer implements RendererAdapter {
     });
     group.clear();
   }
-  load(p: Project) {
+  load(p: Project, options?: { courseId: string | null }) {
     this.project = p;
-    const generation = ++this.generation;
+    ++this.generation;
     this.streamer?.dispose();
     this.chunkBuilders.clear();
     this.clear(this.root);
@@ -267,75 +282,31 @@ export class ThreeRenderer implements RendererAdapter {
         this.parts.set(part.id, visual);
       }
     }
-    for (const e of p.world.entities) {
-      const key = chunkCoordinate(e.transform.position, p.world.chunkSize).join(
-        ",",
-      );
+    for (const [batchKey, entities] of groupInstances(p)) {
+      const key = batchKey.split(":")[0];
       const builders = this.chunkBuilders.get(key) ?? [];
       builders.push((chunk) => {
-        const group = new THREE.Group();
-        group.userData.id = e.id;
-        group.userData.assetId = e.assetId;
-        group.position.fromArray(e.transform.position);
-        group.rotation.fromArray([...e.transform.rotation, "XYZ"]);
-        group.scale.fromArray(e.transform.scale);
-        chunk.add(group);
-        if (e.kind === "asset") {
-          const asset = p.assets.find((a) => a.id === e.assetId);
-          if (asset?.files.runtime)
-            new GLTFLoader().load(
-              asset.files.runtime,
-              (g) => {
-                if (generation !== this.generation || !chunk.parent) {
-                  this.clear(g.scene);
-                  return;
-                }
-                g.scene.traverse((o) => {
-                  o.castShadow = true;
-                  o.receiveShadow = true;
-                });
-                group.add(g.scene);
-              },
-              undefined,
-              () => {
-                if (generation !== this.generation || !chunk.parent) return;
-                group.add(
-                  this.mesh(new THREE.IcosahedronGeometry(0.7, 1), "#b68383"),
-                );
-              },
-            );
-        } else if (e.kind === "tree") {
-          const trunk = this.mesh(
-            new THREE.CylinderGeometry(0.15, 0.2, 1.5, 8),
-            "#856349",
-          );
-          trunk.position.y = 0.75;
-          const leaves = this.mesh(
-            new THREE.ConeGeometry(1, 2.4, 8),
-            "#3e7956",
-          );
-          leaves.position.y = 2;
-          group.add(trunk, leaves);
-        } else {
-          const mesh = this.mesh(
-            e.kind === "rock"
-              ? new THREE.IcosahedronGeometry(0.8, 1)
-              : new THREE.BoxGeometry(2, 3, 2),
-            e.kind === "rock" ? "#8b9790" : "#d4c6a8",
-          );
-          mesh.position.y = e.kind === "rock" ? 0.5 : 1.5;
-          group.add(mesh);
-        }
+        const asset = p.assets.find((a) => a.id === entities[0].assetId);
+        const batch = new WorldAssetBatch(entities, asset, this.templates);
+        chunk.add(batch.group);
       });
       this.chunkBuilders.set(key, builders);
     }
-    for (const c of p.courses) {
+    const selectedCourse = activeCourse(p, options?.courseId);
+    for (const c of options
+      ? selectedCourse
+        ? [selectedCourse]
+        : []
+      : p.courses) {
       if (c.path.length > 1) {
         for (let i = 1; i < c.path.length; i++) {
           const a = new THREE.Vector3(...c.path[i - 1]),
             b = new THREE.Vector3(...c.path[i]),
             len = a.distanceTo(b),
-            road = this.mesh(new THREE.BoxGeometry(4, 0.08, len), "#b8aa89");
+            road = this.mesh(
+              new THREE.BoxGeometry(4, 0.08, len),
+              c.id === selectedCourse?.id ? "#b8aa89" : "#8b94a0",
+            );
           road.position.copy(a).add(b).multiplyScalar(0.5);
           road.lookAt(b);
           this.root.add(road);
@@ -456,20 +427,60 @@ export class ThreeRenderer implements RendererAdapter {
     this.highlighted.visible = !poses;
     this.streamer?.update(this.controls.target.toArray() as Vec3);
     this.controls.update();
+    this.root.traverse((o) => o.userData.updateLod?.(this.camera.position));
     this.renderer.render(this.scene, this.camera);
   }
   get stats() {
     const assetIds = new Set<string>();
+    const files = new Map<string, number>();
+    const textures = new Set<THREE.Texture>();
+    const lodBatches = [0, 0, 0];
+    let instanceBatches = 0;
     this.root.traverse((o) => {
+      if (o.userData.lodLevel !== undefined) lodBatches[o.userData.lodLevel]++;
+      if (o instanceof THREE.InstancedMesh) instanceBatches++;
+      if (o.userData.runtimeFile)
+        files.set(o.userData.runtimeFile, o.userData.runtimeBytes ?? 0);
+      if (o instanceof THREE.Mesh)
+        for (const material of Array.isArray(o.material)
+          ? o.material
+          : [o.material])
+          for (const value of Object.values(material))
+            if (value instanceof THREE.Texture) textures.add(value);
       if (o.userData.assetId && o.children.length)
         assetIds.add(o.userData.assetId);
     });
+    const runtimeAssetBytes = [...files.values()].reduce((a, b) => a + b, 0);
+    const textureMemoryEstimate = [...textures].reduce((sum, t) => {
+      const image = t.image as { width?: number; height?: number } | undefined;
+      return (
+        sum +
+        (image?.width ?? 0) *
+          (image?.height ?? 0) *
+          4 *
+          (t.generateMipmaps ? 4 / 3 : 1)
+      );
+    }, 0);
     return {
+      runtimeAssetBytes,
+      instanceBatches,
+      lod0Batches: lodBatches[0],
+      lod1Batches: lodBatches[1],
+      lod2Batches: lodBatches[2],
+      runtimeBudgetExceeded: evaluateRuntimeBudget(
+        this.project?.settings.runtimeProfile ?? "balanced",
+        {
+          loadedAssetBytes: runtimeAssetBytes,
+          textureBytes: textureMemoryEstimate,
+          triangles: this.renderer.info.render.triangles,
+          drawCalls: this.renderer.info.render.calls,
+        },
+      ).length,
       drawCalls: this.renderer.info.render.calls,
       triangles: this.renderer.info.render.triangles,
       loadedChunks: [...this.chunks.values()].filter((g) => g.visible).length,
       loadedAssets: assetIds.size,
-      textureMemoryEstimate: this.renderer.info.memory.textures * 1024 * 1024,
+      textureMemoryEstimate,
     };
   }
   dispose() {
