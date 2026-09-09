@@ -757,3 +757,58 @@ footer {
 .studio .side-panel .tool-grid button.selected {
   color: #e3e9df;
 }
+
+.placement-message {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: #f3ffff;
+  box-shadow: 0 4px 24px #183d4933;
+  white-space: nowrap;
+}
+.candidate-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.candidate-labels button {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  color: #123d48;
+  font-weight: 800;
+  pointer-events: none;
+}
+.candidate-labels button:focus-visible {
+  outline: 3px solid #143948;
+  border-radius: 50%;
+}
+.palette button.active {
+  background: #d9ffff;
+  outline: 3px solid #36a9b2;
+}
+
+@media (max-width: 800px) {
+  .placement-message {
+    max-width: calc(100% - 24px);
+    white-space: normal;
+    font-size: 12px;
+    gap: 10px;
+    bottom: 70px;
+  }
+  .easy .selection-tools {
+    max-width: calc(100% - 24px);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

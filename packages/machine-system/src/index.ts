@@ -26,7 +26,7 @@ export function createPart(
   kind: Part["definitionId"],
   position: Vec3 = [0, 0.85, 0],
 ): Part {
-  return {
+  const part: Part = {
     id: uid(),
     definitionId: kind,
     transform: { ...identity(), position },
@@ -67,6 +67,8 @@ export function createPart(
     },
     metadata: {},
   };
+  part.connectors = placementConnectors(part);
+  return part;
 }
 export function createMachine(name = "マイマシン"): Machine {
   return {
@@ -82,38 +84,232 @@ export function createMachine(name = "マイマシン"): Machine {
     ],
   };
 }
-export function attachPart(machine: Machine, part: Part, slot?: number) {
-  const root = machine.parts.find((p) => p.definitionId === "Panel");
-  if (root && part.definitionId === "Wheel") {
-    const used = machine.connections
-      .filter(
-        (c) =>
-          c.a === root.id &&
-          machine.parts.some((p) => p.id === c.b && p.definitionId === "Wheel"),
-      )
-      .map((c) => Number(c.connectorA));
-    const index = slot ?? wheelSlots.findIndex((_, i) => !used.includes(i));
-    if (index < 0 || index >= 4 || used.includes(index))
-      throw new Error("No available wheel connector");
-    part.transform.position = rotate(
-      wheelSlots[index].map((n, i) => n * root.transform.scale[i]) as Vec3,
-      quaternion(root.transform.rotation),
-    ).map((n, i) => n + root.transform.position[i]) as Vec3;
-    part.metadata.drive = index >= 2;
-    part.metadata.front = index < 2;
+export interface AttachmentCandidate {
+  id: string;
+  parentPartId: string;
+  parentConnectorId: string;
+  childConnectorId: string;
+  position: Vec3;
+  rotation: Vec3;
+  axis: Vec3;
+  connectionType: "fixed" | "revolute";
+}
+
+export function attachmentDescendants(machine: Machine, partId: string) {
+  const ids = new Set([partId]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const c of machine.connections)
+      if (ids.has(c.a) && !ids.has(c.b)) {
+        ids.add(c.b);
+        changed = true;
+      }
+  }
+  return ids;
+}
+
+type Connector = Part["connectors"][number];
+const structuralKinds: Part["definitionId"][] = [
+  "Panel",
+  "Block",
+  "Motor",
+  "Steering",
+  "Hinge",
+];
+
+// 古い保存データには不足する接続先だけを補完し、計算中は元の配列を変更しない。
+export function placementConnectors(part: Part): Connector[] {
+  const connectors: Connector[] = part.connectors.map((c) => ({
+    ...c,
+    ...(c.type || c.accepts
+      ? {}
+      : part.definitionId === "Panel" && /^[0-3]$/.test(c.id)
+        ? { type: "wheel" as const, accepts: ["Wheel" as const] }
+        : { type: "mount" as const, accepts: [] }),
+  }));
+  const add = (connector: Connector) => {
+    if (!connectors.some((c) => c.id === connector.id))
+      connectors.push(connector);
+  };
+  add({
+    id: "mount",
+    position: [0, 0, 0],
+    axis: [1, 0, 0],
+    type: "mount",
+    accepts: [],
+  });
+  if (["Panel", "Block", "Hinge"].includes(part.definitionId)) {
+    const [x, y, z] = part.physics.size;
+    const topZ = part.definitionId === "Panel" ? [-z * 0.3, z * 0.3] : [0];
+    topZ.forEach((offset, i) =>
+      add({
+        id: "top-" + i,
+        position: [0, y / 2, offset],
+        axis: [1, 0, 0],
+        normal: [0, 1, 0],
+        type: "structural",
+        accepts: structuralKinds,
+      }),
+    );
+    for (const sign of [-1, 1]) {
+      add({
+        id: "jet-" + sign,
+        position: [0, 0, (sign * z) / 2],
+        axis: [0, 1, 0],
+        normal: [0, 0, sign],
+        type: "propulsion",
+        accepts: ["Thruster"],
+      });
+      add({
+        id: "wing-" + sign,
+        position: [(sign * x) / 2, y / 2, 0],
+        axis: [0, 1, 0],
+        normal: [sign, 0, 0],
+        type: "wing",
+        accepts: ["Wing"],
+      });
+    }
+  }
+  return connectors;
+}
+
+export function findAttachmentCandidates(
+  machine: Machine,
+  kind: Part["definitionId"],
+  movingPartId?: string,
+  sourcePartId?: string,
+): AttachmentCandidate[] {
+  const excluded = movingPartId
+    ? attachmentDescendants(machine, movingPartId)
+    : new Set<string>();
+  const existing = machine.parts.find(
+    (p) => p.id === (movingPartId ?? sourcePartId),
+  );
+  if (movingPartId && !existing) return [];
+  if (
+    !machine.parts.length ||
+    (movingPartId && excluded.size === machine.parts.length)
+  )
+    return kind === "Panel"
+      ? [
+          {
+            id: "root",
+            parentPartId: "",
+            parentConnectorId: "",
+            childConnectorId: "mount",
+            position: [0, 0.85, 0],
+            rotation: existing ? [...existing.transform.rotation] : [0, 0, 0],
+            axis: [1, 0, 0],
+            connectionType: "fixed",
+          },
+        ]
+      : [];
+  const size =
+    existing?.physics.size ??
+    (kind === "Panel"
+      ? [2.2, 0.3, 3.5]
+      : kind === "Wing"
+        ? [4, 0.12, 0.8]
+        : [0.6, 0.6, 0.6]);
+  const scale = existing?.transform.scale ?? [1, 1, 1];
+  return machine.parts
+    .filter((p) => !excluded.has(p.id))
+    .flatMap((parent) =>
+      placementConnectors(parent)
+        .filter(
+          (c) =>
+            c.accepts?.includes(kind) &&
+            !machine.connections.some(
+              (link) =>
+                (link.a === parent.id &&
+                  link.connectorA === c.id &&
+                  link.b !== movingPartId) ||
+                (link.b === parent.id && link.connectorB === c.id),
+            ),
+        )
+        .map((c) => {
+          const q = quaternion(parent.transform.rotation);
+          const offset = c.position.map(
+            (n, i) =>
+              n * parent.transform.scale[i] +
+              ((c.normal?.[i] ?? 0) * size[i] * scale[i]) / 2,
+          ) as Vec3;
+          return {
+            id: JSON.stringify([parent.id, c.id, kind]),
+            parentPartId: parent.id,
+            parentConnectorId: c.id,
+            childConnectorId: kind === "Wheel" ? "0" : "mount",
+            position: rotate(offset, q).map(
+              (n, i) => n + parent.transform.position[i],
+            ) as Vec3,
+            rotation: [...parent.transform.rotation] as Vec3,
+            axis: rotate(c.axis, q),
+            connectionType:
+              kind === "Wheel" || kind === "Hinge"
+                ? ("revolute" as const)
+                : ("fixed" as const),
+          };
+        }),
+    );
+}
+
+export function commitAttachment(
+  machine: Machine,
+  part: Part,
+  candidate: AttachmentCandidate,
+) {
+  part.transform.position = [...candidate.position];
+  part.transform.rotation = [...candidate.rotation];
+  if (candidate.parentPartId) {
+    const parent = machine.parts.find((p) => p.id === candidate.parentPartId)!;
+    parent.connectors = placementConnectors(parent);
+    const connector = parent.connectors.find(
+      (c) => c.id === candidate.parentConnectorId,
+    )!;
+    if (candidate.childConnectorId === "mount") {
+      part.connectors = placementConnectors(part);
+      const mount = part.connectors.find((c) => c.id === "mount")!;
+      mount.position = part.physics.size.map(
+        (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
+      ) as Vec3;
+    }
+    if (part.definitionId === "Wheel") {
+      part.metadata.front = connector.position[2] > 0;
+      part.metadata.drive = !part.metadata.front;
+    }
     machine.connections.push({
-      id: `joint-${root.id}-${part.id}`,
-      a: root.id,
+      id: "joint-" + parent.id + "-" + part.id,
+      a: parent.id,
       b: part.id,
-      connectorA: String(index),
-      connectorB: "0",
-      type: "revolute",
-      axis: [1, 0, 0],
+      connectorA: candidate.parentConnectorId,
+      connectorB: candidate.childConnectorId,
+      type: candidate.connectionType,
+      axis: [...candidate.axis],
       damping: 0.2,
     });
-  } else if (root) {
+  }
+  if (!machine.parts.some((p) => p.id === part.id)) machine.parts.push(part);
+}
+
+export function attachPart(machine: Machine, part: Part, slot?: number) {
+  if (
+    part.definitionId === "Wheel" &&
+    machine.parts.some((p) => p.definitionId === "Panel")
+  ) {
+    const candidates = findAttachmentCandidates(machine, "Wheel");
+    const candidate =
+      slot === undefined
+        ? candidates[0]
+        : candidates.find((c) => c.parentConnectorId === String(slot));
+    if (!candidate) throw new Error("No available wheel connector");
+    commitAttachment(machine, part, candidate);
+    return;
+  }
+  const root = machine.parts.find((p) => p.definitionId === "Panel");
+  if (root)
     machine.connections.push({
-      id: `joint-${root.id}-${part.id}`,
+      id: "joint-" + root.id + "-" + part.id,
       a: root.id,
       b: part.id,
       connectorA: "0",
@@ -122,7 +318,6 @@ export function attachPart(machine: Machine, part: Part, slot?: number) {
       axis: [1, 0, 0],
       damping: 0.2,
     });
-  }
   machine.parts.push(part);
 }
 export function carTemplate() {

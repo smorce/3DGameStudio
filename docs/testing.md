@@ -43,3 +43,14 @@ E2Eはポート8788に専用Serverを起動し、`.data/e2e`を使用します�
 - `tests/e2e/world-runtime.spec.ts`: 大量岩の本番描画、B選択→保存→Reload→完走、実圧縮GLBとWebP、実表示中のLOD段階、Trimeshの坂道上での実走。
 
 `node scripts/world-benchmark.mjs after`は本番ビルドから再測定します。Beforeは元コミット`bc77656`の別worktreeで同じスクリプトを実行しました。フィクスチャは`tests/fixtures/benchmark-world.json`、結果はperformance-before／after.jsonです。詳しい条件と限界は[performance.md](performance.md)を参照してください。
+
+## 指示3のPlacement検証
+
+変更前の基準はUnit 28件、Integration 19件、E2E 11件の成功です。`feat/world-runtime-foundations`の取得済み最新`04d34f0`から、作業ブランチ`feat/machine-placement-system`で実装しました。
+
+- Unit：4→3→0候補、純粋性、Move／Rotate／Scale、互換性、旧Connector補完、全8種の配置、接続木、回転軸、Undo／Redo。
+- Integration：候補から組み立てた4輪車の実Rapier走行、編集モデル不変、保存復元。
+- E2E：3D候補クリック、配置後の消去と選択、回転／つけ直しのUndo、取消、コピー、全パーツ、詳細値保持、ドラッグ誤配置防止、キーボード、タッチ。
+- Placement Smoke：空からPanel＋4輪を配置し、候補の減少、選択、回転、つけ直し、Undo／Redo、前進、Save／Reloadまで自動確認。
+
+`pnpm test:e2e tests/e2e/placement.spec.ts`で配置シナリオだけを実行できます。最終合否と件数は[evidence/placement-quality-gates.json](evidence/placement-quality-gates.json)、完成条件と画像は[配置の実装報告](placement-report.md)にまとめています。スクリーンショット3枚は実際に目視確認済みです。Chromiumのタッチエミュレーションを含みますが、実モバイル端末の性能保証ではありません。

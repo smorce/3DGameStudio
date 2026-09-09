@@ -1,0 +1,69 @@
+{
+  "baseCommit": "04d34f0",
+  "branch": "feat/machine-placement-system",
+  "results": [
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 2.127,
+      "log": "docs/evidence/placement-typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.661,
+      "log": "docs/evidence/placement-lint.log"
+    },
+    {
+      "name": "unit",
+      "command": "pnpm test:unit",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 0.85,
+      "log": "docs/evidence/placement-unit.log"
+    },
+    {
+      "name": "integration",
+      "command": "pnpm test:integration",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 1.948,
+      "log": "docs/evidence/placement-integration.log"
+    },
+    {
+      "name": "build",
+      "command": "pnpm build",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 3.428,
+      "log": "docs/evidence/placement-build.log"
+    },
+    {
+      "name": "e2e",
+      "command": "pnpm test:e2e",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 71.611,
+      "log": "docs/evidence/placement-e2e.log"
+    },
+    {
+      "name": "smoke",
+      "command": "pnpm smoke",
+      "status": "PASS",
+      "exitCode": 0,
+      "seconds": 60.37,
+      "log": "docs/evidence/placement-smoke.log"
+    },
+    {
+      "name": "format",
+      "command": "pnpm format:check",
+      "status": "PASS",
+      "exitCode": 0,
+      "log": "docs/evidence/placement-format.log"
+    }
+  ]
+}

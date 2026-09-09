@@ -1,0 +1,41 @@
+
+> machine-studio@ test:integration /home/smorce/env2/work/3DGameStudio
+> vitest run tests/integration
+
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+ ✓ tests/integration/placement.test.ts (1 test) 89ms
+ ✓ tests/integration/physics.test.ts (2 tests) 103ms
+ ✓ tests/integration/world-streaming.test.ts (3 tests) 155ms
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+ ✓ tests/integration/pipelines.test.ts (4 tests) 549ms
+   ✓ 生成Jobが成功・失敗を報告する  452ms
+stdout | tests/integration/runtime-pipeline.test.ts > LODに不向きなモデルはLOD0だけを生成し元データは変更しない
+prune: Removed types... Animation (1), Accessor (1)
+
+ ✓ tests/integration/runtime-pipeline.test.ts (10 tests) 985ms
+   ✓ performanceのRuntime Textureだけを縮小し元PNGを保持する  507ms
+
+ Test Files  5 passed (5)
+      Tests  20 passed (20)
+   Start at  16:42:53
+   Duration  1.55s (transform 323ms, setup 0ms, collect 1.09s, tests 1.88s, environment 1ms, prepare 288ms)
+
+stderr | tests/integration/world-streaming.test.ts > Machineの移動で近傍Colliderだけを維持し、遠方は増え続けない
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/physics.test.ts > 4輪車が物理世界で前進し編集・保存データを変更しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/placement.test.ts > 候補だけから作った4輪車が回転・つけ直し後にも走行し、保存モデルを維持する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/runtime-pipeline.test.ts > 生成したHull/TrimeshをRapierに反映し、破損ColliderはBoxへ戻す
+using deprecated parameters for the initialization function; pass a single object instead
+

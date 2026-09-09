@@ -13,8 +13,18 @@ import {
   uid,
   type Project,
 } from "../../project-schema/src/index";
-import { attachPart } from "../../machine-system/src/index";
-import { quaternion, multiply, rotate } from "../../machine-system/src/math";
+import {
+  attachPart,
+  createPart,
+  findAttachmentCandidates,
+  commitAttachment,
+} from "../../machine-system/src/index";
+import {
+  quaternion,
+  multiply,
+  rotate,
+  euler,
+} from "../../machine-system/src/math";
 import { brushTerrain } from "../../terrain-system/src/index";
 const id = z.string();
 export const commandSchema = z.discriminatedUnion("type", [
@@ -37,6 +47,26 @@ export const commandSchema = z.discriminatedUnion("type", [
     machineId: id,
     part: partSchema,
     slot: z.number().int().min(0).max(3).optional(),
+  }),
+  z.object({
+    type: z.literal("part.attach"),
+    machineId: id,
+    partId: id,
+    kind: partSchema.shape.definitionId,
+    candidateId: id,
+    sourcePartId: id.optional(),
+  }),
+  z.object({
+    type: z.literal("part.turn"),
+    machineId: id,
+    partId: id,
+    steps: z.union([z.literal(1), z.literal(2)]).default(1),
+  }),
+  z.object({
+    type: z.literal("part.reattach"),
+    machineId: id,
+    partId: id,
+    candidateId: id,
   }),
   z.object({ type: z.literal("part.remove"), machineId: id, partId: id }),
   z.object({
@@ -182,14 +212,13 @@ function apply(p: Project, c: Command) {
           multiply(q, inverse),
           quaternion(child.transform.rotation),
         );
-        const [x, y, z, w] = rot;
-        child.transform.rotation = [
-          Math.atan2(2 * (x * w - y * z), 1 - 2 * (x * x + y * y)),
-          Math.asin(Math.max(-1, Math.min(1, 2 * (x * z + y * w)))),
-          Math.atan2(2 * (z * w - x * y), 1 - 2 * (y * y + z * z)),
-        ];
+        child.transform.rotation = euler(rot);
       }
     }
+    const delta = multiply(q, inverse);
+    for (const connection of machine().connections)
+      if (ids.has(connection.a))
+        connection.axis = rotate(connection.axis, delta);
     root.transform = value;
   };
   switch (c.type) {
@@ -220,6 +249,94 @@ function apply(p: Project, c: Command) {
     case "part.add":
       attachPart(machine(), c.part, c.slot);
       break;
+    case "part.attach": {
+      const m = machine();
+      if (m.parts.some((p) => p.id === c.partId))
+        throw new Error("Part identifier already exists");
+      const candidate = findAttachmentCandidates(
+        m,
+        c.kind,
+        undefined,
+        c.sourcePartId,
+      ).find((a) => a.id === c.candidateId);
+      if (!candidate)
+        throw new Error("Attachment candidate is no longer available");
+      const source = c.sourcePartId
+        ? m.parts.find((p) => p.id === c.sourcePartId)
+        : undefined;
+      if (c.sourcePartId && (!source || source.definitionId !== c.kind))
+        throw new Error("Invalid copy source");
+      const added = source ? structuredClone(source) : createPart(c.kind);
+      added.id = c.partId;
+      commitAttachment(m, added, candidate);
+      break;
+    }
+    case "part.turn": {
+      const p = part(),
+        q = quaternion(p.transform.rotation);
+      const link = machine().connections.find((c) => c.b === p.id);
+      const axis =
+        p.definitionId === "Wheel" || p.definitionId === "Hinge"
+          ? (link?.axis ?? rotate([1, 0, 0], q))
+          : rotate([0, 1, 0], q);
+      const angle = (c.steps * Math.PI) / 4,
+        length = Math.hypot(...axis);
+      const spin: [number, number, number, number] = [
+        ...(axis.map((n) => (n / length) * Math.sin(angle)) as [
+          number,
+          number,
+          number,
+        ]),
+        Math.cos(angle),
+      ];
+      changeTransform({ ...p.transform, rotation: euler(multiply(spin, q)) });
+      if (link) {
+        const parent = machine().parts.find((a) => a.id === link.a)!;
+        const connector = parent.connectors.find(
+          (a) => a.id === link.connectorA,
+        )!;
+        const childConnector = p.connectors.find(
+          (a) => a.id === link.connectorB,
+        )!;
+        const anchor = rotate(
+          connector.position.map((n, i) => n * parent.transform.scale[i]) as [
+            number,
+            number,
+            number,
+          ],
+          quaternion(parent.transform.rotation),
+        ).map(
+          (n, i) => n + parent.transform.position[i] - p.transform.position[i],
+        ) as [number, number, number];
+        const rotation = quaternion(p.transform.rotation);
+        childConnector.position = rotate(anchor, [
+          -rotation[0],
+          -rotation[1],
+          -rotation[2],
+          rotation[3],
+        ]).map((n, i) => n / p.transform.scale[i]) as [number, number, number];
+      }
+      break;
+    }
+    case "part.reattach": {
+      const m = machine(),
+        target = part();
+      const candidate = findAttachmentCandidates(
+        m,
+        target.definitionId,
+        target.id,
+      ).find((a) => a.id === c.candidateId);
+      if (!candidate)
+        throw new Error("Attachment candidate is no longer available");
+      changeTransform({
+        ...target.transform,
+        position: candidate.position,
+        rotation: candidate.rotation,
+      });
+      m.connections = m.connections.filter((a) => a.b !== target.id);
+      commitAttachment(m, target, candidate);
+      break;
+    }
     case "part.remove": {
       const m = machine();
       m.parts = m.parts.filter((a) => a.id !== c.partId);

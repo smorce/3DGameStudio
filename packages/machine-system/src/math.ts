@@ -27,3 +27,18 @@ export function rotate(v: Vec3, q: Quat): Vec3 {
   const r = multiply(multiply(q, [...v, 0]), [-q[0], -q[1], -q[2], q[3]]);
   return [r[0], r[1], r[2]];
 }
+
+export function euler([x, y, z, w]: Quat): Vec3 {
+  const sine = Math.max(-1, Math.min(1, 2 * (x * z + y * w)));
+  if (Math.abs(sine) > 0.9999999)
+    return [
+      Math.atan2(2 * (x * w + y * z), 1 - 2 * (x * x + z * z)),
+      Math.asin(sine),
+      0,
+    ];
+  return [
+    Math.atan2(2 * (x * w - y * z), 1 - 2 * (x * x + y * y)),
+    Math.asin(Math.max(-1, Math.min(1, 2 * (x * z + y * w)))),
+    Math.atan2(2 * (z * w - x * y), 1 - 2 * (y * y + z * z)),
+  ];
+}

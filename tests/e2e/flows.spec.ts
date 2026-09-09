@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "./fixtures";
+import { pickCandidate } from "./placement-helpers";
 import { mkdir } from "node:fs/promises";
 const saved = async (page: Page) =>
   page.evaluate(() =>
@@ -208,6 +209,7 @@ test("壊れた保存データでも新規作成できる", async ({ page }) => 
   ).toBeVisible();
   await page.getByRole("button", { name: "じゆうにつくる" }).click();
   await page.getByRole("button", { name: "▱ 板", exact: true }).click();
+  await pickCandidate(page);
   await expect(page.getByText("1 パーツ")).toBeVisible();
 });
 

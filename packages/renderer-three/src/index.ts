@@ -5,12 +5,13 @@ import { AssetTemplates, WorldAssetBatch } from "./instances";
 import {
   activeCourse,
   type Project,
+  type Part,
   type Vec3,
 } from "../../project-schema/src/index";
 import type { Pose } from "../../physics-rapier/src/index";
 import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
-import { quaternion, rotate } from "../../machine-system/src/math";
+import type { AttachmentCandidate } from "../../machine-system/src/index";
 export interface RendererAdapter {
   load(project: Project): void;
   render(poses?: Map<string, Pose>): void;
@@ -34,6 +35,15 @@ export class ThreeRenderer implements RendererAdapter {
   private chunkBuilders = new Map<string, ((g: THREE.Group) => void)[]>();
   private sun!: THREE.DirectionalLight;
   private highlighted = new THREE.Group();
+  private selectionOutline = new THREE.Group();
+  private ghost = new THREE.Group();
+  private candidates: AttachmentCandidate[] = [];
+  private hoverId?: string;
+  private moved = false;
+  private pointers = new Set<number>();
+  onAttachmentPick?: (id: string) => void;
+  onAttachmentHover?: (id?: string) => void;
+  onCandidateScreens?: (points: { id: string; x: number; y: number }[]) => void;
   onPick?: (id: string | undefined, point: Vec3) => void;
   drawing = false;
   onStroke?: (points: Vec3[]) => void;
@@ -52,14 +62,89 @@ export class ThreeRenderer implements RendererAdapter {
     return hit ? [hit.point.x, hit.point.y, hit.point.z] : undefined;
   }
   private pointerMove = (e: PointerEvent) => {
+    if (
+      this.pointers.size &&
+      Math.hypot(e.clientX - this.down[0], e.clientY - this.down[1]) > 5
+    )
+      this.moved = true;
+    if (this.highlighted.children.length) {
+      const hit = this.candidateHit(e);
+      const id = hit?.object.userData.candidateId as string | undefined;
+      for (const object of this.highlighted.children) {
+        const active = object.userData.candidateId === id;
+        object.scale.setScalar(active ? 1.3 : 1);
+        if (
+          object instanceof THREE.Mesh &&
+          object.material instanceof THREE.MeshStandardMaterial
+        )
+          object.material.emissiveIntensity = active ? 2 : 0.8;
+      }
+      this.canvas.style.cursor = id ? "pointer" : "grab";
+      this.hoverAttachment(id);
+    }
     if (!this.drawing || !this.stroke.length) return;
     const p = this.groundPoint(e),
       last = this.stroke.at(-1)!;
     if (p && Math.hypot(p[0] - last[0], p[2] - last[2]) > 1)
       this.stroke.push(p);
   };
+  private candidateHit(e: PointerEvent) {
+    const rect = this.canvas.getBoundingClientRect(),
+      ray = new THREE.Raycaster();
+    ray.setFromCamera(
+      new THREE.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      this.camera,
+    );
+    if (!this.highlighted.visible) return undefined;
+    const hit = ray.intersectObjects(this.highlighted.children, true)[0];
+    if (hit) return hit;
+    // 遠い候補もタッチしやすいよう、画面上で最低44pxの範囲を確保する。
+    let nearest: THREE.Object3D | undefined;
+    let distance = 22;
+    for (const object of this.highlighted.children) {
+      const projected = object.position.clone().project(this.camera);
+      if (projected.z < -1 || projected.z > 1) continue;
+      const d = Math.hypot(
+        ((projected.x + 1) * rect.width) / 2 + rect.left - e.clientX,
+        ((1 - projected.y) * rect.height) / 2 + rect.top - e.clientY,
+      );
+      if (d < distance) {
+        distance = d;
+        nearest = object;
+      }
+    }
+    return nearest ? { object: nearest } : undefined;
+  }
+  private hoverAttachment(id?: string) {
+    if (id === this.hoverId) return;
+    this.hoverId = id;
+    const candidate = this.candidates.find((c) => c.id === id);
+    this.ghost.visible = !!candidate;
+    if (candidate) {
+      this.ghost.position.fromArray(candidate.position);
+      this.ghost.rotation.fromArray([...candidate.rotation, "XYZ"]);
+    }
+    this.onAttachmentHover?.(id);
+  }
+  private pointerLeave = () => {
+    this.hoverAttachment();
+    this.canvas.style.cursor = "";
+  };
+  private pointerCancel = (e: PointerEvent) => {
+    this.pointers.delete(e.pointerId);
+    this.moved = true;
+    this.stroke = [];
+    this.controls.enabled = true;
+    this.pointerLeave();
+  };
   private down = [0, 0];
   private pointerDown = (e: PointerEvent) => {
+    this.pointers.add(e.pointerId);
+    if (this.pointers.size === 1) this.moved = false;
+    else this.moved = true;
     this.down = [e.clientX, e.clientY];
     if (this.drawing) {
       const p = this.groundPoint(e);
@@ -69,6 +154,7 @@ export class ThreeRenderer implements RendererAdapter {
     }
   };
   private pointerUp = (e: PointerEvent) => {
+    this.pointers.delete(e.pointerId);
     if (this.drawing) {
       const points = this.stroke;
       this.stroke = [];
@@ -78,7 +164,11 @@ export class ThreeRenderer implements RendererAdapter {
         return;
       }
     }
-    if (Math.hypot(e.clientX - this.down[0], e.clientY - this.down[1]) > 5)
+    if (
+      this.moved ||
+      this.pointers.size ||
+      Math.hypot(e.clientX - this.down[0], e.clientY - this.down[1]) > 5
+    )
       return;
     const rect = this.canvas.getBoundingClientRect(),
       ray = new THREE.Raycaster();
@@ -89,6 +179,11 @@ export class ThreeRenderer implements RendererAdapter {
       ),
       this.camera,
     );
+    const candidate = this.candidateHit(e);
+    if (candidate) {
+      this.onAttachmentPick?.(candidate.object.userData.candidateId);
+      return;
+    }
     const hits = ray.intersectObjects(
       [...this.highlighted.children, ...this.root.children],
       true,
@@ -127,13 +222,21 @@ export class ThreeRenderer implements RendererAdapter {
       top: 25,
       bottom: -25,
     });
-    this.scene.add(sun, this.root, this.highlighted);
+    this.scene.add(
+      sun,
+      this.root,
+      this.highlighted,
+      this.ghost,
+      this.selectionOutline,
+    );
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(canvas);
     this.resize();
     canvas.addEventListener("pointerdown", this.pointerDown);
     canvas.addEventListener("pointerup", this.pointerUp);
     canvas.addEventListener("pointermove", this.pointerMove);
+    canvas.addEventListener("pointerleave", this.pointerLeave);
+    canvas.addEventListener("pointercancel", this.pointerCancel);
   }
   resize() {
     const r = this.canvas.getBoundingClientRect();
@@ -156,7 +259,7 @@ export class ThreeRenderer implements RendererAdapter {
       if (o instanceof THREE.InstancedMesh) o.dispose();
       if (o instanceof THREE.SkinnedMesh) o.skeleton.dispose();
       if (o.userData.shared) return;
-      if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) {
+      if (o instanceof THREE.Mesh || o instanceof THREE.Line) {
         o.geometry.dispose();
         const materials = Array.isArray(o.material) ? o.material : [o.material];
         for (const m of materials) {
@@ -174,7 +277,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.streamer?.dispose();
     this.chunkBuilders.clear();
     this.clear(this.root);
-    this.clear(this.highlighted);
+    this.showAttachmentCandidates([]);
     this.parts.clear();
     this.machines.clear();
     this.chunks.clear();
@@ -364,10 +467,18 @@ export class ThreeRenderer implements RendererAdapter {
     );
     this.streamer.update(this.controls.target.toArray() as Vec3);
     this.select(this.selected);
-    if (p.machines[0]) this.showConnectors(p.machines[0].id);
   }
   select(id?: string) {
     this.selected = id;
+    this.clear(this.selectionOutline);
+    const selected = id ? this.parts.get(id) : undefined;
+    if (selected) {
+      selected.updateWorldMatrix(true, true);
+      const outline = new THREE.BoxHelper(selected, "#ffcc5c");
+      outline.material.depthTest = false;
+      outline.renderOrder = 9;
+      this.selectionOutline.add(outline);
+    }
     this.parts.forEach((o, k) =>
       o.traverse((child) => {
         if (
@@ -378,32 +489,54 @@ export class ThreeRenderer implements RendererAdapter {
       }),
     );
   }
-  showConnectors(machineId: string) {
+  showAttachmentCandidates(candidates: AttachmentCandidate[], preview?: Part) {
     this.clear(this.highlighted);
-    const m = this.project?.machines.find((a) => a.id === machineId),
-      panel = m?.parts.find((p) => p.definitionId === "Panel");
-    if (!panel || !m) return;
-    for (const c of panel.connectors) {
-      if (
-        m.connections.some(
-          (a) =>
-            a.a === panel.id &&
-            a.connectorA === c.id &&
-            m.parts.some((p) => p.id === a.b && p.definitionId === "Wheel"),
-        )
-      )
-        continue;
-      const sphere = this.mesh(
-        new THREE.SphereGeometry(0.2, 16, 12),
-        "#7af2e1",
+    this.clear(this.ghost);
+    this.candidates = candidates;
+    this.hoverId = undefined;
+    this.ghost.visible = false;
+    if (preview) {
+      const size = preview.physics.size;
+      const shape =
+        preview.definitionId === "Wheel"
+          ? new THREE.CylinderGeometry(size[1], size[1], size[0], 24)
+          : new THREE.BoxGeometry(...size);
+      if (preview.definitionId === "Wheel") shape.rotateZ(Math.PI / 2);
+      const mesh = new THREE.Mesh(
+        shape,
+        new THREE.MeshStandardMaterial({
+          color: preview.visual.color,
+          transparent: true,
+          opacity: 0.35,
+          depthWrite: false,
+        }),
       );
-      sphere.position.fromArray(
-        rotate(
-          c.position.map((n, i) => n * panel.transform.scale[i]) as Vec3,
-          quaternion(panel.transform.rotation),
-        ).map((n, i) => n + panel.transform.position[i]) as Vec3,
+      mesh.scale.fromArray(preview.transform.scale);
+      this.ghost.add(mesh);
+    }
+    this.canvas.style.cursor = "";
+    for (const candidate of candidates) {
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.27, 20, 16),
+        new THREE.MeshStandardMaterial({
+          color: "#8bffff",
+          emissive: "#39e9ef",
+          emissiveIntensity: 0.8,
+          depthTest: false,
+        }),
       );
-      sphere.userData.id = `connector:${c.id}`;
+      sphere.position.fromArray(candidate.position);
+      sphere.renderOrder = 10;
+      sphere.userData.candidateId = candidate.id;
+      sphere.userData.id = "attachment:" + candidate.id;
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.34, 0.035, 8, 32),
+        new THREE.MeshBasicMaterial({ color: "#efffff", depthTest: false }),
+      );
+      ring.rotation.x = Math.PI / 2;
+      ring.renderOrder = 11;
+      ring.userData.candidateId = candidate.id;
+      sphere.add(ring);
       this.highlighted.add(sphere);
     }
   }
@@ -425,10 +558,26 @@ export class ThreeRenderer implements RendererAdapter {
       }
     }
     this.highlighted.visible = !poses;
+    this.selectionOutline.visible = !poses;
     this.streamer?.update(this.controls.target.toArray() as Vec3);
     this.controls.update();
     this.root.traverse((o) => o.userData.updateLod?.(this.camera.position));
     this.renderer.render(this.scene, this.camera);
+    if (this.onCandidateScreens) {
+      const rect = this.canvas.getBoundingClientRect();
+      this.onCandidateScreens(
+        this.highlighted.visible
+          ? this.highlighted.children.map((o) => {
+              const p = o.position.clone().project(this.camera);
+              return {
+                id: o.userData.candidateId as string,
+                x: Math.round(((p.x + 1) * rect.width) / 2),
+                y: Math.round(((1 - p.y) * rect.height) / 2),
+              };
+            })
+          : [],
+      );
+    }
   }
   get stats() {
     const assetIds = new Set<string>();
@@ -489,11 +638,15 @@ export class ThreeRenderer implements RendererAdapter {
     this.canvas.removeEventListener("pointerdown", this.pointerDown);
     this.canvas.removeEventListener("pointerup", this.pointerUp);
     this.canvas.removeEventListener("pointermove", this.pointerMove);
+    this.canvas.removeEventListener("pointerleave", this.pointerLeave);
+    this.canvas.removeEventListener("pointercancel", this.pointerCancel);
     this.controls.dispose();
     this.streamer?.dispose();
     this.chunkBuilders.clear();
     this.clear(this.root);
     this.clear(this.highlighted);
+    this.clear(this.ghost);
+    this.clear(this.selectionOutline);
     this.renderer.dispose();
   }
 }

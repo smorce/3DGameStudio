@@ -38,7 +38,18 @@ export const partSchema = z.object({
     collider: z.enum(["box", "cylinder"]),
     size: vec3.refine((v) => v.every((n) => n > 0 && n <= 100), "Invalid size"),
   }),
-  connectors: z.array(z.object({ id: z.string(), position: vec3, axis: vec3 })),
+  connectors: z.array(
+    z.object({
+      id: z.string(),
+      position: vec3,
+      axis: vec3,
+      type: z
+        .enum(["structural", "wheel", "propulsion", "wing", "mount"])
+        .optional(),
+      accepts: z.array(z.enum(partKinds)).optional(),
+      normal: vec3.optional(),
+    }),
+  ),
   actuator: z.object({
     motorTorque: z.number().min(0).max(10000),
     steering: z.number().min(0).max(1),

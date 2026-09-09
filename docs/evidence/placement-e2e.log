@@ -1,0 +1,73 @@
+
+> machine-studio@ test:e2e /home/smorce/env2/work/3DGameStudio
+> playwright test
+
+
+Running 16 tests using 1 worker
+
+  ✓   1 [chromium] › tests/e2e/flows.spec.ts:30:1 › 3 LEVELの詳細値保持とUndo @smoke (3.3s)
+  ✓   2 [chromium] › tests/e2e/flows.spec.ts:57:1 › WorldとCourseを作りチェックポイントからゴールまで走る @smoke (6.8s)
+  ✓   3 [chromium] › tests/e2e/flows.spec.ts:102:1 › 素材検索・Preview・Import・配置・復元 @smoke (2.3s)
+  ✓   4 [chromium] › tests/e2e/flows.spec.ts:142:1 › Provider障害からローカル素材へ復帰 @smoke (1.1s)
+  ✓   5 [chromium] › tests/e2e/flows.spec.ts:172:1 › ダミーAIのPreview・承認・Undoと生成Job @smoke (2.9s)
+  ✓   6 [chromium] › tests/e2e/flows.spec.ts:202:1 › 壊れた保存データでも新規作成できる (898ms)
+  ✓   7 [chromium] › tests/e2e/flows.spec.ts:216:1 › 独立Playerが本番ビルドで起動する @smoke (1.0s)
+  ✓   8 [chromium] › tests/e2e/flows.spec.ts:227:1 › 外部素材デモを読み込みGLBを描画する (1.7s)
+  ✓   9 [chromium] › tests/e2e/placement.spec.ts:4:1 › タイヤ候補から取り付けて選択する @smoke (1.5s)
+  ✓  10 [chromium] › tests/e2e/placement.spec.ts:31:1 › Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実走・保存復元 @smoke (8.0s)
+  ✓  11 [chromium] › tests/e2e/placement.spec.ts:122:1 › 配置取消・パレット切替・コピー・キーボードとドラッグの区別 (3.1s)
+  ✓  12 [chromium] › tests/e2e/placement.spec.ts:164:1 › 全パーツを光る位置へ配置し、Studioの詳細値を保持する (4.1s)
+  ✓  13 [chromium] › tests/e2e/placement.spec.ts:196:3 › タッチ › 候補をタップして取り付ける (1.4s)
+  ✓  14 [chromium] › tests/e2e/studio.spec.ts:3:1 › 空から板と4輪を組み立て保存・再読込 @smoke (4.5s)
+  ✓  15 [chromium] › tests/e2e/world-runtime.spec.ts:4:1 › 広いWorldの物理Streaming・大量岩・2番目のコースを実走する @smoke (4.3s)
+  ✓  16 [chromium] › tests/e2e/world-runtime.spec.ts:53:1 › 圧縮LOD素材を読込・Instancing描画し、非Box Collider上を走る @smoke (19.2s)
+
+  16 passed (1.2m)
+[WebServer] (node:587974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:587987) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer] 
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer] 
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer] 
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer] 
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 2000 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] (node:588036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer] 
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer] 
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer] 
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer] 
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 2000 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] (node:588075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:588111) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:588131) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:588145) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

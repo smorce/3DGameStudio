@@ -18,6 +18,9 @@ import {
   carTemplate,
   planeTemplate,
   boatTemplate,
+  findAttachmentCandidates,
+  labels,
+  type AttachmentCandidate,
 } from "../../../packages/machine-system/src/index";
 import { Engine } from "../../../packages/engine-core/src/index";
 import { loadProject, saveProject } from "../../../packages/storage/src/index";
@@ -33,6 +36,12 @@ import { createCourse } from "../../../packages/course-system/src/index";
 import { heightAt } from "../../../packages/terrain-system/src/index";
 import { applyPlan } from "../../../packages/ai-core/src/index";
 import "./style.css";
+type PlacementSession = {
+  kind: Part["definitionId"];
+  candidates: AttachmentCandidate[];
+  movingPartId?: string;
+  sourcePartId?: string;
+};
 const bus = new CommandBus(emptyProject());
 function App() {
   const [project, setProject] = useState(bus.project),
@@ -47,6 +56,46 @@ function App() {
     [cursor, setCursor] = useState<Vec3>([5, 0, 5]),
     [stats, setStats] = useState<Record<string, number>>({}),
     [runtime, setRuntime] = useState("");
+  const [placement, setPlacement] = useState<PlacementSession>();
+  const [hovered, setHovered] = useState<string>();
+  const [candidateScreens, setCandidateScreens] = useState<
+    { id: string; x: number; y: number }[]
+  >([]);
+  const placementRef = useRef(placement);
+  placementRef.current = placement;
+  const cancelPlacement = () => {
+    placementRef.current = undefined;
+    setPlacement(undefined);
+    setHovered(undefined);
+    setMessage("パーツを選んで、光っているところを押してね");
+    engine.current?.renderer.showAttachmentCandidates([]);
+  };
+  const commitPlacement = (candidateId: string) => {
+    const session = placementRef.current,
+      m = bus.project.machines[0];
+    if (!session || !m) return;
+    try {
+      const partId = session.movingPartId ?? uid();
+      bus.execute(
+        session.movingPartId
+          ? { type: "part.reattach", machineId: m.id, partId, candidateId }
+          : {
+              type: "part.attach",
+              machineId: m.id,
+              partId,
+              kind: session.kind,
+              candidateId,
+              sourcePartId: session.sourcePartId,
+            },
+      );
+      cancelPlacement();
+      setSelected(partId);
+      setMessage(labels[session.kind] + "をつけたよ！");
+    } catch {
+      cancelPlacement();
+      setMessage("そこにはつけられなくなったよ。もう一度パーツをえらんでね");
+    }
+  };
   const toolRef = useRef<EditTool>("select");
   toolRef.current = tool;
   const canvas = useRef<HTMLCanvasElement>(null),
@@ -117,6 +166,12 @@ function App() {
       });
       run(() => bus.batch(commands));
     };
+    e.renderer.onAttachmentPick = commitPlacement;
+    e.renderer.onAttachmentHover = setHovered;
+    e.renderer.onCandidateScreens = (points) =>
+      setCandidateScreens((before) =>
+        JSON.stringify(before) === JSON.stringify(points) ? before : points,
+      );
     e.renderer.onPick = (id, point) => {
       if (e.mode === "PLAY") return;
       setCursor(point);
@@ -124,26 +179,49 @@ function App() {
         place(toolRef.current, point);
         return;
       }
-      if (id?.startsWith("connector:")) {
-        const p = bus.project,
-          m = p.machines[0];
-        if (m)
-          run(() =>
-            bus.execute({
-              type: "part.add",
-              machineId: m.id,
-              part: createPart("Wheel"),
-              slot: Number(id.split(":")[1]),
-            }),
-          );
-      } else setSelected(id);
+      if (!placementRef.current) setSelected(id);
     };
     return () => e.dispose();
   }, []);
   useEffect(() => {
     void engine.current?.load(project);
   }, [project]);
-  useEffect(() => engine.current?.renderer.select(selected), [selected]);
+  useEffect(
+    () => engine.current?.renderer.select(selected),
+    [selected, project],
+  );
+  useEffect(() => {
+    if (!placement) {
+      engine.current?.renderer.showAttachmentCandidates([]);
+      return;
+    }
+    const m = project.machines[0];
+    if (!m || !started || playing || level !== "easy" || tab !== "machine") {
+      cancelPlacement();
+      return;
+    }
+    const candidates = findAttachmentCandidates(
+      m,
+      placement.kind,
+      placement.movingPartId,
+      placement.sourcePartId,
+    );
+    placementRef.current = { ...placement, candidates };
+    if (JSON.stringify(candidates) !== JSON.stringify(placement.candidates))
+      setPlacement({ ...placement, candidates });
+    setMessage(
+      candidates.length
+        ? m.parts.length
+          ? "光っているところを押してね"
+          : "ここからはじめよう"
+        : "もう" + labels[placement.kind] + "をつけられる場所がないよ",
+    );
+    const preview =
+      m.parts.find(
+        (p) => p.id === (placement.movingPartId ?? placement.sourcePartId),
+      ) ?? createPart(placement.kind);
+    engine.current?.renderer.showAttachmentCandidates(candidates, preview);
+  }, [placement, project, started, playing, level, tab]);
   useEffect(() => {
     if (engine.current)
       engine.current.renderer.drawing = tool === "road" && !playing;
@@ -152,6 +230,10 @@ function App() {
     const handler = (e: KeyboardEvent) => {
       if (playing || (e.target as HTMLElement).matches("input,textarea,select"))
         return;
+      if (e.code === "Escape") {
+        cancelPlacement();
+        setMessage("パーツを選んで、光っているところを押してね");
+      }
       if ((e.ctrlKey || e.metaKey) && e.code === "KeyZ") {
         e.preventDefault();
         if (e.shiftKey) bus.redo();
@@ -246,16 +328,43 @@ function App() {
         });
     }
   }
+  function beginPlacement(
+    kind: Part["definitionId"],
+    movingPartId?: string,
+    sourcePartId?: string,
+  ) {
+    if (!machine) return;
+    const candidates = findAttachmentCandidates(
+      machine,
+      kind,
+      movingPartId,
+      sourcePartId,
+    );
+    setTool("select");
+    setHovered(undefined);
+    setPlacement({ kind, candidates, movingPartId, sourcePartId });
+    setMessage(
+      candidates.length
+        ? machine.parts.length
+          ? "光っているところを押してね"
+          : "ここからはじめよう"
+        : "もう" + labels[kind] + "をつけられる場所がないよ",
+    );
+  }
   function add(kind: Part["definitionId"]) {
     if (!machine) return;
+    if (level === "easy") {
+      if (placement?.kind === kind) cancelPlacement();
+      else beginPlacement(kind);
+      return;
+    }
     const p = createPart(kind, kind === "Panel" ? [0, 0.85, 0] : [0, 1.5, 0]);
     execute({ type: "part.add", machineId: machine.id, part: p });
     setTool("select");
     setSelected(p.id);
-    if (kind === "Panel" || kind === "Wheel")
-      engine.current?.renderer.showConnectors(machine.id);
   }
   async function toggle() {
+    cancelPlacement();
     setBusy(true);
     try {
       if (playing) {
@@ -355,6 +464,27 @@ function App() {
       </header>
       <div className="workspace">
         <canvas ref={canvas} aria-label="3Dビューポート" />
+        {placement && !playing && (
+          <>
+            <div className="placement-message" role="status">
+              <span>{hovered ? "ここにつける" : message}</span>
+              <button onClick={cancelPlacement}>やめる</button>
+            </div>
+            <div className="candidate-labels" aria-label="つけられる場所">
+              {candidateScreens.map((point, i) => (
+                <button
+                  key={point.id}
+                  data-candidate-id={point.id}
+                  aria-label={"ここにつける " + (i + 1)}
+                  style={{ left: point.x, top: point.y }}
+                  onClick={() => commitPlacement(point.id)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         {started && !playing && (
           <nav className="workspace-tabs" aria-label="作るもの">
             {[
@@ -494,28 +624,41 @@ function App() {
         )}
         {(level === "studio" || playing) && (
           <output className="stats" aria-label="Runtime Stats">
-            FPS {stats.fps} · Draw Calls {stats.drawCalls} · Triangles{" "}
-            {stats.triangles}
-            <br />
-            Rigid Bodies {stats.rigidBodies} · Colliders {stats.colliders} ·
-            Chunks {stats.loadedChunks} · Physics Chunks{" "}
-            {stats.physicsChunksLoaded}
-            <br />
-            <span>
-              Assets {stats.loadedAssets} · Runtime{" "}
-              {Math.round((stats.runtimeAssetBytes ?? 0) / 1024)} KiB ·
-              Budget超過 {stats.runtimeBudgetExceeded ?? 0} · Texture ≈{" "}
-              {Math.round((stats.textureMemoryEstimate ?? 0) / 1048576)} MiB
-            </span>
-            <br />
-            <span>
-              LOD0 {stats.lod0Batches ?? 0} · LOD1 {stats.lod1Batches ?? 0} ·
-              LOD2 {stats.lod2Batches ?? 0}
-            </span>
-            <br />
-            <span data-testid="runtime-position">
-              位置 {stats.x?.toFixed(2)}, {stats.z?.toFixed(2)} · 高さ{" "}
-              {stats.y?.toFixed(2)}
+            {level !== "easy" && (
+              <>
+                FPS {stats.fps} · Draw Calls {stats.drawCalls} · Triangles{" "}
+                {stats.triangles}
+                <br />
+                Rigid Bodies {stats.rigidBodies} · Colliders {stats.colliders} ·
+                Chunks {stats.loadedChunks} · Physics Chunks{" "}
+                {stats.physicsChunksLoaded}
+                <br />
+                <span>
+                  Assets {stats.loadedAssets} · Runtime{" "}
+                  {Math.round((stats.runtimeAssetBytes ?? 0) / 1024)} KiB ·
+                  Budget超過 {stats.runtimeBudgetExceeded ?? 0} · Texture ≈{" "}
+                  {Math.round((stats.textureMemoryEstimate ?? 0) / 1048576)} MiB
+                </span>
+                <br />
+                <span>
+                  LOD0 {stats.lod0Batches ?? 0} · LOD1 {stats.lod1Batches ?? 0}{" "}
+                  · LOD2 {stats.lod2Batches ?? 0}
+                </span>
+                <br />
+              </>
+            )}
+            <span
+              data-testid="runtime-position"
+              data-position={JSON.stringify([stats.x ?? 0, stats.z ?? 0])}
+            >
+              {level === "easy" ? (
+                "W / ↑ ですすもう"
+              ) : (
+                <>
+                  位置 {stats.x?.toFixed(2)}, {stats.z?.toFixed(2)} · 高さ{" "}
+                  {stats.y?.toFixed(2)}
+                </>
+              )}
             </span>{" "}
             {runtime}
           </output>
@@ -538,55 +681,84 @@ function App() {
             新しくつくる
           </button>
         </div>
-        {part && !playing && (
-          <div className="selection-tools">
-            <span>えらんだパーツ</span>
+        {part && !playing && !placement && (
+          <div className="selection-tools" data-selected-id={part.id}>
+            <span>{labels[part.definitionId]}</span>
+            {level === "easy" && (
+              <button
+                onClick={() => beginPlacement(part.definitionId, part.id)}
+              >
+                ◎ つけ直す
+              </button>
+            )}
+            {level !== "easy" && (
+              <>
+                <button
+                  onClick={() =>
+                    execute({
+                      type: "part.move",
+                      machineId: machine.id,
+                      partId: part.id,
+                      value: [
+                        part.transform.position[0] - 1,
+                        part.transform.position[1],
+                        part.transform.position[2],
+                      ],
+                    })
+                  }
+                >
+                  ← 置く
+                </button>
+                <button
+                  onClick={() =>
+                    execute({
+                      type: "part.move",
+                      machineId: machine.id,
+                      partId: part.id,
+                      value: [
+                        part.transform.position[0] + 1,
+                        part.transform.position[1],
+                        part.transform.position[2],
+                      ],
+                    })
+                  }
+                >
+                  置く →
+                </button>
+              </>
+            )}
             <button
               onClick={() =>
                 execute({
-                  type: "part.move",
+                  type: "part.turn",
                   machineId: machine.id,
                   partId: part.id,
-                  value: [
-                    part.transform.position[0] - 1,
-                    part.transform.position[1],
-                    part.transform.position[2],
-                  ],
+                  steps: 1,
                 })
               }
             >
-              ← 置く
+              ↻ 回す
             </button>
-            <button
-              onClick={() =>
-                execute({
-                  type: "part.move",
-                  machineId: machine.id,
-                  partId: part.id,
-                  value: [
-                    part.transform.position[0] + 1,
-                    part.transform.position[1],
-                    part.transform.position[2],
-                  ],
-                })
-              }
-            >
-              置く →
-            </button>
-            <button
-              onClick={() =>
-                execute({
-                  type: "part.rotate",
-                  machineId: machine.id,
-                  partId: part.id,
-                  value: [0, part.transform.rotation[1] + Math.PI / 2, 0],
-                })
-              }
-            >
-              回す
-            </button>
+            {part.definitionId === "Thruster" && (
+              <button
+                onClick={() =>
+                  execute({
+                    type: "part.turn",
+                    machineId: machine.id,
+                    partId: part.id,
+                    steps: 2,
+                  })
+                }
+              >
+                ⇄ 反対向き
+              </button>
+            )}
             <button
               onClick={() => {
+                if (level === "easy") {
+                  beginPlacement(part.definitionId, undefined, part.id);
+                  return;
+                }
                 const p = structuredClone(part);
                 p.id = uid();
                 p.transform.position[0] += 2;
@@ -695,7 +867,11 @@ function App() {
           <small>{machine?.parts.length ?? 0} パーツ</small>
         </div>
         {tab === "machine" ? (
-          <EasyPalette onAdd={add} disabled={playing || !started} />
+          <EasyPalette
+            onAdd={add}
+            activeKind={placement?.kind}
+            disabled={playing || busy || !started}
+          />
         ) : (
           <div className="context-footer">
             <strong>

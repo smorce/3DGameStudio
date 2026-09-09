@@ -88,3 +88,11 @@ Rapier初期化の依存ライブラリ警告、Viteの大きなWASMチャンク
 実装中のテストで見つかった頂点展開によるサイズ増大を修正し、元ファイルからの再生成と同じ前処理を共有した。追加の安全検査、退化したHullのRapier生成失敗、ロード中Stop、Storage不足の回収も検証している。
 
 指示2の完成条件28項目はすべてPASS、判定は **COMPLETE**。全ファイル一覧、性能比較、各条件のEvidenceは[実装報告](world-runtime-report.md)へ収録しました。
+
+## 指示3のPlacement実装
+
+`feat/world-runtime-foundations`の最新`04d34f0`を取得・確認し、同じコミットから始まる`feat/machine-placement-system`で実装しました。既存Unit 28件、Integration 19件、E2E 11件を基準に、まずWheelの「4候補 → 3Dクリック → 取り付け → 候補消去 → 選択」をE2Eで完成させました。
+
+その後、8種類の互換配置、`part.attach`／`part.reattach`／`part.turn`、取消、コピー、Ghost、キーボード、タッチ、実走と保存復元へ拡張しました。旧JSONの互換性を保持し、LEVEL 2／Studioの数値編集と既存`part.add`も維持しています。
+
+指示3の完成条件25項目はすべてPASS、最終判定は **COMPLETE** です。Unit 45件、Integration 20件、E2E 16件、Smoke 11件、Typecheck、Lint、Buildが成功しました。[配置の実装報告](placement-report.md)に変更ファイル、設計、25項目の完成条件、3枚の画像、既知の制約をまとめ、[Quality Gates](evidence/placement-quality-gates.json)に各コマンドの実測結果を記録しました。

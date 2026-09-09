@@ -1,0 +1,13 @@
+
+> machine-studio@ lint /home/smorce/env2/work/3DGameStudio
+> eslint . && pnpm cycles
+
+
+> machine-studio@ cycles /home/smorce/env2/work/3DGameStudio
+> madge --circular --extensions ts,tsx --ts-config tsconfig.json packages apps
+
+Processed 37 files (420ms) (4 warnings)
+
+
+- Finding files
+✔ No circular dependency found!
