@@ -12,6 +12,9 @@ import type { Pose } from "../../physics-rapier/src/index";
 import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
 import type { AttachmentCandidate } from "../../machine-system/src/index";
+import { createPartVisual } from "./part-visuals";
+export { createPartVisual };
+export type { PartVisualOptions } from "./part-visuals";
 export interface RendererAdapter {
   load(project: Project): void;
   render(poses?: Map<string, Pose>): void;
@@ -347,36 +350,7 @@ export class ThreeRenderer implements RendererAdapter {
       this.machines.set(m.id, group);
       this.root.add(group);
       for (const part of m.parts) {
-        const s = part.physics.size,
-          visual = new THREE.Group();
-        const shape =
-          part.definitionId === "Wheel"
-            ? new THREE.CylinderGeometry(s[1], s[1], s[0], 24)
-            : new THREE.BoxGeometry(...s);
-        if (part.definitionId === "Wheel") shape.rotateZ(Math.PI / 2);
-        const mesh = this.mesh(shape, part.visual.color);
-        visual.add(mesh);
-        if (part.definitionId === "Wheel") {
-          const hub = this.mesh(
-            new THREE.CylinderGeometry(
-              s[1] * 0.45,
-              s[1] * 0.45,
-              s[0] + 0.03,
-              16,
-            ),
-            "#d6dde0",
-          );
-          hub.rotation.z = Math.PI / 2;
-          visual.add(hub);
-        }
-        if (part.definitionId === "Panel") {
-          const seat = this.mesh(
-            new THREE.BoxGeometry(0.65, 0.5, 0.8),
-            "#3f6570",
-          );
-          seat.position.y = 0.4;
-          visual.add(seat);
-        }
+        const visual = createPartVisual(part);
         visual.position.fromArray(part.transform.position);
         visual.rotation.fromArray([...part.transform.rotation, "XYZ"]);
         visual.scale.fromArray(part.transform.scale);
@@ -496,23 +470,9 @@ export class ThreeRenderer implements RendererAdapter {
     this.hoverId = undefined;
     this.ghost.visible = false;
     if (preview) {
-      const size = preview.physics.size;
-      const shape =
-        preview.definitionId === "Wheel"
-          ? new THREE.CylinderGeometry(size[1], size[1], size[0], 24)
-          : new THREE.BoxGeometry(...size);
-      if (preview.definitionId === "Wheel") shape.rotateZ(Math.PI / 2);
-      const mesh = new THREE.Mesh(
-        shape,
-        new THREE.MeshStandardMaterial({
-          color: preview.visual.color,
-          transparent: true,
-          opacity: 0.35,
-          depthWrite: false,
-        }),
-      );
-      mesh.scale.fromArray(preview.transform.scale);
-      this.ghost.add(mesh);
+      const visual = createPartVisual(preview, { ghost: true });
+      visual.scale.fromArray(preview.transform.scale);
+      this.ghost.add(visual);
     }
     this.canvas.style.cursor = "";
     for (const candidate of candidates) {
