@@ -9,6 +9,7 @@ import {
 } from "../../packages/project-schema/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { createCourse } from "../../packages/course-system/src/index";
+import { starterWorldPatch } from "../../packages/world-system/src/index";
 import { ChunkStreamer } from "../../packages/world-system/src/streaming";
 import {
   builtinTemplate,
@@ -18,6 +19,20 @@ import {
 } from "../../packages/renderer-three/src/instances";
 import { ColliderTemplateCache } from "../../packages/asset-core/src/collider";
 import { evaluateRuntimeBudget } from "../../packages/asset-core/src/profiles";
+it("くるま用の初期景観は中央を空けて木・ビル・山を配置する", () => {
+  const patch = starterWorldPatch(emptyProject().world),
+    center = Math.floor(patch.terrain.resolution / 2),
+    centerHeight =
+      patch.terrain.heights[center * patch.terrain.resolution + center],
+    highest = Math.max(...patch.terrain.heights);
+
+  expect(patch.entities).toHaveLength(15);
+  expect(patch.entities.filter((e) => e.kind === "tree")).toHaveLength(8);
+  expect(patch.entities.filter((e) => e.kind === "building")).toHaveLength(3);
+  expect(patch.entities.filter((e) => e.kind === "rock")).toHaveLength(4);
+  expect(centerHeight).toBe(0);
+  expect(highest).toBeGreaterThan(5);
+});
 it("v0/v1と既存デモはv2へ移行し保存・再読込できる", async () => {
   for (const name of [
     "demo-simple-car",

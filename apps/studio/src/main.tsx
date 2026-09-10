@@ -34,6 +34,7 @@ import {
 } from "../../../packages/ui-studio/src/index";
 import { createCourse } from "../../../packages/course-system/src/index";
 import { heightAt } from "../../../packages/terrain-system/src/index";
+import { starterWorldPatch } from "../../../packages/world-system/src/index";
 import { applyPlan } from "../../../packages/ai-core/src/index";
 import "./style.css";
 type PlacementSession = {
@@ -245,8 +246,14 @@ function App() {
   }, [playing]);
   function start(template: boolean | "plane" | "boat") {
     run(() => {
+      engine.current?.renderer.resetView();
       const p = emptyProject();
       bus.execute({ type: "project.create", project: p });
+      if (template === true)
+        bus.execute({
+          type: "world.update",
+          patch: starterWorldPatch(p.world),
+        });
       bus.execute({
         type: "machine.create",
         machine:

@@ -245,6 +245,18 @@ export class ThreeRenderer implements RendererAdapter {
     canvas.addEventListener("pointerleave", this.pointerLeave);
     canvas.addEventListener("pointercancel", this.pointerCancel);
   }
+  resetView() {
+    this.camera.position.set(7, 5.5, 8);
+    this.controls.target.set(0, 0.6, 0);
+    this.controls.update();
+  }
+  get viewTarget(): Vec3 {
+    return [
+      this.controls.target.x,
+      this.controls.target.y,
+      this.controls.target.z,
+    ];
+  }
   resize() {
     const r = this.canvas.getBoundingClientRect();
     this.renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);

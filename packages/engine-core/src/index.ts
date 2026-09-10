@@ -17,7 +17,8 @@ export class Engine {
   private keys = new Set<string>();
   private disposed = false;
   private ticket = 0;
-  mode: "EDIT" | "PLAY" = "EDIT";
+  private dropUntil = 0;
+  mode: "EDIT" | "PLAY" | "DROP" = "EDIT";
   fps = 0;
   course?: CourseProgress;
   input = { throttle: 0, steering: 0 };
@@ -51,8 +52,12 @@ export class Engine {
     const parsed = parseProject(project);
     this.ticket++;
     this.project = parsed;
-    if (this.mode === "PLAY") this.stop();
-    else this.physics.dispose();
+    // PLAY/DROP中の再読込はドロップ演出を経由せず即Editへ戻す。
+    // DROPのまま物理を破棄するとtickが破棄済みWorldをstepして停止するため。
+    this.mode = "EDIT";
+    this.blur();
+    this.course = undefined;
+    this.physics.dispose();
     this.renderer.load(this.project);
   }
   async play(options: { courseId?: string | null } = {}) {
@@ -71,17 +76,28 @@ export class Engine {
   }
   stop() {
     this.ticket++;
-    this.mode = "EDIT";
     this.blur();
-    this.physics.dispose();
-    if (this.project) this.renderer.load(this.project);
+    if (!this.project) {
+      this.mode = "EDIT";
+      this.physics.dispose();
+      return;
+    }
+    const target = this.renderer.viewTarget;
+    this.course = undefined;
+    this.renderer.load(this.project);
+    this.physics.respawn(target);
+    this.mode = "DROP";
+    this.dropUntil = performance.now() + 1200;
+    this.accumulator = 0;
   }
   private tick = (now: number) => {
     if (this.disposed) return;
     const dt = Math.min((now - (this.last || now)) / 1000, 0.1);
     this.last = now;
     this.fps = dt ? Math.round(1 / dt) : 60;
-    if (this.mode === "PLAY") {
+    if (this.mode !== "EDIT" && !this.physics.world) this.mode = "EDIT";
+    if (this.mode === "PLAY" || this.mode === "DROP") {
+      const dropping = this.mode === "DROP";
       this.accumulator += dt;
       const pad = navigator.getGamepads?.()[0];
       const action = (name: string, fallback: string) =>
@@ -91,7 +107,7 @@ export class Engine {
           )?.key ?? fallback,
         );
       const throttle =
-          this.input.throttle +
+          (dropping ? 0 : this.input.throttle) +
           (Number(action("forward", "KeyW") || this.keys.has("ArrowUp")) -
             Number(action("backward", "KeyS") || this.keys.has("ArrowDown"))) -
           (pad?.axes[1] ?? 0),
@@ -102,18 +118,23 @@ export class Engine {
           (pad?.axes[0] ?? 0);
       while (this.accumulator >= 1 / 60) {
         this.physics.step(
-          Math.max(-1, Math.min(1, throttle)),
-          Math.max(-1, Math.min(1, steering)),
-          this.keys.has("Space"),
+          dropping ? 0 : Math.max(-1, Math.min(1, throttle)),
+          dropping ? 0 : Math.max(-1, Math.min(1, steering)),
+          !dropping && this.keys.has("Space"),
         );
         this.accumulator -= 1 / 60;
         const p = this.physics.poses().values().next().value?.position;
-        if (p) {
+        if (p && !dropping) {
           this.course?.update(p, 1 / 60);
           if (p[1] < -20) this.physics.respawn(this.course?.respawn);
         }
       }
-      this.renderer.render(this.physics.poses(), throttle);
+      this.renderer.render(this.physics.poses(), dropping ? 0 : throttle);
+      if (dropping && now >= this.dropUntil) {
+        this.physics.dispose();
+        this.mode = "EDIT";
+        this.accumulator = 0;
+      }
     } else this.renderer.render();
     this.onFrame?.();
     this.frame = requestAnimationFrame(this.tick);

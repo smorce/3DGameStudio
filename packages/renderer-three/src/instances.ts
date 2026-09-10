@@ -35,6 +35,18 @@ export function builtinTemplate(kind: Entity["kind"], level = 0) {
     mesh.position.y = y;
     group.add(mesh);
   };
+  const addAt = (
+    geometry: THREE.BufferGeometry,
+    color: string,
+    position: [number, number, number],
+  ) => {
+    const mesh = new THREE.Mesh(
+      geometry,
+      new THREE.MeshStandardMaterial({ color, roughness: 0.72 }),
+    );
+    mesh.position.set(...position);
+    group.add(mesh);
+  };
   if (kind === "tree") {
     add(
       new THREE.CylinderGeometry(0.15, 0.2, 1.5, level ? 4 : 8),
@@ -42,9 +54,22 @@ export function builtinTemplate(kind: Entity["kind"], level = 0) {
       0.75,
     );
     add(new THREE.ConeGeometry(1, 2.4, level ? 4 : 8), "#3e7956", 2);
-  } else if (kind === "building")
-    add(new THREE.BoxGeometry(2, 3, 2), "#d4c6a8", 1.5);
-  else
+  } else if (kind === "building") {
+    add(new THREE.BoxGeometry(2, 2.6, 2), "#c8b891", 1.3);
+    const roof = new THREE.Mesh(
+      new THREE.ConeGeometry(1.55, 0.9, 4),
+      new THREE.MeshStandardMaterial({ color: "#a85f54", roughness: 0.72 }),
+    );
+    roof.position.y = 3.05;
+    roof.rotation.y = Math.PI / 4;
+    group.add(roof);
+    for (const x of [-0.55, 0.55])
+      addAt(new THREE.BoxGeometry(0.35, 0.38, 0.06), "#5a7780", [
+        x,
+        1.45,
+        1.03,
+      ]);
+  } else
     add(
       new THREE.IcosahedronGeometry(0.8, level ? 0 : 1),
       kind === "asset" ? "#b68383" : "#8b9790",

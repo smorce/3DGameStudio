@@ -18,6 +18,7 @@ export const labels: Record<Part["definitionId"], string> = {
   Hinge: "関節",
   Thruster: "ジェット",
 };
+export const DEFAULT_THRUSTER_TORQUE = 600;
 export const wheelSlots: Vec3[] = [
   [-1, -0.45, 1.25],
   [1, -0.45, 1.25],
@@ -77,7 +78,7 @@ export function createPart(
         kind === "Wheel" || kind === "Motor"
           ? 180
           : kind === "Thruster"
-            ? 200
+            ? DEFAULT_THRUSTER_TORQUE
             : 0,
       steering: 0.45,
       enabled: true,

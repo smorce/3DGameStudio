@@ -97,7 +97,9 @@ test("WorldとCourseを作りチェックポイントからゴールまで走る
   await save(page);
   expect(await saved(page)).toEqual(before);
   await page.reload();
-  expect((await saved(page)).world.entities).toHaveLength(1);
+  expect((await saved(page)).world.entities).toHaveLength(
+    before.world.entities.length,
+  );
 });
 test("素材検索・Preview・Import・配置・復元 @smoke", async ({ page }) => {
   const errors: string[] = [];
@@ -127,7 +129,10 @@ test("素材検索・Preview・Import・配置・復元 @smoke", async ({ page }
   await save(page);
   const p = await saved(page);
   expect(p.assets.length).toBeGreaterThan(0);
-  expect(p.world.entities[0].assetId).toBe(p.assets[0].id);
+  expect(
+    p.world.entities.find((entity: { assetId?: string }) => entity.assetId)
+      ?.assetId,
+  ).toBe(p.assets[0].id);
   await expect
     .poll(async () => {
       const res = await page.request.get(p.assets[0].files.runtime);
