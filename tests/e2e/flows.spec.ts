@@ -52,7 +52,7 @@ test("3 LEVELの詳細値保持とUndo @smoke", async ({ page }) => {
   await screenshot(page, "04-machine-edit");
   await expect(page.getByRole("button", { name: "↶ 元に戻す" })).toBeDisabled();
   p = await saved(page);
-  expect(p.machines[0].connections).toHaveLength(4);
+  expect(p.machines[0].connections).toHaveLength(14);
 });
 test("WorldとCourseを作りチェックポイントからゴールまで走る @smoke", async ({
   page,

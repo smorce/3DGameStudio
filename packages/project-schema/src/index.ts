@@ -404,10 +404,10 @@ function migrateV2Project(input: Record<string, unknown>) {
                 );
                 if (!wheel || !isRecord(wheel.transform)) continue;
                 const slot = [
-                  [-1.25, -0.45, 1.25],
-                  [1.25, -0.45, 1.25],
-                  [-1.25, -0.45, -1.25],
-                  [1.25, -0.45, -1.25],
+                  [-1, -0.45, 1.25],
+                  [1, -0.45, 1.25],
+                  [-1, -0.45, -1.25],
+                  [1, -0.45, -1.25],
                 ][Number(connection.connectorA)];
                 wheel.transform.position = slot.map(
                   (value, index) => panelPosition[index] + value,

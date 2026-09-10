@@ -132,3 +132,9 @@ it("全Part種をFactoryで生成できる", () => {
     expect(visual.children.length).toBeGreaterThan(0);
   }
 });
+
+it("Panelは余分なシート形状を生成しない", () => {
+  const visual = createPartVisual(createPart("Panel"));
+
+  expect(visual.getObjectByName("panel-seat")).toBeUndefined();
+});

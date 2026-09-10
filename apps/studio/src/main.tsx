@@ -15,7 +15,7 @@ import {
 import {
   createMachine,
   createPart,
-  carTemplate,
+  starterCarTemplate,
   planeTemplate,
   boatTemplate,
   findAttachmentCandidates,
@@ -255,7 +255,7 @@ function App() {
             : template === "boat"
               ? boatTemplate()
               : template
-                ? carTemplate()
+                ? starterCarTemplate()
                 : createMachine(),
       });
       if (template === "boat")

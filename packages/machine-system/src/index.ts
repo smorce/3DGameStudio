@@ -19,10 +19,10 @@ export const labels: Record<Part["definitionId"], string> = {
   Thruster: "ジェット",
 };
 export const wheelSlots: Vec3[] = [
-  [-1.25, -0.45, 1.25],
-  [1.25, -0.45, 1.25],
-  [-1.25, -0.45, -1.25],
-  [1.25, -0.45, -1.25],
+  [-1, -0.45, 1.25],
+  [1, -0.45, 1.25],
+  [-1, -0.45, -1.25],
+  [1, -0.45, -1.25],
 ];
 const panelSize: Vec3 = [PANEL_SIDE, DEFAULT_PANEL_THICKNESS, PANEL_SIDE];
 const partSize = (kind: Part["definitionId"]): Vec3 =>
@@ -403,6 +403,57 @@ export function carTemplate() {
   const m = createMachine("はじめてのくるま");
   attachPart(m, createPart("Panel"));
   for (let i = 0; i < 4; i++) attachPart(m, createPart("Wheel"));
+  return m;
+}
+export function starterCarTemplate() {
+  // 2×5(幅2m×全長5m)のPanelグリッドで縦長シャシーを組む。
+  const m = createMachine("はじめてのくるま"),
+    root = createPart("Panel", [-0.5, 0.85, -2]);
+  root.connectors = placementConnectors(root);
+  // 車輪半径0.55が接地し、Panel外周(x=±1)とも重ならない位置に固定する。
+  const starterWheelSlots: Vec3[] = [
+    [-0.7, -0.3, 4],
+    [1.7, -0.3, 4],
+    [-0.7, -0.3, 0],
+    [1.7, -0.3, 0],
+  ];
+  for (let i = 0; i < starterWheelSlots.length; i++)
+    root.connectors.find((connector) => connector.id === String(i))!.position =
+      starterWheelSlots[i];
+  root.connectors.find((connector) => connector.id === "face-top")!.accepts = [
+    "Block",
+  ];
+  root.connectors.find((connector) => connector.id === "face-top")!.position = [
+    0.5,
+    DEFAULT_PANEL_THICKNESS / 2,
+    2,
+  ];
+  m.parts.push(root);
+  for (let i = 0; i < 4; i++) attachPart(m, createPart("Wheel"), i);
+  const attachPanel = (parentPartId: string, parentConnectorId: string) => {
+    const candidate = findAttachmentCandidates(m, "Panel").find(
+      (item) =>
+        item.parentPartId === parentPartId &&
+        item.parentConnectorId === parentConnectorId,
+    );
+    if (!candidate) throw new Error("Starter panel attachment is unavailable");
+    const panel = createPart("Panel");
+    commitAttachment(m, panel, candidate);
+    return panel;
+  };
+  let left = root,
+    right = attachPanel(root.id, "edge-x+");
+  for (let row = 1; row < 5; row++) {
+    left = attachPanel(left.id, "edge-z+");
+    right = attachPanel(right.id, "edge-z+");
+  }
+  const blockCandidate = findAttachmentCandidates(m, "Block").find(
+    (item) =>
+      item.parentPartId === root.id && item.parentConnectorId === "face-top",
+  );
+  if (!blockCandidate)
+    throw new Error("Starter block attachment is unavailable");
+  commitAttachment(m, createPart("Block"), blockCandidate);
   return m;
 }
 export function compileMachine(machine: Machine) {

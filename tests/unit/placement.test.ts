@@ -34,7 +34,7 @@ test("移動・回転しても正方形Panelの候補は固定寸法で計算さ
     scale: [2, 3, 4],
   };
   const c = findAttachmentCandidates(machine, "Wheel")[0];
-  [11.25, 1.55, -3.75].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
+  [11.25, 1.55, -4].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
   expect(c.rotation).toEqual(machine.parts[0].transform.rotation);
 });
 test("取り付けは接続・自動設定とともに一回のUndo/Redoで復元する", () => {

@@ -222,16 +222,6 @@ function createBasicVisual(part: Part, options: PartVisualOptions) {
     options,
     `${part.definitionId.toLowerCase()}-body`,
   );
-  if (part.definitionId === "Panel") {
-    const seat = addMesh(
-      group,
-      new THREE.BoxGeometry(0.65, 0.5, 0.8),
-      "#3f6570",
-      options,
-      "panel-seat",
-    );
-    seat.position.y = 0.4;
-  }
   return group;
 }
 

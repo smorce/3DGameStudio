@@ -342,7 +342,7 @@ export class RapierPhysics {
           rapier.RigidBodyDesc.dynamic()
             .setTranslation(0, 1, 0)
             .setLinearDamping(0.1)
-            .setAngularDamping(0.6)
+            .setAngularDamping(3)
             .setCcdEnabled(true),
         );
         bodies.set(group.id, body);

@@ -106,22 +106,16 @@ it("親部品の移動・回転で接続位置を保持する", () => {
     partId: m.parts[0].id,
     value: [3, 0.85, 0],
   });
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(
-    1.75,
-  );
+  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(2);
   bus.execute({
     type: "part.rotate",
     machineId: m.id,
     partId: m.parts[0].id,
     value: [0, Math.PI, 0],
   });
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(
-    4.25,
-  );
+  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(4);
   bus.undo();
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(
-    1.75,
-  );
+  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(2);
 });
 it("シリアライズしたコマンド履歴を再生できる", () => {
   const project = emptyProject(),
