@@ -6,7 +6,9 @@ import {
   createMachine,
   createPart,
   findAttachmentCandidates,
+  placementConnectors,
 } from "../../packages/machine-system/src/index";
+import { quaternion, rotate } from "../../packages/machine-system/src/math";
 function setup() {
   const project = emptyProject(),
     machine = createMachine();
@@ -160,6 +162,80 @@ test.each([
   expect(
     part.connectors.some((c) => c.id === m.connections[0].connectorB),
   ).toBe(true);
+});
+
+test("Hingeは固定側入力と回転側出力を分け、出力側の部品を回転させる", () => {
+  const { machine, bus } = setup();
+  const hinge = createPart("Hinge");
+  const connectors = placementConnectors(hinge);
+  expect(connectors.map((c) => c.id)).toEqual(
+    expect.arrayContaining(["hinge-input", "hinge-output"]),
+  );
+  expect(connectors.filter((c) => c.id.startsWith("jet-"))).toHaveLength(0);
+
+  const hingeCandidate = findAttachmentCandidates(machine, "Hinge")[0];
+  expect(hingeCandidate.childConnectorId).toBe("hinge-input");
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Hinge",
+    partId: "hinge",
+    candidateId: hingeCandidate.id,
+  });
+
+  const thrusterCandidate = findAttachmentCandidates(
+    bus.project.machines[0],
+    "Thruster",
+  ).find((candidate) => candidate.parentPartId === "hinge");
+  expect(thrusterCandidate?.parentConnectorId).toBe("hinge-output");
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Thruster",
+    partId: "thruster",
+    candidateId: thrusterCandidate!.id,
+  });
+  const before = bus.project.machines[0].parts.find(
+    (part) => part.id === "thruster",
+  )!.transform.position;
+
+  bus.execute({
+    type: "part.turn",
+    machineId: machine.id,
+    partId: "hinge",
+    steps: 1,
+  });
+  const after = bus.project.machines[0].parts.find(
+    (part) => part.id === "thruster",
+  )!.transform.position;
+  expect(after).not.toEqual(before);
+  expect(
+    bus.project.machines[0].connections.find(
+      (connection) => connection.b === "thruster",
+    )?.connectorA,
+  ).toBe("hinge-output");
+});
+
+test("Thrusterの排気方向は接続面の外側を向く", () => {
+  const { machine } = setup();
+  const candidates = findAttachmentCandidates(machine, "Thruster");
+  expect(candidates).toHaveLength(2);
+  for (const candidate of candidates) {
+    const parent = machine.parts.find(
+        (part) => part.id === candidate.parentPartId,
+      )!,
+      connector = placementConnectors(parent).find(
+        (part) => part.id === candidate.parentConnectorId,
+      )!,
+      normal = rotate(
+        connector.normal!,
+        quaternion(parent.transform.rotation),
+      ),
+      exhaust = rotate([0, 0, -1], quaternion(candidate.rotation)),
+      force = rotate([0, 0, 1], quaternion(candidate.rotation));
+    exhaust.forEach((value, i) => expect(value).toBeCloseTo(normal[i]));
+    force.forEach((value, i) => expect(value).toBeCloseTo(-normal[i]));
+  }
 });
 
 test("空のマシンでは板の初期位置だけを提示する", () => {

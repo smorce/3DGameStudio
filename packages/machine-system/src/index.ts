@@ -5,7 +5,7 @@ import {
   type Part,
   type Vec3,
 } from "../../project-schema/src/index";
-import { rotate, quaternion } from "./math";
+import { euler, multiply, rotate, quaternion } from "./math";
 export const labels: Record<Part["definitionId"], string> = {
   Panel: "板",
   Block: "ブロック",
@@ -26,6 +26,14 @@ export function createPart(
   kind: Part["definitionId"],
   position: Vec3 = [0, 0.85, 0],
 ): Part {
+  const size: Vec3 =
+    kind === "Panel"
+      ? [2.2, 0.3, 3.5]
+      : kind === "Wheel"
+        ? [0.4, 0.55, 0.55]
+        : kind === "Wing"
+          ? [4, 0.12, 0.8]
+          : [0.6, 0.6, 0.6];
   const part: Part = {
     id: uid(),
     definitionId: kind,
@@ -43,18 +51,23 @@ export function createPart(
       friction: 1.2,
       restitution: 0.05,
       collider: kind === "Wheel" ? "cylinder" : "box",
-      size:
-        kind === "Panel"
-          ? [2.2, 0.3, 3.5]
-          : kind === "Wheel"
-            ? [0.4, 0.55, 0.55]
-            : kind === "Wing"
-              ? [4, 0.12, 0.8]
-              : [0.6, 0.6, 0.6],
+      size,
     },
-    connectors: (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map(
-      (v, i) => ({ id: String(i), position: v, axis: [1, 0, 0] }),
-    ),
+    connectors:
+      kind === "Hinge"
+        ? [
+            {
+              id: "hinge-input",
+              position: [0, -size[1] / 2, 0],
+              axis: [1, 0, 0],
+              normal: [0, -1, 0],
+              type: "mount",
+              accepts: [],
+            },
+          ]
+        : (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map(
+            (v, i) => ({ id: String(i), position: v, axis: [1, 0, 0] }),
+          ),
     actuator: {
       motorTorque:
         kind === "Wheel" || kind === "Motor"
@@ -117,17 +130,33 @@ const structuralKinds: Part["definitionId"][] = [
   "Steering",
   "Hinge",
 ];
+const hingeOutputKinds: Part["definitionId"][] = [
+  ...structuralKinds,
+  "Thruster",
+  "Wing",
+];
 
 // 古い保存データには不足する接続先だけを補完し、計算中は元の配列を変更しない。
 export function placementConnectors(part: Part): Connector[] {
-  const connectors: Connector[] = part.connectors.map((c) => ({
-    ...c,
-    ...(c.type || c.accepts
-      ? {}
-      : part.definitionId === "Panel" && /^[0-3]$/.test(c.id)
-        ? { type: "wheel" as const, accepts: ["Wheel" as const] }
-        : { type: "mount" as const, accepts: [] }),
-  }));
+  const connectors: Connector[] = part.connectors
+    .filter(
+      (c) =>
+        !(
+          part.definitionId === "Hinge" &&
+          (c.id === "0" ||
+            c.id.startsWith("jet-") ||
+            c.id.startsWith("top-") ||
+            c.id.startsWith("wing-"))
+        ),
+    )
+    .map((c) => ({
+      ...c,
+      ...(c.type || c.accepts
+        ? {}
+        : part.definitionId === "Panel" && /^[0-3]$/.test(c.id)
+          ? { type: "wheel" as const, accepts: ["Wheel" as const] }
+          : { type: "mount" as const, accepts: [] }),
+    }));
   const add = (connector: Connector) => {
     if (!connectors.some((c) => c.id === connector.id))
       connectors.push(connector);
@@ -139,7 +168,26 @@ export function placementConnectors(part: Part): Connector[] {
     type: "mount",
     accepts: [],
   });
-  if (["Panel", "Block", "Hinge"].includes(part.definitionId)) {
+  if (part.definitionId === "Hinge") {
+    const [x, y, z] = part.physics.size,
+      gap = Math.min(x, y, z) * 0.1;
+    add({
+      id: "hinge-input",
+      position: [0, -y / 2, 0],
+      axis: [1, 0, 0],
+      normal: [0, -1, 0],
+      type: "mount",
+      accepts: [],
+    });
+    add({
+      id: "hinge-output",
+      position: [0, 0, z / 2 + gap],
+      axis: [1, 0, 0],
+      normal: [0, 0, 1],
+      type: "structural",
+      accepts: hingeOutputKinds,
+    });
+  } else if (["Panel", "Block"].includes(part.definitionId)) {
     const [x, y, z] = part.physics.size;
     const topZ = part.definitionId === "Panel" ? [-z * 0.3, z * 0.3] : [0];
     topZ.forEach((offset, i) =>
@@ -230,6 +278,10 @@ export function findAttachmentCandidates(
         )
         .map((c) => {
           const q = quaternion(parent.transform.rotation);
+          const rotation =
+            kind === "Thruster" && c.normal?.[2] === 1
+              ? euler(multiply(q, quaternion([0, Math.PI, 0])))
+              : [...parent.transform.rotation];
           const offset = c.position.map(
             (n, i) =>
               n * parent.transform.scale[i] +
@@ -239,11 +291,16 @@ export function findAttachmentCandidates(
             id: JSON.stringify([parent.id, c.id, kind]),
             parentPartId: parent.id,
             parentConnectorId: c.id,
-            childConnectorId: kind === "Wheel" ? "0" : "mount",
+            childConnectorId:
+              kind === "Wheel"
+                ? "0"
+                : kind === "Hinge"
+                  ? "hinge-input"
+                  : "mount",
             position: rotate(offset, q).map(
               (n, i) => n + parent.transform.position[i],
             ) as Vec3,
-            rotation: [...parent.transform.rotation] as Vec3,
+            rotation: rotation as Vec3,
             axis: rotate(c.axis, q),
             connectionType:
               kind === "Wheel" || kind === "Hinge"
@@ -267,12 +324,20 @@ export function commitAttachment(
     const connector = parent.connectors.find(
       (c) => c.id === candidate.parentConnectorId,
     )!;
-    if (candidate.childConnectorId === "mount") {
+    if (
+      candidate.childConnectorId === "mount" ||
+      candidate.childConnectorId === "hinge-input"
+    ) {
       part.connectors = placementConnectors(part);
-      const mount = part.connectors.find((c) => c.id === "mount")!;
-      mount.position = part.physics.size.map(
-        (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
-      ) as Vec3;
+      const childConnector = part.connectors.find(
+        (c) => c.id === candidate.childConnectorId,
+      )!;
+      childConnector.position =
+        part.definitionId === "Thruster"
+          ? [0, 0, part.physics.size[2] / 2]
+          : (part.physics.size.map(
+              (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
+            ) as Vec3);
     }
     if (part.definitionId === "Wheel") {
       part.metadata.front = connector.position[2] > 0;
@@ -313,7 +378,7 @@ export function attachPart(machine: Machine, part: Part, slot?: number) {
       a: root.id,
       b: part.id,
       connectorA: "0",
-      connectorB: "0",
+      connectorB: part.definitionId === "Hinge" ? "hinge-input" : "0",
       type: part.definitionId === "Hinge" ? "revolute" : "fixed",
       axis: [1, 0, 0],
       damping: 0.2,

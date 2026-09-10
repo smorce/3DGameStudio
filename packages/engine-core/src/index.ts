@@ -113,7 +113,7 @@ export class Engine {
           if (p[1] < -20) this.physics.respawn(this.course?.respawn);
         }
       }
-      this.renderer.render(this.physics.poses());
+      this.renderer.render(this.physics.poses(), throttle);
     } else this.renderer.render();
     this.onFrame?.();
     this.frame = requestAnimationFrame(this.tick);

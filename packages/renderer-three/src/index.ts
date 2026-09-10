@@ -12,12 +12,16 @@ import type { Pose } from "../../physics-rapier/src/index";
 import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
 import type { AttachmentCandidate } from "../../machine-system/src/index";
-import { createPartVisual } from "./part-visuals";
+import {
+  createPartVisual,
+  updateMotorActivity,
+  updateThrusterFlame,
+} from "./part-visuals";
 export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
 export interface RendererAdapter {
   load(project: Project): void;
-  render(poses?: Map<string, Pose>): void;
+  render(poses?: Map<string, Pose>, thrust?: number): void;
   dispose(): void;
 }
 export class ThreeRenderer implements RendererAdapter {
@@ -500,7 +504,11 @@ export class ThreeRenderer implements RendererAdapter {
       this.highlighted.add(sphere);
     }
   }
-  render(poses?: Map<string, Pose>) {
+  render(poses?: Map<string, Pose>, thrust = 0) {
+    this.parts.forEach((visual) => {
+      updateThrusterFlame(visual, thrust);
+      updateMotorActivity(visual, thrust);
+    });
     if (poses) {
       for (const [id, p] of poses) {
         const m = this.parts.get(id);
