@@ -739,6 +739,20 @@ function App() {
             >
               ↻ 回す
             </button>
+            {part.definitionId === "Panel" && (
+              <button
+                onClick={() =>
+                  execute({
+                    type: "part.tilt",
+                    machineId: machine.id,
+                    partId: part.id,
+                    angle: Math.PI / 36,
+                  })
+                }
+              >
+                ／ 傾ける
+              </button>
+            )}
             {part.definitionId === "Thruster" && (
               <button
                 onClick={() =>

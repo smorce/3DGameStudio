@@ -127,7 +127,6 @@ it("全Part種をFactoryで生成できる", () => {
     "Steering",
     "Hinge",
     "Thruster",
-    "Wing",
   ] as const) {
     const visual = createPartVisual(createPart(kind));
     expect(visual.children.length).toBeGreaterThan(0);

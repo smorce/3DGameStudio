@@ -8,10 +8,15 @@ import { chunkCoordinate } from "../../world-system/src/index";
 import type RAPIER from "@dimforge/rapier3d-compat";
 import {
   activeCourse,
+  PANEL_SIDE,
   type Project,
   type Vec3,
   type Part,
 } from "../../project-schema/src/index";
+import {
+  AIR_DENSITY,
+  computePanelAerodynamicForce,
+} from "../../aerodynamics/src/index";
 import {
   submergedDepth,
   type WaterSurface,
@@ -29,6 +34,46 @@ export interface Pose {
 }
 const vector = (v: Vec3) => ({ x: v[0], y: v[1], z: v[2] });
 const rotation = (q: Quat) => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
+const cross = (a: Vec3, b: Vec3): Vec3 => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0],
+];
+function velocityAtPoint(body: RAPIER.RigidBody, point: Vec3): Vec3 {
+  const api = body as unknown as {
+    velocityAtPoint?: (point: { x: number; y: number; z: number }) => {
+      x: number;
+      y: number;
+      z: number;
+    };
+  };
+  if (api.velocityAtPoint) {
+    const value = api.velocityAtPoint(vector(point));
+    return [value.x, value.y, value.z];
+  }
+  const center = body.translation(),
+    linear = body.linvel(),
+    angular = body.angvel(),
+    radius: Vec3 = [
+      point[0] - center.x,
+      point[1] - center.y,
+      point[2] - center.z,
+    ];
+  const tangential = cross([angular.x, angular.y, angular.z], radius);
+  return [
+    linear.x + tangential[0],
+    linear.y + tangential[1],
+    linear.z + tangential[2],
+  ];
+}
+function resetExternalForces(body: RAPIER.RigidBody) {
+  const api = body as unknown as {
+    resetForces?: (wakeUp: boolean) => void;
+    resetTorques?: (wakeUp: boolean) => void;
+  };
+  api.resetForces?.(false);
+  api.resetTorques?.(false);
+}
 let initialized: Promise<typeof RAPIER> | undefined;
 const initialize = () =>
   (initialized ??= (async () => {
@@ -340,7 +385,19 @@ export class RapierPhysics {
           true,
         ) as RAPIER.RevoluteImpulseJoint;
         joint.setContactsEnabled(false);
-        this.motors.push({ joint, part: p, damping: c.damping });
+        const driver = m.parts.find(
+          (candidate) =>
+            candidate.definitionId === "Motor" &&
+            m.bodyForPart.get(candidate.id) === m.bodyForPart.get(c.b) &&
+            m.connections.some(
+              (link) =>
+                link.type === "fixed" &&
+                ((link.a === c.b && link.b === candidate.id) ||
+                  (link.b === c.b && link.a === candidate.id)),
+            ),
+        );
+        if (driver)
+          this.motors.push({ joint, part: driver, damping: c.damping });
       }
       const chassis = bodies.get(
         m.bodyForPart.get(
@@ -364,9 +421,9 @@ export class RapierPhysics {
           0.35,
           p.physics.size[1] * p.transform.scale[1],
         );
-        controller.setWheelSuspensionStiffness(i, 35);
-        controller.setWheelSuspensionCompression(i, 4.4);
-        controller.setWheelSuspensionRelaxation(i, 2.3);
+        controller.setWheelSuspensionStiffness(i, 10);
+        controller.setWheelSuspensionCompression(i, 2);
+        controller.setWheelSuspensionRelaxation(i, 1);
         controller.setWheelFrictionSlip(i, p.physics.friction * 2);
         controller.setWheelMaxSuspensionForce(i, 10000);
       }
@@ -376,22 +433,18 @@ export class RapierPhysics {
   step(throttle: number, steering: number, brake = false) {
     const position = this.vehicles[0]?.body.translation();
     if (position) this.streamer?.update([position.x, position.y, position.z]);
+    const resetBodies = new Set<RAPIER.RigidBody>();
+    for (const { body } of this.parts) {
+      if (resetBodies.has(body)) continue;
+      resetBodies.add(body);
+      resetExternalForces(body);
+    }
     for (const v of this.vehicles) {
-      const extraPower =
-        this.parts
-          .filter(
-            (p) =>
-              p.body === v.body &&
-              p.part.definitionId === "Motor" &&
-              p.part.actuator.enabled,
-          )
-          .reduce((n, p) => n + p.part.actuator.motorTorque, 0) /
-        Math.max(1, v.wheels.filter((w) => w.metadata.drive).length);
       v.wheels.forEach((w, i) => {
         v.controller.setWheelEngineForce(
           i,
           w.actuator.enabled && w.metadata.drive
-            ? throttle * (w.actuator.motorTorque + extraPower)
+            ? throttle * w.actuator.motorTorque
             : 0,
         );
         v.controller.setWheelSteering(
@@ -405,10 +458,30 @@ export class RapierPhysics {
     for (const { joint, part, damping } of this.motors)
       joint.configureMotorVelocity(
         part.actuator.enabled ? (throttle * part.actuator.motorTorque) / 20 : 0,
-        damping + 1,
+        part.actuator.enabled ? part.actuator.motorTorque : damping + 1,
       );
     for (const { part, body } of this.parts) {
       const velocity = body.linvel();
+      const panelPose = this.pose(
+        body,
+        part.transform.position,
+        quaternion(part.transform.rotation),
+      );
+      if (part.definitionId === "Panel") {
+        const force = computePanelAerodynamicForce({
+          center: panelPose.position,
+          normal: rotate([0, 1, 0], panelPose.rotation),
+          velocity: velocityAtPoint(body, panelPose.position),
+          windVelocity: [0, 0, 0],
+          area: PANEL_SIDE * PANEL_SIDE,
+          airDensity: AIR_DENSITY,
+        });
+        body.addForceAtPoint(
+          vector(force.force),
+          vector(panelPose.position),
+          true,
+        );
+      }
       if (part.metadata.buoyancy) {
         const position = this.pose(body, part.transform.position).position;
         const depth = submergedDepth(this.water, position[1]);
@@ -435,21 +508,22 @@ export class RapierPhysics {
           );
         }
       }
-      if (part.definitionId === "Wing") {
-        const speed = Math.hypot(velocity.x, velocity.z);
-        const lift = rotate(
-          [0, Math.min(speed * speed * 0.06, 2), 0],
+      if (part.definitionId === "Thruster" && part.actuator.enabled) {
+        const thrusterPose = this.pose(
+          body,
+          part.transform.position,
           quaternion(part.transform.rotation),
         );
-        body.applyImpulse(vector(lift), true);
-      }
-      if (part.definitionId === "Thruster" && part.actuator.enabled) {
-        const q = body.rotation(),
-          direction = rotate(
-            [0, 0, (throttle * part.actuator.motorTorque) / 60],
-            multiply([q.x, q.y, q.z, q.w], quaternion(part.transform.rotation)),
-          );
-        body.applyImpulse(vector(direction), true);
+        const direction = rotate([0, 0, 1], thrusterPose.rotation);
+        body.addForceAtPoint(
+          vector(
+            direction.map(
+              (value) => value * throttle * part.actuator.motorTorque,
+            ) as Vec3,
+          ),
+          vector(thrusterPose.position),
+          true,
+        );
       }
     }
     this.world.timestep = 1 / 60;

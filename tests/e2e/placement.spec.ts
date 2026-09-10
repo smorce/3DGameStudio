@@ -169,7 +169,6 @@ test("全パーツを光る位置へ配置し、Studioの詳細値を保持す�
     "▣ ブロック",
     "⚙ モーター",
     "➤ ジェット",
-    "◈ 羽",
     "↔ 関節",
     "▱ 板",
     "↶ ハンドル",
@@ -178,8 +177,8 @@ test("全パーツを光る位置へ配置し、Studioの詳細値を保持す�
     await pickCandidate(page);
   }
   const p = await savedProject(page);
-  expect(p.machines[0].parts).toHaveLength(8);
-  expect(p.machines[0].connections).toHaveLength(7);
+  expect(p.machines[0].parts).toHaveLength(7);
+  expect(p.machines[0].connections).toHaveLength(6);
   await page.getByRole("button", { name: "Studio", exact: true }).click();
   await page.getByLabel("friction", { exact: true }).fill("2.34");
   await page.getByLabel("motorTorque", { exact: true }).fill("321");

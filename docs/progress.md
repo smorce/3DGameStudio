@@ -2,7 +2,7 @@
 
 以下は指示1の初期マイルストーン記録です。指示2の現行結果は[実装報告](world-runtime-report.md)と[今回の品質ゲート](evidence/world-runtime-quality-gates.json)を参照してください。
 
-更新日: 2026-09-09。空のリポジトリから実装した。最終品質ゲートはすべてPASS。単体20件、統合6件、本番E2E9件、Smoke7件が成功した。確定結果は `evidence/quality-gates.json` と各logに保存した。
+更新日: 2026-09-11。空のリポジトリから実装した。既存品質ゲートに加え、Panel Surface Aerodynamics、Wing Migration、Panel Tilt、ThrusterのPoint Force、Motor Joint駆動を実装しました。
 
 ## Phase記録
 
@@ -96,3 +96,9 @@ Rapier初期化の依存ライブラリ警告、Viteの大きなWASMチャンク
 その後、8種類の互換配置、`part.attach`／`part.reattach`／`part.turn`、取消、コピー、Ghost、キーボード、タッチ、実走と保存復元へ拡張しました。旧JSONの互換性を保持し、LEVEL 2／Studioの数値編集と既存`part.add`も維持しています。
 
 指示3の完成条件25項目はすべてPASS、最終判定は **COMPLETE** です。Unit 45件、Integration 20件、E2E 16件、Smoke 11件、Typecheck、Lint、Buildが成功しました。[配置の実装報告](placement-report.md)に変更ファイル、設計、25項目の完成条件、3枚の画像、既知の制約をまとめ、[Quality Gates](evidence/placement-quality-gates.json)に各コマンドの実測結果を記録しました。
+
+## Panel Surface Aerodynamics
+
+`schemaVersion: 3`へ移行し、Wingを新規Part KindとPaletteから削除しました。v2のWing／旧Panelは正方形Panelへ正規化され、厚さだけが寸法値として残ります。`packages/aerodynamics`はRapier非依存の純粋計算、`physics-rapier`は各PanelとThrusterをWorld Positionへ適用し、Motorは明示接続したRevolute Jointだけを駆動します。詳細は[aerodynamics.md](aerodynamics.md)と[KNOWN_ISSUES.md](../KNOWN_ISSUES.md)を参照してください。
+
+指示5の品質ゲートも完了しました。`pnpm typecheck`、`pnpm lint`、Unit／Integration 79テスト、Build、Chromium E2E 18件、Smoke 12件がすべてPASSです。Panelの正方形Visual、Tilt、Hinge制御面の証跡は `docs/screenshots/square-panel-aircraft.png`、`docs/screenshots/tilted-panels.png`、`docs/screenshots/hinge-control-surface.png` に保存しています。

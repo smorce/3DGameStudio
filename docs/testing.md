@@ -23,6 +23,15 @@ E2Eはポート8788に専用Serverを起動し、`.data/e2e`を使用します�
 
 `ALL_BROWSERS=1`でChromium／Firefox／WebKitを対象にできます。Firefox／WebKitは別途インストールが必要で、今回の検証結果には含めません。
 
+## Panel Surface Aerodynamics
+
+- `tests/unit/aerodynamics.test.ts`: 速度ゼロ、平行流、正負Tilt、正対時の抗力、速度二乗則。
+- `tests/unit/model.test.ts`: v2 Wing→v3 Panel Migration、Panel寸法固定、厚さと質量の連動。
+- `tests/unit/placement.test.ts`: Panel Edge-to-Edge接続と`part.tilt`後のAttachment Point保持。
+- `tests/integration/physics.test.ts`: Panelを含む剛体の実Rapier走行、Thrusterの継続推力、既存Wheel回帰。
+
+Play中は各PanelのWorld CenterでPoint Velocityを取得し、Panelごとに`addForceAtPoint`します。Motorは明示的なHinge接続がない限りWheel出力へ影響しません。
+
 ## シナリオと証拠
 
 - LEVEL 1: 空からPanel＋Wheel×4、Play、保存、Reload。`tests/e2e/studio.spec.ts`。

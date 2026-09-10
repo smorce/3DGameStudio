@@ -12,7 +12,8 @@
 
 ## Main Features
 
-- 板・ブロック・タイヤ・モーター・ハンドル・関節・ジェット・羽を「選んで、光る場所を押す」だけで配置。回転、つけ直し、色、コピー、削除に対応。
+- 板・ブロック・タイヤ・モーター・ハンドル・関節・ジェットを「選んで、光る場所を押す」だけで配置。Panelを辺で並べ、回転・Tilt・つけ直し・色・コピー・削除に対応。
+- すべてのPanelを正方形の空力面として扱い、各Panelの位置速度とWorld Normalから力を計算。偏心したPanel／Thrusterの力は自然なTorqueを生みます。
 - 接続候補の表示、4輪の駆動・操舵設定、複合剛体、可動関節、キーボード／ゲームパッド／画面ボタンでの試走。
 - 6種類の地形ブラシ、水面、木・岩・建物、チャンク単位の描画・物理管理、同一素材のInstancing、距離LOD。
 - 道、スタート、順序付きチェックポイント、ゴール、ジャンプ台、走行時間とリスポーン。複数コースから走行対象を選択・保存。
@@ -136,7 +137,7 @@ pnpm start:server
 
 ## Project File Format
 
-`schemaVersion: 2`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0／1は読込時に移行し、不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)に詳細があります。
+`schemaVersion: 3`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0／1／2は読込時に移行し、v2のWingは正方形Panelへ変換します。不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)と[aerodynamics.md](docs/aerodynamics.md)に詳細があります。
 
 ## Asset Licensing
 
@@ -144,7 +145,7 @@ pnpm start:server
 
 ## Documentation
 
-[設計](docs/architecture.md) / [Command](docs/command-system.md) / [Machine](docs/machine-system.md) / [World](docs/world-system.md) / [Course](docs/course-system.md) / [Asset Pipeline](docs/asset-pipeline.md) / [AI](docs/ai-integration.md) / [性能](docs/performance.md) / [セキュリティ](docs/security.md) / [進捗と完成条件](docs/progress.md) / [実行計画](docs/implementation-plan.md) / [判断記録](docs/decisions)
+[設計](docs/architecture.md) / [Command](docs/command-system.md) / [Machine](docs/machine-system.md) / [Aerodynamics](docs/aerodynamics.md) / [World](docs/world-system.md) / [Course](docs/course-system.md) / [Asset Pipeline](docs/asset-pipeline.md) / [AI](docs/ai-integration.md) / [性能](docs/performance.md) / [セキュリティ](docs/security.md) / [進捗と完成条件](docs/progress.md) / [実行計画](docs/implementation-plan.md) / [判断記録](docs/decisions)
 
 スクリーンショットは[docs/screenshots](docs/screenshots)に7種類あります。デモは[車](demos/demo-simple-car.json)、[島コース](demos/demo-island-course.json)、[外部素材ワールド](demos/demo-asset-world.json)。StudioのJSON読込で開けます。同梱素材はServer起動時にデータディレクトリへコピーします。
 

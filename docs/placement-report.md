@@ -35,7 +35,7 @@ LEVEL 1の8種類のパーツ配置を「パーツ選択 → 光る場所を押�
 
 候補は`findAttachmentCandidates()`が計算します。親・接続先・種類から作るID、親子Connector ID、World Position、Rotation、Axis、Connection Typeを持ちます。空き状況と型の互換性を判定し、親のMove／Rotate／Scaleと子の寸法を考慮します。Rendererへ接続ルールを移していません。
 
-互換性はConnectorのoptionalな`type`／`accepts`／`normal`に集約しています。Panelの既存4接続先はWheel、上面は構造部品、前後はThruster、左右はWingです。Block／Hingeにも構造・推進・翼の接続先があります。旧JSONは読込時に必須変更せず、配置確定時に不足情報だけを補完します。
+互換性はConnectorのoptionalな`type`／`accepts`／`normal`に集約しています。Panelの既存4接続先はWheel、4辺はPanelなどの構造部品、前後はThrusterです。Block／Hingeにも構造・推進の接続先があります。旧JSONは読込時にv3へ移行し、配置確定時に不足情報だけを補完します。
 
 ## CommandとWheel設定
 

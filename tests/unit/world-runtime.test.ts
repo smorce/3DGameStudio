@@ -27,7 +27,7 @@ it("v0/v1と既存デモはv2へ移行し保存・再読込できる", async () 
     const old = JSON.parse(await readFile(`demos/${name}.json`, "utf8"));
     for (const version of [0, 1]) {
       const project = parseProject({ ...old, schemaVersion: version });
-      expect(project.schemaVersion).toBe(2);
+      expect(project.schemaVersion).toBe(3);
       expect(project.settings.activeCourseId).toBe(
         project.courses[0]?.id ?? null,
       );

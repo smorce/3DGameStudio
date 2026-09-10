@@ -26,7 +26,7 @@ test("タイヤ候補は純粋計算で、使用済み位置を除外する", ()
     expect(findAttachmentCandidates(machine, "Wheel")).toHaveLength(3 - i);
   }
 });
-test("移動・回転・拡大した板の候補はワールド座標になる", () => {
+test("移動・回転しても正方形Panelの候補は固定寸法で計算される", () => {
   const { machine } = setup();
   machine.parts[0].transform = {
     position: [10, 2, -5],
@@ -34,7 +34,7 @@ test("移動・回転・拡大した板の候補はワールド座標になる",
     scale: [2, 3, 4],
   };
   const c = findAttachmentCandidates(machine, "Wheel")[0];
-  [15, 2, -2.5].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
+  [11.25, 1.55, -3.75].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
   expect(c.rotation).toEqual(machine.parts[0].transform.rotation);
 });
 test("取り付けは接続・自動設定とともに一回のUndo/Redoで復元する", () => {
@@ -140,7 +140,6 @@ test.each([
   "Block",
   "Motor",
   "Thruster",
-  "Wing",
   "Steering",
   "Hinge",
 ] as const)("%sは候補と一致する姿勢と有効な接続で保存できる", (kind) => {
@@ -216,6 +215,55 @@ test("Hingeは固定側入力と回転側出力を分け、出力側の部品を
   ).toBe("hinge-output");
 });
 
+test("固定接続したPanelのTiltはAttachment Pointを維持する", () => {
+  const { machine, bus } = setup();
+  const candidate = findAttachmentCandidates(machine, "Panel")[0];
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    partId: "panel-child",
+    kind: "Panel",
+    candidateId: candidate.id,
+  });
+  const before = bus.project.machines[0],
+    connection = before.connections[0],
+    point = (part: (typeof before.parts)[number], connectorId: string) => {
+      const connector = placementConnectors(part).find(
+        (item) => item.id === connectorId,
+      )!;
+      return rotate(
+        connector.position.map((n, i) => n * part.transform.scale[i]) as [
+          number,
+          number,
+          number,
+        ],
+        quaternion(part.transform.rotation),
+      ).map((n, i) => n + part.transform.position[i]);
+    },
+    anchor = point(
+      before.parts.find((part) => part.id === connection.a)!,
+      connection.connectorA,
+    );
+  bus.execute({
+    type: "part.tilt",
+    machineId: machine.id,
+    partId: "panel-child",
+    angle: Math.PI / 9,
+  });
+  const after = bus.project.machines[0],
+    afterConnection = after.connections[0],
+    afterAnchor = point(
+      after.parts.find((part) => part.id === afterConnection.a)!,
+      afterConnection.connectorA,
+    ),
+    afterChildAnchor = point(
+      after.parts.find((part) => part.id === afterConnection.b)!,
+      afterConnection.connectorB,
+    );
+  afterAnchor.forEach((value, i) => expect(value).toBeCloseTo(anchor[i]));
+  afterChildAnchor.forEach((value, i) => expect(value).toBeCloseTo(anchor[i]));
+});
+
 test("Thrusterの排気方向は接続面の外側を向く", () => {
   const { machine } = setup();
   const candidates = findAttachmentCandidates(machine, "Thruster");
@@ -227,10 +275,7 @@ test("Thrusterの排気方向は接続面の外側を向く", () => {
       connector = placementConnectors(parent).find(
         (part) => part.id === candidate.parentConnectorId,
       )!,
-      normal = rotate(
-        connector.normal!,
-        quaternion(parent.transform.rotation),
-      ),
+      normal = rotate(connector.normal!, quaternion(parent.transform.rotation)),
       exhaust = rotate([0, 0, -1], quaternion(candidate.rotation)),
       force = rotate([0, 0, 1], quaternion(candidate.rotation));
     exhaust.forEach((value, i) => expect(value).toBeCloseTo(normal[i]));

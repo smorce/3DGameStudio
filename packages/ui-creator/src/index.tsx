@@ -21,6 +21,10 @@ export function MachineInspector({
 }) {
   const part = machine?.parts.find((a) => a.id === selected);
   if (!machine) return null;
+  const transformKeys =
+    part?.definitionId === "Panel"
+      ? (["position", "rotation"] as const)
+      : (["position", "rotation", "scale"] as const);
   const patch = (p: Partial<Omit<Part, "id" | "definitionId">>) =>
     part &&
     execute({
@@ -51,7 +55,7 @@ export function MachineInspector({
         <section>
           <h3>{advanced ? "Inspector" : "パーツをくわしく"}</h3>
           <p>{labels[part.definitionId]}</p>
-          {(["position", "rotation", "scale"] as const).map((key) => (
+          {transformKeys.map((key) => (
             <div key={key}>
               <h4>
                 {{ position: "位置", rotation: "回転", scale: "大きさ" }[key]}
@@ -78,6 +82,31 @@ export function MachineInspector({
               </div>
             </div>
           ))}
+          {advanced && part.definitionId === "Panel" && (
+            <label className="field">
+              厚さ
+              <input
+                aria-label="Panel thickness"
+                type="number"
+                min="0.02"
+                max="1"
+                step="0.01"
+                value={part.physics.size[1]}
+                onChange={(e) =>
+                  patch({
+                    physics: {
+                      ...part.physics,
+                      size: [
+                        part.physics.size[0],
+                        Number(e.target.value),
+                        part.physics.size[2],
+                      ],
+                    },
+                  })
+                }
+              />
+            </label>
+          )}
           <label className="field">
             はやさ
             <input

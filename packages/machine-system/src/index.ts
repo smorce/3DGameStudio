@@ -1,4 +1,7 @@
 import {
+  DEFAULT_PANEL_THICKNESS,
+  PANEL_SIDE,
+  panelMass,
   identity,
   uid,
   type Machine,
@@ -14,26 +17,25 @@ export const labels: Record<Part["definitionId"], string> = {
   Steering: "ハンドル",
   Hinge: "関節",
   Thruster: "ジェット",
-  Wing: "羽",
 };
 export const wheelSlots: Vec3[] = [
-  [-1.25, 0, 1.25],
-  [1.25, 0, 1.25],
-  [-1.25, 0, -1.25],
-  [1.25, 0, -1.25],
+  [-1.25, -0.45, 1.25],
+  [1.25, -0.45, 1.25],
+  [-1.25, -0.45, -1.25],
+  [1.25, -0.45, -1.25],
 ];
+const panelSize: Vec3 = [PANEL_SIDE, DEFAULT_PANEL_THICKNESS, PANEL_SIDE];
+const partSize = (kind: Part["definitionId"]): Vec3 =>
+  kind === "Panel"
+    ? [...panelSize]
+    : kind === "Wheel"
+      ? [0.4, 0.55, 0.55]
+      : [0.6, 0.6, 0.6];
 export function createPart(
   kind: Part["definitionId"],
   position: Vec3 = [0, 0.85, 0],
 ): Part {
-  const size: Vec3 =
-    kind === "Panel"
-      ? [2.2, 0.3, 3.5]
-      : kind === "Wheel"
-        ? [0.4, 0.55, 0.55]
-        : kind === "Wing"
-          ? [4, 0.12, 0.8]
-          : [0.6, 0.6, 0.6];
+  const size = partSize(kind);
   const part: Part = {
     id: uid(),
     definitionId: kind,
@@ -47,7 +49,7 @@ export function createPart(
             : "#e5b557",
     },
     physics: {
-      mass: kind === "Panel" ? 30 : 3,
+      mass: kind === "Panel" ? panelMass(DEFAULT_PANEL_THICKNESS) : 3,
       friction: 1.2,
       restitution: 0.05,
       collider: kind === "Wheel" ? "cylinder" : "box",
@@ -65,9 +67,11 @@ export function createPart(
               accepts: [],
             },
           ]
-        : (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map(
-            (v, i) => ({ id: String(i), position: v, axis: [1, 0, 0] }),
-          ),
+        : (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map((v, i) => ({
+            id: String(i),
+            position: v,
+            axis: [1, 0, 0],
+          })),
     actuator: {
       motorTorque:
         kind === "Wheel" || kind === "Motor"
@@ -133,7 +137,6 @@ const structuralKinds: Part["definitionId"][] = [
 const hingeOutputKinds: Part["definitionId"][] = [
   ...structuralKinds,
   "Thruster",
-  "Wing",
 ];
 
 // 古い保存データには不足する接続先だけを補完し、計算中は元の配列を変更しない。
@@ -143,10 +146,7 @@ export function placementConnectors(part: Part): Connector[] {
       (c) =>
         !(
           part.definitionId === "Hinge" &&
-          (c.id === "0" ||
-            c.id.startsWith("jet-") ||
-            c.id.startsWith("top-") ||
-            c.id.startsWith("wing-"))
+          (c.id === "0" || c.id.startsWith("jet-") || c.id.startsWith("top-"))
         ),
     )
     .map((c) => ({
@@ -190,6 +190,24 @@ export function placementConnectors(part: Part): Connector[] {
   } else if (["Panel", "Block"].includes(part.definitionId)) {
     const [x, y, z] = part.physics.size;
     const topZ = part.definitionId === "Panel" ? [-z * 0.3, z * 0.3] : [0];
+    if (part.definitionId === "Panel") {
+      for (const [id, position, normal] of [
+        ["edge-x-", [-x / 2, 0, 0], [-1, 0, 0]],
+        ["edge-x+", [x / 2, 0, 0], [1, 0, 0]],
+        ["edge-z-", [0, 0, -z / 2], [0, 0, -1]],
+        ["edge-z+", [0, 0, z / 2], [0, 0, 1]],
+        ["face-bottom", [0, -y / 2, 0], [0, -1, 0]],
+        ["face-top", [0, y / 2, 0], [0, 1, 0]],
+      ] as const)
+        add({
+          id,
+          position: position as Vec3,
+          axis: [1, 0, 0],
+          normal: normal as Vec3,
+          type: "structural",
+          accepts: id.startsWith("face-") ? [] : structuralKinds,
+        });
+    }
     topZ.forEach((offset, i) =>
       add({
         id: "top-" + i,
@@ -209,17 +227,17 @@ export function placementConnectors(part: Part): Connector[] {
         type: "propulsion",
         accepts: ["Thruster"],
       });
-      add({
-        id: "wing-" + sign,
-        position: [(sign * x) / 2, y / 2, 0],
-        axis: [0, 1, 0],
-        normal: [sign, 0, 0],
-        type: "wing",
-        accepts: ["Wing"],
-      });
     }
   }
   return connectors;
+}
+
+function oppositeEdge(id: string) {
+  return id.endsWith("-")
+    ? id.slice(0, -1) + "+"
+    : id.endsWith("+")
+      ? id.slice(0, -1) + "-"
+      : "face-bottom";
 }
 
 export function findAttachmentCandidates(
@@ -253,13 +271,7 @@ export function findAttachmentCandidates(
           },
         ]
       : [];
-  const size =
-    existing?.physics.size ??
-    (kind === "Panel"
-      ? [2.2, 0.3, 3.5]
-      : kind === "Wing"
-        ? [4, 0.12, 0.8]
-        : [0.6, 0.6, 0.6]);
+  const size = existing?.physics.size ?? partSize(kind);
   const scale = existing?.transform.scale ?? [1, 1, 1];
   return machine.parts
     .filter((p) => !excluded.has(p.id))
@@ -278,13 +290,17 @@ export function findAttachmentCandidates(
         )
         .map((c) => {
           const q = quaternion(parent.transform.rotation);
+          const parentScale =
+            parent.definitionId === "Panel"
+              ? ([1, 1, 1] as Vec3)
+              : parent.transform.scale;
           const rotation =
             kind === "Thruster" && c.normal?.[2] === 1
               ? euler(multiply(q, quaternion([0, Math.PI, 0])))
               : [...parent.transform.rotation];
           const offset = c.position.map(
             (n, i) =>
-              n * parent.transform.scale[i] +
+              n * parentScale[i] +
               ((c.normal?.[i] ?? 0) * size[i] * scale[i]) / 2,
           ) as Vec3;
           return {
@@ -296,7 +312,12 @@ export function findAttachmentCandidates(
                 ? "0"
                 : kind === "Hinge"
                   ? "hinge-input"
-                  : "mount",
+                  : kind === "Panel" && c.id.startsWith("edge-")
+                    ? oppositeEdge(c.id)
+                    : kind === "Panel" &&
+                        (c.id.startsWith("top-") || c.id === "face-top")
+                      ? "face-bottom"
+                      : "mount",
             position: rotate(offset, q).map(
               (n, i) => n + parent.transform.position[i],
             ) as Vec3,
@@ -371,18 +392,11 @@ export function attachPart(machine: Machine, part: Part, slot?: number) {
     commitAttachment(machine, part, candidate);
     return;
   }
-  const root = machine.parts.find((p) => p.definitionId === "Panel");
-  if (root)
-    machine.connections.push({
-      id: "joint-" + root.id + "-" + part.id,
-      a: root.id,
-      b: part.id,
-      connectorA: "0",
-      connectorB: part.definitionId === "Hinge" ? "hinge-input" : "0",
-      type: part.definitionId === "Hinge" ? "revolute" : "fixed",
-      axis: [1, 0, 0],
-      damping: 0.2,
-    });
+  const candidate = findAttachmentCandidates(machine, part.definitionId)[0];
+  if (candidate) {
+    commitAttachment(machine, part, candidate);
+    return;
+  }
   machine.parts.push(part);
 }
 export function carTemplate() {
@@ -427,9 +441,10 @@ export function compileMachine(machine: Machine) {
   };
 }
 export function planeTemplate() {
-  const m = carTemplate();
+  const m = createMachine();
   m.name = "はじめてのひこうき";
-  attachPart(m, createPart("Wing", [0, 1, 0]));
+  attachPart(m, createPart("Panel", [0, 1, 0]));
+  for (let i = 0; i < 4; i++) attachPart(m, createPart("Panel"));
   attachPart(m, createPart("Thruster", [0, 1, -1.6]));
   return m;
 }

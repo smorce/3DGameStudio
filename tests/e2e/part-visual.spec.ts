@@ -35,7 +35,7 @@ test("Machine PartのVisual Evidenceを保存する", async ({ page }) => {
   await page.getByRole("button", { name: "↔ 関節", exact: true }).click();
   await expect(
     page.getByRole("button", { name: /^ここにつける / }),
-  ).toHaveCount(2);
+  ).toHaveCount(6);
   await pickCandidate(page);
   await canvas.screenshot({
     path: "docs/screenshots/part-visual-hinge.png",

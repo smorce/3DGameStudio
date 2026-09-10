@@ -9,7 +9,7 @@ export function EasyPalette({
   disabled?: boolean;
   activeKind?: Part["definitionId"];
 }) {
-  const icons = ["▱", "◉", "⚙", "➤", "↔", "◈", "▣", "↶"];
+  const icons = ["▱", "◉", "⚙", "➤", "↔", "▣", "↶"];
   return (
     <nav className="palette" aria-label="パーツをえらぶ">
       {(
@@ -19,7 +19,6 @@ export function EasyPalette({
           "Motor",
           "Thruster",
           "Hinge",
-          "Wing",
           "Block",
           "Steering",
         ] as const

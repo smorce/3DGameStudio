@@ -1,6 +1,10 @@
 import { z } from "zod";
 import {
   parseProject,
+  PANEL_MAX_THICKNESS,
+  PANEL_MIN_THICKNESS,
+  PANEL_SIDE,
+  panelMass,
   projectSchema,
   machineSchema,
   partSchema,
@@ -12,12 +16,15 @@ import {
   vec3,
   uid,
   type Project,
+  type Part,
+  type Vec3,
 } from "../../project-schema/src/index";
 import {
   attachPart,
   createPart,
   findAttachmentCandidates,
   commitAttachment,
+  placementConnectors,
 } from "../../machine-system/src/index";
 import {
   quaternion,
@@ -61,6 +68,12 @@ export const commandSchema = z.discriminatedUnion("type", [
     machineId: id,
     partId: id,
     steps: z.union([z.literal(1), z.literal(2)]).default(1),
+  }),
+  z.object({
+    type: z.literal("part.tilt"),
+    machineId: id,
+    partId: id,
+    angle: z.number().finite().min(-Math.PI).max(Math.PI),
   }),
   z.object({
     type: z.literal("part.reattach"),
@@ -153,6 +166,29 @@ export const commandSchema = z.discriminatedUnion("type", [
   }),
 ]);
 export type Command = z.infer<typeof commandSchema>;
+function normalizePanelPart(part: Part) {
+  if (part.definitionId !== "Panel") return part;
+  const thickness = Math.max(
+    PANEL_MIN_THICKNESS,
+    Math.min(PANEL_MAX_THICKNESS, part.physics.size[1]),
+  );
+  part.transform.scale = [1, 1, 1];
+  part.physics.size = [PANEL_SIDE, thickness, PANEL_SIDE];
+  part.physics.mass = panelMass(thickness);
+  return part;
+}
+function axisQuaternion(axis: Vec3, angle: number) {
+  const length = Math.hypot(...axis);
+  if (length < 0.001) return quaternion([0, 0, 0]);
+  return [
+    ...(axis.map((n) => (n / length) * Math.sin(angle / 2)) as [
+      number,
+      number,
+      number,
+    ]),
+    Math.cos(angle / 2),
+  ] as [number, number, number, number];
+}
 function apply(p: Project, c: Command) {
   const machine = () => {
     const m = p.machines.find((m) => "machineId" in c && m.id === c.machineId);
@@ -190,6 +226,34 @@ function apply(p: Project, c: Command) {
         old[3],
       ],
       q = quaternion(value.rotation);
+    const parentLink = machine().connections.find((c) => c.b === root.id);
+    if (parentLink && value.rotation.some((n, i) => n !== before.rotation[i])) {
+      const parent = machine().parts.find((p) => p.id === parentLink.a);
+      const parentConnector = parent
+        ? placementConnectors(parent).find(
+            (connector) => connector.id === parentLink.connectorA,
+          )
+        : undefined;
+      const childConnector = placementConnectors(root).find(
+        (connector) => connector.id === parentLink.connectorB,
+      );
+      if (parent && parentConnector && childConnector) {
+        const pivot = rotate(
+          parentConnector.position.map(
+            (n, i) => n * parent.transform.scale[i],
+          ) as Vec3,
+          quaternion(parent.transform.rotation),
+        ).map((n, i) => n + parent.transform.position[i]) as Vec3;
+        const offset = rotate(
+          childConnector.position.map((n, i) => n * value.scale[i]) as Vec3,
+          q,
+        );
+        value = {
+          ...value,
+          position: offset.map((n, i) => pivot[i] - n) as Vec3,
+        };
+      }
+    }
     for (const child of machine().parts) {
       if (child.id === root.id || !ids.has(child.id)) continue;
       const local = rotate(
@@ -247,7 +311,11 @@ function apply(p: Project, c: Command) {
       p.machines = p.machines.filter((m) => m.id !== c.machineId);
       break;
     case "part.add":
-      attachPart(machine(), c.part, c.slot);
+      attachPart(
+        machine(),
+        normalizePanelPart(structuredClone(c.part)),
+        c.slot,
+      );
       break;
     case "part.attach": {
       const m = machine();
@@ -266,7 +334,9 @@ function apply(p: Project, c: Command) {
         : undefined;
       if (c.sourcePartId && (!source || source.definitionId !== c.kind))
         throw new Error("Invalid copy source");
-      const added = source ? structuredClone(source) : createPart(c.kind);
+      const added = normalizePanelPart(
+        source ? structuredClone(source) : createPart(c.kind),
+      );
       added.id = c.partId;
       commitAttachment(m, added, candidate);
       break;
@@ -279,43 +349,22 @@ function apply(p: Project, c: Command) {
         p.definitionId === "Wheel" || p.definitionId === "Hinge"
           ? (link?.axis ?? rotate([1, 0, 0], q))
           : rotate([0, 1, 0], q);
-      const angle = (c.steps * Math.PI) / 4,
-        length = Math.hypot(...axis);
-      const spin: [number, number, number, number] = [
-        ...(axis.map((n) => (n / length) * Math.sin(angle)) as [
-          number,
-          number,
-          number,
-        ]),
-        Math.cos(angle),
-      ];
+      const spin = axisQuaternion(axis, (c.steps * Math.PI) / 2);
       changeTransform({ ...p.transform, rotation: euler(multiply(spin, q)) });
-      if (link) {
-        const parent = machine().parts.find((a) => a.id === link.a)!;
-        const connector = parent.connectors.find(
-          (a) => a.id === link.connectorA,
-        )!;
-        const childConnector = p.connectors.find(
-          (a) => a.id === link.connectorB,
-        )!;
-        const anchor = rotate(
-          connector.position.map((n, i) => n * parent.transform.scale[i]) as [
-            number,
-            number,
-            number,
-          ],
-          quaternion(parent.transform.rotation),
-        ).map(
-          (n, i) => n + parent.transform.position[i] - p.transform.position[i],
-        ) as [number, number, number];
-        const rotation = quaternion(p.transform.rotation);
-        childConnector.position = rotate(anchor, [
-          -rotation[0],
-          -rotation[1],
-          -rotation[2],
-          rotation[3],
-        ]).map((n, i) => n / p.transform.scale[i]) as [number, number, number];
-      }
+      break;
+    }
+    case "part.tilt": {
+      const target = part(),
+        q = quaternion(target.transform.rotation),
+        link = machine().connections.find(
+          (connection) => connection.b === target.id,
+        ),
+        axis = link?.axis ?? rotate([1, 0, 0], q),
+        spin = axisQuaternion(axis, c.angle);
+      changeTransform({
+        ...target.transform,
+        rotation: euler(multiply(spin, q)),
+      });
       break;
     }
     case "part.reattach": {
@@ -351,10 +400,29 @@ function apply(p: Project, c: Command) {
     case "part.rotate":
       changeTransform({ ...part().transform, rotation: c.value });
       break;
-    case "part.update":
-      if (c.patch.transform) changeTransform(c.patch.transform);
-      Object.assign(part(), c.patch);
+    case "part.update": {
+      const target = part();
+      const patch = { ...c.patch };
+      if (target.definitionId === "Panel") {
+        if (patch.transform)
+          patch.transform = { ...patch.transform, scale: [1, 1, 1] };
+        const size = patch.physics?.size ?? target.physics.size;
+        const thickness = Math.max(
+          PANEL_MIN_THICKNESS,
+          Math.min(PANEL_MAX_THICKNESS, size[1]),
+        );
+        patch.physics = {
+          ...target.physics,
+          ...patch.physics,
+          mass: panelMass(thickness),
+          size: [PANEL_SIDE, thickness, PANEL_SIDE],
+        };
+      }
+      if (patch.transform) changeTransform(patch.transform);
+      Object.assign(target, patch);
+      normalizePanelPart(target);
       break;
+    }
     case "part.connect":
       machine().connections.push(c.connection);
       break;

@@ -5,6 +5,13 @@ export const vec3 = z.tuple([
   z.number().finite(),
 ]);
 export type Vec3 = z.infer<typeof vec3>;
+export const PANEL_SIDE = 1;
+export const DEFAULT_PANEL_THICKNESS = 0.12;
+export const PANEL_MIN_THICKNESS = 0.02;
+export const PANEL_MAX_THICKNESS = 1;
+export const PANEL_DENSITY = 250;
+export const panelMass = (thickness: number) =>
+  PANEL_DENSITY * PANEL_SIDE * PANEL_SIDE * thickness;
 export const transformSchema = z.object({
   position: vec3,
   rotation: vec3,
@@ -24,7 +31,6 @@ export const partKinds = [
   "Steering",
   "Hinge",
   "Thruster",
-  "Wing",
 ] as const;
 export const partSchema = z.object({
   id: z.string(),
@@ -43,9 +49,7 @@ export const partSchema = z.object({
       id: z.string(),
       position: vec3,
       axis: vec3,
-      type: z
-        .enum(["structural", "wheel", "propulsion", "wing", "mount"])
-        .optional(),
+      type: z.enum(["structural", "wheel", "propulsion", "mount"]).optional(),
       accepts: z.array(z.enum(partKinds)).optional(),
       normal: vec3.optional(),
     }),
@@ -208,7 +212,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(2),
+    schemaVersion: z.literal(3),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -252,6 +256,19 @@ export const projectSchema = z
         !unique(m.connections.map((a) => a.id))
       )
         issue("Duplicate machine identifiers");
+      for (const part of m.parts) {
+        if (part.definitionId !== "Panel") continue;
+        if (
+          part.transform.scale.some((value) => value !== 1) ||
+          part.physics.size[0] !== PANEL_SIDE ||
+          part.physics.size[2] !== PANEL_SIDE
+        )
+          issue("Panel width and length are fixed");
+        if (
+          Math.abs(part.physics.mass - panelMass(part.physics.size[1])) > 1e-6
+        )
+          issue("Panel mass must be derived from thickness");
+      }
       for (const c of m.connections) {
         const a = m.parts.find((p) => p.id === c.a),
           b = m.parts.find((p) => p.id === c.b);
@@ -278,6 +295,135 @@ export const projectSchema = z
         issue("Missing course reference");
   });
 export type Project = z.infer<typeof projectSchema>;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function legacyNumber(value: unknown, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function legacyVec3(value: unknown, fallback: Vec3): Vec3 {
+  return Array.isArray(value) && value.length === 3
+    ? (value.map((n, i) => legacyNumber(n, fallback[i])) as Vec3)
+    : fallback;
+}
+
+function clampPanelThickness(value: number) {
+  return Math.max(PANEL_MIN_THICKNESS, Math.min(PANEL_MAX_THICKNESS, value));
+}
+
+function migrateV2Part(input: unknown) {
+  if (!isRecord(input)) return input;
+  const transform = isRecord(input.transform) ? input.transform : {};
+  const physics = isRecord(input.physics) ? input.physics : {};
+  const oldSize = legacyVec3(physics.size, [
+    PANEL_SIDE,
+    DEFAULT_PANEL_THICKNESS,
+    PANEL_SIDE,
+  ]);
+  const oldScale = legacyVec3(transform.scale, [1, 1, 1]);
+  const isPanel =
+    input.definitionId === "Panel" || input.definitionId === "Wing";
+  const connectors = Array.isArray(input.connectors)
+    ? input.connectors.map((connector) => {
+        if (!isRecord(connector)) return connector;
+        const accepts = Array.isArray(connector.accepts)
+          ? connector.accepts
+              .filter((kind): kind is string => typeof kind === "string")
+              .map((kind) => (kind === "Wing" ? "Panel" : kind))
+          : connector.accepts;
+        return {
+          ...connector,
+          ...(connector.type === "wing" ? { type: "structural" } : {}),
+          ...(Array.isArray(accepts) ? { accepts: [...new Set(accepts)] } : {}),
+        };
+      })
+    : input.connectors;
+  return {
+    ...input,
+    definitionId: input.definitionId === "Wing" ? "Panel" : input.definitionId,
+    transform: {
+      ...transform,
+      ...(isPanel ? { scale: [1, 1, 1] } : {}),
+    },
+    physics: {
+      ...physics,
+      ...(isPanel
+        ? {
+            mass: panelMass(
+              clampPanelThickness(oldSize[1] * Math.max(0.01, oldScale[1])),
+            ),
+            size: [
+              PANEL_SIDE,
+              clampPanelThickness(oldSize[1] * Math.max(0.01, oldScale[1])),
+              PANEL_SIDE,
+            ],
+          }
+        : {}),
+    },
+    ...(connectors ? { connectors } : {}),
+  };
+}
+
+function migrateV2Project(input: Record<string, unknown>) {
+  return {
+    ...input,
+    schemaVersion: 3,
+    machines: Array.isArray(input.machines)
+      ? input.machines.map((machine) => {
+          if (!isRecord(machine)) return machine;
+          const parts = Array.isArray(machine.parts)
+            ? machine.parts.map(migrateV2Part)
+            : machine.parts;
+          const panels = Array.isArray(parts)
+            ? parts.filter(
+                (part): part is Record<string, unknown> =>
+                  isRecord(part) && part.definitionId === "Panel",
+              )
+            : [];
+          if (Array.isArray(parts) && Array.isArray(machine.connections)) {
+            for (const panel of panels) {
+              const panelPosition = isRecord(panel.transform)
+                ? legacyVec3(panel.transform.position, [0, 0.85, 0])
+                : [0, 0.85, 0];
+              for (const connection of machine.connections) {
+                if (
+                  !isRecord(connection) ||
+                  connection.a !== panel.id ||
+                  typeof connection.connectorA !== "string" ||
+                  !/^[0-3]$/.test(connection.connectorA)
+                )
+                  continue;
+                const wheel = parts.find(
+                  (part): part is Record<string, unknown> =>
+                    isRecord(part) &&
+                    part.id === connection.b &&
+                    part.definitionId === "Wheel",
+                );
+                if (!wheel || !isRecord(wheel.transform)) continue;
+                const slot = [
+                  [-1.25, -0.45, 1.25],
+                  [1.25, -0.45, 1.25],
+                  [-1.25, -0.45, -1.25],
+                  [1.25, -0.45, -1.25],
+                ][Number(connection.connectorA)];
+                wheel.transform.position = slot.map(
+                  (value, index) => panelPosition[index] + value,
+                );
+              }
+            }
+          }
+          return {
+            ...machine,
+            parts,
+          };
+        })
+      : input.machines,
+  };
+}
+
 export function parseProject(input: unknown): Project {
   if (
     typeof input === "object" &&
@@ -307,13 +453,21 @@ export function parseProject(input: unknown): Project {
       },
     };
   }
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    "schemaVersion" in input &&
+    input.schemaVersion === 2
+  ) {
+    input = migrateV2Project(input as Record<string, unknown>);
+  }
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     id: uid(),
     name: "わたしのスタジオ",
     world: {

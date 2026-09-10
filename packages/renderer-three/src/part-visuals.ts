@@ -424,7 +424,6 @@ export function createPartVisual(
     case "Panel":
     case "Block":
     case "Steering":
-    case "Wing":
       return createBasicVisual(part, options);
   }
 }

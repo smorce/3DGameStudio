@@ -1,0 +1,74 @@
+import { describe, expect, it } from "vitest";
+import {
+  computePanelAerodynamicForce,
+  PANEL_CD_MIN,
+} from "../../packages/aerodynamics/src/index";
+
+const input = {
+  center: [0, 0, 0] as [number, number, number],
+  normal: [0, 1, 0] as [number, number, number],
+  windVelocity: [0, 0, 0] as [number, number, number],
+  area: 1,
+};
+
+describe("Panel surface aerodynamics", () => {
+  it("速度ゼロでは空力を発生させない", () => {
+    expect(
+      computePanelAerodynamicForce({
+        ...input,
+        velocity: [0, 0, 0],
+      }).force,
+    ).toEqual([0, 0, 0]);
+  });
+
+  it("流れと平行なPanelは小さな抗力だけを受ける", () => {
+    const result = computePanelAerodynamicForce({
+      ...input,
+      velocity: [0, 0, 10],
+    });
+    expect(result.lift[1]).toBeCloseTo(0);
+    expect(result.drag[2]).toBeLessThan(0);
+    expect(result.dragCoefficient).toBeCloseTo(PANEL_CD_MIN);
+  });
+
+  it("正負のTiltで揚力方向が反転する", () => {
+    const positive = computePanelAerodynamicForce({
+      ...input,
+      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      velocity: [0, 0, 10],
+    });
+    const negative = computePanelAerodynamicForce({
+      ...input,
+      normal: [0, Math.cos(0.12), -Math.sin(0.12)],
+      velocity: [0, 0, 10],
+    });
+    expect(positive.lift[1]).toBeGreaterThan(0);
+    expect(negative.lift[1]).toBeLessThan(0);
+    expect(positive.drag[2]).toBeLessThan(0);
+    expect(negative.drag[2]).toBeLessThan(0);
+  });
+
+  it("Panelが流れに正対すると抗力が大きく揚力が小さい", () => {
+    const result = computePanelAerodynamicForce({
+      ...input,
+      normal: [0, 0, 1],
+      velocity: [0, 0, 10],
+    });
+    expect(Math.abs(result.lift[1])).toBeLessThan(1e-6);
+    expect(result.dragCoefficient).toBeGreaterThan(PANEL_CD_MIN * 10);
+  });
+
+  it("速度を2倍にすると力は概ね4倍になる", () => {
+    const slow = computePanelAerodynamicForce({
+      ...input,
+      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      velocity: [0, 0, 5],
+    });
+    const fast = computePanelAerodynamicForce({
+      ...input,
+      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      velocity: [0, 0, 10],
+    });
+    expect(fast.force[1] / slow.force[1]).toBeCloseTo(4, 1);
+  });
+});

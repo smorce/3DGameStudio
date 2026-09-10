@@ -1,6 +1,6 @@
 # パーツの配置
 
-LEVEL 1「つくる」の基本操作は「パーツを選んで、光っているところを押してね」です。Panel、Wheel、Block、Motor、Thruster、Wing、Steering、Hingeを同じフローで配置します。空のMachineではPanelの開始位置だけを表示します。
+LEVEL 1「つくる」の基本操作は「パーツを選んで、光っているところを押してね」です。Panel、Wheel、Block、Motor、Thruster、Steering、Hingeを同じフローで配置します。空のMachineではPanelの開始位置だけを表示します。
 
 ## 状態と責務
 
@@ -40,7 +40,7 @@ Schema v2のConnectorにoptionalな`type`、`accepts`、`normal`を追加しま�
 | Panel               | 上面の2か所       | Panel、Block、Motor、Steering、Hinge |
 | Block／Hinge        | 上面の1か所       | Panel、Block、Motor、Steering、Hinge |
 | Panel／Block／Hinge | 前後面            | Thruster                             |
-| Panel／Block／Hinge | 左右面            | Wing                                 |
+| Panel               | 四辺・Face        | Panel、Block、Motor、Steering、Hinge |
 | 子パーツ            | mount（Wheelは0） | 取り付け元専用                       |
 
 `placementConnectors()`が旧Connectorの互換性を補完します。候補計算は元モデルを変更せず、確定時だけ必要なConnectorを保存します。既存のID・位置・Axis・明示的な互換性は保持します。接続先は両端の使用状況を調べ、占有済みの場所を候補から除外します。
@@ -52,6 +52,7 @@ Schema v2のConnectorにoptionalな`type`、`accepts`、`normal`を追加しま�
 - `part.attach { machineId, partId, kind, candidateId, sourcePartId? }`：最新モデルから候補を再検証し、Part・接続・自動Metadataをまとめて確定します。Part IDはUIで確定し、コピー時は元の色・物理・Actuator設定を保持します。
 - `part.reattach { machineId, partId, candidateId }`：IDと詳細設定を保持し、接続先と配置を更新します。子孫も位置・姿勢を一緒に変換します。Wheelのfront／driveは新しい接続先で再計算します。
 - `part.turn { machineId, partId, steps }`：1で90度、2で180度回転します。WheelとHingeは接続軸、他はパーツのローカルY軸を使います。子孫と接続軸も変換します。「反対向き」はThrusterに表示します。
+- `part.tilt { machineId, partId, angle }`：固定接続したPanelを親とのAttachment PointをPivotとして傾けます。LEVEL 1では5度の操作として表示し、内部角度は表示しません。
 - `part.add`、`part.move`、`part.rotate`は継続して利用できます。LEVEL 2／Studioの数値編集と既存テンプレート生成も保持しています。
 
 既存CommandBusのdraft検証とbefore／afterスナップショットを使います。配置、つけ直し、回転は各1 Command／1 Undoです。検証に失敗したCommandはモデルと履歴を変更しません。Redoは確定済みスナップショットを復元するため、ID・姿勢・設定も一致します。
