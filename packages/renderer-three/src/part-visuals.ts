@@ -133,7 +133,12 @@ function createHingeVisual(part: Part, options: PartVisualOptions) {
   ] as const) {
     const cap = addMesh(
       group,
-      new THREE.CylinderGeometry(pinRadius * 1.12, pinRadius * 1.12, capDepth, 16),
+      new THREE.CylinderGeometry(
+        pinRadius * 1.12,
+        pinRadius * 1.12,
+        capDepth,
+        16,
+      ),
       lightMetal,
       options,
       name,
@@ -203,12 +208,7 @@ function createThrusterVisual(part: Part, options: PartVisualOptions) {
 
   const rim = addMesh(
     group,
-    new THREE.TorusGeometry(
-      nozzleExitRadius * 0.88,
-      radialSize * 0.055,
-      8,
-      16,
-    ),
+    new THREE.TorusGeometry(nozzleExitRadius * 0.88, radialSize * 0.055, 8, 16),
     "#c3cdd1",
     options,
     "thruster-nozzle-rim",
