@@ -538,6 +538,7 @@ export class RapierPhysics {
       if (appliedTorque !== 0)
         applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
     }
+    const steeredBuoyancyBodies = new Set<RAPIER.RigidBody>();
     for (const { part, body } of this.parts) {
       const velocity = body.linvel();
       const panelPose = this.pose(
@@ -580,10 +581,14 @@ export class RapierPhysics {
             },
             true,
           );
-          body.applyTorqueImpulse(
-            { x: 0, y: steering * throttle * 0.1, z: 0 },
-            true,
-          );
+          if (!steeredBuoyancyBodies.has(body)) {
+            // 浮力Panelが増えても、同じRigidBodyへの操舵入力は1回だけ適用する。
+            body.applyTorqueImpulse(
+              { x: 0, y: steering * throttle * 0.1, z: 0 },
+              true,
+            );
+            steeredBuoyancyBodies.add(body);
+          }
         }
       }
       if (part.definitionId === "Thruster" && part.actuator.enabled) {

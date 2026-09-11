@@ -2,11 +2,13 @@ import { it, expect } from "vitest";
 import { emptyProject } from "../../packages/project-schema/src/index";
 import {
   attachPart,
+  boatTemplate,
   commitAttachment,
   createMachine,
   createPart,
   findAttachmentCandidates,
   carTemplate,
+  planeTemplate,
 } from "../../packages/machine-system/src/index";
 import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
@@ -289,4 +291,145 @@ it("未接続Motorは関節やMachine全体へTorqueを加えない", async () =
   const standalone = physics.world.bodies.getAll()[2].angvel();
   expect([standalone.x, standalone.y, standalone.z]).toEqual([0, 0, 0]);
   physics.dispose();
+});
+
+async function simulatePlane(
+  configure?: (machine: ReturnType<typeof planeTemplate>) => void,
+) {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  configure?.(machine);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  const start = physics.poses().get(machine.id)!.position;
+  let minHeight = start[1],
+    maxHeight = start[1],
+    maxForwardSpeed = 0;
+  for (let i = 0; i < 180; i++) {
+    physics.step(1, 0);
+    const pose = physics.poses().get(machine.id)!,
+      velocity = physics.world.bodies.getAll()[0].linvel();
+    minHeight = Math.min(minHeight, pose.position[1]);
+    maxHeight = Math.max(maxHeight, pose.position[1]);
+    maxForwardSpeed = Math.max(maxForwardSpeed, velocity.z);
+  }
+  const end = physics.poses().get(machine.id)!.position;
+  physics.dispose();
+  return {
+    heightGain: maxHeight - minHeight,
+    forwardDistance: end[2] - start[2],
+    maxForwardSpeed,
+  };
+}
+
+it("Starter PlaneはThrusterとPanel空力だけで離陸する", async () => {
+  const result = await simulatePlane();
+  expect(result.heightGain).toBeGreaterThan(0.5);
+  expect(result.forwardDistance).toBeGreaterThan(30);
+  expect(result.maxForwardSpeed).toBeGreaterThan(15);
+});
+
+it("主翼の迎角を0度にすると離陸性能が下がる", async () => {
+  const standard = await simulatePlane(),
+    zeroAngle = await simulatePlane((machine) => {
+      for (const part of machine.parts)
+        if (
+          part.definitionId === "Panel" &&
+          part.transform.position[2] === 0 &&
+          part.transform.position[0] !== 0
+        )
+          part.transform.rotation = [0, 0, 0];
+    });
+  expect(standard.heightGain).toBeGreaterThan(zeroAngle.heightGain + 0.5);
+});
+
+it("翼面積またはThruster推力を減らすと離陸性能が下がる", async () => {
+  const standard = await simulatePlane(),
+    reducedWing = await simulatePlane((machine) => {
+      const removed = new Set(
+        machine.parts
+          .filter(
+            (part) =>
+              part.definitionId === "Panel" &&
+              part.transform.position[2] === 0 &&
+              Math.abs(part.transform.position[0]) >= 3,
+          )
+          .map((part) => part.id),
+      );
+      machine.parts = machine.parts.filter((part) => !removed.has(part.id));
+      machine.connections = machine.connections.filter(
+        (connection) =>
+          !removed.has(connection.a) && !removed.has(connection.b),
+      );
+    }),
+    weakThruster = await simulatePlane((machine) => {
+      for (const part of machine.parts)
+        if (part.definitionId === "Thruster") part.actuator.motorTorque = 400;
+    });
+  expect(standard.heightGain).toBeGreaterThan(reducedWing.heightGain + 0.25);
+  expect(standard.heightGain).toBeGreaterThan(weakThruster.heightGain + 0.25);
+});
+
+async function simulateBoat(singleBuoyancy = false) {
+  const project = emptyProject(),
+    machine = boatTemplate();
+  project.world.water = { enabled: true, height: 1 };
+  if (singleBuoyancy) {
+    let kept = false;
+    for (const part of machine.parts)
+      if (part.metadata.buoyancy === 1)
+        if (kept) delete part.metadata.buoyancy;
+        else kept = true;
+  }
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  let minUp = 1;
+  for (let i = 0; i < 120; i++) {
+    physics.step(0, 0);
+    const up = physics.poses().get(machine.id)!.rotation;
+    minUp = Math.min(minUp, 1 - 2 * (up[0] * up[0] + up[2] * up[2]));
+  }
+  const start = physics.poses().get(machine.id)!.position;
+  for (let i = 0; i < 180; i++) physics.step(1, 0.5);
+  const end = physics.poses().get(machine.id)!.position;
+  physics.dispose();
+  return { minUp, forwardDistance: end[2] - start[2] };
+}
+
+async function measureBoatSteering(singleBuoyancy = false) {
+  const project = emptyProject(),
+    machine = boatTemplate();
+  project.world.water = { enabled: true, height: 2 };
+  if (singleBuoyancy) {
+    let kept = false;
+    for (const part of machine.parts)
+      if (part.metadata.buoyancy === 1)
+        if (kept) delete part.metadata.buoyancy;
+        else kept = true;
+  }
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  for (let i = 0; i < 5; i++) physics.step(1, 0.7);
+  const yawVelocity = physics.world.bodies.getAll()[0].angvel().y;
+  physics.dispose();
+  return yawVelocity;
+}
+
+it("Starter Boatは沈没・大横転せずThrusterで前進する", async () => {
+  const result = await simulateBoat();
+  expect(result.minUp).toBeGreaterThan(0.8);
+  expect(result.forwardDistance).toBeGreaterThan(5);
+});
+
+it("浮力Panelを増やしてもSteering TorqueはRigidBodyごとに1回である", async () => {
+  const full = await simulateBoat(false),
+    single = await simulateBoat(true),
+    fullYaw = await measureBoatSteering(false),
+    singleYaw = await measureBoatSteering(true);
+  expect(full.minUp).toBeGreaterThan(0.8);
+  expect(single.minUp).toBeGreaterThan(0.8);
+  expect(fullYaw).toBeCloseTo(singleYaw, 3);
 });

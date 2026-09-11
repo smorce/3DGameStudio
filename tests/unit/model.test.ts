@@ -5,8 +5,11 @@ import {
 } from "../../packages/project-schema/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import {
+  boatTemplate,
   carTemplate,
+  compileMachine,
   createPart,
+  planeTemplate,
 } from "../../packages/machine-system/src/index";
 import {
   DEFAULT_MOTOR_MAX_TORQUE,
@@ -155,6 +158,116 @@ it("親部品の移動・回転で接続位置を保持する", () => {
   expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(4);
   bus.undo();
   expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(2);
+});
+
+describe("Starter Template", () => {
+  it("飛行機Templateは空力部品と非駆動Landing Gearを持つ", () => {
+    const machine = planeTemplate(),
+      project = emptyProject();
+    project.machines.push(machine);
+    const parsed = parseProject(project),
+      panels = machine.parts.filter((part) => part.definitionId === "Panel"),
+      mainWing = panels.filter(
+        (part) =>
+          part.transform.position[2] === 0 &&
+          Math.abs(part.transform.position[0]) > 0,
+      ),
+      horizontalTail = panels.filter(
+        (part) =>
+          part.transform.position[2] === -2 &&
+          Math.abs(part.transform.position[0]) > 0,
+      ),
+      verticalTail = panels.filter(
+        (part) => Math.abs(part.transform.rotation[2]) > 1,
+      ),
+      wheels = machine.parts.filter((part) => part.definitionId === "Wheel"),
+      thrusters = machine.parts.filter(
+        (part) => part.definitionId === "Thruster",
+      );
+    expect(parsed.machines[0].parts).toHaveLength(25);
+    expect(mainWing).toHaveLength(8);
+    expect(mainWing.every((part) => part.transform.rotation[0] > 0)).toBe(true);
+    expect(horizontalTail).toHaveLength(4);
+    expect(verticalTail).toHaveLength(1);
+    expect(thrusters).toHaveLength(2);
+    expect(wheels).toHaveLength(4);
+    expect(wheels.every((part) => part.metadata.drive === false)).toBe(true);
+    expect(wheels.every((part) => part.actuator.motorTorque === 0)).toBe(true);
+    expect(
+      machine.connections.every(
+        (connection) =>
+          machine.parts.some((part) => part.id === connection.a) &&
+          machine.parts.some((part) => part.id === connection.b),
+      ),
+    ).toBe(true);
+    expect(compileMachine(machine).bodies).toHaveLength(1);
+  });
+
+  it("飛行機の左右構造が対称である", () => {
+    const machine = planeTemplate(),
+      panels = machine.parts.filter((part) => part.definitionId === "Panel"),
+      leftWing = panels
+        .filter(
+          (part) =>
+            part.transform.position[2] === 0 && part.transform.position[0] < 0,
+        )
+        .map((part) => Math.abs(part.transform.position[0]))
+        .sort(),
+      rightWing = panels
+        .filter(
+          (part) =>
+            part.transform.position[2] === 0 && part.transform.position[0] > 0,
+        )
+        .map((part) => part.transform.position[0])
+        .sort(),
+      thrusterX = machine.parts
+        .filter((part) => part.definitionId === "Thruster")
+        .map((part) => Math.abs(part.transform.position[0]))
+        .sort();
+    expect(leftWing).toEqual(rightWing);
+    expect(thrusterX).toEqual([2, 2]);
+  });
+
+  it("ボートTemplateは左右Ponton、Deck、複数浮力Panelを持つ", () => {
+    const machine = boatTemplate(),
+      project = emptyProject();
+    project.machines.push(machine);
+    const parsed = parseProject(project),
+      hull = machine.parts.filter((part) => part.metadata.buoyancy === 1),
+      deck = machine.parts.filter(
+        (part) =>
+          part.definitionId === "Panel" &&
+          part.metadata.buoyancy !== 1 &&
+          part.transform.position[0] === 0,
+      ),
+      thrusters = machine.parts.filter(
+        (part) => part.definitionId === "Thruster",
+      ),
+      leftHull = hull
+        .filter((part) => part.transform.position[0] < 0)
+        .map((part) => part.transform.position[2])
+        .sort(),
+      rightHull = hull
+        .filter((part) => part.transform.position[0] > 0)
+        .map((part) => part.transform.position[2])
+        .sort();
+    expect(parsed.machines[0].parts).toHaveLength(11);
+    expect(hull).toHaveLength(6);
+    expect(leftHull).toEqual(rightHull);
+    expect(deck).toHaveLength(2);
+    expect(thrusters).toHaveLength(2);
+    expect(thrusters.map((part) => part.transform.position[0]).sort()).toEqual([
+      -1, 1,
+    ]);
+    expect(
+      machine.connections.every(
+        (connection) =>
+          machine.parts.some((part) => part.id === connection.a) &&
+          machine.parts.some((part) => part.id === connection.b),
+      ),
+    ).toBe(true);
+    expect(compileMachine(machine).bodies).toHaveLength(1);
+  });
 });
 it("シリアライズしたコマンド履歴を再生できる", () => {
   const project = emptyProject(),

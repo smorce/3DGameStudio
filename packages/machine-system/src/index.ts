@@ -483,6 +483,74 @@ export function attachPart(machine: Machine, part: Part, slot?: number) {
   }
   machine.parts.push(part);
 }
+
+function templateConnector(part: Part, id: string) {
+  const connector = placementConnectors(part).find((item) => item.id === id);
+  if (!connector) throw new Error(`Template connector is unavailable: ${id}`);
+  return connector;
+}
+
+function scaledTemplatePoint(part: Part, point: Vec3) {
+  return point.map(
+    (value, index) => value * part.transform.scale[index],
+  ) as Vec3;
+}
+
+function connectTemplateParts(
+  machine: Machine,
+  parent: Part,
+  child: Part,
+  parentConnectorId: string,
+  childConnectorId: string,
+  childRotation: Vec3 = [...child.transform.rotation],
+  childAnchor?: Vec3,
+) {
+  const parentConnector = templateConnector(parent, parentConnectorId);
+  const childConnector = templateConnector(child, childConnectorId);
+  const parentPoint = rotate(
+    scaledTemplatePoint(parent, parentConnector.position),
+    quaternion(parent.transform.rotation),
+  ).map((value, index) => value + parent.transform.position[index]) as Vec3;
+  const anchor = childAnchor ?? childConnector.position;
+  child.transform.rotation = [...childRotation];
+  child.transform.position = parentPoint.map(
+    (value, index) =>
+      value -
+      rotate(
+        scaledTemplatePoint(child, anchor),
+        quaternion(child.transform.rotation),
+      )[index],
+  ) as Vec3;
+  if (!machine.parts.some((part) => part.id === child.id))
+    machine.parts.push(child);
+  machine.connections.push({
+    id: `template-${parent.id}-${child.id}-${machine.connections.length}`,
+    a: parent.id,
+    b: child.id,
+    connectorA: parentConnectorId,
+    connectorB: childConnectorId,
+    type: "fixed",
+    axis: rotate(parentConnector.axis, quaternion(parent.transform.rotation)),
+    damping: 0.2,
+  });
+  return child;
+}
+
+function attachTemplateWheel(machine: Machine, parent: Part, slot: string) {
+  const candidate = findAttachmentCandidates(machine, "Wheel").find(
+    (item) =>
+      item.parentPartId === parent.id && item.parentConnectorId === slot,
+  );
+  if (!candidate)
+    throw new Error(`Template wheel slot is unavailable: ${slot}`);
+  const wheel = createPart("Wheel");
+  commitAttachment(machine, wheel, candidate);
+  // 飛行機の車輪は着陸装置であり、前進力を発生させない。
+  wheel.metadata.drive = false;
+  wheel.actuator.motorTorque = 0;
+  return wheel;
+}
+
 export function carTemplate() {
   const m = createMachine("はじめてのくるま");
   attachPart(m, createPart("Panel"));
@@ -576,18 +644,168 @@ export function compileMachine(machine: Machine) {
   };
 }
 export function planeTemplate() {
-  const m = createMachine();
-  m.name = "はじめてのひこうき";
-  attachPart(m, createPart("Panel", [0, 1, 0]));
-  for (let i = 0; i < 4; i++) attachPart(m, createPart("Panel"));
-  attachPart(m, createPart("Thruster", [0, 1, -1.6]));
+  const m = createMachine("はじめてのひこうき"),
+    wingAngle = (18 * Math.PI) / 180,
+    fuselage: Part[] = [];
+  const nose = createPart("Panel", [0, 0.85, 2]);
+  m.parts.push(nose);
+  fuselage.push(nose);
+  // +Zを機首として、中央胴体を5枚のPanelで決定論的に作る。
+  for (let i = 1; i < 5; i++)
+    fuselage.push(
+      connectTemplateParts(
+        m,
+        fuselage[i - 1],
+        createPart("Panel"),
+        "edge-z-",
+        "edge-z+",
+      ),
+    );
+
+  const mainWing = fuselage[2];
+  for (const side of [-1, 1] as const) {
+    let parent = mainWing;
+    for (let i = 0; i < 4; i++) {
+      const parentConnector = side < 0 ? "edge-x-" : "edge-x+";
+      const childConnector = side < 0 ? "edge-x+" : "edge-x-";
+      parent = connectTemplateParts(
+        m,
+        parent,
+        createPart("Panel"),
+        parentConnector,
+        childConnector,
+        [wingAngle, 0, 0],
+      );
+    }
+  }
+
+  const tailRoot = fuselage[4],
+    tailPanels: Record<-1 | 1, Part[]> = { [-1]: [], [1]: [] };
+  for (const side of [-1, 1] as const) {
+    const parentConnector = side < 0 ? "edge-x-" : "edge-x+";
+    const childConnector = side < 0 ? "edge-x+" : "edge-x-";
+    let parent = connectTemplateParts(
+      m,
+      tailRoot,
+      createPart("Panel"),
+      parentConnector,
+      childConnector,
+    );
+    tailPanels[side].push(parent);
+    parent = connectTemplateParts(
+      m,
+      parent,
+      createPart("Panel"),
+      parentConnector,
+      childConnector,
+    );
+    tailPanels[side].push(parent);
+  }
+
+  // 後方の水平尾翼上にBlockを置き、機首側には簡単なCockpitを置く。
+  connectTemplateParts(m, fuselage[1], createPart("Block"), "top-1", "mount");
+  connectTemplateParts(m, tailRoot, createPart("Panel"), "top-0", "edge-z-", [
+    0,
+    0,
+    Math.PI / 2,
+  ]);
+  for (const side of [-1, 1] as const) {
+    const thruster = createPart("Thruster");
+    thruster.actuator.motorTorque = 1600;
+    connectTemplateParts(
+      m,
+      tailPanels[side][1],
+      thruster,
+      "edge-z-",
+      "mount",
+      [0, 0, 0],
+      [0, 0, thruster.physics.size[2] / 2],
+    );
+  }
+
+  // 車輪の位置は胴体PanelのConnectorへ明示し、全輪を非駆動にする。
+  const gearSlots: Vec3[] = [
+    [-1, -0.3, -1],
+    [1, -0.3, -1],
+    [-1, -0.3, -3],
+    [1, -0.3, -3],
+  ];
+  nose.connectors = placementConnectors(nose);
+  gearSlots.forEach((position, index) => {
+    const connector = nose.connectors.find((item) => item.id === String(index));
+    if (!connector)
+      throw new Error(`Template landing gear slot is unavailable: ${index}`);
+    connector.position = position;
+  });
+  for (let i = 0; i < gearSlots.length; i++)
+    attachTemplateWheel(m, nose, String(i));
+  // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
+  for (const part of m.parts)
+    if (part.definitionId === "Panel") {
+      part.physics.size = [PANEL_SIDE, 0.04, PANEL_SIDE];
+      part.physics.mass = panelMass(0.04);
+    }
   return m;
 }
 export function boatTemplate() {
-  const m = createMachine("はじめてのボート"),
-    hull = createPart("Panel");
-  hull.metadata.buoyancy = 1;
-  attachPart(m, hull);
-  attachPart(m, createPart("Thruster", [0, 1, -1.7]));
+  const m = createMachine("はじめてのボート");
+  const hullPanel = (position?: Vec3) => {
+    const panel = createPart("Panel", position);
+    panel.metadata.buoyancy = 1;
+    return panel;
+  };
+  const leftRoot = hullPanel([-1, 0, 0.5]);
+  m.parts.push(leftRoot);
+  connectTemplateParts(m, leftRoot, hullPanel(), "edge-z+", "edge-z-");
+  const leftRear = connectTemplateParts(
+      m,
+      leftRoot,
+      hullPanel(),
+      "edge-z-",
+      "edge-z+",
+    ),
+    deckFront = connectTemplateParts(
+      m,
+      leftRoot,
+      createPart("Panel"),
+      "edge-x+",
+      "edge-x-",
+    ),
+    deckRear = connectTemplateParts(
+      m,
+      leftRear,
+      createPart("Panel"),
+      "edge-x+",
+      "edge-x-",
+    ),
+    rightRoot = connectTemplateParts(
+      m,
+      deckFront,
+      hullPanel(),
+      "edge-x+",
+      "edge-x-",
+    ),
+    rightRear = connectTemplateParts(
+      m,
+      rightRoot,
+      hullPanel(),
+      "edge-z-",
+      "edge-z+",
+    );
+  connectTemplateParts(m, rightRoot, hullPanel(), "edge-z+", "edge-z-");
+  connectTemplateParts(m, deckRear, rightRear, "edge-x+", "edge-x-");
+  connectTemplateParts(m, deckFront, createPart("Block"), "top-1", "mount");
+  for (const rear of [leftRear, rightRear]) {
+    const thruster = createPart("Thruster");
+    connectTemplateParts(
+      m,
+      rear,
+      thruster,
+      "edge-z-",
+      "mount",
+      [0, 0, 0],
+      [0, 0, thruster.physics.size[2] / 2],
+    );
+  }
   return m;
 }

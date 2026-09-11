@@ -44,3 +44,19 @@ test("正方形Panel、Tilt、Hinge空力面を確認する @smoke", async ({ pa
   await expect(page.getByText(/3 パーツ/)).toBeVisible();
   await screenshot(page, "hinge-control-surface");
 });
+
+test("Starter Planeを表示して保存する @smoke", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ひこうき", exact: false }).click();
+  await expect(page.getByText(/パーツ$/)).toBeVisible();
+  await page.getByRole("button", { name: "保存", exact: true }).click();
+  await screenshot(page, "starter-plane");
+});
+
+test("Starter Boatを表示して保存する @smoke", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ボート", exact: false }).click();
+  await expect(page.getByText(/パーツ$/)).toBeVisible();
+  await page.getByRole("button", { name: "保存", exact: true }).click();
+  await screenshot(page, "starter-boat");
+});

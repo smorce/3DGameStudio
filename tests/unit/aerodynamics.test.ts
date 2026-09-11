@@ -71,4 +71,19 @@ describe("Panel surface aerodynamics", () => {
     });
     expect(fast.force[1] / slow.force[1]).toBeCloseTo(4, 1);
   });
+
+  it("主翼の正の迎角は上向き揚力を生む", () => {
+    const zeroAngle = computePanelAerodynamicForce({
+        ...input,
+        velocity: [0, 0, 20],
+      }),
+      positiveAngle = computePanelAerodynamicForce({
+        ...input,
+        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        velocity: [0, 0, 20],
+      });
+    expect(Math.abs(zeroAngle.lift[1])).toBeLessThan(1e-6);
+    expect(positiveAngle.angleOfAttack).toBeGreaterThan(0);
+    expect(positiveAngle.lift[1]).toBeGreaterThan(0);
+  });
 });
