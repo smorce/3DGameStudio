@@ -18,6 +18,8 @@ export class Engine {
   private disposed = false;
   private ticket = 0;
   private dropUntil = 0;
+  private dropPromise?: Promise<void>;
+  private resolveDrop?: () => void;
   mode: "EDIT" | "PLAY" | "DROP" = "EDIT";
   fps = 0;
   course?: CourseProgress;
@@ -59,9 +61,10 @@ export class Engine {
     this.course = undefined;
     this.physics.dispose();
     this.renderer.load(this.project);
+    this.resolveDropWaiter();
   }
   async play(options: { courseId?: string | null } = {}) {
-    if (!this.project || this.mode === "PLAY") return;
+    if (!this.project || this.mode !== "EDIT") return;
     const ticket = ++this.ticket;
     const course = activeCourse(this.project, options.courseId);
     await this.physics.load(structuredClone(this.project), {
@@ -74,13 +77,15 @@ export class Engine {
     this.mode = "PLAY";
     this.accumulator = 0;
   }
-  stop() {
+  stop(): Promise<void> {
+    if (this.mode === "DROP") return this.dropPromise ?? Promise.resolve();
+    if (this.mode === "EDIT") return Promise.resolve();
     this.ticket++;
     this.blur();
     if (!this.project) {
       this.mode = "EDIT";
       this.physics.dispose();
-      return;
+      return Promise.resolve();
     }
     const target = this.renderer.viewTarget;
     this.course = undefined;
@@ -89,6 +94,16 @@ export class Engine {
     this.mode = "DROP";
     this.dropUntil = performance.now() + 1200;
     this.accumulator = 0;
+    this.dropPromise = new Promise<void>((resolve) => {
+      this.resolveDrop = resolve;
+    });
+    return this.dropPromise;
+  }
+  private resolveDropWaiter() {
+    const resolve = this.resolveDrop;
+    this.resolveDrop = undefined;
+    this.dropPromise = undefined;
+    resolve?.();
   }
   private tick = (now: number) => {
     if (this.disposed) return;
@@ -132,8 +147,10 @@ export class Engine {
       this.renderer.render(this.physics.poses(), dropping ? 0 : throttle);
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();
+        if (this.project) this.renderer.restoreEditTransforms(this.project);
         this.mode = "EDIT";
         this.accumulator = 0;
+        this.resolveDropWaiter();
       }
     } else this.renderer.render();
     this.onFrame?.();
@@ -154,5 +171,6 @@ export class Engine {
     window.removeEventListener("blur", this.blur);
     this.physics.dispose();
     this.renderer.dispose();
+    this.resolveDropWaiter();
   }
 }

@@ -21,8 +21,22 @@ export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
 export interface RendererAdapter {
   load(project: Project): void;
+  restoreEditTransforms(project: Project): void;
   render(poses?: Map<string, Pose>, thrust?: number): void;
   dispose(): void;
+}
+export function syncPartVisualTransforms(
+  parts: Map<string, THREE.Object3D>,
+  project: Project,
+) {
+  for (const machine of project.machines)
+    for (const part of machine.parts) {
+      const visual = parts.get(part.id);
+      if (!visual) continue;
+      visual.position.fromArray(part.transform.position);
+      visual.rotation.fromArray([...part.transform.rotation, "XYZ"]);
+      visual.scale.fromArray(part.transform.scale);
+    }
 }
 export class ThreeRenderer implements RendererAdapter {
   renderer: THREE.WebGLRenderer;
@@ -458,6 +472,30 @@ export class ThreeRenderer implements RendererAdapter {
     this.streamer.update(this.controls.target.toArray() as Vec3);
     this.select(this.selected);
   }
+  private syncProjectPartTransforms(p: Project) {
+    syncPartVisualTransforms(this.parts, p);
+  }
+  restoreEditTransforms(p: Project) {
+    this.project = p;
+    this.syncProjectPartTransforms(p);
+    // Play中はカメラがPhysics位置を追従するため、編集位置へ戻したマシンが
+    // 画面外に残らないよう、角度とズームを保ったままターゲットを引き戻す。
+    const parts = p.machines[0]?.parts;
+    if (parts?.length) {
+      const center = parts
+        .reduce(
+          (sum, part) => sum.add(new THREE.Vector3(...part.transform.position)),
+          new THREE.Vector3(),
+        )
+        .divideScalar(parts.length);
+      const delta = center.clone().sub(this.controls.target);
+      this.camera.position.add(delta);
+      this.controls.target.copy(center);
+      this.controls.update();
+      this.streamer?.update(this.controls.target.toArray() as Vec3);
+    }
+    this.select(this.selected);
+  }
   select(id?: string) {
     this.selected = id;
     this.clear(this.selectionOutline);
@@ -536,7 +574,7 @@ export class ThreeRenderer implements RendererAdapter {
         this.camera.position.add(delta.multiplyScalar(0.08));
         this.controls.target.lerp(target, 0.08);
       }
-    }
+    } else if (this.project) this.syncProjectPartTransforms(this.project);
     this.highlighted.visible = !poses;
     this.selectionOutline.visible = !poses;
     this.streamer?.update(this.controls.target.toArray() as Vec3);

@@ -1,0 +1,36 @@
+import { expect, it } from "vitest";
+import * as THREE from "three";
+import {
+  createMachine,
+  createPart,
+} from "../../packages/machine-system/src/index";
+import { emptyProject } from "../../packages/project-schema/src/index";
+import { syncPartVisualTransforms } from "../../packages/renderer-three/src/index";
+
+it("編集Pose同期はVisualのTransformをProjectへ戻し、Projectを書き換えない", () => {
+  const project = emptyProject(),
+    machine = createMachine(),
+    part = createPart("Panel");
+  part.transform = {
+    position: [3, 2, -4],
+    rotation: [0.2, -0.3, 0.4],
+    scale: [1.2, 0.8, 1.4],
+  };
+  machine.parts.push(part);
+  project.machines.push(machine);
+  const before = structuredClone(project);
+  const visual = new THREE.Group();
+  visual.position.set(-20, 7, 11);
+  visual.rotation.set(-0.5, 0.6, -0.7);
+  visual.scale.set(4, 5, 6);
+
+  syncPartVisualTransforms(new Map([[part.id, visual]]), project);
+
+  expect(visual.position.toArray()).toEqual(part.transform.position);
+  expect(visual.rotation.toArray()).toEqual([
+    ...part.transform.rotation,
+    "XYZ",
+  ]);
+  expect(visual.scale.toArray()).toEqual(part.transform.scale);
+  expect(project).toEqual(before);
+});

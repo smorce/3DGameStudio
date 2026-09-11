@@ -56,7 +56,14 @@ function App() {
     [tool, setTool] = useState<EditTool>("select"),
     [cursor, setCursor] = useState<Vec3>([5, 0, 5]),
     [stats, setStats] = useState<Record<string, number>>({}),
-    [runtime, setRuntime] = useState("");
+    [runtime, setRuntime] = useState(""),
+    [engineMode, setEngineMode] = useState<Engine["mode"]>("EDIT"),
+    [visualTransforms, setVisualTransforms] = useState<
+      Record<
+        string,
+        { position: number[]; rotation: number[]; scale: number[] }
+      >
+    >({});
   const [placement, setPlacement] = useState<PlacementSession>();
   const [hovered, setHovered] = useState<string>();
   const [candidateScreens, setCandidateScreens] = useState<
@@ -64,6 +71,11 @@ function App() {
   >([]);
   const placementRef = useRef(placement);
   placementRef.current = placement;
+  const busyRef = useRef(busy),
+    playingRef = useRef(playing);
+  busyRef.current = busy;
+  playingRef.current = playing;
+  const editorLocked = busy || playing || engineMode !== "EDIT";
   const cancelPlacement = () => {
     placementRef.current = undefined;
     setPlacement(undefined);
@@ -72,6 +84,12 @@ function App() {
     engine.current?.renderer.showAttachmentCandidates([]);
   };
   const commitPlacement = (candidateId: string) => {
+    if (
+      busyRef.current ||
+      playingRef.current ||
+      engine.current?.mode !== "EDIT"
+    )
+      return;
     const session = placementRef.current,
       m = bus.project.machines[0];
     if (!session || !m) return;
@@ -101,6 +119,8 @@ function App() {
   toolRef.current = tool;
   const canvas = useRef<HTMLCanvasElement>(null),
     engine = useRef<Engine>(null);
+  const canEdit = () =>
+    !busyRef.current && !playingRef.current && engine.current?.mode === "EDIT";
   const machine = project.machines[0],
     part = machine?.parts.find((p) => p.id === selected);
   const run = (fn: () => void) => {
@@ -110,7 +130,10 @@ function App() {
       setMessage(e instanceof Error ? e.message : "Operation failed");
     }
   };
-  const execute = (c: Command) => run(() => bus.execute(c));
+  const execute = (c: Command) => {
+    if (!canEdit()) return;
+    run(() => bus.execute(c));
+  };
   useEffect(() => bus.subscribe(() => setProject(bus.project)), []);
   useEffect(() => {
     try {
@@ -131,12 +154,30 @@ function App() {
     e.onFrame = () => {
       if (performance.now() - lastStats > 250) {
         lastStats = performance.now();
+        setEngineMode((before) => (before === e.mode ? before : e.mode));
         setStats({
           ...e.stats,
           x: e.position[0],
           y: e.position[1],
           z: e.position[2],
         });
+        if (e.mode === "EDIT")
+          setVisualTransforms(
+            Object.fromEntries(
+              [...e.renderer.parts].map(([id, visual]) => [
+                id,
+                {
+                  position: visual.position.toArray(),
+                  rotation: [
+                    visual.rotation.x,
+                    visual.rotation.y,
+                    visual.rotation.z,
+                  ],
+                  scale: visual.scale.toArray(),
+                },
+              ]),
+            ),
+          );
         setRuntime(
           e.course
             ? `${e.course.finished ? "ゴール！" : "チェックポイント"} ${e.course.next}/${e.course.course.checkpoints.length} · ${e.course.elapsed.toFixed(1)} 秒`
@@ -145,6 +186,7 @@ function App() {
       }
     };
     e.renderer.onStroke = (points) => {
+      if (!canEdit()) return;
       const p = bus.project;
       let course = activeCourse(p);
       const commands: Command[] = [];
@@ -174,7 +216,7 @@ function App() {
         JSON.stringify(before) === JSON.stringify(points) ? before : points,
       );
     e.renderer.onPick = (id, point) => {
-      if (e.mode === "PLAY") return;
+      if (!canEdit()) return;
       setCursor(point);
       if (toolRef.current !== "select") {
         place(toolRef.current, point);
@@ -197,7 +239,13 @@ function App() {
       return;
     }
     const m = project.machines[0];
-    if (!m || !started || playing || level !== "easy" || tab !== "machine") {
+    if (
+      !m ||
+      !started ||
+      editorLocked ||
+      level !== "easy" ||
+      tab !== "machine"
+    ) {
       cancelPlacement();
       return;
     }
@@ -222,14 +270,17 @@ function App() {
         (p) => p.id === (placement.movingPartId ?? placement.sourcePartId),
       ) ?? createPart(placement.kind);
     engine.current?.renderer.showAttachmentCandidates(candidates, preview);
-  }, [placement, project, started, playing, level, tab]);
+  }, [placement, project, started, editorLocked, level, tab]);
   useEffect(() => {
     if (engine.current)
-      engine.current.renderer.drawing = tool === "road" && !playing;
-  }, [tool, playing]);
+      engine.current.renderer.drawing = tool === "road" && !editorLocked;
+  }, [tool, editorLocked]);
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (playing || (e.target as HTMLElement).matches("input,textarea,select"))
+      if (
+        !canEdit() ||
+        (e.target as HTMLElement).matches("input,textarea,select")
+      )
         return;
       if (e.code === "Escape") {
         cancelPlacement();
@@ -243,7 +294,7 @@ function App() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [playing]);
+  }, [playing, busy]);
   function start(template: boolean | "plane" | "boat") {
     run(() => {
       engine.current?.renderer.resetView();
@@ -340,7 +391,7 @@ function App() {
     movingPartId?: string,
     sourcePartId?: string,
   ) {
-    if (!machine) return;
+    if (!machine || !canEdit()) return;
     const candidates = findAttachmentCandidates(
       machine,
       kind,
@@ -359,7 +410,7 @@ function App() {
     );
   }
   function add(kind: Part["definitionId"]) {
-    if (!machine) return;
+    if (!machine || !canEdit()) return;
     if (level === "easy") {
       if (placement?.kind === kind) cancelPlacement();
       else beginPlacement(kind);
@@ -371,11 +422,12 @@ function App() {
     setSelected(p.id);
   }
   async function toggle() {
+    if (busy) return;
     cancelPlacement();
     setBusy(true);
     try {
       if (playing) {
-        engine.current?.stop();
+        await engine.current?.stop();
         setPlaying(false);
       } else {
         await engine.current?.play();
@@ -390,7 +442,7 @@ function App() {
   }
   return (
     <main
-      className={`app ${level} ${started ? "started" : ""} ${!playing && (level !== "easy" || tab !== "machine") ? "has-panel" : ""}`}
+      className={`app ${level} ${started ? "started" : ""} ${!editorLocked && (level !== "easy" || tab !== "machine") ? "has-panel" : ""}`}
     >
       <header>
         <a className="brand" href="#" aria-label="Machine Studio">
@@ -404,6 +456,7 @@ function App() {
         <div className="mode-switch">
           <button
             className={level === "easy" ? "active" : ""}
+            disabled={editorLocked}
             onClick={() => {
               setLevel("easy");
               if (["assets", "ai"].includes(tab)) setTab("machine");
@@ -413,6 +466,7 @@ function App() {
           </button>
           <button
             className={level === "creator" ? "active" : ""}
+            disabled={editorLocked}
             onClick={() => {
               setLevel("creator");
               if (["assets", "ai"].includes(tab)) setTab("machine");
@@ -422,6 +476,7 @@ function App() {
           </button>
           <button
             className={level === "studio" ? "active" : ""}
+            disabled={editorLocked}
             onClick={() => setLevel("studio")}
           >
             Studio
@@ -432,7 +487,7 @@ function App() {
             走るコース
             <select
               aria-label="走るコース"
-              disabled={playing}
+              disabled={editorLocked}
               value={activeCourse(project)?.id ?? ""}
               onChange={(e) =>
                 execute({
@@ -452,6 +507,7 @@ function App() {
         )}
         <button
           className="save"
+          disabled={editorLocked}
           onClick={() =>
             run(() => {
               saveProject(localStorage, project);
@@ -470,8 +526,12 @@ function App() {
         </button>
       </header>
       <div className="workspace">
-        <canvas ref={canvas} aria-label="3Dビューポート" />
-        {placement && !playing && (
+        <canvas
+          ref={canvas}
+          aria-label="3Dビューポート"
+          data-rendered-transforms={JSON.stringify(visualTransforms)}
+        />
+        {placement && !editorLocked && (
           <>
             <div className="placement-message" role="status">
               <span>{hovered ? "ここにつける" : message}</span>
@@ -492,7 +552,7 @@ function App() {
             </div>
           </>
         )}
-        {started && !playing && (
+        {started && !editorLocked && (
           <nav className="workspace-tabs" aria-label="作るもの">
             {[
               ["machine", "マシン"],
@@ -523,112 +583,114 @@ function App() {
           <h1>{playing ? "走ってみよう。" : "つくって、走ろう。"}</h1>
           <p>{message}</p>
         </div>
-        {started && !playing && (level !== "easy" || tab !== "machine") && (
-          <aside className="side-panel">
-            {tab === "machine" ? (
-              <MachineInspector
-                machine={machine}
-                selected={selected}
-                onSelect={setSelected}
-                execute={execute}
-                advanced={level === "studio"}
-              />
-            ) : tab === "assets" ? (
-              <AssetBrowser
-                project={project}
-                execute={execute}
-                position={cursor}
-              />
-            ) : tab === "ai" ? (
-              <AIHelp
-                project={project}
-                onApply={(plan) => run(() => applyPlan(bus, plan))}
-              />
-            ) : (
-              <>
-                <WorldCoursePanel
-                  project={project}
+        {started &&
+          !editorLocked &&
+          (level !== "easy" || tab !== "machine") && (
+            <aside className="side-panel">
+              {tab === "machine" ? (
+                <MachineInspector
+                  machine={machine}
+                  selected={selected}
+                  onSelect={setSelected}
                   execute={execute}
-                  tool={tool}
-                  setTool={setTool}
-                  tab={tab}
                   advanced={level === "studio"}
                 />
+              ) : tab === "assets" ? (
+                <AssetBrowser
+                  project={project}
+                  execute={execute}
+                  position={cursor}
+                />
+              ) : tab === "ai" ? (
+                <AIHelp
+                  project={project}
+                  onApply={(plan) => run(() => applyPlan(bus, plan))}
+                />
+              ) : (
+                <>
+                  <WorldCoursePanel
+                    project={project}
+                    execute={execute}
+                    tool={tool}
+                    setTool={setTool}
+                    tab={tab}
+                    advanced={level === "studio"}
+                  />
+                  <section>
+                    <h4>置く場所</h4>
+                    <div className="vector">
+                      {[0, 2].map((i) => (
+                        <label key={i}>
+                          {"XYZ"[i]}
+                          <input
+                            aria-label={`配置 ${"XYZ"[i]}`}
+                            type="number"
+                            value={Math.round(cursor[i])}
+                            onChange={(e) => {
+                              const p = [...cursor] as Vec3;
+                              p[i] = Number(e.target.value);
+                              setCursor(p);
+                            }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                    <button
+                      disabled={tool === "select"}
+                      onClick={() => place(tool, cursor)}
+                    >
+                      ここに置く
+                    </button>
+                    <p>
+                      {tool === "select"
+                        ? "道具をえらんでください"
+                        : `選択中: ${tool}`}
+                    </p>
+                  </section>
+                </>
+              )}
+              {level === "studio" && (
                 <section>
-                  <h4>置く場所</h4>
-                  <div className="vector">
-                    {[0, 2].map((i) => (
-                      <label key={i}>
-                        {"XYZ"[i]}
-                        <input
-                          aria-label={`配置 ${"XYZ"[i]}`}
-                          type="number"
-                          value={Math.round(cursor[i])}
-                          onChange={(e) => {
-                            const p = [...cursor] as Vec3;
-                            p[i] = Number(e.target.value);
-                            setCursor(p);
-                          }}
-                        />
-                      </label>
-                    ))}
-                  </div>
+                  <h3>プロジェクト</h3>
                   <button
-                    disabled={tool === "select"}
-                    onClick={() => place(tool, cursor)}
+                    onClick={() => {
+                      const url = URL.createObjectURL(
+                        new Blob([JSON.stringify(project, null, 2)], {
+                          type: "application/json",
+                        }),
+                      );
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "machine-studio.json";
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
                   >
-                    ここに置く
+                    JSONを書き出す
                   </button>
+                  <label className="upload">
+                    JSONを読み込む
+                    <input
+                      aria-label="プロジェクト読込"
+                      type="file"
+                      accept=".json"
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (f) {
+                          const text = await f.text();
+                          run(() => bus.load(JSON.parse(text)));
+                        }
+                      }}
+                    />
+                  </label>
                   <p>
-                    {tool === "select"
-                      ? "道具をえらんでください"
-                      : `選択中: ${tool}`}
+                    ミッション {project.missions.length} / 配置{" "}
+                    {project.world.entities.length}
                   </p>
                 </section>
-              </>
-            )}
-            {level === "studio" && (
-              <section>
-                <h3>プロジェクト</h3>
-                <button
-                  onClick={() => {
-                    const url = URL.createObjectURL(
-                      new Blob([JSON.stringify(project, null, 2)], {
-                        type: "application/json",
-                      }),
-                    );
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "machine-studio.json";
-                    a.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                >
-                  JSONを書き出す
-                </button>
-                <label className="upload">
-                  JSONを読み込む
-                  <input
-                    aria-label="プロジェクト読込"
-                    type="file"
-                    accept=".json"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0];
-                      if (f) {
-                        const text = await f.text();
-                        run(() => bus.load(JSON.parse(text)));
-                      }
-                    }}
-                  />
-                </label>
-                <p>
-                  ミッション {project.missions.length} / 配置{" "}
-                  {project.world.entities.length}
-                </p>
-              </section>
-            )}
-          </aside>
-        )}
+              )}
+            </aside>
+          )}
         {(level === "studio" || playing) && (
           <output className="stats" aria-label="Runtime Stats">
             {level !== "easy" && (
@@ -671,14 +733,24 @@ function App() {
           </output>
         )}
         <div className="tools">
-          <button disabled={playing || !bus.canUndo} onClick={() => bus.undo()}>
+          <button
+            disabled={editorLocked || !bus.canUndo}
+            onClick={() => {
+              if (canEdit()) bus.undo();
+            }}
+          >
             ↶ 元に戻す
           </button>
-          <button disabled={playing || !bus.canRedo} onClick={() => bus.redo()}>
+          <button
+            disabled={editorLocked || !bus.canRedo}
+            onClick={() => {
+              if (canEdit()) bus.redo();
+            }}
+          >
             ↷ やり直す
           </button>
           <button
-            disabled={playing}
+            disabled={editorLocked}
             onClick={() => {
               setStarted(false);
               setSelected(undefined);
@@ -688,7 +760,7 @@ function App() {
             新しくつくる
           </button>
         </div>
-        {part && !playing && !placement && (
+        {part && !editorLocked && !placement && (
           <div className="selection-tools" data-selected-id={part.id}>
             <span>{labels[part.definitionId]}</span>
             {level === "easy" && (
@@ -838,7 +910,7 @@ function App() {
             </div>
           </div>
         )}
-        {playing && (
+        {playing && !busy && (
           <div className="drive">
             <button
               onPointerDown={() => {
@@ -891,7 +963,7 @@ function App() {
           <EasyPalette
             onAdd={add}
             activeKind={placement?.kind}
-            disabled={playing || busy || !started}
+            disabled={editorLocked || !started}
           />
         ) : (
           <div className="context-footer">
