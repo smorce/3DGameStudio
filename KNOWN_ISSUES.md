@@ -2,7 +2,7 @@
 
 - 空力はPanel単位の簡易Surface Modelです。Wake、Downwash、Ground effect、Compressibility、Viscosity、詳細なStall、Turbulenceは再現しません。
 - PanelのEdge Connectorは接続位置を維持しますが、任意形状同士の干渉解決や自動配置は行いません。
-- Motorは明示的にHinge側へ固定接続された場合だけRevolute Jointを駆動します。未接続Motorの自動Wheel強化はありません。
+- Motorは明示的にHinge側へ固定接続された場合だけRevolute Jointを駆動します。未接続Motorの自動Wheel強化はありません。`motorTorque`（最大Torque）と`targetAngularVelocity`（目標角速度）は独立していますが、Rapier 0.19.3の公開Joint APIに最大Impulse設定がないため、速度誤差比例制御とBody A／Bへの等大反対向きTorqueで制限します。
 - `pnpm format:check` は既存の長大な仕様書を含むため、全ドキュメントの整形状態は個別の実装変更とは独立して確認します。
 
 # 現在の制約

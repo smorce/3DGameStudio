@@ -8,7 +8,12 @@ import {
   carTemplate,
   createPart,
 } from "../../packages/machine-system/src/index";
-import { PANEL_SIDE, panelMass } from "../../packages/project-schema/src/index";
+import {
+  DEFAULT_MOTOR_MAX_TORQUE,
+  DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY,
+  PANEL_SIDE,
+  panelMass,
+} from "../../packages/project-schema/src/index";
 describe("モデルとコマンド", () => {
   it("履歴とシリアライズ、詳細値を保持する", () => {
     const bus = new CommandBus(emptyProject()),
@@ -48,7 +53,7 @@ describe("モデルとコマンド", () => {
   });
   it("旧スキーマと壊れた入力", () => {
     const p = emptyProject();
-    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(3);
+    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(4);
     expect(() => parseProject({ ...p, schemaVersion: 9 })).toThrow();
     expect(() => parseProject({})).toThrow();
   });
@@ -67,13 +72,47 @@ describe("モデルとコマンド", () => {
     project.machines.push(machine);
     const migrated = parseProject({ ...project, schemaVersion: 2 });
     const panel = migrated.machines[0].parts[0];
-    expect(migrated.schemaVersion).toBe(3);
+    expect(migrated.schemaVersion).toBe(4);
     expect(panel.definitionId).toBe("Panel");
     expect(panel.physics.size[0]).toBe(PANEL_SIDE);
     expect(panel.physics.size[2]).toBe(PANEL_SIDE);
     expect(panel.physics.size[1]).toBeCloseTo(0.3);
     expect(panel.physics.mass).toBeCloseTo(panelMass(0.3));
     expect(panel.transform.scale).toEqual([1, 1, 1]);
+  });
+  it("v3 Motorの旧速度式をv4の目標角速度へ移行する", () => {
+    const project = emptyProject(),
+      machine = carTemplate(),
+      motor = createPart("Motor");
+    motor.actuator.motorTorque = 200;
+    machine.parts.push(motor);
+    project.machines.push(machine);
+    const legacy = JSON.parse(JSON.stringify(project)) as Record<
+      string,
+      unknown
+    >;
+    legacy.schemaVersion = 3;
+    const legacyMachine = (legacy.machines as Record<string, unknown>[])[0];
+    const legacyParts = legacyMachine.parts as Record<string, unknown>[];
+    const legacyMotor = legacyParts.find(
+      (part) => part.definitionId === "Motor",
+    )!;
+    delete (legacyMotor.actuator as Record<string, unknown>)
+      .targetAngularVelocity;
+    const migrated = parseProject(legacy);
+    const migratedMotor = migrated.machines[0].parts.find(
+      (part) => part.definitionId === "Motor",
+    )!;
+    expect(migrated.schemaVersion).toBe(4);
+    expect(migratedMotor.actuator.motorTorque).toBe(200);
+    expect(migratedMotor.actuator.targetAngularVelocity).toBe(10);
+  });
+  it("新規Motorは最大Torqueと目標角速度を別々に初期化する", () => {
+    const motor = createPart("Motor");
+    expect(motor.actuator.motorTorque).toBe(DEFAULT_MOTOR_MAX_TORQUE);
+    expect(motor.actuator.targetAngularVelocity).toBe(
+      DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY,
+    );
   });
 
   it("Panelの厚さ変更は幅・長さと質量を固定する", () => {

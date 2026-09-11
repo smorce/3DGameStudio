@@ -32,8 +32,63 @@ export interface Pose {
   position: Vec3;
   rotation: Quat;
 }
+const PHYSICS_FIXED_DT = 1 / 60;
+// 速度誤差1 rad/sあたりに要求するトルク。最終出力はmaxTorqueで制限する。
+const MOTOR_VELOCITY_CONTROLLER_GAIN = 40;
+interface RevoluteRuntime {
+  bodyA: RAPIER.RigidBody;
+  bodyB: RAPIER.RigidBody;
+  axisLocal: Vec3;
+  damping: number;
+}
+interface MotorRuntime extends RevoluteRuntime {
+  part: Part;
+}
 const vector = (v: Vec3) => ({ x: v[0], y: v[1], z: v[2] });
 const rotation = (q: Quat) => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
+const normalize = (v: Vec3): Vec3 => {
+  const length = Math.hypot(...v);
+  return length > 0.000001
+    ? (v.map((value) => value / length) as Vec3)
+    : [0, 0, 0];
+};
+const clamp = (value: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, value));
+function worldAxis(runtime: RevoluteRuntime): Vec3 {
+  const q = runtime.bodyA.rotation();
+  const bodyRotation: Quat = [q.x, q.y, q.z, q.w];
+  return normalize(rotate(runtime.axisLocal, bodyRotation));
+}
+function relativeAngularVelocity(runtime: RevoluteRuntime, axisWorld: Vec3) {
+  const a = runtime.bodyA.angvel(),
+    b = runtime.bodyB.angvel();
+  return (
+    (b.x - a.x) * axisWorld[0] +
+    (b.y - a.y) * axisWorld[1] +
+    (b.z - a.z) * axisWorld[2]
+  );
+}
+function applyEqualOppositeTorque(
+  runtime: RevoluteRuntime,
+  axisWorld: Vec3,
+  torque: number,
+) {
+  const applied = axisWorld.map((value) => value * torque) as Vec3;
+  runtime.bodyA.addTorque(vector(applied.map((value) => -value) as Vec3), true);
+  runtime.bodyB.addTorque(vector(applied), true);
+}
+function computeBoundedMotorTorque(
+  targetVelocity: number,
+  relativeVelocity: number,
+  maxTorque: number,
+) {
+  if (maxTorque <= 0) return 0;
+  return clamp(
+    MOTOR_VELOCITY_CONTROLLER_GAIN * (targetVelocity - relativeVelocity),
+    -maxTorque,
+    maxTorque,
+  );
+}
 const cross = (a: Vec3, b: Vec3): Vec3 => [
   a[1] * b[2] - a[2] * b[1],
   a[2] * b[0] - a[0] * b[2],
@@ -98,17 +153,15 @@ export class RapierPhysics {
   }[] = [];
   private parts: { part: Part; body: RAPIER.RigidBody }[] = [];
   private water: WaterSurface = { enabled: false, height: 0 };
-  private motors: {
-    joint: RAPIER.RevoluteImpulseJoint;
-    part: Part;
-    damping: number;
-  }[] = [];
+  private hinges: RevoluteRuntime[] = [];
+  private motors: MotorRuntime[] = [];
   async load(project: Project, options: { courseId?: string | null } = {}) {
     this.dispose();
     const generation = this.generation;
     const rapier = await initialize();
     if (generation !== this.generation) return;
     this.world = new rapier.World(vector(project.settings.gravity));
+    this.world.timestep = PHYSICS_FIXED_DT;
     this.water = structuredClone(project.world.water);
     type StaticEntry = {
       kind: string;
@@ -385,6 +438,13 @@ export class RapierPhysics {
           true,
         ) as RAPIER.RevoluteImpulseJoint;
         joint.setContactsEnabled(false);
+        const runtime: RevoluteRuntime = {
+          bodyA: a,
+          bodyB: b,
+          axisLocal: normalize(c.axis),
+          damping: c.damping,
+        };
+        this.hinges.push(runtime);
         const driver = m.parts.find(
           (candidate) =>
             candidate.definitionId === "Motor" &&
@@ -396,8 +456,7 @@ export class RapierPhysics {
                   (link.b === c.b && link.a === candidate.id)),
             ),
         );
-        if (driver)
-          this.motors.push({ joint, part: driver, damping: c.damping });
+        if (driver) this.motors.push({ ...runtime, part: driver });
       }
       const chassis = bodies.get(
         m.bodyForPart.get(
@@ -453,13 +512,32 @@ export class RapierPhysics {
         );
         v.controller.setWheelBrake(i, brake ? 20 : 0);
       });
-      v.controller.updateVehicle(1 / 60);
+      v.controller.updateVehicle(PHYSICS_FIXED_DT);
     }
-    for (const { joint, part, damping } of this.motors)
-      joint.configureMotorVelocity(
-        part.actuator.enabled ? (throttle * part.actuator.motorTorque) / 20 : 0,
-        part.actuator.enabled ? part.actuator.motorTorque : damping + 1,
-      );
+    for (const hinge of this.hinges) {
+      const axisWorld = worldAxis(hinge),
+        relativeVelocity = relativeAngularVelocity(hinge, axisWorld);
+      if (hinge.damping > 0)
+        applyEqualOppositeTorque(
+          hinge,
+          axisWorld,
+          -hinge.damping * relativeVelocity,
+        );
+    }
+    const input = Number.isFinite(throttle) ? clamp(throttle, -1, 1) : 0;
+    for (const motor of this.motors) {
+      if (!motor.part.actuator.enabled || input === 0) continue;
+      const axisWorld = worldAxis(motor),
+        relativeVelocity = relativeAngularVelocity(motor, axisWorld),
+        targetVelocity = input * motor.part.actuator.targetAngularVelocity,
+        appliedTorque = computeBoundedMotorTorque(
+          targetVelocity,
+          relativeVelocity,
+          motor.part.actuator.motorTorque,
+        );
+      if (appliedTorque !== 0)
+        applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
+    }
     for (const { part, body } of this.parts) {
       const velocity = body.linvel();
       const panelPose = this.pose(
@@ -526,7 +604,6 @@ export class RapierPhysics {
         );
       }
     }
-    this.world.timestep = 1 / 60;
     this.world.step();
   }
   private pose(
@@ -612,6 +689,7 @@ export class RapierPhysics {
     }
     this.vehicles = [];
     this.parts = [];
+    this.hinges = [];
     this.motors = [];
   }
 }

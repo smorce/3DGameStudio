@@ -99,6 +99,10 @@ Rapier初期化の依存ライブラリ警告、Viteの大きなWASMチャンク
 
 ## Panel Surface Aerodynamics
 
-`schemaVersion: 3`へ移行し、Wingを新規Part KindとPaletteから削除しました。v2のWing／旧Panelは正方形Panelへ正規化され、厚さだけが寸法値として残ります。`packages/aerodynamics`はRapier非依存の純粋計算、`physics-rapier`は各PanelとThrusterをWorld Positionへ適用し、Motorは明示接続したRevolute Jointだけを駆動します。詳細は[aerodynamics.md](aerodynamics.md)と[KNOWN_ISSUES.md](../KNOWN_ISSUES.md)を参照してください。
+`schemaVersion: 4`へ移行し、Wingを新規Part KindとPaletteから削除しました。v2のWing／旧Panelは正方形Panelへ正規化され、厚さだけが寸法値として残ります。v3のMotorは旧`motorTorque / 20`を目標角速度へ移行します。`packages/aerodynamics`はRapier非依存の純粋計算、`physics-rapier`は各PanelとThrusterをWorld Positionへ適用し、Motorは明示接続したRevolute Jointだけをbounded Torqueで駆動します。詳細は[aerodynamics.md](aerodynamics.md)、[machine-system.md](machine-system.md)、[KNOWN_ISSUES.md](../KNOWN_ISSUES.md)を参照してください。
 
 指示5の品質ゲートも完了しました。`pnpm typecheck`、`pnpm lint`、Unit／Integration 79テスト、Build、Chromium E2E 18件、Smoke 12件がすべてPASSです。Panelの正方形Visual、Tilt、Hinge制御面の証跡は `docs/screenshots/square-panel-aircraft.png`、`docs/screenshots/tilted-panels.png`、`docs/screenshots/hinge-control-surface.png` に保存しています。
+
+## Motor物理モデル分離
+
+`motorTorque`を最大Torque、`targetAngularVelocity`を目標角速度へ分離し、v3→v4 Migration、比例ゲイン40のbounded Torque、Body A／Bへの反作用、LEVEL 2／Studio編集を追加しました。詳細は[Motor実装報告](../2026_0911_0927_報告内容.md)を参照してください。全Vitest 90件、Chromium E2E 19件、Smoke 12件、typecheck、lint、buildはPASSです。全体の`format:check`は今回対象外の既存仕様書3件で未達です。

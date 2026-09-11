@@ -26,11 +26,11 @@ E2Eはポート8788に専用Serverを起動し、`.data/e2e`を使用します�
 ## Panel Surface Aerodynamics
 
 - `tests/unit/aerodynamics.test.ts`: 速度ゼロ、平行流、正負Tilt、正対時の抗力、速度二乗則。
-- `tests/unit/model.test.ts`: v2 Wing→v3 Panel Migration、Panel寸法固定、厚さと質量の連動。
+- `tests/unit/model.test.ts`: v2 Wing→v3 Panel Migration、v3 Motor→v4 Actuator Migration、Panel寸法固定、厚さと質量の連動。
 - `tests/unit/placement.test.ts`: Panel Edge-to-Edge接続と`part.tilt`後のAttachment Point保持。
-- `tests/integration/physics.test.ts`: Panelを含む剛体の実Rapier走行、Thrusterの継続推力、既存Wheel回帰。
+- `tests/integration/physics.test.ts`: Panelを含む剛体の実Rapier走行、Thrusterの継続推力、Motorの正負入力・最大Torque・負荷・反作用、既存Wheel回帰。
 
-Play中は各PanelのWorld CenterでPoint Velocityを取得し、Panelごとに`addForceAtPoint`します。Motorは明示的なHinge接続がない限りWheel出力へ影響しません。
+Play中は各PanelのWorld CenterでPoint Velocityを取得し、Panelごとに`addForceAtPoint`します。Motorは明示的なHinge接続がない限りWheel出力やMachine全体へ影響しません。Motorの速度制御はJointを直接回転させず、Body A／Bへ等大反対向きのbounded Torqueを加えます。
 
 ## シナリオと証拠
 

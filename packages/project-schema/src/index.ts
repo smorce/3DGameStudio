@@ -10,6 +10,9 @@ export const DEFAULT_PANEL_THICKNESS = 0.12;
 export const PANEL_MIN_THICKNESS = 0.02;
 export const PANEL_MAX_THICKNESS = 1;
 export const PANEL_DENSITY = 250;
+export const DEFAULT_MOTOR_MAX_TORQUE = 180;
+export const DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY = 9;
+export const MAX_MOTOR_TARGET_ANGULAR_VELOCITY = 1000;
 export const panelMass = (thickness: number) =>
   PANEL_DENSITY * PANEL_SIDE * PANEL_SIDE * thickness;
 export const transformSchema = z.object({
@@ -56,6 +59,11 @@ export const partSchema = z.object({
   ),
   actuator: z.object({
     motorTorque: z.number().min(0).max(10000),
+    targetAngularVelocity: z
+      .number()
+      .finite()
+      .min(0)
+      .max(MAX_MOTOR_TARGET_ANGULAR_VELOCITY),
     steering: z.number().min(0).max(1),
     enabled: z.boolean(),
   }),
@@ -212,7 +220,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(3),
+    schemaVersion: z.literal(4),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -424,6 +432,43 @@ function migrateV2Project(input: Record<string, unknown>) {
   };
 }
 
+function migrateV3Part(input: unknown) {
+  if (!isRecord(input)) return input;
+  const actuator = isRecord(input.actuator) ? input.actuator : {};
+  const motorTorque = legacyNumber(actuator.motorTorque, 0);
+  const legacyTarget = input.definitionId === "Motor" ? motorTorque / 20 : 0;
+  const target = legacyNumber(actuator.targetAngularVelocity, legacyTarget);
+  return {
+    ...input,
+    actuator: {
+      ...actuator,
+      // v3ではmotorTorque / 20を目標角速度として使っていたため、速度を維持して移行する。
+      targetAngularVelocity: Math.max(
+        0,
+        Math.min(MAX_MOTOR_TARGET_ANGULAR_VELOCITY, target),
+      ),
+    },
+  };
+}
+
+function migrateV3Project(input: Record<string, unknown>) {
+  return {
+    ...input,
+    schemaVersion: 4,
+    machines: Array.isArray(input.machines)
+      ? input.machines.map((machine) => {
+          if (!isRecord(machine)) return machine;
+          return {
+            ...machine,
+            parts: Array.isArray(machine.parts)
+              ? machine.parts.map(migrateV3Part)
+              : machine.parts,
+          };
+        })
+      : input.machines,
+  };
+}
+
 export function parseProject(input: unknown): Project {
   if (
     typeof input === "object" &&
@@ -461,13 +506,21 @@ export function parseProject(input: unknown): Project {
   ) {
     input = migrateV2Project(input as Record<string, unknown>);
   }
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    "schemaVersion" in input &&
+    input.schemaVersion === 3
+  ) {
+    input = migrateV3Project(input as Record<string, unknown>);
+  }
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 3,
+    schemaVersion: 4,
     id: uid(),
     name: "わたしのスタジオ",
     world: {

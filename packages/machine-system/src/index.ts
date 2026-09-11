@@ -1,4 +1,6 @@
 import {
+  DEFAULT_MOTOR_MAX_TORQUE,
+  DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY,
   DEFAULT_PANEL_THICKNESS,
   PANEL_SIDE,
   panelMass,
@@ -76,10 +78,14 @@ export function createPart(
     actuator: {
       motorTorque:
         kind === "Wheel" || kind === "Motor"
-          ? 180
+          ? kind === "Motor"
+            ? DEFAULT_MOTOR_MAX_TORQUE
+            : 180
           : kind === "Thruster"
             ? DEFAULT_THRUSTER_TORQUE
             : 0,
+      targetAngularVelocity:
+        kind === "Motor" ? DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY : 0,
       steering: 0.45,
       enabled: true,
     },

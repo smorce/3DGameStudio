@@ -179,10 +179,31 @@ test("全パーツを光る位置へ配置し、Studioの詳細値を保持す�
   const p = await savedProject(page);
   expect(p.machines[0].parts).toHaveLength(7);
   expect(p.machines[0].connections).toHaveLength(6);
+  await page
+    .getByRole("button", { name: "くわしくつくる", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "◈ モーター 03", exact: true })
+    .click();
+  await expect(page.getByLabel("回転の速さ", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("力強さ", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("最大トルク（N·m）", { exact: true }),
+  ).toHaveCount(0);
   await page.getByRole("button", { name: "Studio", exact: true }).click();
+  await page
+    .getByRole("button", { name: "◈ モーター 03", exact: true })
+    .click();
   await page.getByLabel("friction", { exact: true }).fill("2.34");
-  await page.getByLabel("motorTorque", { exact: true }).fill("321");
+  await page.getByLabel("最大トルク", { exact: true }).fill("321");
+  await page.getByLabel("目標角速度", { exact: true }).fill("12");
   const detailed = await savedProject(page);
+  const detailedMotor = detailed.machines[0].parts.find(
+    (part: { definitionId: string }) => part.definitionId === "Motor",
+  )!;
+  expect(detailedMotor.actuator.motorTorque).toBe(321);
+  expect(detailedMotor.actuator.targetAngularVelocity).toBe(12);
+  expect(detailedMotor.physics.friction).toBe(2.34);
   await page.getByRole("button", { name: "つくる", exact: true }).click();
   expect(await savedProject(page)).toEqual(detailed);
   await page.getByRole("button", { name: "◎ つけ直す" }).click();

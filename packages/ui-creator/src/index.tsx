@@ -1,5 +1,6 @@
 import { labels } from "../../machine-system/src/index";
 import {
+  MAX_MOTOR_TARGET_ANGULAR_VELOCITY,
   uid,
   type Machine,
   type Part,
@@ -107,25 +108,70 @@ export function MachineInspector({
               />
             </label>
           )}
-          <label className="field">
-            はやさ
-            <input
-              aria-label="はやさ"
-              type="range"
-              min="0"
-              max="1000"
-              step="10"
-              value={part.actuator.motorTorque}
-              onChange={(e) =>
-                patch({
-                  actuator: {
-                    ...part.actuator,
-                    motorTorque: Number(e.target.value),
-                  },
-                })
-              }
-            />
-          </label>
+          {part.definitionId === "Motor" && !advanced ? (
+            <>
+              <label className="field">
+                回転の速さ
+                <input
+                  aria-label="回転の速さ"
+                  type="range"
+                  min="0"
+                  max={MAX_MOTOR_TARGET_ANGULAR_VELOCITY}
+                  step="0.5"
+                  value={part.actuator.targetAngularVelocity}
+                  onChange={(e) =>
+                    patch({
+                      actuator: {
+                        ...part.actuator,
+                        targetAngularVelocity: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+              </label>
+              <label className="field">
+                力強さ
+                <input
+                  aria-label="力強さ"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  value={part.actuator.motorTorque}
+                  onChange={(e) =>
+                    patch({
+                      actuator: {
+                        ...part.actuator,
+                        motorTorque: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+              </label>
+            </>
+          ) : (
+            part.definitionId !== "Motor" && (
+              <label className="field">
+                はやさ
+                <input
+                  aria-label="はやさ"
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  value={part.actuator.motorTorque}
+                  onChange={(e) =>
+                    patch({
+                      actuator: {
+                        ...part.actuator,
+                        motorTorque: Number(e.target.value),
+                      },
+                    })
+                  }
+                />
+              </label>
+            )
+          )}
           <label className="field">
             まがりやすさ
             <input
@@ -180,22 +226,64 @@ export function MachineInspector({
                   />
                 </label>
               ))}
-              <label className="field">
-                motorTorque
-                <input
-                  aria-label="motorTorque"
-                  type="number"
-                  value={part.actuator.motorTorque}
-                  onChange={(e) =>
-                    patch({
-                      actuator: {
-                        ...part.actuator,
-                        motorTorque: Number(e.target.value),
-                      },
-                    })
-                  }
-                />
-              </label>
+              {part.definitionId === "Motor" ? (
+                <>
+                  <label className="field">
+                    最大トルク（N·m）
+                    <input
+                      aria-label="最大トルク"
+                      type="number"
+                      min="0"
+                      max="10000"
+                      value={part.actuator.motorTorque}
+                      onChange={(e) =>
+                        patch({
+                          actuator: {
+                            ...part.actuator,
+                            motorTorque: Number(e.target.value),
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="field">
+                    目標角速度（rad/s）
+                    <input
+                      aria-label="目標角速度"
+                      type="number"
+                      min="0"
+                      max={MAX_MOTOR_TARGET_ANGULAR_VELOCITY}
+                      step="0.1"
+                      value={part.actuator.targetAngularVelocity}
+                      onChange={(e) =>
+                        patch({
+                          actuator: {
+                            ...part.actuator,
+                            targetAngularVelocity: Number(e.target.value),
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                </>
+              ) : (
+                <label className="field">
+                  motorTorque
+                  <input
+                    aria-label="motorTorque"
+                    type="number"
+                    value={part.actuator.motorTorque}
+                    onChange={(e) =>
+                      patch({
+                        actuator: {
+                          ...part.actuator,
+                          motorTorque: Number(e.target.value),
+                        },
+                      })
+                    }
+                  />
+                </label>
+              )}
               <label className="field">
                 Collider
                 <select

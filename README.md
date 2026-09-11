@@ -137,7 +137,7 @@ pnpm start:server
 
 ## Project File Format
 
-`schemaVersion: 3`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0／1／2は読込時に移行し、v2のWingは正方形Panelへ変換します。不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)と[aerodynamics.md](docs/aerodynamics.md)に詳細があります。
+`schemaVersion: 4`を持つJSONです。Machine、World、Course、Assetの参照、Mission、settingsを保存します。大きなGLBはJSONに埋め込みません。バージョン0／1／2／3は読込時に移行し、v2のWingは正方形Panelへ、v3のMotorは速度設定を維持したままv4へ変換します。不正な参照・値・未知のバージョンは拒否します。[project-schema.md](docs/project-schema.md)と[aerodynamics.md](docs/aerodynamics.md)に詳細があります。
 
 ## Asset Licensing
 
