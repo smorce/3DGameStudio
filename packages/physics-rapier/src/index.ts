@@ -26,11 +26,20 @@ import {
 import { compileMachine } from "../../machine-system/src/index";
 import {
   quaternion,
+  euler,
   multiply,
   rotate,
   type Quat,
 } from "../../machine-system/src/math";
 import { isForwardThruster, mixThrusterCommands } from "./thruster-steering";
+import {
+  RuntimeTelemetry,
+  forwardSpeedMps as calculateForwardSpeedMps,
+  horizontalSpeedMps,
+  vectorMagnitude,
+  worldSpeedMps,
+  type TelemetryVec3,
+} from "../../runtime-telemetry/src/index";
 export interface Pose {
   position: Vec3;
   rotation: Quat;
@@ -97,6 +106,29 @@ const cross = (a: Vec3, b: Vec3): Vec3 => [
   a[2] * b[0] - a[0] * b[2],
   a[0] * b[1] - a[1] * b[0],
 ];
+const addInto = (target: Vec3, value: Vec3) => {
+  target[0] += value[0];
+  target[1] += value[1];
+  target[2] += value[2];
+};
+interface ForceAccumulator {
+  lift: Vec3;
+  liftMagnitude: number;
+  drag: Vec3;
+  dragMagnitude: number;
+  aerodynamic: Vec3;
+  thruster: Vec3;
+  thrusterMagnitude: number;
+}
+const emptyForceAccumulator = (): ForceAccumulator => ({
+  lift: [0, 0, 0],
+  liftMagnitude: 0,
+  drag: [0, 0, 0],
+  dragMagnitude: 0,
+  aerodynamic: [0, 0, 0],
+  thruster: [0, 0, 0],
+  thrusterMagnitude: 0,
+});
 function velocityAtPoint(body: RAPIER.RigidBody, point: Vec3): Vec3 {
   const api = body as unknown as {
     velocityAtPoint?: (point: { x: number; y: number; z: number }) => {
@@ -141,8 +173,11 @@ const initialize = () =>
   })());
 export class RapierPhysics {
   readonly colliderTemplates = new ColliderTemplateCache();
+  readonly telemetry = new RuntimeTelemetry();
   world!: RAPIER.World;
   private generation = 0;
+  private physicsStep = 0;
+  private simulationTimeSeconds = 0;
   private streamer?: ChunkStreamer<string[]>;
   private staticColliders = new Map<
     string,
@@ -154,7 +189,12 @@ export class RapierPhysics {
     controller: RAPIER.DynamicRayCastVehicleController;
     wheels: Part[];
   }[] = [];
-  private parts: { part: Part; body: RAPIER.RigidBody }[] = [];
+  private parts: {
+    part: Part;
+    body: RAPIER.RigidBody;
+    machineId: string;
+  }[] = [];
+  private forceByMachine = new Map<string, ForceAccumulator>();
   private water: WaterSurface = { enabled: false, height: 0 };
   private gravityMagnitude = 9.81;
   private hinges: RevoluteRuntime[] = [];
@@ -394,6 +434,7 @@ export class RapierPhysics {
     for (const machine of project.machines) {
       const m = compileMachine(machine);
       if (!m.bodies.length) continue;
+      this.forceByMachine.set(machine.id, emptyForceAccumulator());
       const bodies = new Map<string, RAPIER.RigidBody>();
       for (const group of m.bodies) {
         const body = this.world.createRigidBody(
@@ -427,7 +468,7 @@ export class RapierPhysics {
               .setRestitution(p.physics.restitution),
             body,
           );
-          this.parts.push({ part: p, body });
+          this.parts.push({ part: p, body, machineId: machine.id });
         }
       }
       for (const c of m.joints) {
@@ -497,6 +538,8 @@ export class RapierPhysics {
   step(throttle: number, steering: number, brake = false) {
     const position = this.vehicles[0]?.body.translation();
     if (position) this.streamer?.update([position.x, position.y, position.z]);
+    for (const machineId of this.forceByMachine.keys())
+      this.forceByMachine.set(machineId, emptyForceAccumulator());
     const resetBodies = new Set<RAPIER.RigidBody>();
     for (const { body } of this.parts) {
       if (resetBodies.has(body)) continue;
@@ -548,10 +591,11 @@ export class RapierPhysics {
       {
         part: Part;
         body: RAPIER.RigidBody;
+        machineId: string;
         localDirection: Vec3;
       }[]
     >();
-    for (const { part, body } of this.parts) {
+    for (const { part, body, machineId } of this.parts) {
       if (part.definitionId !== "Thruster" || !part.actuator.enabled) continue;
       const localDirection = rotate(
         [0, 0, 1],
@@ -559,7 +603,7 @@ export class RapierPhysics {
       );
       thrustersByBody.set(body, [
         ...(thrustersByBody.get(body) ?? []),
-        { part, body, localDirection },
+        { part, body, machineId, localDirection },
       ]);
     }
     const thrusterCommands = new Map<string, number>();
@@ -578,7 +622,7 @@ export class RapierPhysics {
         thrusterCommands.set(entry.part.id, commands[index]),
       );
     }
-    for (const { part, body } of this.parts) {
+    for (const { part, body, machineId } of this.parts) {
       const panelPose = this.pose(
         body,
         part.transform.position,
@@ -593,6 +637,14 @@ export class RapierPhysics {
           area: PANEL_SIDE * PANEL_SIDE,
           airDensity: AIR_DENSITY,
         });
+        const forces = this.forceByMachine.get(machineId);
+        if (forces) {
+          addInto(forces.lift, force.lift);
+          forces.liftMagnitude += vectorMagnitude(force.lift);
+          addInto(forces.drag, force.drag);
+          forces.dragMagnitude += vectorMagnitude(force.drag);
+          addInto(forces.aerodynamic, force.force);
+        }
         body.addForceAtPoint(
           vector(force.force),
           vector(panelPose.position),
@@ -650,18 +702,115 @@ export class RapierPhysics {
         );
         const direction = rotate([0, 0, 1], thrusterPose.rotation);
         const command = thrusterCommands.get(part.id) ?? input;
+        const force = direction.map(
+          (value) => value * command * part.actuator.motorTorque,
+        ) as Vec3;
+        const forces = this.forceByMachine.get(machineId);
+        if (forces) {
+          addInto(forces.thruster, force);
+          forces.thrusterMagnitude += vectorMagnitude(force);
+        }
         body.addForceAtPoint(
-          vector(
-            direction.map(
-              (value) => value * command * part.actuator.motorTorque,
-            ) as Vec3,
-          ),
+          vector(force),
           vector(thrusterPose.position),
           true,
         );
       }
     }
     this.world.step();
+    this.physicsStep++;
+    this.simulationTimeSeconds += PHYSICS_FIXED_DT;
+    this.captureTelemetry(throttle, steering, brake);
+  }
+  private captureTelemetry(throttle: number, steering: number, brake: boolean) {
+    const safeThrottle = clamp(Number.isFinite(throttle) ? throttle : 0, -1, 1),
+      safeSteering = clamp(Number.isFinite(steering) ? steering : 0, -1, 1);
+    for (const vehicle of this.vehicles) {
+      const position = vehicle.body.translation(),
+        rawRotation = vehicle.body.rotation(),
+        rotation: Quat = [
+          rawRotation.x,
+          rawRotation.y,
+          rawRotation.z,
+          rawRotation.w,
+        ],
+        rawLinear = vehicle.body.linvel(),
+        linearVelocityMps: TelemetryVec3 = [
+          rawLinear.x,
+          rawLinear.y,
+          rawLinear.z,
+        ],
+        rawAngular = vehicle.body.angvel(),
+        angularVelocityRadPerSecond: TelemetryVec3 = [
+          rawAngular.x,
+          rawAngular.y,
+          rawAngular.z,
+        ],
+        forward = rotate([0, 0, 1], rotation),
+        angles = euler(rotation),
+        forces = this.forceByMachine.get(vehicle.id) ?? emptyForceAccumulator(),
+        machineBodies = new Set(
+          this.parts
+            .filter((part) => part.machineId === vehicle.id)
+            .map((part) => part.body),
+        ),
+        massKg = [...machineBodies].reduce(
+          (total, body) => total + body.mass(),
+          0,
+        ),
+        weightN = massKg * this.gravityMagnitude,
+        wheelApi = vehicle.controller as unknown as {
+          wheelIsInContact?: (index: number) => boolean;
+          wheelSuspensionForce?: (index: number) => number;
+        },
+        contactStatusAvailable =
+          typeof wheelApi.wheelIsInContact === "function",
+        wheels = vehicle.wheels.map((wheel, index) => {
+          const inContact = wheelApi.wheelIsInContact?.(index),
+            suspensionForceN = wheelApi.wheelSuspensionForce?.(index);
+          return {
+            id: wheel.id,
+            ...(inContact === undefined ? {} : { inContact }),
+            suspensionLengthM:
+              vehicle.controller.wheelSuspensionLength(index) ?? 0.35,
+            ...(suspensionForceN === undefined ? {} : { suspensionForceN }),
+          };
+        }),
+        groundedWheelCount = contactStatusAvailable
+          ? wheels.filter((wheel) => wheel.inContact).length
+          : 0;
+      this.telemetry.record({
+        version: 1,
+        step: this.physicsStep,
+        timeSeconds: this.simulationTimeSeconds,
+        machineId: vehicle.id,
+        position: [position.x, position.y, position.z],
+        rotation,
+        linearVelocityMps,
+        angularVelocityRadPerSecond,
+        worldSpeedMps: worldSpeedMps(linearVelocityMps),
+        horizontalSpeedMps: horizontalSpeedMps(linearVelocityMps),
+        forwardSpeedMps: calculateForwardSpeedMps(linearVelocityMps, forward),
+        verticalSpeedMps: linearVelocityMps[1],
+        throttle: safeThrottle,
+        steering: safeSteering,
+        brake: Boolean(brake),
+        pitchRad: angles[0],
+        yawRad: angles[1],
+        rollRad: angles[2],
+        totalLiftN: forces.liftMagnitude,
+        liftVerticalN: forces.lift[1],
+        totalDragN: forces.dragMagnitude,
+        totalAerodynamicForceN: vectorMagnitude(forces.aerodynamic),
+        totalThrusterForceN: forces.thrusterMagnitude,
+        liftToWeightRatio: weightN > 0 ? forces.lift[1] / weightN : 0,
+        massKg,
+        weightN,
+        contactStatusAvailable,
+        groundedWheelCount,
+        wheels,
+      });
+    }
   }
   private pose(
     body: RAPIER.RigidBody,
@@ -746,6 +895,11 @@ export class RapierPhysics {
     }
     this.vehicles = [];
     this.parts = [];
+    this.forceByMachine.clear();
+    this.physicsStep = 0;
+    this.simulationTimeSeconds = 0;
+    this.telemetry.stop();
+    this.telemetry.clear();
     this.hinges = [];
     this.motors = [];
   }

@@ -61,6 +61,23 @@ test("Starter Boatを表示して保存する @smoke", async ({ page }) => {
   await screenshot(page, "starter-boat");
 });
 
+test("車・飛行機・ボートで共通速度HUDをPlay中だけ表示する", async ({
+  page,
+}) => {
+  for (const template of ["くるま", "ひこうき", "ボート"]) {
+    await page.goto("/");
+    await page.getByRole("button", { name: template, exact: false }).click();
+    await expect(page.getByLabel("Speed")).toHaveCount(0);
+    await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+    const speedHud = page.getByLabel("Speed");
+    await expect(speedHud).toBeVisible();
+    await expect(speedHud).toContainText(/SPEED/);
+    await expect(speedHud).toContainText(/\d+ km\/h/);
+    await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+    await expect(speedHud).toHaveCount(0);
+  }
+});
+
 test("Starter PlaneをW+Aで左旋回させる @smoke", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "ひこうき", exact: false }).click();

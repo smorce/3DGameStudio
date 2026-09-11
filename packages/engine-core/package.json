@@ -8,6 +8,7 @@
     "@machine-studio/project-schema": "workspace:*",
     "@machine-studio/renderer-three": "workspace:*",
     "@machine-studio/physics-rapier": "workspace:*",
-    "@machine-studio/course-system": "workspace:*"
+    "@machine-studio/course-system": "workspace:*",
+    "@machine-studio/runtime-telemetry": "workspace:*"
   }
 }

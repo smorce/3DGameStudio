@@ -1,0 +1,61 @@
+{
+  "generatedFrom": {
+    "before": "starter-plane-before.jsonl",
+    "after": "starter-plane-after.jsonl",
+    "steps": 600,
+    "fixedDeltaSeconds": 0.016666666666666666,
+    "input": {
+      "throttle": 1,
+      "steering": 0,
+      "brake": false
+    }
+  },
+  "stableTakeoffDefinition": {
+    "consecutivePhysicsSteps": 60,
+    "minimumHeightM": 1.5,
+    "groundedWheelCount": 0,
+    "minimumWorldSpeedMps": 20,
+    "minimumLiftToWeightRatio": 1,
+    "maximumAbsolutePitchRad": 0.8
+  },
+  "before": {
+    "wingAngleDegrees": 18,
+    "stableWindowSteps": 34,
+    "stableTakeoffStep": null,
+    "stableTakeoffTimeSeconds": null,
+    "stableTakeoffSpeedMps": null,
+    "stableTakeoffSpeedKph": null,
+    "maximumSpeedMps": 31.39095271721627,
+    "maximumHeightM": 7.196419715881348,
+    "minimumHeightAfterCandidateM": 1.5082733631134033,
+    "finalHeightM": -34.63776779174805,
+    "maximumForwardDistanceM": 167.68197631835938,
+    "pitchMinRad": -0.47580033619640305,
+    "pitchMaxRad": 1.8437897291198733,
+    "pitchOscillationRangeRad": 2.319590065316276,
+    "liftToWeightMin": -2.236789603719294,
+    "liftToWeightMax": 4.673154817173796,
+    "massKg": 189,
+    "weightN": 1854.0900000000001
+  },
+  "after": {
+    "wingAngleDegrees": -8,
+    "stableWindowSteps": 155,
+    "stableTakeoffStep": 346,
+    "stableTakeoffTimeSeconds": 5.7666666666666515,
+    "stableTakeoffSpeedMps": 20.02145534907211,
+    "stableTakeoffSpeedKph": 72.0772392566596,
+    "maximumSpeedMps": 39.40990179913489,
+    "maximumHeightM": 55.341251373291016,
+    "minimumHeightAfterStableM": 7.214705467224121,
+    "finalHeightM": 55.341251373291016,
+    "maximumForwardDistanceM": 186.73463439941406,
+    "pitchMinRad": -0.8360471856523034,
+    "pitchMaxRad": 0.6454335815897614,
+    "pitchOscillationRangeRad": 1.481480767242065,
+    "liftToWeightMin": -2.5468039544371575,
+    "liftToWeightMax": 8.127150954400676,
+    "massKg": 189,
+    "weightN": 1854.0900000000001
+  }
+}

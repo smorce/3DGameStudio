@@ -23,6 +23,7 @@ import {
   type AttachmentCandidate,
 } from "../../../packages/machine-system/src/index";
 import { Engine } from "../../../packages/engine-core/src/index";
+import { speedKphFromMps } from "../../../packages/runtime-telemetry/src/index";
 import { loadProject, saveProject } from "../../../packages/storage/src/index";
 import { EasyPalette } from "../../../packages/ui-easy/src/index";
 import { MachineInspector } from "../../../packages/ui-creator/src/index";
@@ -56,6 +57,7 @@ function App() {
     [tool, setTool] = useState<EditTool>("select"),
     [cursor, setCursor] = useState<Vec3>([5, 0, 5]),
     [stats, setStats] = useState<Record<string, number>>({}),
+    [speedKph, setSpeedKph] = useState(0),
     [runtime, setRuntime] = useState(""),
     [engineMode, setEngineMode] = useState<Engine["mode"]>("EDIT"),
     [visualTransforms, setVisualTransforms] = useState<
@@ -161,6 +163,11 @@ function App() {
           y: e.position[1],
           z: e.position[2],
         });
+        setSpeedKph(
+          e.currentTelemetry
+            ? Math.round(speedKphFromMps(e.currentTelemetry.worldSpeedMps))
+            : 0,
+        );
         if (e.mode === "EDIT")
           setVisualTransforms(
             Object.fromEntries(
@@ -730,6 +737,12 @@ function App() {
               )}
             </span>{" "}
             {runtime}
+          </output>
+        )}
+        {playing && (
+          <output className="speed-hud" aria-label="Speed">
+            <span>SPEED</span>
+            <strong data-testid="speed-hud-value">{speedKph} km/h</strong>
           </output>
         )}
         <div className="tools">

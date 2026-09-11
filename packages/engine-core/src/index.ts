@@ -7,6 +7,10 @@ import {
 import { ThreeRenderer } from "../../renderer-three/src/index";
 import { RapierPhysics } from "../../physics-rapier/src/index";
 import { CourseProgress } from "../../course-system/src/index";
+import type {
+  MachineTelemetrySample,
+  RuntimeTelemetry,
+} from "../../runtime-telemetry/src/index";
 export class Engine {
   readonly renderer: ThreeRenderer;
   readonly physics = new RapierPhysics();
@@ -158,6 +162,12 @@ export class Engine {
   };
   get position(): Vec3 {
     return this.physics.poses().values().next().value?.position ?? [0, 0, 0];
+  }
+  get telemetry(): RuntimeTelemetry {
+    return this.physics.telemetry;
+  }
+  get currentTelemetry(): MachineTelemetrySample | undefined {
+    return this.telemetry.current(this.project?.machines[0]?.id);
   }
   get stats() {
     return { fps: this.fps, ...this.renderer.stats, ...this.physics.stats };

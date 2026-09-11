@@ -4,9 +4,20 @@ import {
   parseProject,
 } from "../../../packages/project-schema/src/index";
 import { carTemplate } from "../../../packages/machine-system/src/index";
+import { speedKphFromMps } from "../../../packages/runtime-telemetry/src/index";
 const engine = new Engine(document.querySelector("canvas")!);
 const p = emptyProject();
 p.machines.push(carTemplate());
+const speedHud = document.getElementById("speed-hud")!,
+  speedHudValue = document.getElementById("speed-hud-value")!;
+engine.onFrame = () => {
+  const playing = engine.mode === "PLAY";
+  speedHud.hidden = !playing;
+  if (playing)
+    speedHudValue.textContent = `${Math.round(
+      speedKphFromMps(engine.currentTelemetry?.worldSpeedMps ?? 0),
+    )} km/h`;
+};
 await engine.load(p);
 document.getElementById("play")!.onclick = () => {
   engine.play().catch((e) => {

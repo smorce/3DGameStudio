@@ -166,6 +166,12 @@ importers:
         specifier: ^19.1.1
         version: 19.2.8(react@19.2.8)
 
+  packages/aerodynamics:
+    dependencies:
+      '@machine-studio/project-schema':
+        specifier: workspace:*
+        version: link:../project-schema
+
   packages/ai-core:
     dependencies:
       '@machine-studio/command-system':
@@ -276,6 +282,9 @@ importers:
       '@machine-studio/renderer-three':
         specifier: workspace:*
         version: link:../renderer-three
+      '@machine-studio/runtime-telemetry':
+        specifier: workspace:*
+        version: link:../runtime-telemetry
 
   packages/machine-system:
     dependencies:
@@ -297,6 +306,9 @@ importers:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../project-schema
+      '@machine-studio/runtime-telemetry':
+        specifier: workspace:*
+        version: link:../runtime-telemetry
       '@machine-studio/water-system':
         specifier: workspace:*
         version: link:../water-system
@@ -336,6 +348,8 @@ importers:
       three:
         specifier: ^0.180.0
         version: 0.180.0
+
+  packages/runtime-telemetry: {}
 
   packages/storage:
     dependencies:

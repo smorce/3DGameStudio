@@ -19,6 +19,28 @@
         >WASD：運転 / Space：ブレーキ</span
       >
     </div>
+    <output
+      id="speed-hud"
+      aria-label="Speed"
+      hidden
+      style="
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 2px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #263b37d9;
+        color: #fff4ca;
+        font: 22px monospace;
+      "
+    >
+      <span style="font-size: 10px; letter-spacing: 2px">SPEED</span>
+      <strong id="speed-hud-value">0 km/h</strong>
+    </output>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

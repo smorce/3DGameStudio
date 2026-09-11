@@ -14,6 +14,7 @@ import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
 import { euler, quaternion } from "../../packages/machine-system/src/math";
+import type { MachineTelemetrySample } from "../../packages/runtime-telemetry/src/index";
 
 function motorFixture({
   maxTorque = 180,
@@ -294,8 +295,36 @@ it("未接続Motorは関節やMachine全体へTorqueを加えない", async () =
   physics.dispose();
 });
 
+it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  for (let i = 0; i < 30; i++) physics.step(1, 0);
+  const sample = physics.telemetry.current(machine.id)!,
+    velocity = physics.world.bodies.getAll()[0].linvel();
+  expect(sample.step).toBe(30);
+  expect(sample.timeSeconds).toBeCloseTo(0.5);
+  expect(sample.linearVelocityMps).toEqual([
+    velocity.x,
+    velocity.y,
+    velocity.z,
+  ]);
+  expect(sample.worldSpeedMps).toBeCloseTo(
+    Math.hypot(velocity.x, velocity.y, velocity.z),
+  );
+  expect(sample.massKg).toBeGreaterThan(0);
+  expect(sample.totalThrusterForceN).toBeGreaterThan(0);
+  expect(sample.contactStatusAvailable).toBe(true);
+  expect(sample.wheels).toHaveLength(4);
+  physics.dispose();
+});
+
 async function simulatePlane(
   configure?: (machine: ReturnType<typeof planeTemplate>) => void,
+  steps = 600,
 ) {
   const project = emptyProject(),
     machine = planeTemplate();
@@ -303,25 +332,72 @@ async function simulatePlane(
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
+  physics.telemetry.start();
   const start = physics.poses().get(machine.id)!.position;
-  let minHeight = start[1],
-    maxHeight = start[1],
-    maxForwardSpeed = 0;
-  for (let i = 0; i < 180; i++) {
+  for (let i = 0; i < steps; i++) {
     physics.step(1, 0);
-    const pose = physics.poses().get(machine.id)!,
-      velocity = physics.world.bodies.getAll()[0].linvel();
-    minHeight = Math.min(minHeight, pose.position[1]);
-    maxHeight = Math.max(maxHeight, pose.position[1]);
-    maxForwardSpeed = Math.max(maxForwardSpeed, velocity.z);
   }
-  const end = physics.poses().get(machine.id)!.position;
+  const samples = physics.telemetry
+    .samples()
+    .filter((sample) => sample.machineId === machine.id);
+  const first = samples[0],
+    last = samples.at(-1)!,
+    stableSampleCount = longestStableTakeoffRun(samples);
   physics.dispose();
   return {
-    heightGain: maxHeight - minHeight,
-    forwardDistance: end[2] - start[2],
-    maxForwardSpeed,
+    samples,
+    heightGain:
+      Math.max(...samples.map((sample) => sample.position[1])) -
+      Math.min(...samples.map((sample) => sample.position[1])),
+    forwardDistance: last.position[2] - start[2],
+    maxForwardSpeed: Math.max(
+      ...samples.map((sample) => sample.forwardSpeedMps),
+    ),
+    maxWorldSpeed: Math.max(...samples.map((sample) => sample.worldSpeedMps)),
+    maxHeight: Math.max(...samples.map((sample) => sample.position[1])),
+    minHeight: Math.min(...samples.map((sample) => sample.position[1])),
+    maxPitch: Math.max(...samples.map((sample) => Math.abs(sample.pitchRad))),
+    maxLiftToWeight: Math.max(
+      ...samples.map((sample) => sample.liftToWeightRatio),
+    ),
+    final: last,
+    first: first as MachineTelemetrySample,
+    stableSampleCount,
+    stableTakeoffStep: findStableTakeoffStep(samples),
   };
+}
+
+function isStableTakeoffSample(sample: MachineTelemetrySample) {
+  return (
+    sample.position[1] > 1.5 &&
+    sample.groundedWheelCount === 0 &&
+    sample.worldSpeedMps > 20 &&
+    sample.liftToWeightRatio > 1 &&
+    Math.abs(sample.pitchRad) < 0.8
+  );
+}
+
+function longestStableTakeoffRun(samples: MachineTelemetrySample[]) {
+  let run = 0,
+    longest = 0;
+  for (const sample of samples) {
+    if (isStableTakeoffSample(sample)) {
+      run++;
+      longest = Math.max(longest, run);
+    } else run = 0;
+  }
+  return longest;
+}
+
+function findStableTakeoffStep(samples: MachineTelemetrySample[]) {
+  let run = 0;
+  for (const sample of samples) {
+    if (isStableTakeoffSample(sample)) {
+      run++;
+      if (run >= 60) return sample.step - 59;
+    } else run = 0;
+  }
+  return -1;
 }
 
 async function simulatePlaneSteering(steering: number) {
@@ -343,11 +419,28 @@ async function simulatePlaneSteering(steering: number) {
   };
 }
 
-it("Starter PlaneはThrusterとPanel空力だけで離陸する", async () => {
+it("Starter Planeは一瞬の浮上ではなく安定して離陸する", async () => {
   const result = await simulatePlane();
-  expect(result.heightGain).toBeGreaterThan(0.5);
-  expect(result.forwardDistance).toBeGreaterThan(30);
-  expect(result.maxForwardSpeed).toBeGreaterThan(15);
+  expect(result.stableTakeoffStep).toBeGreaterThan(0);
+  expect(result.stableSampleCount).toBeGreaterThanOrEqual(60);
+  expect(result.forwardDistance).toBeGreaterThan(80);
+  expect(result.maxWorldSpeed).toBeGreaterThan(30);
+  expect(result.maxPitch).toBeLessThan(0.9);
+});
+
+it("修正前の主翼迎角は一瞬の浮上後に安定離陸と判定されない", async () => {
+  const beforeFix = await simulatePlane((machine) => {
+    for (const part of machine.parts)
+      if (
+        part.definitionId === "Panel" &&
+        part.transform.position[2] === 0 &&
+        part.transform.position[0] !== 0
+      )
+        part.transform.rotation = [(18 * Math.PI) / 180, 0, 0];
+  });
+  expect(beforeFix.maxHeight).toBeGreaterThan(2);
+  expect(beforeFix.stableTakeoffStep).toBe(-1);
+  expect(beforeFix.final.position[1]).toBeLessThan(0);
 });
 
 it("主翼の迎角を0度にすると離陸性能が下がる", async () => {
@@ -361,7 +454,9 @@ it("主翼の迎角を0度にすると離陸性能が下がる", async () => {
         )
           part.transform.rotation = [0, 0, 0];
     });
-  expect(standard.heightGain).toBeGreaterThan(zeroAngle.heightGain + 0.5);
+  expect(standard.stableSampleCount).toBeGreaterThan(
+    zeroAngle.stableSampleCount + 20,
+  );
 });
 
 it("翼面積またはThruster推力を減らすと離陸性能が下がる", async () => {
@@ -387,8 +482,12 @@ it("翼面積またはThruster推力を減らすと離陸性能が下がる", as
       for (const part of machine.parts)
         if (part.definitionId === "Thruster") part.actuator.motorTorque = 400;
     });
-  expect(standard.heightGain).toBeGreaterThan(reducedWing.heightGain + 0.25);
-  expect(standard.heightGain).toBeGreaterThan(weakThruster.heightGain + 0.25);
+  expect(standard.stableSampleCount).toBeGreaterThan(
+    reducedWing.stableSampleCount + 20,
+  );
+  expect(standard.stableSampleCount).toBeGreaterThan(
+    weakThruster.stableSampleCount + 20,
+  );
 });
 
 async function createSettledBoat(settleSteps = 600) {

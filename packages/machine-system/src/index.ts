@@ -645,7 +645,7 @@ export function compileMachine(machine: Machine) {
 }
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),
-    wingAngle = (18 * Math.PI) / 180,
+    wingAngle = (-8 * Math.PI) / 180,
     fuselage: Part[] = [];
   const nose = createPart("Panel", [0, 0.85, 2]);
   m.parts.push(nose);
