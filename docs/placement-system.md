@@ -26,7 +26,7 @@ stateDiagram-v2
 
 `machine-system.findAttachmentCandidates(machine, kind, movingPartId?, sourcePartId?)`はMachineを変更しない純粋関数です。返す値は安定した候補ID、親子パーツの接続先、確定位置、回転、接続軸、fixed／revolute種別です。候補IDは親Part ID・接続先ID・子の種類から生成します。初期位置は`root`です。
 
-接続先のローカル位置を親のScale、Rotation、Positionで変換します。構造パーツなどは面法線と子の寸法・Scaleから接触位置を計算します。回転は親の姿勢を引き継ぎ、接続軸はモデル座標へ変換します。Wheelは既存の4スロットの中心位置を使用します。
+接続先のローカル位置を親のScale、Rotation、Positionで変換します。構造パーツなどは面法線と子の寸法・Scaleから接触位置を計算します。通常は親の姿勢を引き継ぎますが、Thrusterは排気、Motorは出力軸、Hingeは出力側が面法線の外側を向くように回転を決めます。接続軸はモデル座標へ変換し、Wheelは既存の4スロットの中心位置を使用します。
 
 つけ直し時は元パーツとその子孫を親候補から除外して循環接続を防ぎ、現在の接続先は再選択できます。元Partは確定まで残ります。コピーは元Partの寸法を使って候補と実体を一致させます。
 

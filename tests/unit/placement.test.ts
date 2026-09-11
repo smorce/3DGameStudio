@@ -283,6 +283,33 @@ test("Thrusterの排気方向は接続面の外側を向く", () => {
   }
 });
 
+test.each(["Motor", "Hinge"] as const)(
+  "%sの機能側は接続面の外側を向く",
+  (kind) => {
+    const { machine } = setup();
+    const candidates = findAttachmentCandidates(machine, kind);
+    expect(candidates).toHaveLength(6);
+    for (const candidate of candidates) {
+      const parent = machine.parts.find(
+          (part) => part.id === candidate.parentPartId,
+        )!,
+        connector = placementConnectors(parent).find(
+          (part) => part.id === candidate.parentConnectorId,
+        )!,
+        normal = rotate(
+          connector.normal!,
+          quaternion(parent.transform.rotation),
+        ),
+        outward = rotate([0, 0, 1], quaternion(candidate.rotation));
+      outward.forEach((value, i) => expect(value).toBeCloseTo(normal[i]));
+      if (kind === "Hinge")
+        rotate([1, 0, 0], quaternion(candidate.rotation)).forEach((value, i) =>
+          expect(value).toBeCloseTo(candidate.axis[i]),
+        );
+    }
+  },
+);
+
 test("空のマシンでは板の初期位置だけを提示する", () => {
   const machine = createMachine();
   expect(findAttachmentCandidates(machine, "Panel")).toHaveLength(1);

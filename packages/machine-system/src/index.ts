@@ -8,7 +8,7 @@ import {
   type Part,
   type Vec3,
 } from "../../project-schema/src/index";
-import { euler, multiply, rotate, quaternion } from "./math";
+import { euler, multiply, rotate, quaternion, type Quat } from "./math";
 export const labels: Record<Part["definitionId"], string> = {
   Panel: "板",
   Block: "ブロック",
@@ -61,9 +61,9 @@ export function createPart(
         ? [
             {
               id: "hinge-input",
-              position: [0, -size[1] / 2, 0],
+              position: [0, 0, -size[2] / 2],
               axis: [1, 0, 0],
-              normal: [0, -1, 0],
+              normal: [0, 0, -1],
               type: "mount",
               accepts: [],
             },
@@ -147,7 +147,10 @@ export function placementConnectors(part: Part): Connector[] {
       (c) =>
         !(
           part.definitionId === "Hinge" &&
-          (c.id === "0" || c.id.startsWith("jet-") || c.id.startsWith("top-"))
+          (c.id === "0" ||
+            c.id === "hinge-input" ||
+            c.id.startsWith("jet-") ||
+            c.id.startsWith("top-"))
         ),
     )
     .map((c) => ({
@@ -174,9 +177,9 @@ export function placementConnectors(part: Part): Connector[] {
       gap = Math.min(x, y, z) * 0.1;
     add({
       id: "hinge-input",
-      position: [0, -y / 2, 0],
+      position: [0, 0, -z / 2],
       axis: [1, 0, 0],
-      normal: [0, -1, 0],
+      normal: [0, 0, -1],
       type: "mount",
       accepts: [],
     });
@@ -241,6 +244,61 @@ function oppositeEdge(id: string) {
       : "face-bottom";
 }
 
+function cross(a: Vec3, b: Vec3): Vec3 {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+}
+
+function unit(v: Vec3): Vec3 {
+  const length = Math.hypot(...v);
+  return length > 0.000001 ? (v.map((n) => n / length) as Vec3) : [0, 0, 0];
+}
+
+function alignAxis(from: Vec3, to: Vec3): Quat {
+  const a = unit(from),
+    b = unit(to),
+    dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  if (Math.hypot(...a) < 0.5 || Math.hypot(...b) < 0.5 || dot > 0.999999)
+    return [0, 0, 0, 1];
+  if (dot < -0.999999) {
+    const helper = Math.abs(a[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
+    const axis = unit(cross(a, helper as Vec3));
+    return [axis[0], axis[1], axis[2], 0];
+  }
+  const axis = cross(a, b),
+    q: Quat = [axis[0], axis[1], axis[2], 1 + dot],
+    length = Math.hypot(...q);
+  return q.map((n) => n / length) as Quat;
+}
+
+function outwardAxis(kind: Part["definitionId"]): Vec3 | undefined {
+  if (kind === "Thruster") return [0, 0, -1];
+  if (kind === "Motor" || kind === "Hinge") return [0, 0, 1];
+  return undefined;
+}
+
+function placementRotation(
+  kind: Part["definitionId"],
+  parentRotation: Vec3,
+  normal?: Vec3,
+): Vec3 {
+  const axis = normal && outwardAxis(kind);
+  if (!axis) return [...parentRotation];
+  return euler(multiply(quaternion(parentRotation), alignAxis(axis, normal)));
+}
+
+function attachmentPoint(
+  kind: Part["definitionId"],
+  size: Vec3,
+): Vec3 | undefined {
+  if (kind === "Thruster") return [0, 0, size[2] / 2];
+  if (kind === "Motor" || kind === "Hinge") return [0, 0, -size[2] / 2];
+  return undefined;
+}
+
 export function findAttachmentCandidates(
   machine: Machine,
   kind: Part["definitionId"],
@@ -295,35 +353,55 @@ export function findAttachmentCandidates(
             parent.definitionId === "Panel"
               ? ([1, 1, 1] as Vec3)
               : parent.transform.scale;
-          const rotation =
-            kind === "Thruster" && c.normal?.[2] === 1
-              ? euler(multiply(q, quaternion([0, Math.PI, 0])))
-              : [...parent.transform.rotation];
+          const rotation = placementRotation(
+            kind,
+            parent.transform.rotation,
+            c.normal,
+          );
+          const childConnectorId =
+            kind === "Wheel"
+              ? "0"
+              : kind === "Hinge"
+                ? "hinge-input"
+                : kind === "Panel" && c.id.startsWith("edge-")
+                  ? oppositeEdge(c.id)
+                  : kind === "Panel" &&
+                      (c.id.startsWith("top-") || c.id === "face-top")
+                    ? "face-bottom"
+                    : "mount";
           const offset = c.position.map(
             (n, i) =>
               n * parentScale[i] +
               ((c.normal?.[i] ?? 0) * size[i] * scale[i]) / 2,
           ) as Vec3;
+          const parentPoint = rotate(
+            c.position.map((n, i) => n * parentScale[i]) as Vec3,
+            q,
+          ).map((n, i) => n + parent.transform.position[i]) as Vec3;
+          const mount = attachmentPoint(kind, size);
+          const position = mount
+            ? (parentPoint.map(
+                (n, i) =>
+                  n -
+                  rotate(
+                    mount.map((value, j) => value * scale[j]) as Vec3,
+                    quaternion(rotation),
+                  )[i],
+              ) as Vec3)
+            : (rotate(offset, q).map(
+                (n, i) => n + parent.transform.position[i],
+              ) as Vec3);
           return {
             id: JSON.stringify([parent.id, c.id, kind]),
             parentPartId: parent.id,
             parentConnectorId: c.id,
-            childConnectorId:
-              kind === "Wheel"
-                ? "0"
-                : kind === "Hinge"
-                  ? "hinge-input"
-                  : kind === "Panel" && c.id.startsWith("edge-")
-                    ? oppositeEdge(c.id)
-                    : kind === "Panel" &&
-                        (c.id.startsWith("top-") || c.id === "face-top")
-                      ? "face-bottom"
-                      : "mount",
-            position: rotate(offset, q).map(
-              (n, i) => n + parent.transform.position[i],
-            ) as Vec3,
+            childConnectorId,
+            position,
             rotation: rotation as Vec3,
-            axis: rotate(c.axis, q),
+            axis:
+              kind === "Hinge"
+                ? rotate([1, 0, 0], quaternion(rotation))
+                : rotate(c.axis, q),
             connectionType:
               kind === "Wheel" || kind === "Hinge"
                 ? ("revolute" as const)
@@ -355,11 +433,10 @@ export function commitAttachment(
         (c) => c.id === candidate.childConnectorId,
       )!;
       childConnector.position =
-        part.definitionId === "Thruster"
-          ? [0, 0, part.physics.size[2] / 2]
-          : (part.physics.size.map(
-              (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
-            ) as Vec3);
+        attachmentPoint(part.definitionId, part.physics.size) ??
+        (part.physics.size.map(
+          (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
+        ) as Vec3);
     }
     if (part.definitionId === "Wheel") {
       part.metadata.front = connector.position[2] > 0;
