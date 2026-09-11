@@ -60,3 +60,44 @@ test("Starter Boatを表示して保存する @smoke", async ({ page }) => {
   await page.getByRole("button", { name: "保存", exact: true }).click();
   await screenshot(page, "starter-boat");
 });
+
+test("Starter PlaneをW+Aで左旋回させる @smoke", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ひこうき", exact: false }).click();
+  await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "■ やめる", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.down("w");
+  await page.waitForTimeout(900);
+  await page.keyboard.down("a");
+  await page.waitForTimeout(700);
+  await screenshot(page, "starter-plane-turn");
+  await page.keyboard.up("a");
+  await page.keyboard.up("w");
+  await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "▶ あそぶ", exact: true }),
+  ).toBeVisible();
+});
+
+test("Starter Boatが浮上しW+Aで左旋回する @smoke", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ボート", exact: false }).click();
+  await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "■ やめる", exact: true }),
+  ).toBeVisible();
+  await page.waitForTimeout(1200);
+  await screenshot(page, "starter-boat-floating");
+  await page.keyboard.down("w");
+  await page.keyboard.down("a");
+  await page.waitForTimeout(900);
+  await screenshot(page, "starter-boat-turn");
+  await page.keyboard.up("a");
+  await page.keyboard.up("w");
+  await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "▶ あそぶ", exact: true }),
+  ).toBeVisible();
+});

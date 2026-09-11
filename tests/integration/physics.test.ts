@@ -13,6 +13,7 @@ import {
 import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
+import { euler, quaternion } from "../../packages/machine-system/src/math";
 
 function motorFixture({
   maxTorque = 180,
@@ -323,6 +324,25 @@ async function simulatePlane(
   };
 }
 
+async function simulatePlaneSteering(steering: number) {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  const start = physics.poses().get(machine.id)!;
+  for (let i = 0; i < 180; i++) physics.step(1, steering);
+  const end = physics.poses().get(machine.id)!,
+    startYaw = euler(start.rotation)[1],
+    endYaw = euler(end.rotation)[1];
+  physics.dispose();
+  return {
+    lateralDistance: end.position[0] - start.position[0],
+    forwardDistance: end.position[2] - start.position[2],
+    yaw: endYaw - startYaw,
+  };
+}
+
 it("Starter PlaneはThrusterとPanel空力だけで離陸する", async () => {
   const result = await simulatePlane();
   expect(result.heightGain).toBeGreaterThan(0.5);
@@ -371,65 +391,118 @@ it("翼面積またはThruster推力を減らすと離陸性能が下がる", as
   expect(standard.heightGain).toBeGreaterThan(weakThruster.heightGain + 0.25);
 });
 
-async function simulateBoat(singleBuoyancy = false) {
+async function createSettledBoat(settleSteps = 600) {
   const project = emptyProject(),
     machine = boatTemplate();
   project.world.water = { enabled: true, height: 1 };
-  if (singleBuoyancy) {
-    let kept = false;
-    for (const part of machine.parts)
-      if (part.metadata.buoyancy === 1)
-        if (kept) delete part.metadata.buoyancy;
-        else kept = true;
-  }
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
+  for (let i = 0; i < settleSteps; i++) physics.step(0, 0);
+  return { machine, physics };
+}
+
+async function inspectSettledBoat() {
+  const { machine, physics } = await createSettledBoat();
   let minUp = 1;
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 60; i++) {
     physics.step(0, 0);
     const up = physics.poses().get(machine.id)!.rotation;
     minUp = Math.min(minUp, 1 - 2 * (up[0] * up[0] + up[2] * up[2]));
   }
-  const start = physics.poses().get(machine.id)!.position;
-  for (let i = 0; i < 180; i++) physics.step(1, 0.5);
-  const end = physics.poses().get(machine.id)!.position;
+  const poses = physics.poses(),
+    deck = machine.parts.find(
+      (part) => part.definitionId === "Panel" && part.metadata.buoyancy !== 1,
+    )!,
+    deckY = poses.get(deck.id)!.position[1] + deck.physics.size[1] / 2,
+    boatPose = poses.get(machine.id)!;
   physics.dispose();
-  return { minUp, forwardDistance: end[2] - start[2] };
+  return {
+    minUp,
+    deckY,
+    position: boatPose.position,
+    rotation: boatPose.rotation,
+  };
 }
 
-async function measureBoatSteering(singleBuoyancy = false) {
-  const project = emptyProject(),
-    machine = boatTemplate();
-  project.world.water = { enabled: true, height: 2 };
-  if (singleBuoyancy) {
-    let kept = false;
-    for (const part of machine.parts)
-      if (part.metadata.buoyancy === 1)
-        if (kept) delete part.metadata.buoyancy;
-        else kept = true;
-  }
-  project.machines.push(machine);
-  const physics = new RapierPhysics();
-  await physics.load(project);
-  for (let i = 0; i < 5; i++) physics.step(1, 0.7);
-  const yawVelocity = physics.world.bodies.getAll()[0].angvel().y;
+async function simulateBoatSteering(steering: number) {
+  const { machine, physics } = await createSettledBoat();
+  const start = physics.poses().get(machine.id)!;
+  for (let i = 0; i < 180; i++) physics.step(1, steering);
+  const end = physics.poses().get(machine.id)!,
+    startYaw = euler(start.rotation)[1],
+    endYaw = euler(end.rotation)[1];
   physics.dispose();
-  return yawVelocity;
+  return {
+    lateralDistance: end.position[0] - start.position[0],
+    forwardDistance: end.position[2] - start.position[2],
+    yaw: endYaw - startYaw,
+  };
 }
 
-it("Starter Boatは沈没・大横転せずThrusterで前進する", async () => {
-  const result = await simulateBoat();
+it("Starter Boatは排水体積で浮上しDeckを水面上に保つ", async () => {
+  const result = await inspectSettledBoat();
   expect(result.minUp).toBeGreaterThan(0.8);
-  expect(result.forwardDistance).toBeGreaterThan(5);
+  expect(result.deckY).toBeGreaterThan(1.05);
+  expect(result.position.every(Number.isFinite)).toBe(true);
+  expect(result.rotation.every(Number.isFinite)).toBe(true);
 });
 
-it("浮力Panelを増やしてもSteering TorqueはRigidBodyごとに1回である", async () => {
-  const full = await simulateBoat(false),
-    single = await simulateBoat(true),
-    fullYaw = await measureBoatSteering(false),
-    singleYaw = await measureBoatSteering(true);
-  expect(full.minUp).toBeGreaterThan(0.8);
-  expect(single.minUp).toBeGreaterThan(0.8);
-  expect(fullYaw).toBeCloseTo(singleYaw, 3);
+it("Starter Boatはsteering=0で前進し、不要なYawを発生させない", async () => {
+  const result = await simulateBoatSteering(0);
+  expect(result.forwardDistance).toBeGreaterThan(5);
+  expect(Math.abs(result.lateralDistance)).toBeLessThan(0.5);
+  expect(Math.abs(result.yaw)).toBeLessThan(0.1);
+});
+
+it("Planeは差動推力で左右へ旋回し、直進時はほぼ直進する", async () => {
+  const straight = await simulatePlaneSteering(0),
+    left = await simulatePlaneSteering(0.7),
+    right = await simulatePlaneSteering(-0.7);
+  expect(Math.abs(straight.lateralDistance)).toBeLessThan(3);
+  expect(left.lateralDistance).toBeLessThan(-5);
+  expect(right.lateralDistance).toBeGreaterThan(5);
+  expect(left.yaw).toBeLessThan(-0.1);
+  expect(right.yaw).toBeGreaterThan(0.1);
+  expect(Math.abs(left.lateralDistance + right.lateralDistance)).toBeLessThan(
+    2,
+  );
+});
+
+it("Boatは差動推力で左右へ旋回し、左右入力が鏡像になる", async () => {
+  const left = await simulateBoatSteering(0.7),
+    right = await simulateBoatSteering(-0.7);
+  expect(left.forwardDistance).toBeGreaterThan(5);
+  expect(right.forwardDistance).toBeGreaterThan(5);
+  expect(left.lateralDistance).toBeLessThan(-1);
+  expect(right.lateralDistance).toBeGreaterThan(1);
+  expect(left.yaw).toBeLessThan(-0.1);
+  expect(right.yaw).toBeGreaterThan(0.1);
+  expect(Math.abs(left.lateralDistance + right.lateralDistance)).toBeLessThan(
+    0.5,
+  );
+});
+
+it("RollさせたBoatは浮力の復元Momentで水平へ戻る", async () => {
+  const { machine, physics } = await createSettledBoat(0),
+    body = physics.world.bodies.getAll()[0],
+    initialRotation = quaternion([0, 0, (8 * Math.PI) / 180]);
+  body.setRotation(
+    {
+      x: initialRotation[0],
+      y: initialRotation[1],
+      z: initialRotation[2],
+      w: initialRotation[3],
+    },
+    true,
+  );
+  const startRoll = Math.abs(
+    euler(physics.poses().get(machine.id)!.rotation)[2],
+  );
+  for (let i = 0; i < 360; i++) physics.step(0, 0);
+  const pose = physics.poses().get(machine.id)!,
+    endRoll = Math.abs(euler(pose.rotation)[2]);
+  physics.dispose();
+  expect(endRoll).toBeLessThan(startRoll);
+  expect(pose.position.every(Number.isFinite)).toBe(true);
 });

@@ -18,7 +18,9 @@ import {
   computePanelAerodynamicForce,
 } from "../../aerodynamics/src/index";
 import {
-  submergedDepth,
+  computeBoxBuoyancy,
+  WATER_LINEAR_DRAG,
+  WATER_VERTICAL_DRAG,
   type WaterSurface,
 } from "../../water-system/src/index";
 import { compileMachine } from "../../machine-system/src/index";
@@ -28,6 +30,7 @@ import {
   rotate,
   type Quat,
 } from "../../machine-system/src/math";
+import { isForwardThruster, mixThrusterCommands } from "./thruster-steering";
 export interface Pose {
   position: Vec3;
   rotation: Quat;
@@ -153,6 +156,7 @@ export class RapierPhysics {
   }[] = [];
   private parts: { part: Part; body: RAPIER.RigidBody }[] = [];
   private water: WaterSurface = { enabled: false, height: 0 };
+  private gravityMagnitude = 9.81;
   private hinges: RevoluteRuntime[] = [];
   private motors: MotorRuntime[] = [];
   async load(project: Project, options: { courseId?: string | null } = {}) {
@@ -163,6 +167,7 @@ export class RapierPhysics {
     this.world = new rapier.World(vector(project.settings.gravity));
     this.world.timestep = PHYSICS_FIXED_DT;
     this.water = structuredClone(project.world.water);
+    this.gravityMagnitude = Math.abs(project.settings.gravity[1]);
     type StaticEntry = {
       kind: string;
       create: () => RAPIER.ColliderDesc;
@@ -538,9 +543,42 @@ export class RapierPhysics {
       if (appliedTorque !== 0)
         applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
     }
-    const steeredBuoyancyBodies = new Set<RAPIER.RigidBody>();
+    const thrustersByBody = new Map<
+      RAPIER.RigidBody,
+      {
+        part: Part;
+        body: RAPIER.RigidBody;
+        localDirection: Vec3;
+      }[]
+    >();
     for (const { part, body } of this.parts) {
-      const velocity = body.linvel();
+      if (part.definitionId !== "Thruster" || !part.actuator.enabled) continue;
+      const localDirection = rotate(
+        [0, 0, 1],
+        quaternion(part.transform.rotation),
+      );
+      thrustersByBody.set(body, [
+        ...(thrustersByBody.get(body) ?? []),
+        { part, body, localDirection },
+      ]);
+    }
+    const thrusterCommands = new Map<string, number>();
+    for (const entries of thrustersByBody.values()) {
+      const forward = entries.filter((entry) =>
+        isForwardThruster(entry.localDirection),
+      );
+      const commands = mixThrusterCommands({
+        throttle: input,
+        steering,
+        lateralOffsets: forward.map(
+          (entry) => entry.part.transform.position[0],
+        ),
+      });
+      forward.forEach((entry, index) =>
+        thrusterCommands.set(entry.part.id, commands[index]),
+      );
+    }
+    for (const { part, body } of this.parts) {
       const panelPose = this.pose(
         body,
         part.transform.position,
@@ -561,34 +599,47 @@ export class RapierPhysics {
           true,
         );
       }
-      if (part.metadata.buoyancy) {
-        const position = this.pose(body, part.transform.position).position;
-        const depth = submergedDepth(this.water, position[1]);
-        if (depth > 0) {
-          body.applyImpulse(
-            {
-              x: -velocity.x * 0.5,
-              y: Math.max(
-                -10,
-                Math.min(
-                  15,
-                  (part.physics.mass * 9.81 * Math.min(2, depth / 0.3) -
-                    velocity.y * part.physics.mass * 3) /
-                    60,
-                ),
-              ),
-              z: -velocity.z * 0.5,
+      if (part.metadata.buoyancy === 1 && this.water.enabled) {
+        const buoyancyPose = this.pose(
+            body,
+            part.transform.position,
+            quaternion(part.transform.rotation),
+          ),
+          size = part.physics.size.map(
+            (value, index) => value * part.transform.scale[index],
+          ) as Vec3,
+          buoyancy = computeBoxBuoyancy({
+            waterHeight: this.water.height,
+            center: buoyancyPose.position,
+            size,
+            axes: {
+              x: rotate([1, 0, 0], buoyancyPose.rotation),
+              y: rotate([0, 1, 0], buoyancyPose.rotation),
+              z: rotate([0, 0, 1], buoyancyPose.rotation),
             },
+            gravity: this.gravityMagnitude,
+          });
+        if (buoyancy.displacedVolume > 0) {
+          body.addForceAtPoint(
+            vector(buoyancy.force),
+            vector(buoyancy.applicationPoint),
             true,
           );
-          if (!steeredBuoyancyBodies.has(body)) {
-            // 浮力Panelが増えても、同じRigidBodyへの操舵入力は1回だけ適用する。
-            body.applyTorqueImpulse(
-              { x: 0, y: steering * throttle * 0.1, z: 0 },
-              true,
-            );
-            steeredBuoyancyBodies.add(body);
-          }
+          const pointVelocity = velocityAtPoint(
+              body,
+              buoyancy.applicationPoint,
+            ),
+            drag = pointVelocity.map(
+              (value, index) =>
+                -value *
+                (index === 1 ? WATER_VERTICAL_DRAG : WATER_LINEAR_DRAG) *
+                buoyancy.displacedVolume,
+            ) as Vec3;
+          body.addForceAtPoint(
+            vector(drag),
+            vector(buoyancy.applicationPoint),
+            true,
+          );
         }
       }
       if (part.definitionId === "Thruster" && part.actuator.enabled) {
@@ -598,10 +649,11 @@ export class RapierPhysics {
           quaternion(part.transform.rotation),
         );
         const direction = rotate([0, 0, 1], thrusterPose.rotation);
+        const command = thrusterCommands.get(part.id) ?? input;
         body.addForceAtPoint(
           vector(
             direction.map(
-              (value) => value * throttle * part.actuator.motorTorque,
+              (value) => value * command * part.actuator.motorTorque,
             ) as Vec3,
           ),
           vector(thrusterPose.position),

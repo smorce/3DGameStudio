@@ -794,7 +794,16 @@ export function boatTemplate() {
     );
   connectTemplateParts(m, rightRoot, hullPanel(), "edge-z+", "edge-z-");
   connectTemplateParts(m, deckRear, rightRear, "edge-x+", "edge-x-");
-  connectTemplateParts(m, deckFront, createPart("Block"), "top-1", "mount");
+  const cabin = connectTemplateParts(
+    m,
+    deckFront,
+    createPart("Block"),
+    "top-1",
+    "mount",
+  );
+  // 排水体積で決まる喫水を保ちつつ、Deckを明確に水面上へ出す。
+  for (const part of [deckFront, deckRear, cabin])
+    part.transform.position[1] += 0.08;
   for (const rear of [leftRear, rightRear]) {
     const thruster = createPart("Thruster");
     connectTemplateParts(
