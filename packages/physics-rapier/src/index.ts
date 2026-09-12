@@ -110,6 +110,20 @@ const cross = (a: Vec3, b: Vec3): Vec3 => [
   a[2] * b[0] - a[0] * b[2],
   a[0] * b[1] - a[1] * b[0],
 ];
+// 複数Collider機体ではRigidBody原点と質量中心が一致しないため、world-space CoMを使う。
+function worldCenterOfMass(body: RAPIER.RigidBody) {
+  return body.worldCom();
+}
+function pitchMomentNm(
+  point: Vec3,
+  force: Vec3,
+  center: { x: number; y: number; z: number },
+) {
+  return cross(
+    [point[0] - center.x, point[1] - center.y, point[2] - center.z],
+    force,
+  )[0];
+}
 const addInto = (target: Vec3, value: Vec3) => {
   target[0] += value[0];
   target[1] += value[1];
@@ -668,29 +682,20 @@ export class RapierPhysics {
           addInto(forces.drag, force.drag);
           forces.dragMagnitude += vectorMagnitude(force.drag);
           addInto(forces.aerodynamic, force.force);
-          const center = body.translation();
-          forces.aerodynamicPitchMomentNm += cross(
-            [
-              panelPose.position[0] - center.x,
-              panelPose.position[1] - center.y,
-              panelPose.position[2] - center.z,
-            ],
+          const center = worldCenterOfMass(body);
+          const panelPitchMomentNm = pitchMomentNm(
+            panelPose.position,
             force.force,
-          )[0];
+            center,
+          );
+          forces.aerodynamicPitchMomentNm += panelPitchMomentNm;
           const role =
             typeof part.metadata.aeroRole === "string"
               ? part.metadata.aeroRole
               : "unclassified";
           forces.aerodynamicPitchMomentByRoleNm[role] =
             (forces.aerodynamicPitchMomentByRoleNm[role] ?? 0) +
-            cross(
-              [
-                panelPose.position[0] - center.x,
-                panelPose.position[1] - center.y,
-                panelPose.position[2] - center.z,
-              ],
-              force.force,
-            )[0];
+            panelPitchMomentNm;
           forces.panelCount++;
           forces.angleOfAttackSum += force.angleOfAttack;
           forces.liftCoefficientSum += force.liftCoefficient;
@@ -760,15 +765,11 @@ export class RapierPhysics {
         if (forces) {
           addInto(forces.thruster, force);
           forces.thrusterMagnitude += vectorMagnitude(force);
-          const center = body.translation();
-          forces.thrusterPitchMomentNm += cross(
-            [
-              thrusterPose.position[0] - center.x,
-              thrusterPose.position[1] - center.y,
-              thrusterPose.position[2] - center.z,
-            ],
+          forces.thrusterPitchMomentNm += pitchMomentNm(
+            thrusterPose.position,
             force,
-          )[0];
+            worldCenterOfMass(body),
+          );
         }
         body.addForceAtPoint(
           vector(force),

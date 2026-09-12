@@ -28,8 +28,8 @@
 - 1024m Flat Test Worldで、+4°、+6°、+8°、+10°、+12°を同一条件で再測定した。
 - +4°と+6°は3秒のStable Flight条件を満たさず、+8°、+10°、+12°は条件を満たした。
 - +8°はLiftoff Step 168、Liftoff Forward Speed 37.547m/s、最大Pitch絶対値0.248radで、最終Starter Planeに採用した。
-- Pitch MomentはRapier型定義に明示的なCenter of Mass取得メソッドがなかったため、Telemetryでは実際に取得できるRigidBodyのWorld Translationを基準に `r x F` を集計した。推測した未存在APIは使用していない。
-- 最終TelemetryではThruster Pitch Momentは約2942Nmで安定し、Aerodynamic Pitch Momentの主な変動はMain WingとHorizontal Tailから発生した。
+- Pitch Moment Telemetryは `@dimforge/rapier3d-compat` 0.19.3 の `RigidBody.worldCom()`（world-space center of mass）まわりに `r x F` を集計する。複数Colliderを異なる位置へ置く機体では、RigidBody原点（`translation()`）と質量中心は一致しない。Starter Planeでは質量中心が原点より約0.86m上・約0.59m後方にあり、推力線は質量中心に近い。実際の空力・推力は `addForceAtPoint()` でRapierへ渡しているため飛行物理自体はもともと質量中心まわりで計算されており、この差が影響するのは原因解析用Pitch Moment Telemetryの数値である。
+- 当時の最終Telemetryはtranslation基準だったため、Thruster Pitch Momentは約2942Nmで安定して見えた。worldCom基準では同じ推力でもPitch Momentは大幅に小さくなる。Aerodynamic Pitch Momentの主な変動がMain WingとHorizontal Tailから発生する、という役割別の見方はそのTelemetry内訳として引き続き有効である。
 
 ## E. 最終飛行結果
 

@@ -308,7 +308,8 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
   physics.telemetry.start();
   for (let i = 0; i < 30; i++) physics.step(1, 0);
   const sample = physics.telemetry.current(machine.id)!,
-    velocity = physics.world.bodies.getAll()[0].linvel();
+    body = physics.world.bodies.getAll()[0],
+    velocity = body.linvel();
   expect(sample.step).toBe(30);
   expect(sample.timeSeconds).toBeCloseTo(0.5);
   expect(sample.linearVelocityMps).toEqual([
@@ -328,6 +329,15 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
   expect(sample.totalPitchMomentNm).toBeCloseTo(
     sample.aerodynamicPitchMomentNm + sample.thrusterPitchMomentNm,
   );
+  const translation = body.translation();
+  const centerOfMass = body.worldCom();
+  expect(
+    Math.hypot(
+      centerOfMass.x - translation.x,
+      centerOfMass.y - translation.y,
+      centerOfMass.z - translation.z,
+    ),
+  ).toBeGreaterThan(0);
   expect(sample.contactStatusAvailable).toBe(true);
   expect(sample.wheels).toHaveLength(4);
   physics.dispose();
