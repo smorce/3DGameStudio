@@ -3,9 +3,16 @@ export type TelemetryQuat = [number, number, number, number];
 
 export interface WheelTelemetrySample {
   id: string;
+  role?: string;
   inContact?: boolean;
   suspensionLengthM: number;
   suspensionForceN?: number;
+}
+export interface MotorTelemetrySample {
+  controlInput: number;
+  targetAngleRad: number;
+  actualRelativeAngleRad: number;
+  angleErrorRad: number;
 }
 export interface RoleAerodynamicTelemetry {
   appliedLiftVerticalN: number;
@@ -33,6 +40,8 @@ export interface MachineTelemetrySample {
   verticalSpeedMps: number;
   throttle: number;
   steering: number;
+  controlChannels?: Record<string, number>;
+  motorByPart?: Record<string, MotorTelemetrySample>;
   brake: boolean;
   pitchRad: number;
   yawRad: number;

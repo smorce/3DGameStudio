@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "results": [
+    {
+      "machine": "car",
+      "parts": 5,
+      "steps": 300,
+      "forwardSpeedMps": -2.0412142427654117e-9,
+      "position": [
+        -0.0036331082228571177, 0.9088687896728516, 4.649240970611572
+      ],
+      "groundedWheelCount": 0,
+      "buoyancy": null,
+      "finite": true
+    },
+    {
+      "machine": "boat",
+      "parts": 11,
+      "steps": 300,
+      "forwardSpeedMps": 11.113866136433217,
+      "position": [
+        -1.711562447326287e-9, 1.0195834636688232, 18.232227325439453
+      ],
+      "groundedWheelCount": 0,
+      "buoyancy": 1.0195834636688232,
+      "finite": true
+    }
+  ]
+}

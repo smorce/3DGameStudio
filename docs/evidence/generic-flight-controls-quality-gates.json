@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "branch": "feat/generic-flight-controls",
+  "gates": {
+    "typecheck": "pass",
+    "lintAndCycles": "pass",
+    "changedFilesFormat": "pass",
+    "unitAndIntegration": {
+      "status": "pass",
+      "testFiles": 17,
+      "tests": 134
+    },
+    "build": "pass",
+    "playwrightE2E": {
+      "status": "pass",
+      "fullSuiteBeforeInspectorAdditionTests": 26,
+      "flightControlSuiteTests": 8
+    },
+    "carBoatLegacyRegression": "pass",
+    "planeGeometrySweep": "recorded",
+    "neutralGroundRoll": "recorded",
+    "controlledSurfaceTelemetry": "recorded"
+  },
+  "fullFormatCheck": {
+    "status": "blockedByPreExistingFiles",
+    "reason": "指示12.mdを含む計画・既存報告ファイルを編集せず、既存renderer/testファイルも変更範囲外として保持した"
+  }
+}

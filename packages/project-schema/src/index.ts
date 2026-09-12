@@ -12,6 +12,8 @@ export const PANEL_MAX_THICKNESS = 1;
 export const PANEL_DENSITY = 250;
 export const DEFAULT_MOTOR_MAX_TORQUE = 180;
 export const DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY = 9;
+export const DEFAULT_MOTOR_POSITION_STIFFNESS = 20;
+export const DEFAULT_MOTOR_POSITION_DAMPING = 5;
 export const MAX_MOTOR_TARGET_ANGULAR_VELOCITY = 1000;
 export const panelMass = (thickness: number) =>
   PANEL_DENSITY * PANEL_SIDE * PANEL_SIDE * thickness;
@@ -74,6 +76,22 @@ export const partSchema = z.object({
       .finite()
       .min(0)
       .max(MAX_MOTOR_TARGET_ANGULAR_VELOCITY),
+    motorMode: z.enum(["velocity", "position"]).default("velocity"),
+    controlChannel: z.string().min(1).default("throttle"),
+    controlGain: z.number().finite().min(-100).max(100).default(1),
+    neutralAngleRad: z.number().finite().default(0),
+    positionStiffness: z
+      .number()
+      .finite()
+      .nonnegative()
+      .max(1000000)
+      .default(DEFAULT_MOTOR_POSITION_STIFFNESS),
+    positionDamping: z
+      .number()
+      .finite()
+      .nonnegative()
+      .max(1000000)
+      .default(DEFAULT_MOTOR_POSITION_DAMPING),
     steering: z.number().min(0).max(1),
     enabled: z.boolean(),
   }),
@@ -89,13 +107,28 @@ export const connectionSchema = z.object({
   type: z.enum(["fixed", "revolute"]),
   axis: vec3.refine((v) => Math.hypot(...v) > 0.001, "Invalid joint axis"),
   damping: z.number().min(0),
+  limits: z
+    .object({
+      minAngleRad: z.number().finite(),
+      maxAngleRad: z.number().finite(),
+    })
+    .refine((limits) => limits.minAngleRad <= limits.maxAngleRad, {
+      message: "Invalid joint angle limits",
+    })
+    .optional(),
 });
+export const controlBindingSchema = z.object({
+  channel: z.string().min(1),
+  key: z.string().min(1),
+  value: z.number().finite().min(-1).max(1),
+});
+export type ControlBinding = z.infer<typeof controlBindingSchema>;
 export const machineSchema = z.object({
   id: z.string(),
   name: z.string(),
   parts: z.array(partSchema),
   connections: z.array(connectionSchema),
-  controlBindings: z.array(z.object({ action: z.string(), key: z.string() })),
+  controlBindings: z.array(controlBindingSchema),
 });
 export type Machine = z.infer<typeof machineSchema>;
 const assetFile = z
@@ -230,7 +263,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(4),
+    schemaVersion: z.literal(5),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -481,6 +514,86 @@ function migrateV3Project(input: Record<string, unknown>) {
   };
 }
 
+function legacyControlBindings(value: unknown) {
+  const bindings: {
+    channel: string;
+    key: string;
+    value: number;
+  }[] = [];
+  const add = (channel: string, key: string, amount: number) => {
+    if (
+      !bindings.some(
+        (binding) =>
+          binding.channel === channel &&
+          binding.key === key &&
+          binding.value === amount,
+      )
+    )
+      bindings.push({ channel, key, value: amount });
+  };
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (!isRecord(item) || typeof item.key !== "string") continue;
+      const action = typeof item.action === "string" ? item.action : "";
+      const channel =
+        action === "forward" || action === "backward"
+          ? "throttle"
+          : action === "left" || action === "right"
+            ? "steering"
+            : action;
+      if (!channel) continue;
+      add(
+        channel,
+        item.key,
+        action === "backward" || action === "right" ? -1 : 1,
+      );
+    }
+  }
+  // v4 Engine had these aliases in addition to the saved WASD bindings.
+  add("throttle", "ArrowUp", 1);
+  add("throttle", "ArrowDown", -1);
+  add("steering", "ArrowLeft", 1);
+  add("steering", "ArrowRight", -1);
+  add("brake", "Space", 1);
+  return bindings;
+}
+
+function migrateV4Part(input: unknown) {
+  if (!isRecord(input)) return input;
+  const actuator = isRecord(input.actuator) ? input.actuator : {};
+  return {
+    ...input,
+    actuator: {
+      ...actuator,
+      motorMode: "velocity",
+      controlChannel: "throttle",
+      controlGain: 1,
+      neutralAngleRad: 0,
+      positionStiffness: DEFAULT_MOTOR_POSITION_STIFFNESS,
+      positionDamping: DEFAULT_MOTOR_POSITION_DAMPING,
+    },
+  };
+}
+
+function migrateV4Project(input: Record<string, unknown>) {
+  return {
+    ...input,
+    schemaVersion: 5,
+    machines: Array.isArray(input.machines)
+      ? input.machines.map((machine) => {
+          if (!isRecord(machine)) return machine;
+          return {
+            ...machine,
+            controlBindings: legacyControlBindings(machine.controlBindings),
+            parts: Array.isArray(machine.parts)
+              ? machine.parts.map(migrateV4Part)
+              : machine.parts,
+          };
+        })
+      : input.machines,
+  };
+}
+
 export function parseProject(input: unknown): Project {
   if (
     typeof input === "object" &&
@@ -526,13 +639,21 @@ export function parseProject(input: unknown): Project {
   ) {
     input = migrateV3Project(input as Record<string, unknown>);
   }
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    "schemaVersion" in input &&
+    input.schemaVersion === 4
+  ) {
+    input = migrateV4Project(input as Record<string, unknown>);
+  }
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 4,
+    schemaVersion: 5,
     id: uid(),
     name: "わたしのスタジオ",
     world: {

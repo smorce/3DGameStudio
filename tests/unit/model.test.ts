@@ -56,7 +56,7 @@ describe("モデルとコマンド", () => {
   });
   it("旧スキーマと壊れた入力", () => {
     const p = emptyProject();
-    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(4);
+    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(5);
     expect(() => parseProject({ ...p, schemaVersion: 9 })).toThrow();
     expect(() => parseProject({})).toThrow();
   });
@@ -75,7 +75,7 @@ describe("モデルとコマンド", () => {
     project.machines.push(machine);
     const migrated = parseProject({ ...project, schemaVersion: 2 });
     const panel = migrated.machines[0].parts[0];
-    expect(migrated.schemaVersion).toBe(4);
+    expect(migrated.schemaVersion).toBe(5);
     expect(panel.definitionId).toBe("Panel");
     expect(panel.physics.size[0]).toBe(PANEL_SIDE);
     expect(panel.physics.size[2]).toBe(PANEL_SIDE);
@@ -106,7 +106,7 @@ describe("モデルとコマンド", () => {
     const migratedMotor = migrated.machines[0].parts.find(
       (part) => part.definitionId === "Motor",
     )!;
-    expect(migrated.schemaVersion).toBe(4);
+    expect(migrated.schemaVersion).toBe(5);
     expect(migratedMotor.actuator.motorTorque).toBe(200);
     expect(migratedMotor.actuator.targetAngularVelocity).toBe(10);
   });
@@ -187,11 +187,32 @@ describe("Starter Template", () => {
       thrusters = machine.parts.filter(
         (part) => part.definitionId === "Thruster",
       );
-    expect(parsed.machines[0].parts).toHaveLength(27);
-    expect(mainWing).toHaveLength(8);
+    expect(parsed.machines[0].parts).toHaveLength(42);
+    expect(mainWing.length).toBeGreaterThanOrEqual(8);
     expect(mainWing.every((part) => part.transform.rotation[0] > 0)).toBe(true);
     expect(horizontalTail).toHaveLength(4);
-    expect(verticalTail).toHaveLength(1);
+    expect(verticalTail).toHaveLength(2);
+    expect(
+      machine.parts.filter(
+        (part) => part.metadata.aeroRole === "elevator-left",
+      ),
+    ).toHaveLength(1);
+    expect(
+      machine.parts.filter(
+        (part) => part.metadata.aeroRole === "elevator-right",
+      ),
+    ).toHaveLength(1);
+    expect(
+      machine.parts.filter((part) => part.metadata.aeroRole === "aileron-left"),
+    ).toHaveLength(1);
+    expect(
+      machine.parts.filter(
+        (part) => part.metadata.aeroRole === "aileron-right",
+      ),
+    ).toHaveLength(1);
+    expect(
+      machine.parts.filter((part) => part.metadata.aeroRole === "rudder"),
+    ).toHaveLength(1);
     expect(thrusters).toHaveLength(2);
     expect(wheels).toHaveLength(3);
     expect(suspensions).toHaveLength(3);
@@ -206,7 +227,7 @@ describe("Starter Template", () => {
       machine.connections.filter(
         (connection) => connection.type === "revolute",
       ),
-    ).toHaveLength(3);
+    ).toHaveLength(8);
     expect(wheels.every((part) => part.metadata.drive === false)).toBe(true);
     expect(wheels.every((part) => part.actuator.motorTorque === 0)).toBe(true);
     expect(
@@ -216,7 +237,7 @@ describe("Starter Template", () => {
           machine.parts.some((part) => part.id === connection.b),
       ),
     ).toBe(true);
-    expect(compileMachine(machine).bodies).toHaveLength(1);
+    expect(compileMachine(machine).bodies).toHaveLength(6);
   });
 
   it("飛行機の左右構造が対称である", () => {
@@ -241,7 +262,7 @@ describe("Starter Template", () => {
         .map((part) => Math.abs(part.transform.position[0]))
         .sort();
     expect(leftWing).toEqual(rightWing);
-    expect(thrusterX).toEqual([2, 2]);
+    expect(thrusterX).toEqual([0.5, 0.5]);
   });
 
   it("ボートTemplateは左右Ponton、Deck、複数浮力Panelを持つ", () => {

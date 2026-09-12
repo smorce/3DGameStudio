@@ -1,0 +1,489 @@
+{
+  "version": 1,
+  "source": "plane-controlled-rotation.jsonl",
+  "controlSurfaceRoles": [
+    "elevator-left",
+    "elevator-right",
+    "aileron-left",
+    "aileron-right",
+    "rudder"
+  ],
+  "samples": [
+    {
+      "step": 1,
+      "timeSeconds": 0.016666666666666666,
+      "controlChannels": {
+        "throttle": 1,
+        "pitch": 0
+      },
+      "motorByPart": {
+        "6df26e89-bf18-4a2a-9116-1ea4cca4dd44": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0,
+          "angleErrorRad": 0
+        },
+        "3493614d-dcb7-439b-8df8-c9382c86f517": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0,
+          "angleErrorRad": 0
+        },
+        "495f296a-59fa-4105-846a-1cf7ca24ac7b": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0,
+          "angleErrorRad": 0
+        },
+        "3a8b6577-f658-472e-a0eb-365bc69cebaf": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0,
+          "angleErrorRad": 0
+        },
+        "f1c9b96b-4b34-4823-9667-6a1f640d2c15": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0,
+          "angleErrorRad": 0
+        }
+      },
+      "aerodynamicByRole": {
+        "fuselage": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 4
+        },
+        "main-wing": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 9
+        },
+        "horizontal-stabilizer": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 4
+        },
+        "vertical-stabilizer": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        },
+        "elevator-left": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        },
+        "aileron-left": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        },
+        "elevator-right": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        },
+        "aileron-right": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        },
+        "rudder": {
+          "appliedLiftVerticalN": 0,
+          "appliedDragN": 0,
+          "appliedAerodynamicForceN": 0,
+          "angleOfAttackRad": 0,
+          "liftCoefficient": 0,
+          "dragCoefficient": 0,
+          "pitchMomentNm": 0,
+          "panelCount": 1
+        }
+      },
+      "wheels": [
+        {
+          "id": "c37538bb-084c-4960-9d96-167d3b111a2b",
+          "role": "nose",
+          "inContact": false,
+          "suspensionLengthM": 0.6499999761581421,
+          "suspensionForceN": 0
+        },
+        {
+          "id": "edb9f61b-abca-4aa7-8d52-530fddf1c268",
+          "role": "main-left",
+          "inContact": false,
+          "suspensionLengthM": 0.6499999761581421,
+          "suspensionForceN": 0
+        },
+        {
+          "id": "b8d6e00a-f44e-4d07-b3c5-511b7be0b377",
+          "role": "main-right",
+          "inContact": false,
+          "suspensionLengthM": 0.6499999761581421,
+          "suspensionForceN": 0
+        }
+      ],
+      "position": [
+        4.37838366451615e-7, 0.9983010292053223, 0.0012500882148742676
+      ],
+      "forwardSpeedMps": 0.119704699578512,
+      "pitchRad": -0.000005444658447759331
+    },
+    {
+      "step": 301,
+      "timeSeconds": 5.016666666666654,
+      "controlChannels": {
+        "throttle": 1,
+        "pitch": 1
+      },
+      "motorByPart": {
+        "6df26e89-bf18-4a2a-9116-1ea4cca4dd44": {
+          "controlInput": -1,
+          "targetAngleRad": -0.17453292519943295,
+          "actualRelativeAngleRad": -0.017041817172017158,
+          "angleErrorRad": -0.15749110802741578
+        },
+        "3493614d-dcb7-439b-8df8-c9382c86f517": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.005853540295982868,
+          "angleErrorRad": 0.005853540295982868
+        },
+        "495f296a-59fa-4105-846a-1cf7ca24ac7b": {
+          "controlInput": -1,
+          "targetAngleRad": -0.17453292519943295,
+          "actualRelativeAngleRad": -0.017611526742913716,
+          "angleErrorRad": -0.15692139845651923
+        },
+        "3a8b6577-f658-472e-a0eb-365bc69cebaf": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.0068453481057653255,
+          "angleErrorRad": 0.0068453481057653255
+        },
+        "f1c9b96b-4b34-4823-9667-6a1f640d2c15": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.0002481220664074216,
+          "angleErrorRad": 0.0002481220664074216
+        }
+      },
+      "aerodynamicByRole": {
+        "fuselage": {
+          "appliedLiftVerticalN": -148.31685527465228,
+          "appliedDragN": 54.090244487189324,
+          "appliedAerodynamicForceN": 157.96435478676867,
+          "angleOfAttackRad": -0.0399504999898379,
+          "liftCoefficient": -0.08779554985747602,
+          "dragCoefficient": 0.03200861915524274,
+          "pitchMomentNm": 98.73837257745969,
+          "panelCount": 4
+        },
+        "main-wing": {
+          "appliedLiftVerticalN": -74.56921808337343,
+          "appliedDragN": 115.05070824754264,
+          "appliedAerodynamicForceN": 149.59840702429582,
+          "angleOfAttackRad": -0.008923365766917418,
+          "liftCoefficient": -0.019620682236442588,
+          "dragCoefficient": 0.030259245061500597,
+          "pitchMomentNm": 38.07182726108504,
+          "panelCount": 9
+        },
+        "horizontal-stabilizer": {
+          "appliedLiftVerticalN": -261.1306129011855,
+          "appliedDragN": 61.16921897213268,
+          "appliedAerodynamicForceN": 268.29152749272936,
+          "angleOfAttackRad": -0.07052306321989113,
+          "liftCoefficient": -0.15463594954686605,
+          "dragCoefficient": 0.03621007016195015,
+          "pitchMomentNm": -377.7534231121351,
+          "panelCount": 4
+        },
+        "vertical-stabilizer": {
+          "appliedLiftVerticalN": -0.019734156106948782,
+          "appliedDragN": 12.673715409749493,
+          "appliedAerodynamicForceN": 12.698311979153118,
+          "angleOfAttackRad": -0.0008500075071398494,
+          "liftCoefficient": -0.001870015614967267,
+          "dragCoefficient": 0.03000090314073523,
+          "pitchMomentNm": -0.15632036838776964,
+          "panelCount": 1
+        },
+        "elevator-left": {
+          "appliedLiftVerticalN": -92.94232263317905,
+          "appliedDragN": 18.013777280703998,
+          "appliedAerodynamicForceN": 94.70129953710008,
+          "angleOfAttackRad": -0.10068856697892815,
+          "liftCoefficient": -0.22002070744037597,
+          "dragCoefficient": 0.042629966063173375,
+          "pitchMomentNm": -10.879254739947607,
+          "panelCount": 1
+        },
+        "aileron-left": {
+          "appliedLiftVerticalN": -15.923008172182012,
+          "appliedDragN": 12.83371442095651,
+          "appliedAerodynamicForceN": 20.454959404868216,
+          "angleOfAttackRad": -0.017134538162153608,
+          "liftCoefficient": -0.03768860622041008,
+          "dragCoefficient": 0.030366954583737026,
+          "pitchMomentNm": -1.8839972432213892,
+          "panelCount": 1
+        },
+        "elevator-right": {
+          "appliedLiftVerticalN": -96.25780489940746,
+          "appliedDragN": 18.402691276117732,
+          "appliedAerodynamicForceN": 98.03323488043955,
+          "angleOfAttackRad": -0.10438302638277124,
+          "liftCoefficient": -0.2279781931974073,
+          "dragCoefficient": 0.043570375882290596,
+          "pitchMomentNm": -11.258234216549196,
+          "panelCount": 1
+        },
+        "aileron-right": {
+          "appliedLiftVerticalN": -22.630202617629518,
+          "appliedDragN": 12.979977023832285,
+          "appliedAerodynamicForceN": 26.095137242189583,
+          "angleOfAttackRad": -0.02438133535307095,
+          "liftCoefficient": -0.053617683210219244,
+          "dragCoefficient": 0.030742914666074754,
+          "pitchMomentNm": -2.6769599509182385,
+          "panelCount": 1
+        },
+        "rudder": {
+          "appliedLiftVerticalN": -0.028478831404699003,
+          "appliedDragN": 12.673776136872513,
+          "appliedAerodynamicForceN": 12.725050320144032,
+          "angleOfAttackRad": -0.001227938069859457,
+          "liftCoefficient": -0.002701461038122802,
+          "dragCoefficient": 0.030001884788931947,
+          "pitchMomentNm": 0.07305385507063399,
+          "panelCount": 1
+        }
+      },
+      "wheels": [
+        {
+          "id": "c37538bb-084c-4960-9d96-167d3b111a2b",
+          "role": "nose",
+          "inContact": true,
+          "suspensionLengthM": 0.25319790840148926,
+          "suspensionForceN": 820.3240966796875
+        },
+        {
+          "id": "edb9f61b-abca-4aa7-8d52-530fddf1c268",
+          "role": "main-left",
+          "inContact": true,
+          "suspensionLengthM": 0.06756582856178284,
+          "suspensionForceN": 1203.3641357421875
+        },
+        {
+          "id": "b8d6e00a-f44e-4d07-b3c5-511b7be0b377",
+          "role": "main-right",
+          "inContact": true,
+          "suspensionLengthM": 0.017553627490997314,
+          "suspensionForceN": 1318.0572509765625
+        }
+      ],
+      "position": [0.08894225209951401, 0.2405102252960205, 73.9449462890625],
+      "forwardSpeedMps": 26.28618833065427,
+      "pitchRad": -0.04476808637066724
+    },
+    {
+      "step": 480,
+      "timeSeconds": 7.999999999999977,
+      "controlChannels": {
+        "throttle": 1,
+        "pitch": 0
+      },
+      "motorByPart": {
+        "6df26e89-bf18-4a2a-9116-1ea4cca4dd44": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.02632542576840532,
+          "angleErrorRad": 0.02632542576840532
+        },
+        "3493614d-dcb7-439b-8df8-c9382c86f517": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.006801500178291936,
+          "angleErrorRad": 0.006801500178291936
+        },
+        "495f296a-59fa-4105-846a-1cf7ca24ac7b": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.03263040620912705,
+          "angleErrorRad": 0.03263040620912705
+        },
+        "3a8b6577-f658-472e-a0eb-365bc69cebaf": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": 0.04514814762047406,
+          "angleErrorRad": -0.04514814762047406
+        },
+        "f1c9b96b-4b34-4823-9667-6a1f640d2c15": {
+          "controlInput": 0,
+          "targetAngleRad": 0,
+          "actualRelativeAngleRad": -0.014615022500860574,
+          "angleErrorRad": 0.014615022500860574
+        }
+      },
+      "aerodynamicByRole": {
+        "fuselage": {
+          "appliedLiftVerticalN": -329.127337418139,
+          "appliedDragN": 91.95342900426401,
+          "appliedAerodynamicForceN": 345.2285976847201,
+          "angleOfAttackRad": -0.05588322941514333,
+          "liftCoefficient": -0.12268645116327195,
+          "dragCoefficient": 0.03390391604193716,
+          "pitchMomentNm": 191.9094903951692,
+          "panelCount": 4
+        },
+        "main-wing": {
+          "appliedLiftVerticalN": -329.4528599790915,
+          "appliedDragN": 201.1536499406733,
+          "appliedAerodynamicForceN": 610.2059577423347,
+          "angleOfAttackRad": -0.024848619178382502,
+          "liftCoefficient": -0.05447988834044251,
+          "dragCoefficient": 0.03290783126416019,
+          "pitchMomentNm": 209.47649940944834,
+          "panelCount": 9
+        },
+        "horizontal-stabilizer": {
+          "appliedLiftVerticalN": -518.6256717005401,
+          "appliedDragN": 109.83589412204928,
+          "appliedAerodynamicForceN": 536.0613456312037,
+          "angleOfAttackRad": -0.08842768013054088,
+          "liftCoefficient": -0.19329699257738095,
+          "dragCoefficient": 0.04048437571144251,
+          "pitchMomentNm": -745.1801614410072,
+          "panelCount": 4
+        },
+        "vertical-stabilizer": {
+          "appliedLiftVerticalN": 3.371144141224536,
+          "appliedDragN": 20.537138494521262,
+          "appliedAerodynamicForceN": 30.68620398248632,
+          "angleOfAttackRad": 0.015289120107842872,
+          "liftCoefficient": 0.03363082270098817,
+          "dragCoefficient": 0.03029217372512233,
+          "pitchMomentNm": 4.427670765322991,
+          "panelCount": 1
+        },
+        "elevator-left": {
+          "appliedLiftVerticalN": -239.0534026263459,
+          "appliedDragN": 43.231580788149785,
+          "appliedAerodynamicForceN": 245.70672184303902,
+          "angleOfAttackRad": -0.16458573567803622,
+          "liftCoefficient": -0.35558500349166083,
+          "dragCoefficient": 0.06355593892587444,
+          "pitchMomentNm": -27.478429739800966,
+          "panelCount": 1
+        },
+        "aileron-left": {
+          "appliedLiftVerticalN": -153.80026548970616,
+          "appliedDragN": 29.747952707460847,
+          "appliedAerodynamicForceN": 158.63937612173828,
+          "angleOfAttackRad": -0.10470012313630823,
+          "liftCoefficient": -0.22866061317294673,
+          "dragCoefficient": 0.04365264786404755,
+          "pitchMomentNm": -18.0323078353912,
+          "panelCount": 1
+        },
+        "elevator-right": {
+          "appliedLiftVerticalN": -150.04300552245678,
+          "appliedDragN": 29.21363238100481,
+          "appliedAerodynamicForceN": 154.5207504085309,
+          "angleOfAttackRad": -0.10234055998897466,
+          "liftCoefficient": -0.22358044122912007,
+          "dragCoefficient": 0.04304634484925205,
+          "pitchMomentNm": -17.557147155629234,
+          "panelCount": 1
+        },
+        "aileron-right": {
+          "appliedLiftVerticalN": 119.9138953766992,
+          "appliedDragN": 26.040857163517813,
+          "appliedAerodynamicForceN": 124.20842634555096,
+          "angleOfAttackRad": 0.08153419134620671,
+          "liftCoefficient": 0.17858130728138596,
+          "dragCoefficient": 0.038291382775119794,
+          "pitchMomentNm": 14.100220295642606,
+          "panelCount": 1
+        },
+        "rudder": {
+          "appliedLiftVerticalN": -0.05958826813620511,
+          "appliedDragN": 20.3429568778494,
+          "appliedAerodynamicForceN": 20.346991886932734,
+          "angleOfAttackRad": -0.0002716137062159641,
+          "liftCoefficient": -0.0005975501242860093,
+          "dragCoefficient": 0.030000092217504486,
+          "pitchMomentNm": 0.1586475723338947,
+          "panelCount": 1
+        }
+      },
+      "wheels": [
+        {
+          "id": "c37538bb-084c-4960-9d96-167d3b111a2b",
+          "role": "nose",
+          "inContact": true,
+          "suspensionLengthM": 0.17727303504943848,
+          "suspensionForceN": 945.3583374023438
+        },
+        {
+          "id": "edb9f61b-abca-4aa7-8d52-530fddf1c268",
+          "role": "main-left",
+          "inContact": true,
+          "suspensionLengthM": 0.04562908411026001,
+          "suspensionForceN": 1545.979248046875
+        },
+        {
+          "id": "b8d6e00a-f44e-4d07-b3c5-511b7be0b377",
+          "role": "main-right",
+          "inContact": true,
+          "suspensionLengthM": -0.2541247308254242,
+          "suspensionForceN": 1606.9007568359375
+        }
+      ],
+      "position": [0.6474288702011108, 0.12491367012262344, 143.36558532714844],
+      "forwardSpeedMps": 33.22209449882559,
+      "pitchRad": -0.059223046196020264
+    }
+  ]
+}

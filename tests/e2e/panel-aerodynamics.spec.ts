@@ -59,13 +59,58 @@ test("SuspensionをPaletteとInspectorで操作できる", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "⌁ サスペンション", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "くわしくつくる", exact: true }).click();
+  await page
+    .getByRole("button", { name: "くわしくつくる", exact: true })
+    .click();
   await page.getByRole("button", { name: "Studio", exact: true }).click();
   const suspensionPart = page.getByRole("button", { name: /◈ サスペンション/ });
   await expect(suspensionPart).toHaveCount(3);
   await suspensionPart.last().click();
   await expect(page.getByLabel("Suspension restLength")).toBeVisible();
   await expect(page.getByLabel("Suspension relaxation")).toBeVisible();
+});
+
+test("Generic Flight ControlのMotor・Hinge・Binding Inspectorを編集できる", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ひこうき", exact: false }).click();
+  await page
+    .getByRole("button", { name: "くわしくつくる", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Studio", exact: true }).click();
+
+  const motors = page.getByRole("button", { name: /◈ モーター/ });
+  await expect(motors).toHaveCount(5);
+  await motors.first().click();
+  await expect(page.getByLabel("Motor Mode")).toBeVisible();
+  await expect(page.getByLabel("Control Channel")).toBeVisible();
+  await expect(page.getByLabel("Control Gain")).toBeVisible();
+
+  await page.getByLabel("Control Channel").fill("pitch");
+  await page
+    .getByRole("button", { name: /◈ 関節/ })
+    .first()
+    .click();
+  await expect(page.getByLabel("Limit Enabled")).toBeVisible();
+  await expect(page.getByLabel("Min Angle")).toBeVisible();
+  await expect(page.getByLabel("Max Angle")).toBeVisible();
+
+  await expect(
+    page.getByRole("heading", { name: "Control Bindings" }),
+  ).toBeVisible();
+  await page.getByLabel("Binding 0 channel").fill("throttle");
+  await page.getByLabel("Binding 0 value").fill("1");
+  await page.getByRole("button", { name: "保存", exact: true }).click();
+  const project = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("machine-studio.project") ?? "null"),
+  );
+  expect(project.schemaVersion).toBe(5);
+  expect(project.machines[0].controlBindings[0]).toMatchObject({
+    channel: "throttle",
+    value: 1,
+  });
+  await screenshot(page, "generic-flight-controls-inspector");
 });
 
 test("Starter Boatを表示して保存する @smoke", async ({ page }) => {

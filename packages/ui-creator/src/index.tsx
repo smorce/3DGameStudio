@@ -34,6 +34,12 @@ export function MachineInspector({
       partId: part.id,
       patch: p,
     });
+  const updateBindings = (bindings: Machine["controlBindings"]) =>
+    execute({
+      type: "machine.control-bindings.update",
+      machineId: machine.id,
+      bindings,
+    });
   return (
     <>
       <section>
@@ -52,6 +58,71 @@ export function MachineInspector({
           ))}
         </div>
       </section>
+      {advanced && (
+        <section>
+          <h3>Control Bindings</h3>
+          {machine.controlBindings.map((binding, index) => (
+            <div
+              className="connection"
+              key={`${binding.channel}-${binding.key}-${index}`}
+            >
+              <input
+                aria-label={`Binding ${index} channel`}
+                value={binding.channel}
+                onChange={(e) => {
+                  const bindings = [...machine.controlBindings];
+                  bindings[index] = { ...binding, channel: e.target.value };
+                  updateBindings(bindings);
+                }}
+              />
+              <input
+                aria-label={`Binding ${index} key`}
+                value={binding.key}
+                onChange={(e) => {
+                  const bindings = [...machine.controlBindings];
+                  bindings[index] = { ...binding, key: e.target.value };
+                  updateBindings(bindings);
+                }}
+              />
+              <input
+                aria-label={`Binding ${index} value`}
+                type="number"
+                min="-1"
+                max="1"
+                step="0.1"
+                value={binding.value}
+                onChange={(e) => {
+                  const bindings = [...machine.controlBindings];
+                  bindings[index] = {
+                    ...binding,
+                    value: Math.max(-1, Math.min(1, Number(e.target.value))),
+                  };
+                  updateBindings(bindings);
+                }}
+              />
+              <button
+                onClick={() =>
+                  updateBindings(
+                    machine.controlBindings.filter((_, item) => item !== index),
+                  )
+                }
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() =>
+              updateBindings([
+                ...machine.controlBindings,
+                { channel: "custom1", key: "KeyC", value: 1 },
+              ])
+            }
+          >
+            Add Binding
+          </button>
+        </section>
+      )}
       {part && (
         <section>
           <h3>{advanced ? "Inspector" : "パーツをくわしく"}</h3>
@@ -267,6 +338,59 @@ export function MachineInspector({
               {part.definitionId === "Motor" ? (
                 <>
                   <label className="field">
+                    Motor Mode
+                    <select
+                      aria-label="Motor Mode"
+                      value={part.actuator.motorMode}
+                      onChange={(e) =>
+                        patch({
+                          actuator: {
+                            ...part.actuator,
+                            motorMode: e.target.value as
+                              "velocity" | "position",
+                          },
+                        })
+                      }
+                    >
+                      <option value="velocity">Velocity</option>
+                      <option value="position">Position</option>
+                    </select>
+                  </label>
+                  <label className="field">
+                    Control Channel
+                    <input
+                      aria-label="Control Channel"
+                      value={part.actuator.controlChannel}
+                      onChange={(e) =>
+                        patch({
+                          actuator: {
+                            ...part.actuator,
+                            controlChannel: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="field">
+                    Control Gain
+                    <input
+                      aria-label="Control Gain"
+                      type="number"
+                      min="-100"
+                      max="100"
+                      step="0.1"
+                      value={part.actuator.controlGain}
+                      onChange={(e) =>
+                        patch({
+                          actuator: {
+                            ...part.actuator,
+                            controlGain: Number(e.target.value),
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="field">
                     最大トルク（N·m）
                     <input
                       aria-label="最大トルク"
@@ -303,6 +427,35 @@ export function MachineInspector({
                       }
                     />
                   </label>
+                  {part.actuator.motorMode === "position" && (
+                    <>
+                      {(
+                        [
+                          ["neutralAngleRad", "Neutral Angle (rad)"],
+                          ["positionStiffness", "Position Stiffness"],
+                          ["positionDamping", "Position Damping"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <label className="field" key={key}>
+                          {label}
+                          <input
+                            aria-label={label}
+                            type="number"
+                            step="0.1"
+                            value={part.actuator[key]}
+                            onChange={(e) =>
+                              patch({
+                                actuator: {
+                                  ...part.actuator,
+                                  [key]: Number(e.target.value),
+                                },
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
+                    </>
+                  )}
                 </>
               ) : (
                 <label className="field">
@@ -331,10 +484,7 @@ export function MachineInspector({
                     patch({
                       physics: {
                         ...part.physics,
-                        collider: e.target.value as
-                          | "box"
-                          | "cylinder"
-                          | "none",
+                        collider: e.target.value as "box" | "cylinder" | "none",
                       },
                     })
                   }
@@ -387,6 +537,68 @@ export function MachineInspector({
                         }
                       />
                     </label>
+                    {c.type === "revolute" && (
+                      <>
+                        <label className="field">
+                          Limit Enabled
+                          <input
+                            aria-label="Limit Enabled"
+                            type="checkbox"
+                            checked={Boolean(c.limits)}
+                            onChange={(e) =>
+                              execute({
+                                type: "part.connection.update",
+                                machineId: machine.id,
+                                connectionId: c.id,
+                                patch: {
+                                  limits: e.target.checked
+                                    ? {
+                                        minAngleRad: (-30 * Math.PI) / 180,
+                                        maxAngleRad: (30 * Math.PI) / 180,
+                                      }
+                                    : undefined,
+                                },
+                              })
+                            }
+                          />
+                        </label>
+                        {c.limits && (
+                          <div className="vector">
+                            {(
+                              [
+                                ["minAngleRad", "Min Angle"],
+                                ["maxAngleRad", "Max Angle"],
+                              ] as const
+                            ).map(([key, label]) => (
+                              <label key={key}>
+                                {label}
+                                <input
+                                  aria-label={label}
+                                  type="number"
+                                  step="1"
+                                  value={(c.limits![key] * 180) / Math.PI}
+                                  onChange={(e) =>
+                                    execute({
+                                      type: "part.connection.update",
+                                      machineId: machine.id,
+                                      connectionId: c.id,
+                                      patch: {
+                                        limits: {
+                                          ...c.limits!,
+                                          [key]:
+                                            (Number(e.target.value) * Math.PI) /
+                                            180,
+                                        },
+                                      },
+                                    })
+                                  }
+                                />
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
                     <div className="vector">
                       {c.axis.map((v, i) => (
                         <label key={i}>

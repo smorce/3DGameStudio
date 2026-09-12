@@ -13,6 +13,7 @@ import {
   assetSchema,
   entitySchema,
   connectionSchema,
+  controlBindingSchema,
   vec3,
   uid,
   type Project,
@@ -48,6 +49,11 @@ export const commandSchema = z.discriminatedUnion("type", [
     patch: entitySchema.omit({ id: true }).partial(),
   }),
   z.object({ type: z.literal("machine.create"), machine: machineSchema }),
+  z.object({
+    type: z.literal("machine.control-bindings.update"),
+    machineId: id,
+    bindings: z.array(controlBindingSchema),
+  }),
   z.object({ type: z.literal("machine.delete"), machineId: id }),
   z.object({
     type: z.literal("part.add"),
@@ -306,6 +312,9 @@ function apply(p: Project, c: Command) {
 
     case "machine.create":
       p.machines.push(c.machine);
+      break;
+    case "machine.control-bindings.update":
+      machine().controlBindings = c.bindings;
       break;
     case "machine.delete":
       p.machines = p.machines.filter((m) => m.id !== c.machineId);

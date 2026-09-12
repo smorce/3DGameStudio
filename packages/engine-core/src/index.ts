@@ -1,6 +1,7 @@
 import {
   parseProject,
   activeCourse,
+  type ControlBinding,
   type Project,
   type Vec3,
 } from "../../project-schema/src/index";
@@ -11,6 +12,22 @@ import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
 } from "../../runtime-telemetry/src/index";
+export type ControlValues = Record<string, number>;
+const clampControl = (value: number) =>
+  Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
+export function aggregateControlChannels(
+  bindings: readonly ControlBinding[],
+  activeKeys: ReadonlySet<string>,
+  analog: Readonly<Record<string, number>> = {},
+): ControlValues {
+  const values: ControlValues = { ...analog };
+  for (const binding of bindings)
+    if (activeKeys.has(binding.key))
+      values[binding.channel] = (values[binding.channel] ?? 0) + binding.value;
+  for (const channel of Object.keys(values))
+    values[channel] = clampControl(values[channel]);
+  return values;
+}
 export class Engine {
   readonly renderer: ThreeRenderer;
   readonly physics = new RapierPhysics();
@@ -118,29 +135,20 @@ export class Engine {
     if (this.mode === "PLAY" || this.mode === "DROP") {
       const dropping = this.mode === "DROP";
       this.accumulator += dt;
-      const pad = navigator.getGamepads?.()[0];
-      const action = (name: string, fallback: string) =>
-        this.keys.has(
-          this.project?.machines[0]?.controlBindings.find(
-            (b) => b.action === name,
-          )?.key ?? fallback,
+      const pad = navigator.getGamepads?.()[0],
+        machine = this.project?.machines[0],
+        controls = aggregateControlChannels(
+          dropping ? [] : (machine?.controlBindings ?? []),
+          this.keys,
+          dropping
+            ? {}
+            : {
+                throttle: this.input.throttle - (pad?.axes[1] ?? 0),
+                steering: this.input.steering - (pad?.axes[0] ?? 0),
+              },
         );
-      const throttle =
-          (dropping ? 0 : this.input.throttle) +
-          (Number(action("forward", "KeyW") || this.keys.has("ArrowUp")) -
-            Number(action("backward", "KeyS") || this.keys.has("ArrowDown"))) -
-          (pad?.axes[1] ?? 0),
-        steering =
-          this.input.steering +
-          Number(action("left", "KeyA") || this.keys.has("ArrowLeft")) -
-          Number(action("right", "KeyD") || this.keys.has("ArrowRight")) -
-          (pad?.axes[0] ?? 0);
       while (this.accumulator >= 1 / 60) {
-        this.physics.step(
-          dropping ? 0 : Math.max(-1, Math.min(1, throttle)),
-          dropping ? 0 : Math.max(-1, Math.min(1, steering)),
-          !dropping && this.keys.has("Space"),
-        );
+        this.physics.step(controls);
         this.accumulator -= 1 / 60;
         const p = this.physics.poses().values().next().value?.position;
         if (p && !dropping) {
@@ -148,7 +156,10 @@ export class Engine {
           if (p[1] < -20) this.physics.respawn(this.course?.respawn);
         }
       }
-      this.renderer.render(this.physics.poses(), dropping ? 0 : throttle);
+      this.renderer.render(
+        this.physics.poses(),
+        dropping ? 0 : (controls.throttle ?? 0),
+      );
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();
         if (this.project) this.renderer.restoreEditTransforms(this.project);

@@ -42,6 +42,7 @@ import {
   vectorMagnitude,
   worldSpeedMps,
   type TelemetryVec3,
+  type MotorTelemetrySample,
   type RoleAerodynamicTelemetry,
 } from "../../runtime-telemetry/src/index";
 import {
@@ -60,9 +61,15 @@ interface RevoluteRuntime {
   bodyB: RAPIER.RigidBody;
   axisLocal: Vec3;
   damping: number;
+  joint: RAPIER.RevoluteImpulseJoint;
+  limits?: {
+    minAngleRad: number;
+    maxAngleRad: number;
+  };
 }
 interface MotorRuntime extends RevoluteRuntime {
   part: Part;
+  machineId: string;
 }
 const vector = (v: Vec3) => ({ x: v[0], y: v[1], z: v[2] });
 const rotation = (q: Quat) => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
@@ -87,6 +94,18 @@ function relativeAngularVelocity(runtime: RevoluteRuntime, axisWorld: Vec3) {
     (b.y - a.y) * axisWorld[1] +
     (b.z - a.z) * axisWorld[2]
   );
+}
+function relativeAngle(runtime: RevoluteRuntime) {
+  const a = runtime.bodyA.rotation(),
+    b = runtime.bodyB.rotation(),
+    qa: Quat = [a.x, a.y, a.z, a.w],
+    qb: Quat = [b.x, b.y, b.z, b.w],
+    inverseA: Quat = [-qa[0], -qa[1], -qa[2], qa[3]],
+    relative = multiply(inverseA, qb),
+    axis = normalize(runtime.axisLocal),
+    sign =
+      relative[0] * axis[0] + relative[1] * axis[1] + relative[2] * axis[2];
+  return 2 * Math.atan2(sign, relative[3]);
 }
 function applyEqualOppositeTorque(
   runtime: RevoluteRuntime,
@@ -151,6 +170,7 @@ interface ForceAccumulator {
   angleOfAttackSum: number;
   liftCoefficientSum: number;
   dragCoefficientSum: number;
+  motorByPart: Record<string, MotorTelemetrySample>;
 }
 const emptyForceAccumulator = (): ForceAccumulator => ({
   lift: [0, 0, 0],
@@ -170,6 +190,7 @@ const emptyForceAccumulator = (): ForceAccumulator => ({
   angleOfAttackSum: 0,
   liftCoefficientSum: 0,
   dragCoefficientSum: 0,
+  motorByPart: {},
 });
 function velocityAtPoint(body: RAPIER.RigidBody, point: Vec3): Vec3 {
   const api = body as unknown as {
@@ -535,11 +556,15 @@ export class RapierPhysics {
           true,
         ) as RAPIER.RevoluteImpulseJoint;
         joint.setContactsEnabled(false);
+        if (c.limits)
+          joint.setLimits(c.limits.minAngleRad, c.limits.maxAngleRad);
         const runtime: RevoluteRuntime = {
           bodyA: a,
           bodyB: b,
           axisLocal: normalize(c.axis),
           damping: c.damping,
+          joint,
+          limits: c.limits,
         };
         this.hinges.push(runtime);
         const driver = m.parts.find(
@@ -553,7 +578,12 @@ export class RapierPhysics {
                   (link.b === c.b && link.a === candidate.id)),
             ),
         );
-        if (driver) this.motors.push({ ...runtime, part: driver });
+        if (driver)
+          this.motors.push({
+            ...runtime,
+            part: driver,
+            machineId: machine.id,
+          });
       }
       const chassis = bodies.get(
         m.bodyForPart.get(
@@ -590,7 +620,19 @@ export class RapierPhysics {
       this.vehicles.push({ id: m.id, body: chassis, controller, wheels });
     }
   }
-  step(throttle: number, steering: number, brake = false) {
+  step(input: Record<string, number> | number, steering = 0, brake = false) {
+    const controls: Record<string, number> =
+      typeof input === "number" ? { throttle: input, steering } : { ...input };
+    const throttle = Number.isFinite(controls.throttle)
+        ? clamp(controls.throttle, -1, 1)
+        : 0,
+      steeringValue = Number.isFinite(controls.steering)
+        ? clamp(controls.steering, -1, 1)
+        : 0,
+      brakeValue =
+        typeof input === "number"
+          ? brake
+          : Number.isFinite(controls.brake) && controls.brake > 0;
     const position = this.vehicles[0]?.body.translation();
     if (position) this.streamer?.update([position.x, position.y, position.z]);
     for (const machineId of this.forceByMachine.keys())
@@ -611,9 +653,9 @@ export class RapierPhysics {
         );
         v.controller.setWheelSteering(
           i,
-          w.metadata.front ? steering * w.actuator.steering : 0,
+          w.metadata.front ? steeringValue * w.actuator.steering : 0,
         );
-        v.controller.setWheelBrake(i, brake ? 20 : 0);
+        v.controller.setWheelBrake(i, brakeValue ? 20 : 0);
       });
       v.controller.updateVehicle(PHYSICS_FIXED_DT);
     }
@@ -627,19 +669,63 @@ export class RapierPhysics {
           -hinge.damping * relativeVelocity,
         );
     }
-    const input = Number.isFinite(throttle) ? clamp(throttle, -1, 1) : 0;
     for (const motor of this.motors) {
-      if (!motor.part.actuator.enabled || input === 0) continue;
       const axisWorld = worldAxis(motor),
-        relativeVelocity = relativeAngularVelocity(motor, axisWorld),
-        targetVelocity = input * motor.part.actuator.targetAngularVelocity,
-        appliedTorque = computeBoundedMotorTorque(
-          targetVelocity,
-          relativeVelocity,
-          motor.part.actuator.motorTorque,
-        );
-      if (appliedTorque !== 0)
-        applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
+        actuator = motor.part.actuator,
+        controlInput = clamp(
+          (Number.isFinite(controls[actuator.controlChannel])
+            ? controls[actuator.controlChannel]
+            : 0) * actuator.controlGain,
+          -1,
+          1,
+        ),
+        actualAngle = relativeAngle(motor),
+        forceAccumulator = this.forceByMachine.get(motor.machineId);
+      if (actuator.motorMode === "position") {
+        const limits = motor.limits ?? {
+            minAngleRad: -Math.PI,
+            maxAngleRad: Math.PI,
+          },
+          targetAngle =
+            controlInput >= 0
+              ? actuator.neutralAngleRad +
+                controlInput * (limits.maxAngleRad - actuator.neutralAngleRad)
+              : actuator.neutralAngleRad +
+                controlInput * (actuator.neutralAngleRad - limits.minAngleRad);
+        if (actuator.enabled)
+          motor.joint.configureMotorPosition(
+            targetAngle,
+            actuator.positionStiffness,
+            actuator.positionDamping,
+          );
+        else
+          motor.joint.configureMotorPosition(
+            actuator.neutralAngleRad,
+            actuator.positionStiffness,
+            actuator.positionDamping,
+          );
+        if (forceAccumulator)
+          forceAccumulator.motorByPart[motor.part.id] = {
+            controlInput,
+            targetAngleRad: actuator.enabled
+              ? targetAngle
+              : actuator.neutralAngleRad,
+            actualRelativeAngleRad: actualAngle,
+            angleErrorRad:
+              (actuator.enabled ? targetAngle : actuator.neutralAngleRad) -
+              actualAngle,
+          };
+      } else if (actuator.enabled && controlInput !== 0) {
+        const relativeVelocity = relativeAngularVelocity(motor, axisWorld),
+          targetVelocity = controlInput * actuator.targetAngularVelocity,
+          appliedTorque = computeBoundedMotorTorque(
+            targetVelocity,
+            relativeVelocity,
+            actuator.motorTorque,
+          );
+        if (appliedTorque !== 0)
+          applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
+      }
     }
     const thrustersByBody = new Map<
       RAPIER.RigidBody,
@@ -667,8 +753,8 @@ export class RapierPhysics {
         isForwardThruster(entry.localDirection),
       );
       const commands = mixThrusterCommands({
-        throttle: input,
-        steering,
+        throttle,
+        steering: steeringValue,
         lateralOffsets: forward.map(
           (entry) => entry.part.transform.position[0],
         ),
@@ -727,7 +813,9 @@ export class RapierPhysics {
           };
           roleTelemetry.appliedLiftVerticalN += force.appliedLift[1];
           roleTelemetry.appliedDragN += vectorMagnitude(force.appliedDrag);
-          roleTelemetry.appliedAerodynamicForceN += vectorMagnitude(force.force);
+          roleTelemetry.appliedAerodynamicForceN += vectorMagnitude(
+            force.force,
+          );
           roleTelemetry.angleOfAttackRad += force.angleOfAttack;
           roleTelemetry.liftCoefficient += force.liftCoefficient;
           roleTelemetry.dragCoefficient += force.dragCoefficient;
@@ -795,7 +883,7 @@ export class RapierPhysics {
           quaternion(part.transform.rotation),
         );
         const direction = rotate([0, 0, 1], thrusterPose.rotation);
-        const command = thrusterCommands.get(part.id) ?? input;
+        const command = thrusterCommands.get(part.id) ?? throttle;
         const force = direction.map(
           (value) => value * command * part.actuator.motorTorque,
         ) as Vec3;
@@ -819,9 +907,14 @@ export class RapierPhysics {
     this.world.step();
     this.physicsStep++;
     this.simulationTimeSeconds += PHYSICS_FIXED_DT;
-    this.captureTelemetry(throttle, steering, brake);
+    this.captureTelemetry(throttle, steeringValue, brakeValue, controls);
   }
-  private captureTelemetry(throttle: number, steering: number, brake: boolean) {
+  private captureTelemetry(
+    throttle: number,
+    steering: number,
+    brake: boolean,
+    controls: Record<string, number>,
+  ) {
     const safeThrottle = clamp(Number.isFinite(throttle) ? throttle : 0, -1, 1),
       safeSteering = clamp(Number.isFinite(steering) ? steering : 0, -1, 1);
     for (const vehicle of this.vehicles) {
@@ -875,6 +968,9 @@ export class RapierPhysics {
             suspensionForceN = wheelApi.wheelSuspensionForce?.(index);
           return {
             id: wheel.id,
+            ...(typeof wheel.metadata.gearRole === "string"
+              ? { role: wheel.metadata.gearRole }
+              : {}),
             ...(inContact === undefined ? {} : { inContact }),
             suspensionLengthM:
               vehicle.controller.wheelSuspensionLength(index) ?? 0.35,
@@ -919,6 +1015,8 @@ export class RapierPhysics {
         verticalSpeedMps: linearVelocityMps[1],
         throttle: safeThrottle,
         steering: safeSteering,
+        controlChannels: { ...controls },
+        motorByPart: { ...forces.motorByPart },
         brake: Boolean(brake),
         pitchRad: angles[0],
         yawRad: angles[1],

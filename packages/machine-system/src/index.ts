@@ -44,7 +44,7 @@ const partSize = (kind: Part["definitionId"]): Vec3 =>
       ? [0.4, 0.55, 0.55]
       : kind === "Suspension"
         ? [0.24, 0.62, 0.24]
-      : [0.6, 0.6, 0.6];
+        : [0.6, 0.6, 0.6];
 export function createPart(
   kind: Part["definitionId"],
   position: Vec3 = [0, 0.85, 0],
@@ -67,11 +67,7 @@ export function createPart(
       friction: 1.2,
       restitution: 0.05,
       collider:
-        kind === "Wheel"
-          ? "cylinder"
-          : kind === "Suspension"
-            ? "none"
-            : "box",
+        kind === "Wheel" ? "cylinder" : kind === "Suspension" ? "none" : "box",
       size,
       ...(kind === "Suspension"
         ? { suspension: { ...DEFAULT_SUSPENSION } }
@@ -109,6 +105,12 @@ export function createPart(
             : 0,
       targetAngularVelocity:
         kind === "Motor" ? DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY : 0,
+      motorMode: "velocity",
+      controlChannel: "throttle",
+      controlGain: 1,
+      neutralAngleRad: 0,
+      positionStiffness: 20,
+      positionDamping: 5,
       steering: 0.45,
       enabled: true,
     },
@@ -124,10 +126,15 @@ export function createMachine(name = "マイマシン"): Machine {
     parts: [],
     connections: [],
     controlBindings: [
-      { action: "forward", key: "KeyW" },
-      { action: "backward", key: "KeyS" },
-      { action: "left", key: "KeyA" },
-      { action: "right", key: "KeyD" },
+      { channel: "throttle", key: "KeyW", value: 1 },
+      { channel: "throttle", key: "KeyS", value: -1 },
+      { channel: "steering", key: "KeyA", value: 1 },
+      { channel: "steering", key: "KeyD", value: -1 },
+      { channel: "throttle", key: "ArrowUp", value: 1 },
+      { channel: "throttle", key: "ArrowDown", value: -1 },
+      { channel: "steering", key: "ArrowLeft", value: 1 },
+      { channel: "steering", key: "ArrowRight", value: -1 },
+      { channel: "brake", key: "Space", value: 1 },
     ],
   };
 }
@@ -551,6 +558,8 @@ function connectTemplateParts(
   childConnectorId: string,
   childRotation: Vec3 = [...child.transform.rotation],
   childAnchor?: Vec3,
+  connectionType: "fixed" | "revolute" = "fixed",
+  limits?: { minAngleRad: number; maxAngleRad: number },
 ) {
   const parentConnector = templateConnector(parent, parentConnectorId);
   const childConnector = templateConnector(child, childConnectorId);
@@ -576,9 +585,10 @@ function connectTemplateParts(
     b: child.id,
     connectorA: parentConnectorId,
     connectorB: childConnectorId,
-    type: "fixed",
+    type: connectionType,
     axis: rotate(parentConnector.axis, quaternion(parent.transform.rotation)),
     damping: 0.2,
+    ...(limits ? { limits } : {}),
   });
   return child;
 }
@@ -588,6 +598,7 @@ function attachTemplateSuspensionWheel(
   parent: Part,
   slot: string,
   front: boolean,
+  role: string,
 ) {
   const suspensionCandidate = findAttachmentCandidates(
     machine,
@@ -600,10 +611,7 @@ function attachTemplateSuspensionWheel(
     throw new Error(`Template suspension slot is unavailable: ${slot}`);
   const suspension = createPart("Suspension");
   commitAttachment(machine, suspension, suspensionCandidate);
-  const wheelCandidate = findAttachmentCandidates(
-    machine,
-    "Wheel",
-  ).find(
+  const wheelCandidate = findAttachmentCandidates(machine, "Wheel").find(
     (item) =>
       item.parentPartId === suspension.id &&
       item.parentConnectorId === "suspension-wheel",
@@ -615,6 +623,7 @@ function attachTemplateSuspensionWheel(
   commitAttachment(machine, wheel, wheelCandidate);
   wheel.metadata.front = front;
   wheel.metadata.drive = false;
+  wheel.metadata.gearRole = role;
   wheel.actuator.motorTorque = 0;
   return { suspension, wheel };
 }
@@ -730,10 +739,22 @@ export function wheelSuspensionSettings(
 }
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),
-    // +X回転は機首上げ。機首+Zへ進むStarter Planeの正のwing incidence。
-    wingAngle = (8 * Math.PI) / 180,
-    tailAngle = (8 * Math.PI) / 180,
+    // 固定翼は小さな迎角に留め、離陸の機首上げは可動翼で行う。
+    wingAngle = (2 * Math.PI) / 180,
+    tailAngle = (-2 * Math.PI) / 180,
+    elevatorLimit = (10 * Math.PI) / 180,
     fuselage: Part[] = [];
+  m.controlBindings = [
+    { channel: "throttle", key: "KeyW", value: 1 },
+    { channel: "throttle", key: "KeyS", value: -1 },
+    { channel: "pitch", key: "ArrowUp", value: 1 },
+    { channel: "pitch", key: "ArrowDown", value: -1 },
+    { channel: "turn", key: "ArrowLeft", value: -1 },
+    { channel: "turn", key: "ArrowRight", value: 1 },
+    { channel: "steering", key: "ArrowLeft", value: -1 },
+    { channel: "steering", key: "ArrowRight", value: 1 },
+    { channel: "brake", key: "Space", value: 1 },
+  ];
   const nose = createPart("Panel", [0, 0.85, 2]);
   m.parts.push(nose);
   fuselage.push(nose);
@@ -752,6 +773,7 @@ export function planeTemplate() {
   for (const part of fuselage) part.metadata.aeroRole = "fuselage";
   const mainWing = fuselage[2];
   mainWing.metadata.aeroRole = "main-wing";
+  const wingPanels: Record<-1 | 1, Part[]> = { [-1]: [], [1]: [] };
   for (const side of [-1, 1] as const) {
     let parent = mainWing;
     for (let i = 0; i < 4; i++) {
@@ -766,6 +788,7 @@ export function planeTemplate() {
         [wingAngle, 0, 0],
       );
       parent.metadata.aeroRole = "main-wing";
+      wingPanels[side].push(parent);
     }
   }
 
@@ -780,9 +803,9 @@ export function planeTemplate() {
       createPart("Panel"),
       parentConnector,
       childConnector,
+      [tailAngle, 0, 0],
     );
-    parent.metadata.aeroRole = "horizontal-tail";
-    parent.transform.rotation = [tailAngle, 0, 0];
+    parent.metadata.aeroRole = "horizontal-stabilizer";
     tailPanels[side].push(parent);
     parent = connectTemplateParts(
       m,
@@ -790,10 +813,80 @@ export function planeTemplate() {
       createPart("Panel"),
       parentConnector,
       childConnector,
+      [tailAngle, 0, 0],
     );
-    parent.metadata.aeroRole = "horizontal-tail";
-    parent.transform.rotation = [tailAngle, 0, 0];
+    parent.metadata.aeroRole = "horizontal-stabilizer";
     tailPanels[side].push(parent);
+  }
+
+  const connectPositionMotor = (
+    parent: Part,
+    parentConnector: string,
+    childRotation: Vec3,
+    channel: string,
+    gain: number,
+    role: string,
+    limits: { minAngleRad: number; maxAngleRad: number },
+  ) => {
+    const hinge = createPart("Hinge");
+    connectTemplateParts(
+      m,
+      parent,
+      hinge,
+      parentConnector,
+      "hinge-input",
+      childRotation,
+      undefined,
+      "revolute",
+      limits,
+    );
+    const movable = createPart("Panel");
+    connectTemplateParts(
+      m,
+      hinge,
+      movable,
+      "hinge-output",
+      "edge-z+",
+      childRotation,
+    );
+    movable.metadata.aeroRole = role;
+    const motor = createPart("Motor");
+    motor.actuator.motorMode = "position";
+    motor.actuator.controlChannel = channel;
+    motor.actuator.controlGain = gain;
+    motor.actuator.neutralAngleRad = 0;
+    motor.actuator.positionStiffness = 500;
+    motor.actuator.positionDamping = 50;
+    connectTemplateParts(
+      m,
+      hinge,
+      motor,
+      "hinge-output",
+      "mount",
+      childRotation,
+    );
+    return { hinge, movable, motor };
+  };
+
+  for (const side of [-1, 1] as const) {
+    connectPositionMotor(
+      tailPanels[side][1],
+      "edge-z-",
+      [tailAngle, 0, 0],
+      "pitch",
+      -1,
+      side < 0 ? "elevator-left" : "elevator-right",
+      { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+    );
+    connectPositionMotor(
+      wingPanels[side][3],
+      "edge-z-",
+      [wingAngle, 0, 0],
+      "turn",
+      side < 0 ? 1 : -1,
+      side < 0 ? "aileron-left" : "aileron-right",
+      { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+    );
   }
 
   // 後方の水平尾翼上にBlockを置き、機首側には簡単なCockpitを置く。
@@ -806,15 +899,26 @@ export function planeTemplate() {
     "edge-z-",
     [0, 0, Math.PI / 2],
   );
-  verticalTail.metadata.aeroRole = "vertical-tail";
+  verticalTail.metadata.aeroRole = "vertical-stabilizer";
+  connectPositionMotor(
+    verticalTail,
+    "edge-z-",
+    [0, 0, Math.PI / 2],
+    "turn",
+    1,
+    "rudder",
+    { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+  );
+
+  // 推力線を胴体の固定構造・重心付近へ置く。可動翼には取り付けない。
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
-    thruster.actuator.motorTorque = 1600;
+    thruster.actuator.motorTorque = 1000;
     connectTemplateParts(
       m,
-      tailPanels[side][1],
+      fuselage[3],
       thruster,
-      "edge-z-",
+      side < 0 ? "edge-x-" : "edge-x+",
       "mount",
       [0, 0, 0],
       [0, 0, thruster.physics.size[2] / 2],
@@ -824,8 +928,8 @@ export function planeTemplate() {
   // 機首側にNose Gearを1輪、重心より後方にMain Gearを左右1輪ずつ配置する。
   const gearSlots: Vec3[] = [
     [0, -0.3, 0.6],
-    [-1, -0.3, -2.1],
-    [1, -0.3, -2.1],
+    [-1, -0.3, -4.1],
+    [1, -0.3, -4.1],
   ];
   nose.connectors = placementConnectors(nose);
   gearSlots.forEach((position, index) => {
@@ -834,9 +938,9 @@ export function planeTemplate() {
       throw new Error(`Template landing gear slot is unavailable: ${index}`);
     connector.position = position;
   });
-  attachTemplateSuspensionWheel(m, nose, "0", true);
-  attachTemplateSuspensionWheel(m, nose, "1", false);
-  attachTemplateSuspensionWheel(m, nose, "2", false);
+  attachTemplateSuspensionWheel(m, nose, "0", true, "nose");
+  attachTemplateSuspensionWheel(m, nose, "1", false, "main-left");
+  attachTemplateSuspensionWheel(m, nose, "2", false, "main-right");
   // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
   for (const part of m.parts)
     if (part.definitionId === "Panel") {
