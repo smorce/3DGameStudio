@@ -76,6 +76,32 @@ export function updateMotorActivity(visual: THREE.Object3D, power: number) {
   });
 }
 
+export function updateSuspensionVisual(
+  visual: THREE.Object3D,
+  length: number,
+  direction: [number, number, number] = [0, -1, 0],
+) {
+  const outerLength = visual.userData.outerLength as number | undefined,
+    rod = visual.getObjectByName("suspension-inner-rod") as THREE.Mesh | null,
+    lowerMount = visual.getObjectByName(
+      "suspension-lower-mount",
+    ) as THREE.Object3D | null;
+  if (!outerLength || !rod || !lowerMount) return;
+  const endpoint = new THREE.Vector3(...direction).normalize().multiplyScalar(
+      Math.max(0.01, length),
+    ),
+    outerEnd = new THREE.Vector3(0, -outerLength, 0),
+    segment = endpoint.clone().sub(outerEnd),
+    segmentLength = Math.max(0.02, segment.length());
+  rod.position.copy(outerEnd).add(endpoint).multiplyScalar(0.5);
+  rod.scale.set(1, segmentLength, 1);
+  rod.quaternion.setFromUnitVectors(
+    new THREE.Vector3(0, 1, 0),
+    segment.normalize(),
+  );
+  lowerMount.position.copy(endpoint);
+}
+
 function createWheelVisual(part: Part, options: PartVisualOptions) {
   const group = new THREE.Group();
   group.name = "wheel-visual";
@@ -96,6 +122,53 @@ function createWheelVisual(part: Part, options: PartVisualOptions) {
     "wheel-hub",
   );
   hub.rotation.z = Math.PI / 2;
+  return group;
+}
+
+function createSuspensionVisual(part: Part, options: PartVisualOptions) {
+  const group = new THREE.Group();
+  group.name = "suspension-visual";
+  group.userData.ghost = options.ghost === true;
+  const [sx, sy, sz] = part.physics.size,
+    outerLength = Math.max(0.18, sy * 0.58),
+    radius = Math.min(sx, sz) * 0.42,
+    restLength = part.physics.suspension?.restLength ?? 0.55;
+  group.userData.outerLength = outerLength;
+  const upperMount = addMesh(
+    group,
+    new THREE.BoxGeometry(sx * 1.3, Math.max(0.06, sy * 0.12), sz * 1.3),
+    "#35414a",
+    options,
+    "suspension-upper-mount",
+  );
+  upperMount.position.y = -0.04;
+  const outer = addMesh(
+    group,
+    new THREE.CylinderGeometry(radius, radius * 1.08, outerLength, 16),
+    part.visual.color,
+    options,
+    "suspension-outer-cylinder",
+  );
+  outer.position.y = -outerLength / 2;
+  const lower = new THREE.Group();
+  lower.name = "suspension-lower";
+  addMesh(
+    lower,
+    new THREE.CylinderGeometry(radius * 0.42, radius * 0.42, 1, 12),
+    "#c3cdd1",
+    options,
+    "suspension-inner-rod",
+  );
+  const lowerMount = addMesh(
+    lower,
+    new THREE.CylinderGeometry(radius * 0.8, radius * 0.8, 0.09, 16),
+    "#35414a",
+    options,
+    "suspension-lower-mount",
+  );
+  lowerMount.rotation.z = Math.PI / 2;
+  group.add(lower);
+  updateSuspensionVisual(group, restLength);
   return group;
 }
 
@@ -411,6 +484,8 @@ export function createPartVisual(
       return createMotorVisual(part, options);
     case "Wheel":
       return createWheelVisual(part, options);
+    case "Suspension":
+      return createSuspensionVisual(part, options);
     case "Panel":
     case "Block":
     case "Steering":

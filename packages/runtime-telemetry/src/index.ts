@@ -7,6 +7,16 @@ export interface WheelTelemetrySample {
   suspensionLengthM: number;
   suspensionForceN?: number;
 }
+export interface RoleAerodynamicTelemetry {
+  appliedLiftVerticalN: number;
+  appliedDragN: number;
+  appliedAerodynamicForceN: number;
+  angleOfAttackRad: number;
+  liftCoefficient: number;
+  dragCoefficient: number;
+  pitchMomentNm: number;
+  panelCount: number;
+}
 
 export interface MachineTelemetrySample {
   version: 1;
@@ -31,8 +41,14 @@ export interface MachineTelemetrySample {
   liftVerticalN: number;
   totalDragN: number;
   totalAerodynamicForceN: number;
+  rawLiftVerticalN: number;
+  rawDragN: number;
+  appliedAerodynamicForceWorldN: TelemetryVec3;
+  appliedAerodynamicVerticalN: number;
+  appliedAerodynamicToWeightRatio: number;
   aerodynamicPitchMomentNm: number;
   aerodynamicPitchMomentByRoleNm: Record<string, number>;
+  aerodynamicByRole: Record<string, RoleAerodynamicTelemetry>;
   totalThrusterForceN: number;
   thrusterPitchMomentNm: number;
   totalPitchMomentNm: number;

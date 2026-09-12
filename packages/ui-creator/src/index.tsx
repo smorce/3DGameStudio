@@ -108,6 +108,44 @@ export function MachineInspector({
               />
             </label>
           )}
+          {advanced &&
+            part.definitionId === "Suspension" &&
+            part.physics.suspension && (
+              <>
+                <h4>Suspension</h4>
+                {(
+                  [
+                    "restLength",
+                    "stiffness",
+                    "compression",
+                    "relaxation",
+                    "maxForce",
+                  ] as const
+                ).map((key) => (
+                  <label className="field" key={key}>
+                    {key}
+                    <input
+                      aria-label={`Suspension ${key}`}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={part.physics.suspension![key]}
+                      onChange={(e) =>
+                        patch({
+                          physics: {
+                            ...part.physics,
+                            suspension: {
+                              ...part.physics.suspension!,
+                              [key]: Number(e.target.value),
+                            },
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                ))}
+              </>
+            )}
           {part.definitionId === "Motor" && !advanced ? (
             <>
               <label className="field">
@@ -293,13 +331,17 @@ export function MachineInspector({
                     patch({
                       physics: {
                         ...part.physics,
-                        collider: e.target.value as "box" | "cylinder",
+                        collider: e.target.value as
+                          | "box"
+                          | "cylinder"
+                          | "none",
                       },
                     })
                   }
                 >
                   <option value="box">Box</option>
                   <option value="cylinder">Cylinder</option>
+                  <option value="none">None</option>
                 </select>
               </label>
             </>

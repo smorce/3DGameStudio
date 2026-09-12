@@ -26,17 +26,19 @@ export const identity = (): z.infer<typeof transformSchema> => ({
   scale: [1, 1, 1],
 });
 const metadata = z.record(z.string(), z.unknown());
-const suspensionSchema = z.object({
+export const suspensionSchema = z.object({
   restLength: z.number().positive().max(10),
   stiffness: z.number().nonnegative().max(100000),
   compression: z.number().nonnegative().max(100000),
   relaxation: z.number().nonnegative().max(100000),
   maxForce: z.number().nonnegative().max(1000000),
 });
+export type SuspensionSettings = z.infer<typeof suspensionSchema>;
 export const partKinds = [
   "Panel",
   "Block",
   "Wheel",
+  "Suspension",
   "Motor",
   "Steering",
   "Hinge",
@@ -51,7 +53,7 @@ export const partSchema = z.object({
     mass: z.number().positive().max(10000),
     friction: z.number().min(0).max(10),
     restitution: z.number().min(0).max(1),
-    collider: z.enum(["box", "cylinder"]),
+    collider: z.enum(["box", "cylinder", "none"]),
     size: vec3.refine((v) => v.every((n) => n > 0 && n <= 100), "Invalid size"),
     suspension: suspensionSchema.optional(),
   }),
@@ -273,6 +275,8 @@ export const projectSchema = z
       )
         issue("Duplicate machine identifiers");
       for (const part of m.parts) {
+        if (part.definitionId === "Suspension" && !part.physics.suspension)
+          issue("Suspension part must own suspension settings");
         if (part.definitionId !== "Panel") continue;
         if (
           part.transform.scale.some((value) => value !== 1) ||

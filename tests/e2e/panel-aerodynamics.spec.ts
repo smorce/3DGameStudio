@@ -53,6 +53,21 @@ test("Starter Planeを表示して保存する @smoke", async ({ page }) => {
   await screenshot(page, "starter-plane");
 });
 
+test("SuspensionをPaletteとInspectorで操作できる", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "ひこうき", exact: false }).click();
+  await expect(
+    page.getByRole("button", { name: "⌁ サスペンション", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "くわしくつくる", exact: true }).click();
+  await page.getByRole("button", { name: "Studio", exact: true }).click();
+  const suspensionPart = page.getByRole("button", { name: /◈ サスペンション/ });
+  await expect(suspensionPart).toHaveCount(3);
+  await suspensionPart.last().click();
+  await expect(page.getByLabel("Suspension restLength")).toBeVisible();
+  await expect(page.getByLabel("Suspension relaxation")).toBeVisible();
+});
+
 test("Starter Boatを表示して保存する @smoke", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "ボート", exact: false }).click();

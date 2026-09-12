@@ -11,10 +11,15 @@ import {
 import type { Pose } from "../../physics-rapier/src/index";
 import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
-import type { AttachmentCandidate } from "../../machine-system/src/index";
+import {
+  wheelSuspensionSettings,
+  type AttachmentCandidate,
+} from "../../machine-system/src/index";
+import { quaternion, rotate } from "../../machine-system/src/math";
 import {
   createPartVisual,
   updateMotorActivity,
+  updateSuspensionVisual,
   updateThrusterFlame,
 } from "./part-visuals";
 export { createPartVisual };
@@ -33,9 +38,23 @@ export function syncPartVisualTransforms(
     for (const part of machine.parts) {
       const visual = parts.get(part.id);
       if (!visual) continue;
-      visual.position.fromArray(part.transform.position);
+      const position =
+        part.definitionId === "Wheel"
+          ? rotate(
+              [0, -wheelSuspensionSettings(machine, part.id).restLength, 0],
+              quaternion(part.transform.rotation),
+            ).map(
+              (value, index) => part.transform.position[index] + value,
+            )
+          : part.transform.position;
+      visual.position.fromArray(position);
       visual.rotation.fromArray([...part.transform.rotation, "XYZ"]);
       visual.scale.fromArray(part.transform.scale);
+      if (part.definitionId === "Suspension")
+        updateSuspensionVisual(
+          visual,
+          part.physics.suspension?.restLength ?? 0.55,
+        );
     }
 }
 export class ThreeRenderer implements RendererAdapter {
@@ -389,6 +408,7 @@ export class ThreeRenderer implements RendererAdapter {
         this.parts.set(part.id, visual);
       }
     }
+    this.syncProjectPartTransforms(p);
     for (const [batchKey, entities] of groupInstances(p)) {
       const key = batchKey.split(":")[0];
       const builders = this.chunkBuilders.get(key) ?? [];
@@ -565,6 +585,34 @@ export class ThreeRenderer implements RendererAdapter {
         if (m) {
           m.position.fromArray(p.position);
           m.quaternion.fromArray(p.rotation);
+        }
+      }
+      for (const machine of this.project?.machines ?? []) {
+        for (const suspension of machine.parts.filter(
+          (part) => part.definitionId === "Suspension",
+        )) {
+          const connection = machine.connections.find(
+            (item) =>
+              item.a === suspension.id &&
+              item.type === "revolute" &&
+              machine.parts.some(
+                (part) => part.id === item.b && part.definitionId === "Wheel",
+              ),
+          );
+          const top = poses.get(suspension.id),
+            wheel = connection ? poses.get(connection.b) : undefined,
+            visual = this.parts.get(suspension.id);
+          if (!top || !wheel || !visual) continue;
+          const topQuaternion = new THREE.Quaternion(...top.rotation),
+            delta = new THREE.Vector3(...wheel.position).sub(
+              new THREE.Vector3(...top.position),
+            ),
+            localDelta = delta.applyQuaternion(topQuaternion.clone().invert());
+          updateSuspensionVisual(visual, delta.length(), [
+            localDelta.x,
+            localDelta.y,
+            localDelta.z,
+          ]);
         }
       }
       const first = poses.values().next().value;

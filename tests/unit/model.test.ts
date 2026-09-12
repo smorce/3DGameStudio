@@ -181,16 +181,32 @@ describe("Starter Template", () => {
         (part) => Math.abs(part.transform.rotation[2]) > 1,
       ),
       wheels = machine.parts.filter((part) => part.definitionId === "Wheel"),
+      suspensions = machine.parts.filter(
+        (part) => part.definitionId === "Suspension",
+      ),
       thrusters = machine.parts.filter(
         (part) => part.definitionId === "Thruster",
       );
-    expect(parsed.machines[0].parts).toHaveLength(25);
+    expect(parsed.machines[0].parts).toHaveLength(27);
     expect(mainWing).toHaveLength(8);
     expect(mainWing.every((part) => part.transform.rotation[0] > 0)).toBe(true);
     expect(horizontalTail).toHaveLength(4);
     expect(verticalTail).toHaveLength(1);
     expect(thrusters).toHaveLength(2);
-    expect(wheels).toHaveLength(4);
+    expect(wheels).toHaveLength(3);
+    expect(suspensions).toHaveLength(3);
+    expect(
+      suspensions.every(
+        (part) =>
+          part.physics.collider === "none" &&
+          part.physics.suspension?.restLength === 0.65,
+      ),
+    ).toBe(true);
+    expect(
+      machine.connections.filter(
+        (connection) => connection.type === "revolute",
+      ),
+    ).toHaveLength(3);
     expect(wheels.every((part) => part.metadata.drive === false)).toBe(true);
     expect(wheels.every((part) => part.actuator.motorTorque === 0)).toBe(true);
     expect(

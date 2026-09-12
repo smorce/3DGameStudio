@@ -23,7 +23,10 @@ import {
   WATER_VERTICAL_DRAG,
   type WaterSurface,
 } from "../../water-system/src/index";
-import { compileMachine } from "../../machine-system/src/index";
+import {
+  compileMachine,
+  wheelSuspensionSettings,
+} from "../../machine-system/src/index";
 import {
   quaternion,
   euler,
@@ -39,6 +42,7 @@ import {
   vectorMagnitude,
   worldSpeedMps,
   type TelemetryVec3,
+  type RoleAerodynamicTelemetry,
 } from "../../runtime-telemetry/src/index";
 import {
   heightAtIfInside,
@@ -132,11 +136,14 @@ const addInto = (target: Vec3, value: Vec3) => {
 interface ForceAccumulator {
   lift: Vec3;
   liftMagnitude: number;
+  appliedLift: Vec3;
   drag: Vec3;
   dragMagnitude: number;
+  appliedDrag: Vec3;
   aerodynamic: Vec3;
   aerodynamicPitchMomentNm: number;
   aerodynamicPitchMomentByRoleNm: Record<string, number>;
+  aerodynamicByRole: Record<string, RoleAerodynamicTelemetry>;
   thruster: Vec3;
   thrusterMagnitude: number;
   thrusterPitchMomentNm: number;
@@ -148,11 +155,14 @@ interface ForceAccumulator {
 const emptyForceAccumulator = (): ForceAccumulator => ({
   lift: [0, 0, 0],
   liftMagnitude: 0,
+  appliedLift: [0, 0, 0],
   drag: [0, 0, 0],
   dragMagnitude: 0,
+  appliedDrag: [0, 0, 0],
   aerodynamic: [0, 0, 0],
   aerodynamicPitchMomentNm: 0,
   aerodynamicPitchMomentByRoleNm: {},
+  aerodynamicByRole: {},
   thruster: [0, 0, 0],
   thrusterMagnitude: 0,
   thrusterPitchMomentNm: 0,
@@ -479,9 +489,15 @@ export class RapierPhysics {
             .setCcdEnabled(true),
         );
         bodies.set(group.id, body);
+        let additionalMass = 0;
         for (const p of group.parts) {
           const s = p.physics.size.map((v, i) => v * p.transform.scale[i]),
             q = p.transform.position;
+          if (p.physics.collider === "none") {
+            additionalMass += p.physics.mass;
+            this.parts.push({ part: p, body, machineId: machine.id });
+            continue;
+          }
           const desc =
             p.physics.collider === "cylinder"
               ? rapier.ColliderDesc.cylinder(s[0] / 2, s[1])
@@ -504,6 +520,7 @@ export class RapierPhysics {
           );
           this.parts.push({ part: p, body, machineId: machine.id });
         }
+        if (additionalMass > 0) body.setAdditionalMass(additionalMass, true);
       }
       for (const c of m.joints) {
         const a = bodies.get(m.bodyForPart.get(c.a)!),
@@ -553,7 +570,7 @@ export class RapierPhysics {
       });
       for (const p of wheels) {
         const i = controller.numWheels();
-        const suspension = p.physics.suspension;
+        const suspension = wheelSuspensionSettings(machine, p.id);
         controller.addWheel(
           vector(p.transform.position),
           { x: 0, y: -1, z: 0 },
@@ -679,8 +696,10 @@ export class RapierPhysics {
         if (forces) {
           addInto(forces.lift, force.lift);
           forces.liftMagnitude += vectorMagnitude(force.lift);
+          addInto(forces.appliedLift, force.appliedLift);
           addInto(forces.drag, force.drag);
           forces.dragMagnitude += vectorMagnitude(force.drag);
+          addInto(forces.appliedDrag, force.appliedDrag);
           addInto(forces.aerodynamic, force.force);
           const center = worldCenterOfMass(body);
           const panelPitchMomentNm = pitchMomentNm(
@@ -696,6 +715,25 @@ export class RapierPhysics {
           forces.aerodynamicPitchMomentByRoleNm[role] =
             (forces.aerodynamicPitchMomentByRoleNm[role] ?? 0) +
             panelPitchMomentNm;
+          const roleTelemetry = forces.aerodynamicByRole[role] ?? {
+            appliedLiftVerticalN: 0,
+            appliedDragN: 0,
+            appliedAerodynamicForceN: 0,
+            angleOfAttackRad: 0,
+            liftCoefficient: 0,
+            dragCoefficient: 0,
+            pitchMomentNm: 0,
+            panelCount: 0,
+          };
+          roleTelemetry.appliedLiftVerticalN += force.appliedLift[1];
+          roleTelemetry.appliedDragN += vectorMagnitude(force.appliedDrag);
+          roleTelemetry.appliedAerodynamicForceN += vectorMagnitude(force.force);
+          roleTelemetry.angleOfAttackRad += force.angleOfAttack;
+          roleTelemetry.liftCoefficient += force.liftCoefficient;
+          roleTelemetry.dragCoefficient += force.dragCoefficient;
+          roleTelemetry.pitchMomentNm += panelPitchMomentNm;
+          roleTelemetry.panelCount++;
+          forces.aerodynamicByRole[role] = roleTelemetry;
           forces.panelCount++;
           forces.angleOfAttackSum += force.angleOfAttack;
           forces.liftCoefficientSum += force.liftCoefficient;
@@ -846,6 +884,26 @@ export class RapierPhysics {
         groundedWheelCount = contactStatusAvailable
           ? wheels.filter((wheel) => wheel.inContact).length
           : 0;
+      const aerodynamicByRole = Object.fromEntries(
+        Object.entries(forces.aerodynamicByRole).map(([role, value]) => [
+          role,
+          {
+            ...value,
+            angleOfAttackRad:
+              value.panelCount > 0
+                ? value.angleOfAttackRad / value.panelCount
+                : 0,
+            liftCoefficient:
+              value.panelCount > 0
+                ? value.liftCoefficient / value.panelCount
+                : 0,
+            dragCoefficient:
+              value.panelCount > 0
+                ? value.dragCoefficient / value.panelCount
+                : 0,
+          },
+        ]),
+      );
       this.telemetry.record({
         version: 1,
         step: this.physicsStep,
@@ -869,10 +927,17 @@ export class RapierPhysics {
         liftVerticalN: forces.lift[1],
         totalDragN: forces.dragMagnitude,
         totalAerodynamicForceN: vectorMagnitude(forces.aerodynamic),
+        rawLiftVerticalN: forces.lift[1],
+        rawDragN: forces.dragMagnitude,
+        appliedAerodynamicForceWorldN: [...forces.aerodynamic],
+        appliedAerodynamicVerticalN: forces.aerodynamic[1],
+        appliedAerodynamicToWeightRatio:
+          weightN > 0 ? vectorMagnitude(forces.aerodynamic) / weightN : 0,
         aerodynamicPitchMomentNm: forces.aerodynamicPitchMomentNm,
         aerodynamicPitchMomentByRoleNm: {
           ...forces.aerodynamicPitchMomentByRoleNm,
         },
+        aerodynamicByRole,
         totalThrusterForceN: forces.thrusterMagnitude,
         thrusterPitchMomentNm: forces.thrusterPitchMomentNm,
         totalPitchMomentNm:

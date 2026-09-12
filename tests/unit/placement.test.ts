@@ -26,6 +26,45 @@ test("タイヤ候補は純粋計算で、使用済み位置を除外する", ()
     expect(findAttachmentCandidates(machine, "Wheel")).toHaveLength(3 - i);
   }
 });
+test("Suspensionは構造部へ固定しWheelだけを回転接続する", () => {
+  const { machine, bus } = setup(),
+    suspensionCandidate = findAttachmentCandidates(machine, "Suspension").find(
+      (candidate) => candidate.parentConnectorId === "0",
+    )!;
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Suspension",
+    partId: "suspension",
+    candidateId: suspensionCandidate.id,
+  });
+  const withSuspension = bus.project.machines[0],
+    suspension = withSuspension.parts.find(
+      (part) => part.id === "suspension",
+    )!,
+    wheelCandidate = findAttachmentCandidates(
+      withSuspension,
+      "Wheel",
+    ).find(
+      (candidate) =>
+        candidate.parentPartId === suspension.id &&
+        candidate.parentConnectorId === "suspension-wheel",
+    )!;
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Wheel",
+    partId: "suspension-wheel",
+    candidateId: wheelCandidate.id,
+  });
+  const result = bus.project.machines[0];
+  expect(result.connections.map((connection) => connection.type)).toEqual([
+    "fixed",
+    "revolute",
+  ]);
+  expect(result.parts.find((part) => part.id === "suspension")?.physics.collider)
+    .toBe("none");
+});
 test("移動・回転しても正方形Panelの候補は固定寸法で計算される", () => {
   const { machine } = setup();
   machine.parts[0].transform = {

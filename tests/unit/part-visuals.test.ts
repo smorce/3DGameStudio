@@ -4,6 +4,7 @@ import { createPart } from "../../packages/machine-system/src/index";
 import {
   createPartVisual,
   updateMotorActivity,
+  updateSuspensionVisual,
   updateThrusterFlame,
 } from "../../packages/renderer-three/src/part-visuals";
 
@@ -98,6 +99,22 @@ it("Thrusterは+Z側の本体と-Z側へ広がるノズルを生成する", () =
   expect(visual.userData.exhaustAxis).toEqual([0, 0, -1]);
 });
 
+it("Suspensionは上下Mount、外筒、伸縮Rodを生成し長さへ追従する", () => {
+  const part = createPart("Suspension"),
+    visual = createPartVisual(part),
+    lowerMount = visual.getObjectByName("suspension-lower-mount")!,
+    rod = visual.getObjectByName("suspension-inner-rod")!;
+  expect(visual.getObjectByName("suspension-upper-mount")).toBeDefined();
+  expect(visual.getObjectByName("suspension-outer-cylinder")).toBeDefined();
+  expect(rod).toBeDefined();
+  expect(lowerMount.position.y).toBeCloseTo(
+    -(part.physics.suspension?.restLength ?? 0.65),
+  );
+  updateSuspensionVisual(visual, 0.4);
+  expect(lowerMount.position.y).toBeCloseTo(-0.4);
+  expect(rod.scale.y).toBeGreaterThan(0);
+});
+
 it("Ghostは通常Visualと同じ構成で全Meshを透過する", () => {
   const visual = createPartVisual(createPart("Thruster"), { ghost: true });
   const names = meshes(visual).map((mesh) => mesh.name);
@@ -123,6 +140,7 @@ it("全Part種をFactoryで生成できる", () => {
     "Panel",
     "Block",
     "Wheel",
+    "Suspension",
     "Motor",
     "Steering",
     "Hinge",

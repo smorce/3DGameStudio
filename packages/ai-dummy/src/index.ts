@@ -22,14 +22,20 @@ export class DummyAIProvider implements AIProvider {
   }
   createMachinePlan(prompt: string, p: Project) {
     const m = p.machines[0];
+    const requestedSuspension = prompt.includes("サスペンション");
     return this.plan(
-      "後ろにジェットを付けてみる？",
+      requestedSuspension
+        ? "サスペンションを追加してみる？"
+        : "後ろにジェットを付けてみる？",
       m
         ? [
             {
               type: "part.add",
               machineId: m.id,
-              part: createPart("Thruster", [0, 1, -1.8]),
+              part: createPart(
+                requestedSuspension ? "Suspension" : "Thruster",
+                [0, 1, -1.8],
+              ),
             },
           ]
         : [{ type: "machine.create", machine: carTemplate() }],

@@ -1,11 +1,16 @@
 import { expect, it } from "vitest";
 import * as THREE from "three";
 import {
+  commitAttachment,
   createMachine,
   createPart,
+  findAttachmentCandidates,
 } from "../../packages/machine-system/src/index";
 import { emptyProject } from "../../packages/project-schema/src/index";
-import { syncPartVisualTransforms } from "../../packages/renderer-three/src/index";
+import {
+  createPartVisual,
+  syncPartVisualTransforms,
+} from "../../packages/renderer-three/src/index";
 
 it("編集Pose同期はVisualのTransformをProjectへ戻し、Projectを書き換えない", () => {
   const project = emptyProject(),
@@ -33,4 +38,41 @@ it("編集Pose同期はVisualのTransformをProjectへ戻し、Projectを書き�
   ]);
   expect(visual.scale.toArray()).toEqual(part.transform.scale);
   expect(project).toEqual(before);
+});
+
+it("編集時のSuspension VisualとWheel中心をrestLengthで揃える", () => {
+  const project = emptyProject(),
+    machine = createMachine(),
+    panel = createPart("Panel");
+  machine.parts.push(panel);
+  const suspensionCandidate = findAttachmentCandidates(
+    machine,
+    "Suspension",
+  )[0]!;
+  const suspension = createPart("Suspension");
+  commitAttachment(machine, suspension, suspensionCandidate);
+  const wheelCandidate = findAttachmentCandidates(machine, "Wheel").find(
+    (candidate) =>
+      candidate.parentPartId === suspension.id &&
+      candidate.parentConnectorId === "suspension-wheel",
+  )!;
+  const wheel = createPart("Wheel");
+  commitAttachment(machine, wheel, wheelCandidate);
+  project.machines.push(machine);
+  const suspensionVisual = createPartVisual(suspension),
+    wheelVisual = createPartVisual(wheel);
+  syncPartVisualTransforms(
+    new Map([
+      [suspension.id, suspensionVisual],
+      [wheel.id, wheelVisual],
+    ]),
+    project,
+  );
+  expect(suspensionVisual.position.toArray()).toEqual(
+    suspension.transform.position,
+  );
+  expect(wheelVisual.position.y).toBeCloseTo(
+    wheel.transform.position[1] -
+      (suspension.physics.suspension?.restLength ?? 0.65),
+  );
 });

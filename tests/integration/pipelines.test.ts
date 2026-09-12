@@ -56,6 +56,16 @@ it("ダミーPlanのValidation・Command適用は外部APIなしで原子的", a
   await expect(ai.createMachinePlan("fail", before)).rejects.toThrow(
     "Simulated",
   );
+  const machineProject = emptyProject();
+  machineProject.machines.push(carTemplate());
+  const suspensionPlan = await ai.createMachinePlan(
+    "サスペンションを追加",
+    machineProject,
+  );
+  expect(suspensionPlan.commands[0]).toMatchObject({
+    type: "part.add",
+    part: { definitionId: "Suspension" },
+  });
   expect(fetchSpy).not.toHaveBeenCalled();
 });
 it("GLBの原本・最適化・参照・再読込とパストラバーサル拒否", async () => {

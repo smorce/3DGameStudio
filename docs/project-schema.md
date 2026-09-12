@@ -9,12 +9,14 @@ ProjectはschemaVersion、id、name、world、courses、machines、assets、miss
 - `partKinds`からWingを削除し、Panelを固定正方形の空力面として扱います。
 - `settings.activeCourseId`: コースIDまたはnull。欠落時のみ互換フォールバックを許容します。
 - `settings.runtimeProfile`: quality／balanced／performance。既定値balanced。
+- `Suspension` Partを追加。`physics.collider: "none"`とsuspension設定を持ち、設定のAuthorityとしてPanel／Blockへfixed接続できます。
+- `Wheel`はSuspensionへrevolute接続できます。Wheelへ直接設定されたsuspensionは、従来のPanel→Wheel接続での互換Fallbackとして保持します。
 - `runtimeInfo.collider`: box／convexHull／trimesh。
 - `runtimeInfo.colliderFile`／`colliderBytes`: 別ファイルのCollider Geometry参照とサイズ。
 - `runtimeInfo.lods[]`: level、file、triangles、distance、bytes。旧`lodLevels`も読み書きできます。
 - `runtimeInfo.optimization`: profile、sourceBytes、runtimeBytes、textureBytes、warnings。
 
-ファイルURLは従来と同じ内部の`/api/files/<asset>/<file>`に制限します。Bounds、Collider方式、LOD情報だけをProjectへ保存し、Original／Runtime／Collider本体はAsset Storageへ置きます。MachineのCollider型には変更を加えていません。
+ファイルURLは従来と同じ内部の`/api/files/<asset>/<file>`に制限します。Bounds、Collider方式、LOD情報だけをProjectへ保存し、Original／Runtime／Collider本体はAsset Storageへ置きます。MachineのCollider型は`box`／`cylinder`／`none`です。
 
 ## Migration
 

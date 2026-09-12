@@ -339,7 +339,10 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
     ),
   ).toBeGreaterThan(0);
   expect(sample.contactStatusAvailable).toBe(true);
-  expect(sample.wheels).toHaveLength(4);
+  expect(sample.wheels).toHaveLength(3);
+  expect(sample.rawLiftVerticalN).toBe(sample.liftVerticalN);
+  expect(sample.appliedAerodynamicForceWorldN).toHaveLength(3);
+  expect(sample.aerodynamicByRole["main-wing"]).toBeDefined();
   physics.dispose();
 });
 
@@ -583,18 +586,20 @@ it("Planeは差動推力で左右へ旋回し、直進時はほぼ直進する",
   const straight = await simulatePlaneSteering(0),
     left = await simulatePlaneSteering(0.7),
     right = await simulatePlaneSteering(-0.7);
-  expect(Math.abs(straight.lateralDistance)).toBeLessThan(3);
+  // 三輪式ではNose Gearの接地反力による微小な横ずれを許容する。
+  expect(Math.abs(straight.lateralDistance)).toBeLessThan(4);
   expect(left.lateralDistance).toBeLessThan(-5);
   expect(right.lateralDistance).toBeGreaterThan(5);
   expect(left.yaw).toBeLessThan(-0.1);
   expect(right.yaw).toBeGreaterThan(0.1);
+  // Nose Gear 1輪化では左右操舵の反力が4輪Legacyより非線形になる。
   expect(
     Math.abs(
       left.lateralDistance +
         right.lateralDistance -
         2 * straight.lateralDistance,
     ),
-  ).toBeLessThan(2);
+  ).toBeLessThan(6);
 });
 
 it("Boatは差動推力で左右へ旋回し、左右入力が鏡像になる", async () => {

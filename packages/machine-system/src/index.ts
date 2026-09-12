@@ -8,6 +8,7 @@ import {
   uid,
   type Machine,
   type Part,
+  type SuspensionSettings,
   type Vec3,
 } from "../../project-schema/src/index";
 import { euler, multiply, rotate, quaternion, type Quat } from "./math";
@@ -15,6 +16,7 @@ export const labels: Record<Part["definitionId"], string> = {
   Panel: "板",
   Block: "ブロック",
   Wheel: "タイヤ",
+  Suspension: "サスペンション",
   Motor: "モーター",
   Steering: "ハンドル",
   Hinge: "関節",
@@ -27,12 +29,21 @@ export const wheelSlots: Vec3[] = [
   [-1, -0.45, -1.25],
   [1, -0.45, -1.25],
 ];
+export const DEFAULT_SUSPENSION: SuspensionSettings = {
+  restLength: 0.65,
+  stiffness: 10,
+  compression: 2,
+  relaxation: 4,
+  maxForce: 10000,
+};
 const panelSize: Vec3 = [PANEL_SIDE, DEFAULT_PANEL_THICKNESS, PANEL_SIDE];
 const partSize = (kind: Part["definitionId"]): Vec3 =>
   kind === "Panel"
     ? [...panelSize]
     : kind === "Wheel"
       ? [0.4, 0.55, 0.55]
+      : kind === "Suspension"
+        ? [0.24, 0.62, 0.24]
       : [0.6, 0.6, 0.6];
 export function createPart(
   kind: Part["definitionId"],
@@ -55,8 +66,16 @@ export function createPart(
       mass: kind === "Panel" ? panelMass(DEFAULT_PANEL_THICKNESS) : 3,
       friction: 1.2,
       restitution: 0.05,
-      collider: kind === "Wheel" ? "cylinder" : "box",
+      collider:
+        kind === "Wheel"
+          ? "cylinder"
+          : kind === "Suspension"
+            ? "none"
+            : "box",
       size,
+      ...(kind === "Suspension"
+        ? { suspension: { ...DEFAULT_SUSPENSION } }
+        : {}),
     },
     connectors:
       kind === "Hinge"
@@ -70,11 +89,15 @@ export function createPart(
               accepts: [],
             },
           ]
-        : (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map((v, i) => ({
-            id: String(i),
-            position: v,
-            axis: [1, 0, 0],
-          })),
+        : kind === "Suspension"
+          ? []
+          : (kind === "Panel" ? wheelSlots : [[0, 0, 0] as Vec3]).map(
+              (v, i) => ({
+                id: String(i),
+                position: v,
+                axis: [1, 0, 0],
+              }),
+            ),
     actuator: {
       motorTorque:
         kind === "Wheel" || kind === "Motor"
@@ -137,6 +160,7 @@ type Connector = Part["connectors"][number];
 const structuralKinds: Part["definitionId"][] = [
   "Panel",
   "Block",
+  "Suspension",
   "Motor",
   "Steering",
   "Hinge",
@@ -164,7 +188,10 @@ export function placementConnectors(part: Part): Connector[] {
       ...(c.type || c.accepts
         ? {}
         : part.definitionId === "Panel" && /^[0-3]$/.test(c.id)
-          ? { type: "wheel" as const, accepts: ["Wheel" as const] }
+          ? {
+              type: "wheel" as const,
+              accepts: ["Wheel", "Suspension"] as const,
+            }
           : { type: "mount" as const, accepts: [] }),
     }));
   const add = (connector: Connector) => {
@@ -238,6 +265,23 @@ export function placementConnectors(part: Part): Connector[] {
         accepts: ["Thruster"],
       });
     }
+  } else if (part.definitionId === "Suspension") {
+    add({
+      id: "suspension-input",
+      position: [0, 0, 0],
+      axis: [1, 0, 0],
+      normal: [0, 1, 0],
+      type: "mount",
+      accepts: structuralKinds,
+    });
+    add({
+      id: "suspension-wheel",
+      position: [0, 0, 0],
+      axis: [1, 0, 0],
+      normal: [0, -1, 0],
+      type: "wheel",
+      accepts: ["Wheel"],
+    });
   }
   return connectors;
 }
@@ -367,14 +411,16 @@ export function findAttachmentCandidates(
           const childConnectorId =
             kind === "Wheel"
               ? "0"
-              : kind === "Hinge"
-                ? "hinge-input"
-                : kind === "Panel" && c.id.startsWith("edge-")
-                  ? oppositeEdge(c.id)
-                  : kind === "Panel" &&
-                      (c.id.startsWith("top-") || c.id === "face-top")
-                    ? "face-bottom"
-                    : "mount";
+              : kind === "Suspension"
+                ? "suspension-input"
+                : kind === "Hinge"
+                  ? "hinge-input"
+                  : kind === "Panel" && c.id.startsWith("edge-")
+                    ? oppositeEdge(c.id)
+                    : kind === "Panel" &&
+                        (c.id.startsWith("top-") || c.id === "face-top")
+                      ? "face-bottom"
+                      : "mount";
           const offset = c.position.map(
             (n, i) =>
               n * parentScale[i] +
@@ -432,6 +478,7 @@ export function commitAttachment(
     )!;
     if (
       candidate.childConnectorId === "mount" ||
+      candidate.childConnectorId === "suspension-input" ||
       candidate.childConnectorId === "hinge-input"
     ) {
       part.connectors = placementConnectors(part);
@@ -536,19 +583,40 @@ function connectTemplateParts(
   return child;
 }
 
-function attachTemplateWheel(machine: Machine, parent: Part, slot: string) {
-  const candidate = findAttachmentCandidates(machine, "Wheel").find(
+function attachTemplateSuspensionWheel(
+  machine: Machine,
+  parent: Part,
+  slot: string,
+  front: boolean,
+) {
+  const suspensionCandidate = findAttachmentCandidates(
+    machine,
+    "Suspension",
+  ).find(
     (item) =>
       item.parentPartId === parent.id && item.parentConnectorId === slot,
   );
-  if (!candidate)
-    throw new Error(`Template wheel slot is unavailable: ${slot}`);
+  if (!suspensionCandidate)
+    throw new Error(`Template suspension slot is unavailable: ${slot}`);
+  const suspension = createPart("Suspension");
+  commitAttachment(machine, suspension, suspensionCandidate);
+  const wheelCandidate = findAttachmentCandidates(
+    machine,
+    "Wheel",
+  ).find(
+    (item) =>
+      item.parentPartId === suspension.id &&
+      item.parentConnectorId === "suspension-wheel",
+  );
+  if (!wheelCandidate)
+    throw new Error("Template suspension wheel connector is unavailable");
   const wheel = createPart("Wheel");
-  commitAttachment(machine, wheel, candidate);
-  // 飛行機の車輪は着陸装置であり、前進力を発生させない。
+  wheel.physics.size = [0.3, 0.38, 0.38];
+  commitAttachment(machine, wheel, wheelCandidate);
+  wheel.metadata.front = front;
   wheel.metadata.drive = false;
   wheel.actuator.motorTorque = 0;
-  return wheel;
+  return { suspension, wheel };
 }
 
 export function carTemplate() {
@@ -643,6 +711,23 @@ export function compileMachine(machine: Machine) {
     ),
   };
 }
+export function wheelSuspensionSettings(
+  machine: Machine,
+  wheelId: string,
+): SuspensionSettings {
+  const wheel = machine.parts.find(
+    (part) => part.id === wheelId && part.definitionId === "Wheel",
+  );
+  const connection = machine.connections.find(
+    (item) => item.type === "revolute" && item.b === wheelId,
+  );
+  const parent = connection
+    ? machine.parts.find((part) => part.id === connection.a)
+    : undefined;
+  if (parent?.definitionId === "Suspension" && parent.physics.suspension)
+    return parent.physics.suspension;
+  return wheel?.physics.suspension ?? DEFAULT_SUSPENSION;
+}
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),
     // +X回転は機首上げ。機首+Zへ進むStarter Planeの正のwing incidence。
@@ -736,12 +821,11 @@ export function planeTemplate() {
     );
   }
 
-  // 車輪の位置は胴体PanelのConnectorへ明示し、全輪を非駆動にする。
+  // 機首側にNose Gearを1輪、重心より後方にMain Gearを左右1輪ずつ配置する。
   const gearSlots: Vec3[] = [
-    [-1, -0.3, -1],
-    [1, -0.3, -1],
-    [-1, -0.3, -3],
-    [1, -0.3, -3],
+    [0, -0.3, 0.6],
+    [-1, -0.3, -2.1],
+    [1, -0.3, -2.1],
   ];
   nose.connectors = placementConnectors(nose);
   gearSlots.forEach((position, index) => {
@@ -750,17 +834,9 @@ export function planeTemplate() {
       throw new Error(`Template landing gear slot is unavailable: ${index}`);
     connector.position = position;
   });
-  for (let i = 0; i < gearSlots.length; i++) {
-    attachTemplateWheel(m, nose, String(i));
-    const wheel = m.parts.at(-1)!;
-    wheel.physics.suspension = {
-      restLength: 1,
-      stiffness: 10,
-      compression: 2,
-      relaxation: 4,
-      maxForce: 10000,
-    };
-  }
+  attachTemplateSuspensionWheel(m, nose, "0", true);
+  attachTemplateSuspensionWheel(m, nose, "1", false);
+  attachTemplateSuspensionWheel(m, nose, "2", false);
   // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
   for (const part of m.parts)
     if (part.definitionId === "Panel") {

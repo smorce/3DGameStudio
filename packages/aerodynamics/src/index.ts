@@ -20,6 +20,8 @@ export interface PanelAerodynamicsResult {
   force: Vec3;
   lift: Vec3;
   drag: Vec3;
+  appliedLift: Vec3;
+  appliedDrag: Vec3;
   relativeAirVelocity: Vec3;
   angleOfAttack: number;
   dynamicPressure: number;
@@ -58,6 +60,8 @@ export function computePanelAerodynamicForce(
       force: [0, 0, 0],
       lift: [0, 0, 0],
       drag: [0, 0, 0],
+      appliedLift: [0, 0, 0],
+      appliedDrag: [0, 0, 0],
       relativeAirVelocity,
       angleOfAttack: 0,
       dynamicPressure: 0,
@@ -112,16 +116,26 @@ export function computePanelAerodynamicForce(
     lift[2] + drag[2],
   ] as Vec3;
   const forceLength = length(rawForce);
-  const force: Vec3 =
-    forceLength > PANEL_MAX_FORCE
-      ? scale(rawForce, PANEL_MAX_FORCE / forceLength)
-      : finiteVec3(rawForce)
-        ? rawForce
-        : [0, 0, 0];
+  const rawForceIsFinite = finiteVec3(rawForce),
+    forceScale =
+      !rawForceIsFinite || !Number.isFinite(forceLength)
+        ? 0
+        : forceLength > PANEL_MAX_FORCE
+          ? PANEL_MAX_FORCE / forceLength
+          : 1,
+    force = rawForceIsFinite
+      ? scale(rawForce, forceScale)
+      : ([0, 0, 0] as Vec3);
   return {
     force,
     lift,
     drag,
+    appliedLift: rawForceIsFinite
+      ? scale(lift, forceScale)
+      : ([0, 0, 0] as Vec3),
+    appliedDrag: rawForceIsFinite
+      ? scale(drag, forceScale)
+      : ([0, 0, 0] as Vec3),
     relativeAirVelocity,
     angleOfAttack,
     dynamicPressure,

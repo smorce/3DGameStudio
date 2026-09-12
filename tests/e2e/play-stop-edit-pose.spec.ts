@@ -61,8 +61,17 @@ test("Play停止後に編集Poseへ戻り候補とVisualが一致する", async 
     { position: number[]; rotation: number[]; scale: number[] }
   >;
   for (const part of after.machines[0].parts) {
+    const position =
+      part.definitionId === "Wheel"
+        ? [
+            part.transform.position[0],
+            part.transform.position[1] -
+              (part.physics.suspension?.restLength ?? 0.65),
+            part.transform.position[2],
+          ]
+        : part.transform.position;
     expect(rendered[part.id]).toEqual({
-      position: part.transform.position,
+      position,
       rotation: part.transform.rotation,
       scale: part.transform.scale,
     });

@@ -28,6 +28,10 @@ flowchart LR
 - `pitchRad`、`yawRad`、`rollRad`はRigidBody回転から得た姿勢角です。
 - `totalLiftN`はPanelごとのLiftベクトルの大きさの合計、`liftVerticalN`はLiftベクトルのY成分の合計です。
 - `totalDragN`はPanelごとのDragベクトルの大きさの合計、`totalAerodynamicForceN`は全Panelの合力の大きさです。
+- `totalLiftN`、`liftVerticalN`、`totalDragN`はForce Clamp前のRaw値です。既存フィールドの意味は互換性のため変更していません。
+- `rawLiftVerticalN`と`rawDragN`は上記Raw値を明示したフィールドです。
+- `appliedAerodynamicForceWorldN`と`appliedAerodynamicVerticalN`は`PANEL_MAX_FORCE`適用後にRigidBodyへ加えた合力です。`appliedAerodynamicToWeightRatio`はその合力の大きさとWeightの比です。
+- `aerodynamicByRole`は`main-wing`、`horizontal-tail`、`fuselage`、`vertical-tail`等のRoleごとの適用済みLift/Drag/Force、係数、迎角、Pitch Momentを集計します。`aerodynamicPitchMomentByRoleNm`は従来どおりPitch Momentだけの互換フィールドです。
 - `totalThrusterForceN`は適用したThruster力の大きさの合計です。
 - `thrusterForceWorldN`は適用したThruster力のWorldベクトル合計です。Starter Planeでは正のThrottle時に概ね`+Z`になります。
 - `averageAngleOfAttackRad`、`averageLiftCoefficient`、`averageDragCoefficient`はそのPhysics Stepで計算した全Panelの単純平均です。Panel単位の常時保存ではなく、前進・後退の符号調査用のMachine集計値です。

@@ -24,12 +24,22 @@ const suspensionRelaxation = Number(argument("suspension-relaxation", "NaN"));
 const terrainSize = Number(argument("terrain-size", "1024"));
 const throttle = Number(argument("throttle", "1"));
 const sweep = process.argv.includes("--sweep");
+const suspensionSweep = process.argv.includes("--suspension-sweep");
+const tailSweep = process.argv.includes("--tail-sweep");
+const geometrySweep = process.argv.includes("--geometry-sweep");
+const windowOnly = process.argv.includes("--window-only");
 const directionComparison = process.argv.includes("--direction-comparison");
 const summaryOutput = argument("summary-output", "");
 const output = argument(
   "output",
   directionComparison
     ? "docs/evidence/starter-plane-direction-comparison.json"
+      : suspensionSweep
+        ? "docs/evidence/plane-gear-suspension-sweep.json"
+        : tailSweep
+          ? "docs/evidence/plane-tail-angle-sweep.json"
+          : geometrySweep
+            ? "docs/evidence/plane-wing-tail-sweep.json"
     : sweep
       ? "docs/evidence/wing-angle-sweep.json"
       : "docs/evidence/starter-plane-telemetry.jsonl",
@@ -40,12 +50,16 @@ type Simulation = {
   samples: MachineTelemetrySample[];
   startPosition: [number, number, number];
   wingAngleDeg: number | "template";
+  tailAngleDeg: number | "template";
+  suspensionRestLengthM: number | "template";
   throttle: number;
 };
 
 const configureMachine = (
   machine: ReturnType<typeof planeTemplate>,
   configuredWingAngle: number,
+  configuredTailAngle = tailAngle,
+  configuredSuspensionRestLength = suspensionRestLength,
 ) => {
   if (Number.isFinite(configuredWingAngle))
     for (const part of machine.parts)
@@ -55,13 +69,17 @@ const configureMachine = (
         part.transform.position[0] !== 0
       )
         part.transform.rotation = [(configuredWingAngle * Math.PI) / 180, 0, 0];
-  if (Number.isFinite(tailAngle))
+  if (Number.isFinite(configuredTailAngle))
     for (const part of machine.parts)
       if (
         part.definitionId === "Panel" &&
         part.metadata.aeroRole === "horizontal-tail"
       )
-        part.transform.rotation = [(tailAngle * Math.PI) / 180, 0, 0];
+        part.transform.rotation = [
+          (configuredTailAngle * Math.PI) / 180,
+          0,
+          0,
+        ];
   if (Number.isFinite(thrusterTorque))
     for (const part of machine.parts)
       if (part.definitionId === "Thruster")
@@ -71,11 +89,23 @@ const configureMachine = (
       if (part.definitionId === "Thruster")
         part.transform.position[1] += thrusterHeightOffset;
   if (
-    Number.isFinite(suspensionRestLength) ||
+    Number.isFinite(configuredSuspensionRestLength) ||
     Number.isFinite(suspensionRelaxation)
   )
     for (const part of machine.parts)
-      if (part.definitionId === "Wheel") {
+      if (
+        part.definitionId === "Suspension" ||
+        (part.definitionId === "Wheel" &&
+          !machine.connections.some(
+            (connection) =>
+              connection.b === part.id &&
+              machine.parts.some(
+                (candidate) =>
+                  candidate.id === connection.a &&
+                  candidate.definitionId === "Suspension",
+              ),
+          ))
+      ) {
         const current = part.physics.suspension ?? {
           restLength: 0.35,
           stiffness: 10,
@@ -85,8 +115,8 @@ const configureMachine = (
         };
         part.physics.suspension = {
           ...current,
-          ...(Number.isFinite(suspensionRestLength)
-            ? { restLength: suspensionRestLength }
+          ...(Number.isFinite(configuredSuspensionRestLength)
+            ? { restLength: configuredSuspensionRestLength }
             : {}),
           ...(Number.isFinite(suspensionRelaxation)
             ? { relaxation: suspensionRelaxation }
@@ -114,6 +144,10 @@ const configureMachine = (
 const simulate = async (
   configuredWingAngle: number,
   configuredThrottle: number,
+  options: {
+    tailAngle?: number;
+    suspensionRestLength?: number;
+  } = {},
 ): Promise<Simulation> => {
   const project = emptyProject(),
     machine = planeTemplate();
@@ -121,7 +155,12 @@ const simulate = async (
   planeWorld.terrain.size = terrainSize;
   project.world.terrain = planeWorld.terrain;
   project.world.entities = planeWorld.entities;
-  configureMachine(machine, configuredWingAngle);
+  configureMachine(
+    machine,
+    configuredWingAngle,
+    options.tailAngle,
+    options.suspensionRestLength,
+  );
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
@@ -142,6 +181,16 @@ const simulate = async (
     wingAngleDeg: Number.isFinite(configuredWingAngle)
       ? configuredWingAngle
       : "template",
+    tailAngleDeg: Number.isFinite(options.tailAngle)
+      ? options.tailAngle!
+      : Number.isFinite(tailAngle)
+        ? tailAngle
+        : "template",
+    suspensionRestLengthM: Number.isFinite(options.suspensionRestLength)
+      ? options.suspensionRestLength!
+      : Number.isFinite(suspensionRestLength)
+        ? suspensionRestLength
+        : "template",
     throttle: configuredThrottle,
   };
 };
@@ -173,6 +222,17 @@ const range = (values: number[]) => ({
   max: maximum(values),
   amplitude: maximum(values) - minimum(values),
 });
+
+const liftoffWindowSamples = (
+  samples: MachineTelemetrySample[],
+  liftoffIndex: number,
+) =>
+  liftoffIndex < 0
+    ? []
+    : samples.slice(Math.max(0, liftoffIndex - 30), liftoffIndex + 61);
+
+const differenceSeries = (values: number[], dt = 1 / 60) =>
+  values.slice(1).map((value, index) => (value - values[index]) / dt);
 
 const firstGroundedToAirborneIndex = (samples: MachineTelemetrySample[]) => {
   for (let index = 1; index < samples.length; index++) {
@@ -344,6 +404,16 @@ const summarize = (simulation: Simulation) => {
       takeoff === undefined ? samples : samples.slice(takeoff.liftoffIndex),
     takeoffSample =
       takeoff === undefined ? undefined : samples[takeoff.liftoffIndex],
+    liftoffIndex =
+      takeoff?.liftoffIndex ?? firstGroundedToAirborneIndex(samples),
+    liftoffWindow = liftoffWindowSamples(samples, liftoffIndex),
+    verticalAcceleration = differenceSeries(
+      liftoffWindow.map((sample) => sample.verticalSpeedMps),
+    ),
+    verticalJerk = differenceSeries(verticalAcceleration),
+    pitchRate = liftoffWindow.map(
+      (sample) => sample.angularVelocityRadPerSecond[0],
+    ),
     forwardDirectionSamples = samples.filter(
       (sample) => sample.forwardSpeedMps > 5,
     ),
@@ -357,10 +427,8 @@ const summarize = (simulation: Simulation) => {
     );
   return {
     wingAngleDeg: simulation.wingAngleDeg,
-    tailAngleDeg: Number.isFinite(tailAngle) ? tailAngle : "template",
-    suspensionRestLengthM: Number.isFinite(suspensionRestLength)
-      ? suspensionRestLength
-      : "template",
+    tailAngleDeg: simulation.tailAngleDeg,
+    suspensionRestLengthM: simulation.suspensionRestLengthM,
     suspensionRelaxation: Number.isFinite(suspensionRelaxation)
       ? suspensionRelaxation
       : "template",
@@ -413,6 +481,9 @@ const summarize = (simulation: Simulation) => {
       minimum(samples.map((sample) => sample.pitchRad)),
     maxLiftToWeightRatio: maximum(
       samples.map((sample) => sample.liftToWeightRatio),
+    ),
+    maxAppliedAerodynamicToWeightRatio: maximum(
+      samples.map((sample) => sample.appliedAerodynamicToWeightRatio),
     ),
     averageLiftToWeightRatio: average(
       samples.map((sample) => sample.liftToWeightRatio),
@@ -467,6 +538,25 @@ const summarize = (simulation: Simulation) => {
     forwardDistanceM: last.position[2] - startPosition[2],
     continuousAirborneSteps: airborneSteps,
     continuousAirborneSeconds: airborneSteps / 60,
+    liftoffWindow: {
+      liftoffStep:
+        liftoffIndex >= 0 ? samples[liftoffIndex]?.step ?? null : null,
+      sampleCount: liftoffWindow.length,
+      peakAppliedAerodynamicToWeightRatio: maximum(
+        liftoffWindow.map((sample) => sample.appliedAerodynamicToWeightRatio),
+      ),
+      peakVerticalAccelerationMps2: maximum(
+        verticalAcceleration.map((value) => Math.abs(value)),
+      ),
+      peakVerticalJerkMps3: maximum(verticalJerk.map((value) => Math.abs(value))),
+      peakPitchRateRadPerSecond: maximum(
+        pitchRate.map((value) => Math.abs(value)),
+      ),
+      verticalSpeedAtPlus0_5s: liftoffWindow[60]?.verticalSpeedMps ?? null,
+      verticalSpeedAtPlus1_0s: liftoffWindow[90]?.verticalSpeedMps ?? null,
+      pitchAtPlus1_0s: liftoffWindow[90]?.pitchRad ?? null,
+      samples: liftoffWindow,
+    },
     terrainAvailableSamples: samples.filter((sample) => sample.terrainAvailable)
       .length,
     terrainUnavailableSamples: samples.filter(
@@ -533,6 +623,90 @@ if (directionComparison) {
       backward: summarize(backward),
     }),
   );
+} else if (suspensionSweep) {
+  const lengths = argument("suspension-lengths", "0.45,0.55,0.65,0.75")
+    .split(",")
+    .map(Number)
+    .filter(Number.isFinite);
+  const results = [];
+  for (const length of lengths)
+    results.push(
+      summarize(
+        await simulate(wingAngle, throttle, { suspensionRestLength: length }),
+      ),
+    );
+  await writeOutput(
+    output,
+    JSON.stringify(
+      {
+        version: 1,
+        steps,
+        throttle,
+        steering: 0,
+        lengths,
+        results,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  console.log(JSON.stringify({ output, lengths, results }));
+} else if (tailSweep) {
+  const angles = argument("tail-angles", "0,2,4,6,8")
+    .split(",")
+    .map(Number)
+    .filter(Number.isFinite);
+  const results = [];
+  for (const angle of angles)
+    results.push(
+      summarize(await simulate(wingAngle, throttle, { tailAngle: angle })),
+    );
+  await writeOutput(
+    output,
+    JSON.stringify(
+      {
+        version: 1,
+        steps,
+        throttle,
+        steering: 0,
+        mainWingAngleDeg: Number.isFinite(wingAngle) ? wingAngle : 8,
+        angles,
+        results,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  console.log(JSON.stringify({ output, angles, results }));
+} else if (geometrySweep) {
+  const wings = argument("wing-angles", "6,7,8")
+      .split(",")
+      .map(Number)
+      .filter(Number.isFinite),
+    tails = argument("tail-angles", "0,2,4")
+      .split(",")
+      .map(Number)
+      .filter(Number.isFinite),
+    results = [];
+  for (const wing of wings)
+    for (const tail of tails)
+      results.push(
+        summarize(
+          await simulate(wing, throttle, {
+            tailAngle: tail,
+            suspensionRestLength,
+          }),
+        ),
+      );
+  await writeOutput(
+    output,
+    JSON.stringify(
+      { version: 1, steps, throttle, steering: 0, wings, tails, results },
+      null,
+      2,
+    ) + "\n",
+  );
+  console.log(JSON.stringify({ output, wings, tails, results }));
 } else if (sweep) {
   const angles = argument("wing-angles", "4,6,8,10,12")
     .split(",")
@@ -567,8 +741,16 @@ if (directionComparison) {
     );
   await writeOutput(
     output,
-    simulation.samples.map((sample) => JSON.stringify(sample)).join("\n") +
-      "\n",
+    (windowOnly
+      ? liftoffWindowSamples(
+          simulation.samples,
+          findStableForwardTakeoff(simulation.samples)?.liftoffIndex ??
+            firstGroundedToAirborneIndex(simulation.samples),
+        )
+      : simulation.samples
+    )
+      .map((sample) => JSON.stringify(sample))
+      .join("\n") + "\n",
   );
   console.log(JSON.stringify({ output, ...summary }));
 }
