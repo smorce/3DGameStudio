@@ -22,6 +22,8 @@ import {
 import {
   brushTerrain,
   heightAt,
+  heightAtIfInside,
+  terrainContainsPoint,
 } from "../../packages/terrain-system/src/index";
 import {
   createCourse,
@@ -68,6 +70,18 @@ describe("マシン", () => {
   });
 });
 describe("地形とワールド", () => {
+  it("Terrain範囲を判定し、範囲外の高さを返さない", () => {
+    const terrain = emptyProject().world.terrain,
+      halfSize = terrain.size / 2;
+    expect(terrainContainsPoint(terrain, 0, 0)).toBe(true);
+    expect(terrainContainsPoint(terrain, halfSize, -halfSize)).toBe(true);
+    expect(terrainContainsPoint(terrain, halfSize + 0.001, 0)).toBe(false);
+    expect(terrainContainsPoint(terrain, Number.NaN, 0)).toBe(false);
+    expect(heightAtIfInside(terrain, 0, 0)).toBe(0);
+    expect(heightAtIfInside(terrain, halfSize + 0.001, 0)).toBeUndefined();
+    expect(Number.isFinite(heightAt(terrain, halfSize + 0.001, 0))).toBe(true);
+  });
+
   it("負座標のチャンクとインスタンス分類", () => {
     expect(chunkCoordinate([-1, 0, -33], 32)).toEqual([-1, -2]);
     const p = emptyProject();

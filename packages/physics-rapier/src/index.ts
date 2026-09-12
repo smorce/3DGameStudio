@@ -40,6 +40,10 @@ import {
   worldSpeedMps,
   type TelemetryVec3,
 } from "../../runtime-telemetry/src/index";
+import {
+  heightAtIfInside,
+  terrainContainsPoint,
+} from "../../terrain-system/src/index";
 export interface Pose {
   position: Vec3;
   rotation: Quat;
@@ -117,8 +121,11 @@ interface ForceAccumulator {
   drag: Vec3;
   dragMagnitude: number;
   aerodynamic: Vec3;
+  aerodynamicPitchMomentNm: number;
+  aerodynamicPitchMomentByRoleNm: Record<string, number>;
   thruster: Vec3;
   thrusterMagnitude: number;
+  thrusterPitchMomentNm: number;
   panelCount: number;
   angleOfAttackSum: number;
   liftCoefficientSum: number;
@@ -130,8 +137,11 @@ const emptyForceAccumulator = (): ForceAccumulator => ({
   drag: [0, 0, 0],
   dragMagnitude: 0,
   aerodynamic: [0, 0, 0],
+  aerodynamicPitchMomentNm: 0,
+  aerodynamicPitchMomentByRoleNm: {},
   thruster: [0, 0, 0],
   thrusterMagnitude: 0,
+  thrusterPitchMomentNm: 0,
   panelCount: 0,
   angleOfAttackSum: 0,
   liftCoefficientSum: 0,
@@ -205,6 +215,7 @@ export class RapierPhysics {
   private forceByMachine = new Map<string, ForceAccumulator>();
   private water: WaterSurface = { enabled: false, height: 0 };
   private gravityMagnitude = 9.81;
+  private terrain?: Project["world"]["terrain"];
   private hinges: RevoluteRuntime[] = [];
   private motors: MotorRuntime[] = [];
   async load(project: Project, options: { courseId?: string | null } = {}) {
@@ -214,6 +225,7 @@ export class RapierPhysics {
     if (generation !== this.generation) return;
     this.world = new rapier.World(vector(project.settings.gravity));
     this.world.timestep = PHYSICS_FIXED_DT;
+    this.terrain = project.world.terrain;
     this.water = structuredClone(project.world.water);
     this.gravityMagnitude = Math.abs(project.settings.gravity[1]);
     type StaticEntry = {
@@ -527,18 +539,22 @@ export class RapierPhysics {
       });
       for (const p of wheels) {
         const i = controller.numWheels();
+        const suspension = p.physics.suspension;
         controller.addWheel(
           vector(p.transform.position),
           { x: 0, y: -1, z: 0 },
           { x: -1, y: 0, z: 0 },
-          0.35,
+          suspension?.restLength ?? 0.35,
           p.physics.size[1] * p.transform.scale[1],
         );
-        controller.setWheelSuspensionStiffness(i, 10);
-        controller.setWheelSuspensionCompression(i, 2);
-        controller.setWheelSuspensionRelaxation(i, 1);
+        controller.setWheelSuspensionStiffness(i, suspension?.stiffness ?? 10);
+        controller.setWheelSuspensionCompression(
+          i,
+          suspension?.compression ?? 2,
+        );
+        controller.setWheelSuspensionRelaxation(i, suspension?.relaxation ?? 1);
         controller.setWheelFrictionSlip(i, p.physics.friction * 2);
-        controller.setWheelMaxSuspensionForce(i, 10000);
+        controller.setWheelMaxSuspensionForce(i, suspension?.maxForce ?? 10000);
       }
       this.vehicles.push({ id: m.id, body: chassis, controller, wheels });
     }
@@ -652,6 +668,29 @@ export class RapierPhysics {
           addInto(forces.drag, force.drag);
           forces.dragMagnitude += vectorMagnitude(force.drag);
           addInto(forces.aerodynamic, force.force);
+          const center = body.translation();
+          forces.aerodynamicPitchMomentNm += cross(
+            [
+              panelPose.position[0] - center.x,
+              panelPose.position[1] - center.y,
+              panelPose.position[2] - center.z,
+            ],
+            force.force,
+          )[0];
+          const role =
+            typeof part.metadata.aeroRole === "string"
+              ? part.metadata.aeroRole
+              : "unclassified";
+          forces.aerodynamicPitchMomentByRoleNm[role] =
+            (forces.aerodynamicPitchMomentByRoleNm[role] ?? 0) +
+            cross(
+              [
+                panelPose.position[0] - center.x,
+                panelPose.position[1] - center.y,
+                panelPose.position[2] - center.z,
+              ],
+              force.force,
+            )[0];
           forces.panelCount++;
           forces.angleOfAttackSum += force.angleOfAttack;
           forces.liftCoefficientSum += force.liftCoefficient;
@@ -721,6 +760,15 @@ export class RapierPhysics {
         if (forces) {
           addInto(forces.thruster, force);
           forces.thrusterMagnitude += vectorMagnitude(force);
+          const center = body.translation();
+          forces.thrusterPitchMomentNm += cross(
+            [
+              thrusterPose.position[0] - center.x,
+              thrusterPose.position[1] - center.y,
+              thrusterPose.position[2] - center.z,
+            ],
+            force,
+          )[0];
         }
         body.addForceAtPoint(
           vector(force),
@@ -771,6 +819,12 @@ export class RapierPhysics {
           0,
         ),
         weightN = massKg * this.gravityMagnitude,
+        terrainAvailable = this.terrain
+          ? terrainContainsPoint(this.terrain, position.x, position.z)
+          : false,
+        terrainHeightM = this.terrain
+          ? (heightAtIfInside(this.terrain, position.x, position.z) ?? null)
+          : null,
         wheelApi = vehicle.controller as unknown as {
           wheelIsInContact?: (index: number) => boolean;
           wheelSuspensionForce?: (index: number) => number;
@@ -814,7 +868,14 @@ export class RapierPhysics {
         liftVerticalN: forces.lift[1],
         totalDragN: forces.dragMagnitude,
         totalAerodynamicForceN: vectorMagnitude(forces.aerodynamic),
+        aerodynamicPitchMomentNm: forces.aerodynamicPitchMomentNm,
+        aerodynamicPitchMomentByRoleNm: {
+          ...forces.aerodynamicPitchMomentByRoleNm,
+        },
         totalThrusterForceN: forces.thrusterMagnitude,
+        thrusterPitchMomentNm: forces.thrusterPitchMomentNm,
+        totalPitchMomentNm:
+          forces.aerodynamicPitchMomentNm + forces.thrusterPitchMomentNm,
         thrusterForceWorldN: [...forces.thruster],
         averageAngleOfAttackRad:
           forces.panelCount > 0
@@ -831,6 +892,10 @@ export class RapierPhysics {
         liftToWeightRatio: weightN > 0 ? forces.lift[1] / weightN : 0,
         massKg,
         weightN,
+        terrainAvailable,
+        terrainHeightM,
+        heightAboveTerrainM:
+          terrainHeightM === null ? null : position.y - terrainHeightM,
         contactStatusAvailable,
         groundedWheelCount,
         wheels,
@@ -921,6 +986,7 @@ export class RapierPhysics {
     this.vehicles = [];
     this.parts = [];
     this.forceByMachine.clear();
+    this.terrain = undefined;
     this.physicsStep = 0;
     this.simulationTimeSeconds = 0;
     this.telemetry.stop();

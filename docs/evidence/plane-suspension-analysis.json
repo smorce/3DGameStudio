@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "wingAngleDeg": "template",
+  "tailAngleDeg": "template",
+  "suspensionRestLengthM": "template",
+  "suspensionRelaxation": "template",
+  "terrainSizeM": 1024,
+  "throttle": 1,
+  "steps": 600,
+  "stableTakeoff": true,
+  "stableTakeoffStep": 168,
+  "stableTakeoffTimeSeconds": 2.799999999999995,
+  "stableFlightDurationSeconds": 2.983333333333323,
+  "stableWindowFinalHeightM": 26.08558464050293,
+  "takeoffStartSpeedMps": 37.75553791650012,
+  "takeoffStartForwardSpeedMps": 37.54705717405834,
+  "maxWorldSpeedMps": 38.05629937842723,
+  "maxForwardSpeedMps": 37.562038478059634,
+  "minForwardSpeedMps": 0.2817367896575715,
+  "maxHeightM": 56.46468734741211,
+  "finalHeightM": 56.46468734741211,
+  "minHeightAfterTakeoffM": 1.0750877857208252,
+  "minHeightDuringStableWindowM": 1.0750877857208252,
+  "maxVerticalSpeedMps": 18.576200485229492,
+  "minVerticalSpeedMps": -0.8240842223167419,
+  "averageVerticalSpeedMps": 7.68136667599579,
+  "maxPitchAbsRad": 0.2476468005209018,
+  "pitchVibrationRangeRad": 0.394907723104031,
+  "maxLiftToWeightRatio": 7.045374139848093,
+  "averageLiftToWeightRatio": 1.4361161890832939,
+  "maxDragN": 7318.329868177318,
+  "averageDragN": 1542.8614686135459,
+  "aerodynamicPitchMomentNm": {
+    "min": -9459.346102929218,
+    "max": 2300.607109370699,
+    "amplitude": 11759.953212299917
+  },
+  "thrusterPitchMomentNm": {
+    "min": 2942.2542491255317,
+    "max": 2942.6777313011194,
+    "amplitude": 0.423482175587651
+  },
+  "totalPitchMomentNm": {
+    "min": -6516.900788712859,
+    "max": 5243.255559577121,
+    "amplitude": 11760.15634828998
+  },
+  "aerodynamicPitchMomentByRoleNm": {
+    "fuselage": {
+      "min": -2429.9867837835714,
+      "max": 102.65141371011181
+    },
+    "main-wing": {
+      "min": -6222.53644779692,
+      "max": 0
+    },
+    "horizontal-tail": {
+      "min": -2067.045709791531,
+      "max": 3781.6547928460413
+    },
+    "vertical-tail": {
+      "min": -40.4483586943327,
+      "max": 0
+    }
+  },
+  "averageAngleOfAttackRad": 0.4607358076722165,
+  "averageLiftCoefficient": 0.6870360584446669,
+  "averageDragCoefficient": 0.37668046607876127,
+  "liftSignByForwardDirection": {
+    "forward": {
+      "samples": 582,
+      "positive": 478,
+      "negative": 104,
+      "averageLiftVerticalN": 2745.5764342048155
+    },
+    "backward": {
+      "samples": 0,
+      "positive": 0,
+      "negative": 0,
+      "averageLiftVerticalN": 0
+    }
+  },
+  "forwardDistanceM": 180.21780395507812,
+  "continuousAirborneSteps": 433,
+  "continuousAirborneSeconds": 7.216666666666667,
+  "terrainAvailableSamples": 600,
+  "terrainUnavailableSamples": 0,
+  "firstTerrainUnavailableStep": null,
+  "firstTerrainUnavailableForwardDistanceM": null,
+  "firstTerrainUnavailableGroundedWheelCount": null,
+  "groundRollAnalysis": {
+    "liftoffCandidateIndex": 167,
+    "liftoffCandidateStep": 168,
+    "terrainSamples": 167,
+    "contactToggles": {
+      "4de4c9a7-a85b-41ce-aba2-015495d4488e": 1,
+      "b1479b26-26fa-486f-8937-87b7d9caaa46": 1,
+      "781fd59a-6277-4bff-906c-1bdbe2f6c2da": 2,
+      "03847d40-d80a-407b-b119-30cb31839b18": 2
+    },
+    "bands": [
+      {
+        "name": "low",
+        "samples": 37,
+        "contactToggles": {
+          "4de4c9a7-a85b-41ce-aba2-015495d4488e": 1,
+          "b1479b26-26fa-486f-8937-87b7d9caaa46": 1,
+          "781fd59a-6277-4bff-906c-1bdbe2f6c2da": 1,
+          "03847d40-d80a-407b-b119-30cb31839b18": 1
+        },
+        "suspensionLengthM": {
+          "min": 0.6500957608222961,
+          "max": 1,
+          "amplitude": 0.34990423917770386
+        },
+        "suspensionForceN": {
+          "max": 780.11669921875,
+          "atMaxCount": 0
+        },
+        "verticalSpeedMps": {
+          "min": -0.8240842223167419,
+          "max": -0.16322797536849976,
+          "amplitude": 0.6608562469482422
+        },
+        "pitchRad": {
+          "min": -0.12860335622768482,
+          "max": 0.0002681777116535246,
+          "amplitude": 0.12887153393933834
+        },
+        "pitchRateRadPerSecond": {
+          "min": -0.3066276013851166,
+          "max": 0.011761605739593506,
+          "amplitude": 0.3183892071247101
+        }
+      },
+      {
+        "name": "medium",
+        "samples": 41,
+        "contactToggles": {},
+        "suspensionLengthM": {
+          "min": 0.6330612301826477,
+          "max": 0.9416933655738831,
+          "amplitude": 0.30863213539123535
+        },
+        "suspensionForceN": {
+          "max": 768.4288330078125,
+          "atMaxCount": 0
+        },
+        "verticalSpeedMps": {
+          "min": -0.19307094812393188,
+          "max": 0.017428608611226082,
+          "amplitude": 0.21049955673515797
+        },
+        "pitchRad": {
+          "min": -0.14726092258312917,
+          "max": -0.1305583007838191,
+          "amplitude": 0.016702621799310063
+        },
+        "pitchRateRadPerSecond": {
+          "min": -0.1461956799030304,
+          "max": 0.056190598756074905,
+          "amplitude": 0.2023862786591053
+        }
+      },
+      {
+        "name": "high",
+        "samples": 89,
+        "contactToggles": {
+          "781fd59a-6277-4bff-906c-1bdbe2f6c2da": 1,
+          "03847d40-d80a-407b-b119-30cb31839b18": 1
+        },
+        "suspensionLengthM": {
+          "min": 0.6652635931968689,
+          "max": 1,
+          "amplitude": 0.3347364068031311
+        },
+        "suspensionForceN": {
+          "max": 644.5797119140625,
+          "atMaxCount": 0
+        },
+        "verticalSpeedMps": {
+          "min": -0.045436158776283264,
+          "max": 2.1444878578186035,
+          "amplitude": 2.189924016594887
+        },
+        "pitchRad": {
+          "min": -0.12979243298618318,
+          "max": 0.03132164240579857,
+          "amplitude": 0.16111407539198175
+        },
+        "pitchRateRadPerSecond": {
+          "min": 0.038495514541864395,
+          "max": 0.47036147117614746,
+          "amplitude": 0.43186595663428307
+        }
+      }
+    ],
+    "causalOrder": {
+      "contact": {
+        "step": 166,
+        "timeSeconds": 2.7666666666666617
+      },
+      "suspension": {
+        "step": 146,
+        "timeSeconds": 2.4333333333333296
+      },
+      "verticalSpeed": {
+        "step": 165,
+        "timeSeconds": 2.749999999999995
+      },
+      "pitch": null,
+      "lift": {
+        "step": 139,
+        "timeSeconds": 2.3166666666666633
+      }
+    }
+  }
+}

@@ -32,7 +32,11 @@ const sample = (step: number): MachineTelemetrySample => ({
   liftVerticalN: 0,
   totalDragN: 0,
   totalAerodynamicForceN: 0,
+  aerodynamicPitchMomentNm: 0,
+  aerodynamicPitchMomentByRoleNm: {},
   totalThrusterForceN: 0,
+  thrusterPitchMomentNm: 0,
+  totalPitchMomentNm: 0,
   thrusterForceWorldN: [0, 0, 0],
   averageAngleOfAttackRad: 0,
   averageLiftCoefficient: 0,
@@ -40,6 +44,9 @@ const sample = (step: number): MachineTelemetrySample => ({
   liftToWeightRatio: 0,
   massKg: 1,
   weightN: 9.81,
+  terrainAvailable: true,
+  terrainHeightM: 0,
+  heightAboveTerrainM: 0,
   contactStatusAvailable: false,
   groundedWheelCount: 0,
   wheels: [],
@@ -88,18 +95,25 @@ it("RuntimeTelemetryは記録状態と現在値を分離して管理する", () 
 });
 
 it("前進方向と持続高度を満たす離陸だけを安定離陸と判定する", () => {
-  const samples = Array.from({ length: 90 }, (_, index) => ({
-    ...sample(index + 1),
-    position: [0, 2, index] as [number, number, number],
-    linearVelocityMps: [0, 0, 21] as [number, number, number],
-    worldSpeedMps: 21,
-    horizontalSpeedMps: 21,
-    forwardSpeedMps: 21,
-    verticalSpeedMps: 0,
-    contactStatusAvailable: true,
-    groundedWheelCount: 0,
-  }));
-  expect(findStableForwardTakeoff(samples)?.windowSteps).toBe(90);
+  const samples = Array.from({ length: 225 }, (_, index) => {
+    const grounded = index < 45;
+    return {
+      ...sample(index + 1),
+      position: [0, grounded ? 1 : 2, index] as [number, number, number],
+      linearVelocityMps: [0, 0, 21] as [number, number, number],
+      worldSpeedMps: 21,
+      horizontalSpeedMps: 21,
+      forwardSpeedMps: 21,
+      verticalSpeedMps: 0,
+      terrainAvailable: true,
+      terrainHeightM: 0,
+      heightAboveTerrainM: grounded ? 1 : 2,
+      contactStatusAvailable: true,
+      groundedWheelCount: grounded ? 2 : 0,
+    };
+  });
+  expect(findStableForwardTakeoff(samples)?.windowSteps).toBe(180);
+  expect(findStableForwardTakeoff(samples)?.groundRollSteps).toBe(45);
   expect(
     findStableForwardTakeoff(
       samples.map((value) => ({ ...value, forwardSpeedMps: -21 })),
@@ -109,13 +123,24 @@ it("前進方向と持続高度を満たす離陸だけを安定離陸と判定�
     findStableForwardTakeoff(
       samples.map((value, index) => ({
         ...value,
-        position: [0, index < 45 ? 2 : 0.5, index] as [number, number, number],
+        position: [0, index < 90 ? 2 : 0.5, index] as [number, number, number],
+        heightAboveTerrainM: index < 90 ? 2 : 0.5,
       })),
     ),
   ).toBeUndefined();
   expect(
     findStableForwardTakeoff(
       samples.map((value) => ({ ...value, contactStatusAvailable: false })),
+    ),
+  ).toBeUndefined();
+  expect(
+    findStableForwardTakeoff(
+      samples.map((value, index) => ({
+        ...value,
+        terrainAvailable: index < 45,
+        terrainHeightM: index < 45 ? 0 : null,
+        heightAboveTerrainM: index < 45 ? 1 : null,
+      })),
     ),
   ).toBeUndefined();
 });

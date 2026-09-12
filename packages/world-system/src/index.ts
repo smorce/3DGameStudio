@@ -1,4 +1,5 @@
 import type { Project, Vec3 } from "../../project-schema/src/index";
+import { heightAt } from "../../terrain-system/src/index";
 export const chunkCoordinate = (p: Vec3, size: number) => [
   Math.floor(p[0] / size),
   Math.floor(p[2] / size),
@@ -22,33 +23,15 @@ export function groupInstances(project: Project) {
 type WorldEntity = Project["world"]["entities"][number];
 type StarterWorldPatch = Pick<Project["world"], "terrain" | "entities">;
 
-function sampleTerrainHeight(
-  t: Project["world"]["terrain"],
-  x: number,
-  z: number,
-) {
-  const u = Math.max(
-      0,
-      Math.min(t.resolution - 1, (x / t.size + 0.5) * (t.resolution - 1)),
-    ),
-    v = Math.max(
-      0,
-      Math.min(t.resolution - 1, (z / t.size + 0.5) * (t.resolution - 1)),
-    ),
-    i = Math.floor(u),
-    j = Math.floor(v),
-    i1 = Math.min(i + 1, t.resolution - 1),
-    j1 = Math.min(j + 1, t.resolution - 1),
-    a = u - i,
-    b = v - j;
-  return (
-    (1 - b) *
-      ((1 - a) * t.heights[j * t.resolution + i] +
-        a * t.heights[j * t.resolution + i1]) +
-    b *
-      ((1 - a) * t.heights[j1 * t.resolution + i] +
-        a * t.heights[j1 * t.resolution + i1])
-  );
+export function starterPlaneWorldPatch(
+  world: Project["world"],
+): StarterWorldPatch {
+  const terrain = structuredClone(world.terrain);
+  terrain.resolution = 129;
+  terrain.size = 1024;
+  terrain.heights = new Array(terrain.resolution * terrain.resolution).fill(0);
+  terrain.colors = new Array(terrain.heights.length).fill("#7cab68");
+  return { terrain, entities: [] };
 }
 
 export function starterWorldPatch(world: Project["world"]): StarterWorldPatch {
@@ -86,8 +69,7 @@ export function starterWorldPatch(world: Project["world"]): StarterWorldPatch {
     transform: {
       position: [
         x,
-        sampleTerrainHeight(terrain, x, z) +
-          (kind === "rock" ? scale[1] * 0.25 : 0),
+        heightAt(terrain, x, z) + (kind === "rock" ? scale[1] * 0.25 : 0),
         z,
       ],
       rotation: [0, 0, 0],

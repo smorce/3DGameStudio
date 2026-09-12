@@ -61,3 +61,17 @@ export function heightAt(t: Terrain, x: number, z: number) {
         a * t.heights[j1 * t.resolution + i1])
   );
 }
+
+export function terrainContainsPoint(t: Terrain, x: number, z: number) {
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return false;
+  const halfSize = t.size / 2;
+  return x >= -halfSize && x <= halfSize && z >= -halfSize && z <= halfSize;
+}
+
+export function heightAtIfInside(
+  t: Terrain,
+  x: number,
+  z: number,
+): number | undefined {
+  return terrainContainsPoint(t, x, z) ? heightAt(t, x, z) : undefined;
+}

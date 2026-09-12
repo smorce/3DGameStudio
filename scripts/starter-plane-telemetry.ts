@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import { emptyProject } from "../packages/project-schema/src/index";
 import { planeTemplate } from "../packages/machine-system/src/index";
 import { RapierPhysics } from "../packages/physics-rapier/src/index";
+import { starterPlaneWorldPatch } from "../packages/world-system/src/index";
 import {
   findStableForwardTakeoff,
   type MachineTelemetrySample,
@@ -15,10 +16,16 @@ const argument = (name: string, fallback: string) =>
 
 const steps = Number(argument("steps", "600"));
 const wingAngle = Number(argument("wing-angle", "NaN"));
+const tailAngle = Number(argument("tail-angle", "NaN"));
 const thrusterTorque = Number(argument("thruster-torque", "NaN"));
+const thrusterHeightOffset = Number(argument("thruster-height-offset", "NaN"));
+const suspensionRestLength = Number(argument("suspension-rest-length", "NaN"));
+const suspensionRelaxation = Number(argument("suspension-relaxation", "NaN"));
+const terrainSize = Number(argument("terrain-size", "1024"));
 const throttle = Number(argument("throttle", "1"));
 const sweep = process.argv.includes("--sweep");
 const directionComparison = process.argv.includes("--direction-comparison");
+const summaryOutput = argument("summary-output", "");
 const output = argument(
   "output",
   directionComparison
@@ -48,10 +55,44 @@ const configureMachine = (
         part.transform.position[0] !== 0
       )
         part.transform.rotation = [(configuredWingAngle * Math.PI) / 180, 0, 0];
+  if (Number.isFinite(tailAngle))
+    for (const part of machine.parts)
+      if (
+        part.definitionId === "Panel" &&
+        part.metadata.aeroRole === "horizontal-tail"
+      )
+        part.transform.rotation = [(tailAngle * Math.PI) / 180, 0, 0];
   if (Number.isFinite(thrusterTorque))
     for (const part of machine.parts)
       if (part.definitionId === "Thruster")
         part.actuator.motorTorque = thrusterTorque;
+  if (Number.isFinite(thrusterHeightOffset))
+    for (const part of machine.parts)
+      if (part.definitionId === "Thruster")
+        part.transform.position[1] += thrusterHeightOffset;
+  if (
+    Number.isFinite(suspensionRestLength) ||
+    Number.isFinite(suspensionRelaxation)
+  )
+    for (const part of machine.parts)
+      if (part.definitionId === "Wheel") {
+        const current = part.physics.suspension ?? {
+          restLength: 0.35,
+          stiffness: 10,
+          compression: 2,
+          relaxation: 1,
+          maxForce: 10000,
+        };
+        part.physics.suspension = {
+          ...current,
+          ...(Number.isFinite(suspensionRestLength)
+            ? { restLength: suspensionRestLength }
+            : {}),
+          ...(Number.isFinite(suspensionRelaxation)
+            ? { relaxation: suspensionRelaxation }
+            : {}),
+        };
+      }
   if (reducedWing) {
     const removed = new Set(
       machine.parts
@@ -76,6 +117,10 @@ const simulate = async (
 ): Promise<Simulation> => {
   const project = emptyProject(),
     machine = planeTemplate();
+  const planeWorld = starterPlaneWorldPatch(project.world);
+  planeWorld.terrain.size = terrainSize;
+  project.world.terrain = planeWorld.terrain;
+  project.world.entities = planeWorld.entities;
   configureMachine(machine, configuredWingAngle);
   project.machines.push(machine);
   const physics = new RapierPhysics();
@@ -123,11 +168,177 @@ const longestRun = (
   return longest;
 };
 
+const range = (values: number[]) => ({
+  min: minimum(values),
+  max: maximum(values),
+  amplitude: maximum(values) - minimum(values),
+});
+
+const firstGroundedToAirborneIndex = (samples: MachineTelemetrySample[]) => {
+  for (let index = 1; index < samples.length; index++) {
+    const previous = samples[index - 1],
+      current = samples[index];
+    if (
+      previous.groundedWheelCount > 0 &&
+      current.groundedWheelCount === 0 &&
+      current.terrainAvailable
+    )
+      return index;
+  }
+  return -1;
+};
+
+const contactToggleCount = (samples: MachineTelemetrySample[]) => {
+  const toggleByWheel = new Map<string, number>();
+  for (let index = 1; index < samples.length; index++) {
+    const previous = new Map(
+        samples[index - 1].wheels.map((wheel) => [wheel.id, wheel.inContact]),
+      ),
+      current = samples[index].wheels;
+    for (const wheel of current)
+      if (previous.has(wheel.id) && previous.get(wheel.id) !== wheel.inContact)
+        toggleByWheel.set(wheel.id, (toggleByWheel.get(wheel.id) ?? 0) + 1);
+  }
+  return Object.fromEntries(toggleByWheel);
+};
+
+const analyzeSpeedBand = (
+  name: string,
+  samples: MachineTelemetrySample[],
+  predicate: (sample: MachineTelemetrySample) => boolean,
+) => {
+  const band = samples.filter(predicate),
+    suspensionLengths = band.flatMap((sample) =>
+      sample.wheels.map((wheel) => wheel.suspensionLengthM),
+    ),
+    suspensionForces = band.flatMap((sample) =>
+      sample.wheels.map((wheel) => wheel.suspensionForceN ?? 0),
+    );
+  return {
+    name,
+    samples: band.length,
+    contactToggles: contactToggleCount(band),
+    suspensionLengthM: range(suspensionLengths),
+    suspensionForceN: {
+      max: maximum(suspensionForces),
+      atMaxCount: suspensionForces.filter((force) => force >= 9999).length,
+    },
+    verticalSpeedMps: range(band.map((sample) => sample.verticalSpeedMps)),
+    pitchRad: range(band.map((sample) => sample.pitchRad)),
+    pitchRateRadPerSecond: range(
+      band.map((sample) => sample.angularVelocityRadPerSecond[0]),
+    ),
+  };
+};
+
+const findFirstChange = (
+  samples: MachineTelemetrySample[],
+  changed: (
+    previous: MachineTelemetrySample,
+    current: MachineTelemetrySample,
+  ) => boolean,
+) => {
+  for (let index = 1; index < samples.length; index++)
+    if (changed(samples[index - 1], samples[index]))
+      return {
+        step: samples[index].step,
+        timeSeconds: samples[index].timeSeconds,
+      };
+  return null;
+};
+
+const analyzeGroundRoll = (samples: MachineTelemetrySample[]) => {
+  const liftoffIndex = firstGroundedToAirborneIndex(samples),
+    preLiftoff =
+      liftoffIndex >= 0
+        ? samples.slice(0, liftoffIndex)
+        : samples.filter((sample) => sample.terrainAvailable),
+    bands = [
+      analyzeSpeedBand(
+        "low",
+        preLiftoff,
+        (sample) => sample.forwardSpeedMps >= 0 && sample.forwardSpeedMps < 10,
+      ),
+      analyzeSpeedBand(
+        "medium",
+        preLiftoff,
+        (sample) => sample.forwardSpeedMps >= 10 && sample.forwardSpeedMps < 20,
+      ),
+      analyzeSpeedBand(
+        "high",
+        preLiftoff,
+        (sample) => sample.forwardSpeedMps >= 20,
+      ),
+    ],
+    reference =
+      liftoffIndex >= 0
+        ? samples.slice(Math.max(0, liftoffIndex - 30), liftoffIndex + 1)
+        : preLiftoff;
+  return {
+    liftoffCandidateIndex: liftoffIndex >= 0 ? liftoffIndex : null,
+    liftoffCandidateStep: liftoffIndex >= 0 ? samples[liftoffIndex].step : null,
+    terrainSamples: preLiftoff.filter((sample) => sample.terrainAvailable)
+      .length,
+    contactToggles: contactToggleCount(preLiftoff),
+    bands,
+    causalOrder: {
+      contact: findFirstChange(reference, (previous, current) =>
+        previous.wheels.some(
+          (wheel, index) =>
+            wheel.inContact !== current.wheels[index]?.inContact,
+        ),
+      ),
+      suspension: findFirstChange(reference, (previous, current) =>
+        current.wheels.some(
+          (wheel, index) =>
+            Math.abs(
+              wheel.suspensionLengthM -
+                (previous.wheels[index]?.suspensionLengthM ??
+                  wheel.suspensionLengthM),
+            ) > 0.005,
+        ),
+      ),
+      verticalSpeed: findFirstChange(
+        reference,
+        (previous, current) =>
+          Math.abs(current.verticalSpeedMps - previous.verticalSpeedMps) > 0.2,
+      ),
+      pitch: findFirstChange(
+        reference,
+        (previous, current) =>
+          Math.abs(current.pitchRad - previous.pitchRad) > 0.01,
+      ),
+      lift: findFirstChange(
+        reference,
+        (previous, current) =>
+          Math.abs(current.liftVerticalN - previous.liftVerticalN) > 20,
+      ),
+    },
+  };
+};
+
 const summarize = (simulation: Simulation) => {
   const { samples, startPosition } = simulation;
   const last = samples.at(-1);
   if (!last)
     throw new Error("Telemetry did not contain any Starter Plane samples");
+  const firstTerrainUnavailableIndex = samples.findIndex(
+    (sample) => !sample.terrainAvailable,
+  );
+  const aerodynamicPitchMomentByRoleNm = samples.reduce<
+    Record<string, { min: number; max: number }>
+  >((result, sample) => {
+    for (const [role, value] of Object.entries(
+      sample.aerodynamicPitchMomentByRoleNm,
+    )) {
+      const current = result[role] ?? { min: value, max: value };
+      result[role] = {
+        min: Math.min(current.min, value),
+        max: Math.max(current.max, value),
+      };
+    }
+    return result;
+  }, {});
   const takeoff = findStableForwardTakeoff(samples),
     takeoffSamples =
       takeoff === undefined ? samples : samples.slice(takeoff.liftoffIndex),
@@ -146,6 +357,14 @@ const summarize = (simulation: Simulation) => {
     );
   return {
     wingAngleDeg: simulation.wingAngleDeg,
+    tailAngleDeg: Number.isFinite(tailAngle) ? tailAngle : "template",
+    suspensionRestLengthM: Number.isFinite(suspensionRestLength)
+      ? suspensionRestLength
+      : "template",
+    suspensionRelaxation: Number.isFinite(suspensionRelaxation)
+      ? suspensionRelaxation
+      : "template",
+    terrainSizeM: terrainSize,
     throttle: simulation.throttle,
     steps: samples.length,
     stableTakeoff: takeoff !== undefined,
@@ -200,6 +419,16 @@ const summarize = (simulation: Simulation) => {
     ),
     maxDragN: maximum(samples.map((sample) => sample.totalDragN)),
     averageDragN: average(samples.map((sample) => sample.totalDragN)),
+    aerodynamicPitchMomentNm: range(
+      samples.map((sample) => sample.aerodynamicPitchMomentNm),
+    ),
+    thrusterPitchMomentNm: range(
+      samples.map((sample) => sample.thrusterPitchMomentNm),
+    ),
+    totalPitchMomentNm: range(
+      samples.map((sample) => sample.totalPitchMomentNm),
+    ),
+    aerodynamicPitchMomentByRoleNm,
     averageAngleOfAttackRad: average(
       samples.map((sample) => sample.averageAngleOfAttackRad),
     ),
@@ -238,6 +467,24 @@ const summarize = (simulation: Simulation) => {
     forwardDistanceM: last.position[2] - startPosition[2],
     continuousAirborneSteps: airborneSteps,
     continuousAirborneSeconds: airborneSteps / 60,
+    terrainAvailableSamples: samples.filter((sample) => sample.terrainAvailable)
+      .length,
+    terrainUnavailableSamples: samples.filter(
+      (sample) => !sample.terrainAvailable,
+    ).length,
+    firstTerrainUnavailableStep:
+      firstTerrainUnavailableIndex >= 0
+        ? samples[firstTerrainUnavailableIndex].step
+        : null,
+    firstTerrainUnavailableForwardDistanceM:
+      firstTerrainUnavailableIndex >= 0
+        ? samples[firstTerrainUnavailableIndex].position[2] - startPosition[2]
+        : null,
+    firstTerrainUnavailableGroundedWheelCount:
+      firstTerrainUnavailableIndex >= 0
+        ? samples[firstTerrainUnavailableIndex].groundedWheelCount
+        : null,
+    groundRollAnalysis: analyzeGroundRoll(samples),
   };
 };
 
@@ -313,6 +560,11 @@ if (directionComparison) {
 } else {
   const simulation = await simulate(wingAngle, throttle),
     summary = summarize(simulation);
+  if (summaryOutput)
+    await writeOutput(
+      summaryOutput,
+      JSON.stringify({ version: 1, ...summary }, null, 2) + "\n",
+    );
   await writeOutput(
     output,
     simulation.samples.map((sample) => JSON.stringify(sample)).join("\n") +

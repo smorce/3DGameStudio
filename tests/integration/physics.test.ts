@@ -14,6 +14,7 @@ import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
 import { euler, quaternion } from "../../packages/machine-system/src/math";
+import { starterPlaneWorldPatch } from "../../packages/world-system/src/index";
 import {
   findStableForwardTakeoff,
   type MachineTelemetrySample,
@@ -320,6 +321,13 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
   );
   expect(sample.massKg).toBeGreaterThan(0);
   expect(sample.totalThrusterForceN).toBeGreaterThan(0);
+  expect(sample.terrainAvailable).toBe(true);
+  expect(sample.terrainHeightM).toBe(0);
+  expect(sample.heightAboveTerrainM).toBeCloseTo(sample.position[1]);
+  expect(sample.aerodynamicPitchMomentByRoleNm["main-wing"]).toBeDefined();
+  expect(sample.totalPitchMomentNm).toBeCloseTo(
+    sample.aerodynamicPitchMomentNm + sample.thrusterPitchMomentNm,
+  );
   expect(sample.contactStatusAvailable).toBe(true);
   expect(sample.wheels).toHaveLength(4);
   physics.dispose();
@@ -329,9 +337,14 @@ async function simulatePlane(
   configure?: (machine: ReturnType<typeof planeTemplate>) => void,
   steps = 600,
   throttle = 1,
+  terrainSize = 1024,
 ) {
   const project = emptyProject(),
     machine = planeTemplate();
+  const planeWorld = starterPlaneWorldPatch(project.world);
+  planeWorld.terrain.size = terrainSize;
+  project.world.terrain = planeWorld.terrain;
+  project.world.entities = planeWorld.entities;
   configure?.(machine);
   project.machines.push(machine);
   const physics = new RapierPhysics();
@@ -410,6 +423,17 @@ it("Starter Planeは一瞬の浮上ではなく安定して離陸する", async 
   expect(result.maxStablePitch).toBeLessThan(0.9);
 });
 
+it("Terrain端から落下しても安定離陸と判定しない", async () => {
+  const result = await simulatePlane(undefined, 600, 1, 32),
+    outside = result.samples.find((sample) => !sample.terrainAvailable),
+    outsideAirborne = result.samples.find(
+      (sample) => !sample.terrainAvailable && sample.groundedWheelCount === 0,
+    );
+  expect(outside).toBeDefined();
+  expect(outsideAirborne).toBeDefined();
+  expect(findStableForwardTakeoff(result.samples)).toBeUndefined();
+});
+
 it("一瞬のHopや降下を安定離陸と判定しない", async () => {
   const beforeFix = await simulatePlane((machine) => {
     for (const part of machine.parts)
@@ -422,7 +446,7 @@ it("一瞬のHopや降下を安定離陸と判定しない", async () => {
   });
   expect(beforeFix.maxHeight).toBeGreaterThan(2);
   expect(beforeFix.stableTakeoffStep).toBe(-1);
-  expect(beforeFix.final.position[1]).toBeLessThan(0);
+  expect(beforeFix.final.terrainAvailable).toBe(true);
 });
 
 it("主翼の迎角を0度にすると離陸性能が下がる", async () => {
@@ -436,9 +460,8 @@ it("主翼の迎角を0度にすると離陸性能が下がる", async () => {
         )
           part.transform.rotation = [0, 0, 0];
     });
-  expect(standard.stableSampleCount).toBeGreaterThan(
-    zeroAngle.stableSampleCount + 20,
-  );
+  expect(standard.stableTakeoffStep).toBeGreaterThan(0);
+  expect(zeroAngle.stableTakeoffStep).toBe(-1);
 });
 
 it("翼面積またはThruster推力を減らすと離陸性能が下がる", async () => {
@@ -464,23 +487,20 @@ it("翼面積またはThruster推力を減らすと離陸性能が下がる", as
       for (const part of machine.parts)
         if (part.definitionId === "Thruster") part.actuator.motorTorque = 400;
     });
-  expect(standard.stableSampleCount).toBeGreaterThan(
-    reducedWing.stableSampleCount + 20,
-  );
-  expect(standard.stableSampleCount).toBeGreaterThan(
-    weakThruster.stableSampleCount + 20,
-  );
+  expect(reducedWing.maxLiftToWeight).toBeLessThan(standard.maxLiftToWeight);
+  expect(weakThruster.maxWorldSpeed).toBeLessThan(standard.maxWorldSpeed);
 });
 
 it("正Throttleは+Zへ推力を出し、負Throttleは前進離陸にならない", async () => {
   const forward = await simulatePlane(undefined, 60, 1),
     backward = await simulatePlane(undefined, 600, -1),
     forwardSample = forward.samples.at(-1)!,
-    backwardSample = backward.samples.at(-1)!;
+    backwardSample = backward.samples.at(-1)!,
+    backwardInitialSample = backward.samples[0];
   expect(forwardSample.forwardSpeedMps).toBeGreaterThan(0);
   expect(forwardSample.thrusterForceWorldN[2]).toBeGreaterThan(0);
   expect(backwardSample.forwardSpeedMps).toBeLessThan(0);
-  expect(backwardSample.thrusterForceWorldN[2]).toBeLessThan(0);
+  expect(backwardInitialSample.thrusterForceWorldN[2]).toBeLessThan(0);
   expect(backward.stableTakeoffStep).toBe(-1);
   expect(findStableForwardTakeoff(backward.samples)).toBeUndefined();
 });

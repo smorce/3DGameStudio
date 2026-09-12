@@ -31,7 +31,11 @@ export interface MachineTelemetrySample {
   liftVerticalN: number;
   totalDragN: number;
   totalAerodynamicForceN: number;
+  aerodynamicPitchMomentNm: number;
+  aerodynamicPitchMomentByRoleNm: Record<string, number>;
   totalThrusterForceN: number;
+  thrusterPitchMomentNm: number;
+  totalPitchMomentNm: number;
   thrusterForceWorldN: TelemetryVec3;
   averageAngleOfAttackRad: number;
   averageLiftCoefficient: number;
@@ -39,6 +43,9 @@ export interface MachineTelemetrySample {
   liftToWeightRatio: number;
   massKg: number;
   weightN: number;
+  terrainAvailable: boolean;
+  terrainHeightM: number | null;
+  heightAboveTerrainM: number | null;
   contactStatusAvailable: boolean;
   groundedWheelCount: number;
   wheels: WheelTelemetrySample[];
@@ -78,33 +85,60 @@ export function vectorMagnitude(value: readonly number[]) {
 
 export interface StableForwardTakeoffOptions {
   minAltitudeM?: number;
+  minHeightAboveTerrainM?: number;
   minWorldSpeedMps?: number;
+  minGroundRollSteps?: number;
+  minGroundedWheelCount?: number;
   windowSteps?: number;
+  minSustainedFlightSteps?: number;
   maxPitchRad?: number;
   maxAltitudeDropM?: number;
   minAverageVerticalSpeedMps?: number;
 }
 
 export interface StableForwardTakeoff {
+  groundRollStartIndex: number;
+  groundRollSteps: number;
   liftoffIndex: number;
   liftoffStep: number;
   liftoffTimeSeconds: number;
   liftoffAltitudeM: number;
+  liftoffHeightAboveTerrainM: number;
   finalAltitudeM: number;
+  finalHeightAboveTerrainM: number;
   averageVerticalSpeedMps: number;
   windowSteps: number;
   durationSeconds: number;
 }
 
+const hasTerrainHeight = (
+  sample: MachineTelemetrySample,
+): sample is MachineTelemetrySample & {
+  terrainHeightM: number;
+  heightAboveTerrainM: number;
+} =>
+  sample.terrainAvailable &&
+  sample.terrainHeightM !== null &&
+  sample.heightAboveTerrainM !== null;
+
+const isGroundRollSample = (
+  sample: MachineTelemetrySample,
+  minGroundedWheelCount: number,
+) =>
+  hasTerrainHeight(sample) &&
+  sample.forwardSpeedMps > 0 &&
+  sample.groundedWheelCount >= minGroundedWheelCount;
+
 const isForwardFlightSample = (
   sample: MachineTelemetrySample,
-  minAltitudeM: number,
+  minHeightAboveTerrainM: number,
   minWorldSpeedMps: number,
   maxPitchRad: number,
 ) =>
+  hasTerrainHeight(sample) &&
   sample.contactStatusAvailable &&
   sample.groundedWheelCount === 0 &&
-  sample.position[1] >= minAltitudeM &&
+  sample.heightAboveTerrainM >= minHeightAboveTerrainM &&
   sample.worldSpeedMps >= minWorldSpeedMps &&
   sample.forwardSpeedMps > 0 &&
   Math.abs(sample.pitchRad) <= maxPitchRad;
@@ -113,39 +147,75 @@ export function findStableForwardTakeoff(
   samples: readonly MachineTelemetrySample[],
   options: StableForwardTakeoffOptions = {},
 ): StableForwardTakeoff | undefined {
-  const minAltitudeM = options.minAltitudeM ?? 1.5;
-  const minWorldSpeedMps = options.minWorldSpeedMps ?? 20;
-  const windowSteps = options.windowSteps ?? 90;
+  const minHeightAboveTerrainM =
+    options.minHeightAboveTerrainM ?? options.minAltitudeM ?? 0.25;
+  const minWorldSpeedMps = options.minWorldSpeedMps ?? 0;
+  const minGroundRollSteps = options.minGroundRollSteps ?? 45;
+  const minGroundedWheelCount = options.minGroundedWheelCount ?? 2;
+  const windowSteps =
+    options.minSustainedFlightSteps ?? options.windowSteps ?? 180;
   const maxPitchRad = options.maxPitchRad ?? 0.8;
   const maxAltitudeDropM = options.maxAltitudeDropM ?? 0.5;
   const minAverageVerticalSpeedMps = options.minAverageVerticalSpeedMps ?? -0.5;
-  if (windowSteps <= 0 || !Number.isInteger(windowSteps)) return undefined;
+  if (
+    minGroundRollSteps <= 0 ||
+    !Number.isInteger(minGroundRollSteps) ||
+    minGroundedWheelCount <= 0 ||
+    !Number.isInteger(minGroundedWheelCount) ||
+    windowSteps <= 0 ||
+    !Number.isInteger(windowSteps)
+  )
+    return undefined;
 
-  for (let index = 0; index + windowSteps <= samples.length; index++) {
+  for (
+    let index = minGroundRollSteps;
+    index + windowSteps <= samples.length;
+    index++
+  ) {
     const liftoff = samples[index];
+    const previous = samples[index - 1];
+    const groundRoll = samples.slice(index - minGroundRollSteps, index);
+    if (
+      previous.groundedWheelCount <= 0 ||
+      liftoff.groundedWheelCount !== 0 ||
+      groundRoll.length !== minGroundRollSteps ||
+      groundRoll.some(
+        (sample) => !isGroundRollSample(sample, minGroundedWheelCount),
+      )
+    )
+      continue;
     if (
       !isForwardFlightSample(
         liftoff,
-        minAltitudeM,
+        minHeightAboveTerrainM,
         minWorldSpeedMps,
         maxPitchRad,
       )
     )
       continue;
+    if (!hasTerrainHeight(liftoff)) continue;
     const window = samples.slice(index, index + windowSteps);
     if (
-      window.some(
-        (sample) =>
+      window.some((sample) => {
+        if (!hasTerrainHeight(sample)) return true;
+        if (
           !isForwardFlightSample(
             sample,
-            minAltitudeM,
+            minHeightAboveTerrainM,
             minWorldSpeedMps,
             maxPitchRad,
-          ) || sample.position[1] < liftoff.position[1] - maxAltitudeDropM,
-      )
+          )
+        )
+          return true;
+        return (
+          sample.heightAboveTerrainM <
+          liftoff.heightAboveTerrainM - maxAltitudeDropM
+        );
+      })
     )
       continue;
     const final = window.at(-1)!;
+    if (!hasTerrainHeight(final)) continue;
     const averageVerticalSpeedMps =
       window.reduce((total, sample) => total + sample.verticalSpeedMps, 0) /
       window.length;
@@ -155,11 +225,15 @@ export function findStableForwardTakeoff(
     )
       continue;
     return {
+      groundRollStartIndex: index - minGroundRollSteps,
+      groundRollSteps: minGroundRollSteps,
       liftoffIndex: index,
       liftoffStep: liftoff.step,
       liftoffTimeSeconds: liftoff.timeSeconds,
       liftoffAltitudeM: liftoff.position[1],
+      liftoffHeightAboveTerrainM: liftoff.heightAboveTerrainM,
       finalAltitudeM: final.position[1],
+      finalHeightAboveTerrainM: final.heightAboveTerrainM,
       averageVerticalSpeedMps,
       windowSteps,
       durationSeconds: final.timeSeconds - liftoff.timeSeconds,

@@ -35,7 +35,10 @@ import {
 } from "../../../packages/ui-studio/src/index";
 import { createCourse } from "../../../packages/course-system/src/index";
 import { heightAt } from "../../../packages/terrain-system/src/index";
-import { starterWorldPatch } from "../../../packages/world-system/src/index";
+import {
+  starterPlaneWorldPatch,
+  starterWorldPatch,
+} from "../../../packages/world-system/src/index";
 import { applyPlan } from "../../../packages/ai-core/src/index";
 import "./style.css";
 type PlacementSession = {
@@ -311,6 +314,11 @@ function App() {
         bus.execute({
           type: "world.update",
           patch: starterWorldPatch(p.world),
+        });
+      if (template === "plane")
+        bus.execute({
+          type: "world.update",
+          patch: starterPlaneWorldPatch(p.world),
         });
       bus.execute({
         type: "machine.create",

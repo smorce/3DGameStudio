@@ -26,6 +26,13 @@ export const identity = (): z.infer<typeof transformSchema> => ({
   scale: [1, 1, 1],
 });
 const metadata = z.record(z.string(), z.unknown());
+const suspensionSchema = z.object({
+  restLength: z.number().positive().max(10),
+  stiffness: z.number().nonnegative().max(100000),
+  compression: z.number().nonnegative().max(100000),
+  relaxation: z.number().nonnegative().max(100000),
+  maxForce: z.number().nonnegative().max(1000000),
+});
 export const partKinds = [
   "Panel",
   "Block",
@@ -46,6 +53,7 @@ export const partSchema = z.object({
     restitution: z.number().min(0).max(1),
     collider: z.enum(["box", "cylinder"]),
     size: vec3.refine((v) => v.every((n) => n > 0 && n <= 100), "Invalid size"),
+    suspension: suspensionSchema.optional(),
   }),
   connectors: z.array(
     z.object({

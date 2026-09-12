@@ -646,7 +646,8 @@ export function compileMachine(machine: Machine) {
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),
     // +X回転は機首上げ。機首+Zへ進むStarter Planeの正のwing incidence。
-    wingAngle = (6 * Math.PI) / 180,
+    wingAngle = (8 * Math.PI) / 180,
+    tailAngle = (8 * Math.PI) / 180,
     fuselage: Part[] = [];
   const nose = createPart("Panel", [0, 0.85, 2]);
   m.parts.push(nose);
@@ -663,7 +664,9 @@ export function planeTemplate() {
       ),
     );
 
+  for (const part of fuselage) part.metadata.aeroRole = "fuselage";
   const mainWing = fuselage[2];
+  mainWing.metadata.aeroRole = "main-wing";
   for (const side of [-1, 1] as const) {
     let parent = mainWing;
     for (let i = 0; i < 4; i++) {
@@ -677,6 +680,7 @@ export function planeTemplate() {
         childConnector,
         [wingAngle, 0, 0],
       );
+      parent.metadata.aeroRole = "main-wing";
     }
   }
 
@@ -692,6 +696,8 @@ export function planeTemplate() {
       parentConnector,
       childConnector,
     );
+    parent.metadata.aeroRole = "horizontal-tail";
+    parent.transform.rotation = [tailAngle, 0, 0];
     tailPanels[side].push(parent);
     parent = connectTemplateParts(
       m,
@@ -700,16 +706,22 @@ export function planeTemplate() {
       parentConnector,
       childConnector,
     );
+    parent.metadata.aeroRole = "horizontal-tail";
+    parent.transform.rotation = [tailAngle, 0, 0];
     tailPanels[side].push(parent);
   }
 
   // 後方の水平尾翼上にBlockを置き、機首側には簡単なCockpitを置く。
   connectTemplateParts(m, fuselage[1], createPart("Block"), "top-1", "mount");
-  connectTemplateParts(m, tailRoot, createPart("Panel"), "top-0", "edge-z-", [
-    0,
-    0,
-    Math.PI / 2,
-  ]);
+  const verticalTail = connectTemplateParts(
+    m,
+    tailRoot,
+    createPart("Panel"),
+    "top-0",
+    "edge-z-",
+    [0, 0, Math.PI / 2],
+  );
+  verticalTail.metadata.aeroRole = "vertical-tail";
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
     thruster.actuator.motorTorque = 1600;
@@ -738,8 +750,17 @@ export function planeTemplate() {
       throw new Error(`Template landing gear slot is unavailable: ${index}`);
     connector.position = position;
   });
-  for (let i = 0; i < gearSlots.length; i++)
+  for (let i = 0; i < gearSlots.length; i++) {
     attachTemplateWheel(m, nose, String(i));
+    const wheel = m.parts.at(-1)!;
+    wheel.physics.suspension = {
+      restLength: 1,
+      stiffness: 10,
+      compression: 2,
+      relaxation: 4,
+      maxForce: 10000,
+    };
+  }
   // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
   for (const part of m.parts)
     if (part.definitionId === "Panel") {

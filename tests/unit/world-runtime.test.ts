@@ -9,7 +9,10 @@ import {
 } from "../../packages/project-schema/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { createCourse } from "../../packages/course-system/src/index";
-import { starterWorldPatch } from "../../packages/world-system/src/index";
+import {
+  starterPlaneWorldPatch,
+  starterWorldPatch,
+} from "../../packages/world-system/src/index";
 import { ChunkStreamer } from "../../packages/world-system/src/streaming";
 import {
   builtinTemplate,
@@ -32,6 +35,12 @@ it("くるま用の初期景観は中央を空けて木・ビル・山を配置�
   expect(patch.entities.filter((e) => e.kind === "rock")).toHaveLength(4);
   expect(centerHeight).toBe(0);
   expect(highest).toBeGreaterThan(5);
+});
+it("飛行機用の初期Worldは長く平坦で障害物がない", () => {
+  const patch = starterPlaneWorldPatch(emptyProject().world);
+  expect(patch.terrain.size).toBeGreaterThanOrEqual(1024);
+  expect(new Set(patch.terrain.heights)).toEqual(new Set([0]));
+  expect(patch.entities).toEqual([]);
 });
 it("v0/v1と既存デモはv2へ移行し保存・再読込できる", async () => {
   for (const name of [
