@@ -342,9 +342,9 @@ describe("Starter Template", () => {
         .sort((a, b) => a - b),
       thrusterZ = thrusters.map((part) => part.transform.position[2]);
     expect(leftWing).toEqual(rightWing);
-    // 主翼最内Panel(x=±1)の後縁へ左右対称に置く。
-    expect(thrusterX[0]).toBeCloseTo(1, 5);
-    expect(thrusterX[1]).toBeCloseTo(1, 5);
+    // 主翼の内側から2枚目Panel(x=±2)の後縁へ左右対称に置く。
+    expect(thrusterX[0]).toBeCloseTo(2, 5);
+    expect(thrusterX[1]).toBeCloseTo(2, 5);
     expect(thrusterZ.every((z) => z < 0)).toBe(true);
   });
 

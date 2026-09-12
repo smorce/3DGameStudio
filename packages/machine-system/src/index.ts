@@ -1169,13 +1169,13 @@ export function planeTemplate() {
     { minAngleRad: -controlSurfaceLimit, maxAngleRad: controlSurfaceLimit },
   );
 
-  // 推力線を主翼後縁の胴体脇（最内の固定主翼Panel）へ置く。可動翼には取り付けない。
+  // 推力線を主翼後縁の胴体脇から1枚外側の固定主翼Panelへ置く。可動翼には取り付けない。
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
     thruster.actuator.motorTorque = 1000;
     connectTemplateParts(
       m,
-      wingPanels[side][0],
+      wingPanels[side][1],
       thruster,
       "edge-z-",
       "mount",
