@@ -14,6 +14,8 @@ export const DEFAULT_MOTOR_MAX_TORQUE = 180;
 export const DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY = 9;
 export const DEFAULT_MOTOR_POSITION_STIFFNESS = 20;
 export const DEFAULT_MOTOR_POSITION_DAMPING = 5;
+// Rest length 0.65mの約85%を上限とし、圧縮時にも機構の実体を残す。
+export const DEFAULT_SUSPENSION_MAX_TRAVEL = 0.55;
 export const MAX_MOTOR_TARGET_ANGULAR_VELOCITY = 1000;
 export const panelMass = (thickness: number) =>
   PANEL_DENSITY * PANEL_SIDE * PANEL_SIDE * thickness;
@@ -30,6 +32,11 @@ export const identity = (): z.infer<typeof transformSchema> => ({
 const metadata = z.record(z.string(), z.unknown());
 export const suspensionSchema = z.object({
   restLength: z.number().positive().max(10),
+  maxTravel: z
+    .number()
+    .positive()
+    .max(10)
+    .default(DEFAULT_SUSPENSION_MAX_TRAVEL),
   stiffness: z.number().nonnegative().max(100000),
   compression: z.number().nonnegative().max(100000),
   relaxation: z.number().nonnegative().max(100000),

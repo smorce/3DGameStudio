@@ -3,10 +3,15 @@ import { CommandBus } from "../../packages/command-system/src/index";
 import { emptyProject } from "../../packages/project-schema/src/index";
 import {
   attachPart,
+  boatTemplate,
+  commitAttachment,
   createMachine,
   createPart,
   findAttachmentCandidates,
+  connectorWorldPosition,
+  planeTemplate,
   placementConnectors,
+  starterCarTemplate,
 } from "../../packages/machine-system/src/index";
 import { quaternion, rotate } from "../../packages/machine-system/src/math";
 function setup() {
@@ -15,6 +20,16 @@ function setup() {
   attachPart(machine, createPart("Panel"));
   project.machines.push(machine);
   return { machine, bus: new CommandBus(project) };
+}
+function connectionDistance(
+  machine: ReturnType<typeof createMachine>,
+  connection: (typeof machine.connections)[number],
+) {
+  const parent = machine.parts.find((part) => part.id === connection.a)!,
+    child = machine.parts.find((part) => part.id === connection.b)!,
+    a = connectorWorldPosition(parent, connection.connectorA),
+    b = connectorWorldPosition(child, connection.connectorB);
+  return Math.hypot(...a.map((value, index) => value - b[index]));
 }
 test("タイヤ候補は純粋計算で、使用済み位置を除外する", () => {
   const { machine } = setup();
@@ -39,13 +54,8 @@ test("Suspensionは構造部へ固定しWheelだけを回転接続する", () =>
     candidateId: suspensionCandidate.id,
   });
   const withSuspension = bus.project.machines[0],
-    suspension = withSuspension.parts.find(
-      (part) => part.id === "suspension",
-    )!,
-    wheelCandidate = findAttachmentCandidates(
-      withSuspension,
-      "Wheel",
-    ).find(
+    suspension = withSuspension.parts.find((part) => part.id === "suspension")!,
+    wheelCandidate = findAttachmentCandidates(withSuspension, "Wheel").find(
       (candidate) =>
         candidate.parentPartId === suspension.id &&
         candidate.parentConnectorId === "suspension-wheel",
@@ -62,8 +72,30 @@ test("Suspensionは構造部へ固定しWheelだけを回転接続する", () =>
     "fixed",
     "revolute",
   ]);
-  expect(result.parts.find((part) => part.id === "suspension")?.physics.collider)
-    .toBe("none");
+  expect(
+    result.parts.find((part) => part.id === "suspension")?.physics.collider,
+  ).toBe("none");
+});
+test.each([
+  "Panel",
+  "Block",
+  "Wheel",
+  "Suspension",
+  "Motor",
+  "Hinge",
+  "Thruster",
+] as const)("通常配置した%sは親子Connectorを一致させる", (kind) => {
+  const { machine } = setup(),
+    candidate = findAttachmentCandidates(machine, kind)[0]!;
+  commitAttachment(machine, createPart(kind), candidate);
+  expect(connectionDistance(machine, machine.connections[0])).toBeLessThan(
+    1e-3,
+  );
+});
+test("TemplateとSuspension経由Wheelの全Connectionを一致させる", () => {
+  for (const machine of [starterCarTemplate(), planeTemplate(), boatTemplate()])
+    for (const connection of machine.connections)
+      expect(connectionDistance(machine, connection)).toBeLessThan(1e-3);
 });
 test("移動・回転しても正方形Panelの候補は固定寸法で計算される", () => {
   const { machine } = setup();

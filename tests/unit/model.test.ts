@@ -9,11 +9,15 @@ import {
   carTemplate,
   compileMachine,
   createPart,
+  liftMachineToGround,
   planeTemplate,
+  starterCarTemplate,
+  wheelBottomY,
 } from "../../packages/machine-system/src/index";
 import {
   DEFAULT_MOTOR_MAX_TORQUE,
   DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY,
+  DEFAULT_SUSPENSION_MAX_TRAVEL,
   PANEL_SIDE,
   panelMass,
 } from "../../packages/project-schema/src/index";
@@ -109,6 +113,34 @@ describe("モデルとコマンド", () => {
     expect(migrated.schemaVersion).toBe(5);
     expect(migratedMotor.actuator.motorTorque).toBe(200);
     expect(migratedMotor.actuator.targetAngularVelocity).toBe(10);
+  });
+  it("maxTravelなしの旧Suspensionは既定値へ移行する", () => {
+    const project = emptyProject(),
+      machine = carTemplate(),
+      suspension = createPart("Suspension");
+    machine.parts.push(suspension);
+    project.machines.push(machine);
+    const legacy = JSON.parse(JSON.stringify(project)) as Record<
+      string,
+      unknown
+    >;
+    const legacyMachine = (legacy.machines as Record<string, unknown>[])[0],
+      legacySuspension = (
+        legacyMachine.parts as Record<string, unknown>[]
+      ).find((part) => part.definitionId === "Suspension")!;
+    const legacySettings = {
+      ...((legacySuspension.physics as Record<string, unknown>)
+        .suspension as Record<string, unknown>),
+    };
+    delete legacySettings.maxTravel;
+    (legacySuspension.physics as Record<string, unknown>).suspension =
+      legacySettings;
+    const migrated = parseProject(legacy);
+    expect(
+      migrated.machines[0].parts.find(
+        (part) => part.definitionId === "Suspension",
+      )!.physics.suspension!.maxTravel,
+    ).toBe(DEFAULT_SUSPENSION_MAX_TRAVEL);
   });
   it("新規Motorは最大Torqueと目標角速度を別々に初期化する", () => {
     const motor = createPart("Motor");
@@ -267,6 +299,27 @@ describe("Starter Template", () => {
         .sort();
     expect(leftWing).toEqual(rightWing);
     expect(thrusterX).toEqual([0.5, 0.5]);
+  });
+
+  it("Starter CarとPlaneの接地補正はMachine全体を移動しAttachmentを保つ", () => {
+    for (const machine of [starterCarTemplate(), planeTemplate()]) {
+      const before = machine.parts.map((part) => [
+        part.id,
+        [...part.transform.position],
+      ]);
+      const lift = liftMachineToGround(machine, () => 0);
+      expect(lift).toBeGreaterThanOrEqual(0);
+      for (const wheel of machine.parts.filter(
+        (part) => part.definitionId === "Wheel",
+      ))
+        expect(wheelBottomY(machine, wheel)).toBeGreaterThanOrEqual(-1e-6);
+      for (const [id, position] of before) {
+        const part = machine.parts.find((item) => item.id === id)!;
+        expect(part.transform.position[1]).toBeCloseTo(
+          (position as number[])[1] + lift,
+        );
+      }
+    }
   });
 
   it("ボートTemplateは左右Ponton、Deck、複数浮力Panelを持つ", () => {

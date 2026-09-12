@@ -150,14 +150,16 @@ export class Engine {
       while (this.accumulator >= 1 / 60) {
         this.physics.step(controls);
         this.accumulator -= 1 / 60;
-        const p = this.physics.poses().values().next().value?.position;
+        const renderState = this.physics.renderState(),
+          p = renderState.poses.values().next().value?.position;
         if (p && !dropping) {
           this.course?.update(p, 1 / 60);
           if (p[1] < -20) this.physics.respawn(this.course?.respawn);
         }
       }
+      const renderState = this.physics.renderState();
       this.renderer.render(
-        this.physics.poses(),
+        renderState,
         dropping ? 0 : (controls.throttle ?? 0),
       );
       if (dropping && now >= this.dropUntil) {

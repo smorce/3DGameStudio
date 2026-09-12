@@ -25,6 +25,7 @@ import {
 } from "../../water-system/src/index";
 import {
   compileMachine,
+  connectorWorldPosition,
   wheelSuspensionSettings,
 } from "../../machine-system/src/index";
 import {
@@ -53,6 +54,21 @@ export interface Pose {
   position: Vec3;
   rotation: Quat;
 }
+export interface WheelRenderState {
+  partId: string;
+  pose: Pose;
+  suspensionLengthM: number;
+  suspensionDirectionWorld: Vec3;
+  restLengthM: number;
+  maxTravelM: number;
+  minimumLengthM: number;
+  suspensionForceN?: number;
+  inContact?: boolean;
+}
+export interface PhysicsRenderState {
+  poses: Map<string, Pose>;
+  wheels: Map<string, WheelRenderState>;
+}
 const PHYSICS_FIXED_DT = 1 / 60;
 // 速度誤差1 rad/sあたりに要求するトルク。最終出力はmaxTorqueで制限する。
 const MOTOR_VELOCITY_CONTROLLER_GAIN = 40;
@@ -70,6 +86,13 @@ interface RevoluteRuntime {
 interface MotorRuntime extends RevoluteRuntime {
   part: Part;
   machineId: string;
+}
+interface WheelRuntime {
+  part: Part;
+  connectionPoint: Vec3;
+  suspensionDirection: Vec3;
+  restLengthM: number;
+  maxTravelM: number;
 }
 const vector = (v: Vec3) => ({ x: v[0], y: v[1], z: v[2] });
 const rotation = (q: Quat) => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
@@ -251,6 +274,7 @@ export class RapierPhysics {
     body: RAPIER.RigidBody;
     controller: RAPIER.DynamicRayCastVehicleController;
     wheels: Part[];
+    wheelRuntime: WheelRuntime[];
   }[] = [];
   private parts: {
     part: Part;
@@ -605,26 +629,44 @@ export class RapierPhysics {
         const c = m.wheelConnections.find((c) => c.b === w.id)!;
         return bodies.get(m.bodyForPart.get(c.a)!) === chassis;
       });
+      const wheelRuntime: WheelRuntime[] = [];
       for (const p of wheels) {
+        const connection = m.wheelConnections.find((item) => item.b === p.id);
+        if (!connection) continue;
+        const connectionPoint = connectorWorldPosition(
+          p,
+          connection.connectorB,
+        );
         const i = controller.numWheels();
         const suspension = wheelSuspensionSettings(machine, p.id);
         controller.addWheel(
-          vector(p.transform.position),
+          vector(connectionPoint),
           { x: 0, y: -1, z: 0 },
           { x: -1, y: 0, z: 0 },
-          suspension?.restLength ?? 0.35,
+          suspension.restLength,
           p.physics.size[1] * p.transform.scale[1],
         );
-        controller.setWheelSuspensionStiffness(i, suspension?.stiffness ?? 10);
-        controller.setWheelSuspensionCompression(
-          i,
-          suspension?.compression ?? 2,
-        );
-        controller.setWheelSuspensionRelaxation(i, suspension?.relaxation ?? 1);
+        controller.setWheelSuspensionStiffness(i, suspension.stiffness);
+        controller.setWheelSuspensionCompression(i, suspension.compression);
+        controller.setWheelSuspensionRelaxation(i, suspension.relaxation);
         controller.setWheelFrictionSlip(i, p.physics.friction * 2);
-        controller.setWheelMaxSuspensionForce(i, suspension?.maxForce ?? 10000);
+        controller.setWheelMaxSuspensionForce(i, suspension.maxForce);
+        controller.setWheelMaxSuspensionTravel(i, suspension.maxTravel);
+        wheelRuntime.push({
+          part: p,
+          connectionPoint,
+          suspensionDirection: [0, -1, 0],
+          restLengthM: suspension.restLength,
+          maxTravelM: suspension.maxTravel,
+        });
       }
-      this.vehicles.push({ id: m.id, body: chassis, controller, wheels });
+      this.vehicles.push({
+        id: m.id,
+        body: chassis,
+        controller,
+        wheels: wheelRuntime.map((item) => item.part),
+        wheelRuntime,
+      });
     }
   }
   step(input: Record<string, number> | number, steering = 0, brake = false) {
@@ -967,11 +1009,19 @@ export class RapierPhysics {
         wheelApi = vehicle.controller as unknown as {
           wheelIsInContact?: (index: number) => boolean;
           wheelSuspensionForce?: (index: number) => number;
+          wheelSuspensionRestLength?: (index: number) => number;
+          wheelMaxSuspensionTravel?: (index: number) => number;
         },
         contactStatusAvailable =
           typeof wheelApi.wheelIsInContact === "function",
-        wheels = vehicle.wheels.map((wheel, index) => {
-          const inContact = wheelApi.wheelIsInContact?.(index),
+        wheels = vehicle.wheelRuntime.map((runtime, index) => {
+          const wheel = runtime.part,
+            restLengthM =
+              wheelApi.wheelSuspensionRestLength?.(index) ??
+              runtime.restLengthM,
+            maxTravelM =
+              wheelApi.wheelMaxSuspensionTravel?.(index) ?? runtime.maxTravelM,
+            inContact = wheelApi.wheelIsInContact?.(index),
             suspensionForceN = wheelApi.wheelSuspensionForce?.(index);
           return {
             id: wheel.id,
@@ -980,7 +1030,11 @@ export class RapierPhysics {
               : {}),
             ...(inContact === undefined ? {} : { inContact }),
             suspensionLengthM:
-              vehicle.controller.wheelSuspensionLength(index) ?? 0.35,
+              vehicle.controller.wheelSuspensionLength(index) ??
+              runtime.restLengthM,
+            restLengthM,
+            maxTravelM,
+            minimumLengthM: Math.max(0.05, restLengthM - maxTravelM),
             ...(suspensionForceN === undefined ? {} : { suspensionForceN }),
           };
         }),
@@ -1100,9 +1154,16 @@ export class RapierPhysics {
         ),
       );
     for (const v of this.vehicles)
-      v.wheels.forEach((w, i) => {
-        const p = [...w.transform.position] as Vec3;
-        p[1] -= v.controller.wheelSuspensionLength(i) ?? 0.35;
+      v.wheelRuntime.forEach((runtime, i) => {
+        const length =
+            v.controller.wheelSuspensionLength(i) ?? runtime.restLengthM,
+          p = runtime.connectionPoint.map(
+            (value, index) =>
+              value +
+              runtime.suspensionDirection[index] *
+                (length - runtime.restLengthM),
+          ) as Vec3,
+          w = runtime.part;
         result.set(
           w.id,
           this.pose(
@@ -1116,6 +1177,52 @@ export class RapierPhysics {
         );
       });
     return result;
+  }
+  renderState(): PhysicsRenderState {
+    const poses = this.poses(),
+      wheels = new Map<string, WheelRenderState>();
+    for (const vehicle of this.vehicles) {
+      const rawRotation = vehicle.body.rotation(),
+        bodyRotation: Quat = [
+          rawRotation.x,
+          rawRotation.y,
+          rawRotation.z,
+          rawRotation.w,
+        ];
+      vehicle.wheelRuntime.forEach((runtime, index) => {
+        const suspensionLengthM =
+            vehicle.controller.wheelSuspensionLength(index) ??
+            runtime.restLengthM,
+          restLengthM =
+            vehicle.controller.wheelSuspensionRestLength(index) ??
+            runtime.restLengthM,
+          maxTravelM =
+            vehicle.controller.wheelMaxSuspensionTravel(index) ??
+            runtime.maxTravelM,
+          inContact = vehicle.controller.wheelIsInContact(index),
+          suspensionForceN = vehicle.controller.wheelSuspensionForce(index),
+          pose = poses.get(runtime.part.id);
+        if (!pose) return;
+        wheels.set(runtime.part.id, {
+          partId: runtime.part.id,
+          pose,
+          suspensionLengthM,
+          suspensionDirectionWorld: rotate(
+            runtime.suspensionDirection,
+            bodyRotation,
+          ),
+          restLengthM,
+          maxTravelM,
+          minimumLengthM: Math.max(0.05, restLengthM - maxTravelM),
+          inContact,
+          suspensionForceN: suspensionForceN ?? undefined,
+        });
+      });
+    }
+    return { poses, wheels };
+  }
+  wheelStates() {
+    return this.renderState().wheels;
   }
   respawn(position: Vec3 = [0, 2, 0]) {
     if (!this.world) return;

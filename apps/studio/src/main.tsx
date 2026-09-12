@@ -19,6 +19,7 @@ import {
   planeTemplate,
   boatTemplate,
   findAttachmentCandidates,
+  liftMachineToGround,
   labels,
   type AttachmentCandidate,
 } from "../../../packages/machine-system/src/index";
@@ -320,16 +321,18 @@ function App() {
           type: "world.update",
           patch: starterPlaneWorldPatch(p.world),
         });
+      const machine =
+        template === "plane"
+          ? planeTemplate()
+          : template === "boat"
+            ? boatTemplate()
+            : template
+              ? starterCarTemplate()
+              : createMachine();
+      liftMachineToGround(machine, (x, z) => heightAt(p.world.terrain, x, z));
       bus.execute({
         type: "machine.create",
-        machine:
-          template === "plane"
-            ? planeTemplate()
-            : template === "boat"
-              ? boatTemplate()
-              : template
-                ? starterCarTemplate()
-                : createMachine(),
+        machine,
       });
       if (template === "boat")
         bus.execute({
@@ -693,7 +696,10 @@ function App() {
                         const f = e.target.files?.[0];
                         if (f) {
                           const text = await f.text();
-                          run(() => bus.load(JSON.parse(text)));
+                          run(() => {
+                            const imported = JSON.parse(text);
+                            bus.load(imported);
+                          });
                         }
                       }}
                     />

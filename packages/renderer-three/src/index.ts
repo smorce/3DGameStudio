@@ -8,14 +8,10 @@ import {
   type Part,
   type Vec3,
 } from "../../project-schema/src/index";
-import type { Pose } from "../../physics-rapier/src/index";
+import type { PhysicsRenderState } from "../../physics-rapier/src/index";
 import { groupInstances } from "../../world-system/src/index";
 import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
-import {
-  wheelSuspensionSettings,
-  type AttachmentCandidate,
-} from "../../machine-system/src/index";
-import { quaternion, rotate } from "../../machine-system/src/math";
+import { type AttachmentCandidate } from "../../machine-system/src/index";
 import {
   createPartVisual,
   updateMotorActivity,
@@ -27,7 +23,7 @@ export type { PartVisualOptions } from "./part-visuals";
 export interface RendererAdapter {
   load(project: Project): void;
   restoreEditTransforms(project: Project): void;
-  render(poses?: Map<string, Pose>, thrust?: number): void;
+  render(state?: PhysicsRenderState, thrust?: number): void;
   dispose(): void;
 }
 export function syncPartVisualTransforms(
@@ -38,16 +34,7 @@ export function syncPartVisualTransforms(
     for (const part of machine.parts) {
       const visual = parts.get(part.id);
       if (!visual) continue;
-      const position =
-        part.definitionId === "Wheel"
-          ? rotate(
-              [0, -wheelSuspensionSettings(machine, part.id).restLength, 0],
-              quaternion(part.transform.rotation),
-            ).map(
-              (value, index) => part.transform.position[index] + value,
-            )
-          : part.transform.position;
-      visual.position.fromArray(position);
+      visual.position.fromArray(part.transform.position);
       visual.rotation.fromArray([...part.transform.rotation, "XYZ"]);
       visual.scale.fromArray(part.transform.scale);
       if (part.definitionId === "Suspension")
@@ -574,11 +561,12 @@ export class ThreeRenderer implements RendererAdapter {
       this.highlighted.add(sphere);
     }
   }
-  render(poses?: Map<string, Pose>, thrust = 0) {
+  render(state?: PhysicsRenderState, thrust = 0) {
     this.parts.forEach((visual) => {
       updateThrusterFlame(visual, thrust);
       updateMotorActivity(visual, thrust);
     });
+    const poses = state?.poses;
     if (poses) {
       for (const [id, p] of poses) {
         const m = this.parts.get(id);
@@ -601,17 +589,19 @@ export class ThreeRenderer implements RendererAdapter {
           );
           const top = poses.get(suspension.id),
             wheel = connection ? poses.get(connection.b) : undefined,
+            wheelState = connection
+              ? state.wheels.get(connection.b)
+              : undefined,
             visual = this.parts.get(suspension.id);
-          if (!top || !wheel || !visual) continue;
+          if (!top || !wheel || !wheelState || !visual) continue;
           const topQuaternion = new THREE.Quaternion(...top.rotation),
-            delta = new THREE.Vector3(...wheel.position).sub(
-              new THREE.Vector3(...top.position),
-            ),
-            localDelta = delta.applyQuaternion(topQuaternion.clone().invert());
-          updateSuspensionVisual(visual, delta.length(), [
-            localDelta.x,
-            localDelta.y,
-            localDelta.z,
+            localDirection = new THREE.Vector3(
+              ...wheelState.suspensionDirectionWorld,
+            ).applyQuaternion(topQuaternion.clone().invert());
+          updateSuspensionVisual(visual, wheelState.suspensionLengthM, [
+            localDirection.x,
+            localDirection.y,
+            localDirection.z,
           ]);
         }
       }

@@ -1,6 +1,9 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { emptyProject } from "../packages/project-schema/src/index";
+import {
+  DEFAULT_SUSPENSION_MAX_TRAVEL,
+  emptyProject,
+} from "../packages/project-schema/src/index";
 import { planeTemplate } from "../packages/machine-system/src/index";
 import { RapierPhysics } from "../packages/physics-rapier/src/index";
 import { starterPlaneWorldPatch } from "../packages/world-system/src/index";
@@ -117,6 +120,7 @@ const configureMachine = (
       ) {
         const current = part.physics.suspension ?? {
           restLength: 0.35,
+          maxTravel: DEFAULT_SUSPENSION_MAX_TRAVEL,
           stiffness: 10,
           compression: 2,
           relaxation: 1,

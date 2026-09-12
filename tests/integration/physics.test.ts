@@ -348,6 +348,45 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
   physics.dispose();
 });
 
+it("Plane Main Gearは平坦地の静止条件で左右対称なSuspension状態になる", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate(),
+    planeWorld = starterPlaneWorldPatch(project.world);
+  project.world.terrain = planeWorld.terrain;
+  project.world.entities = planeWorld.entities;
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  for (let i = 0; i < 600; i++) physics.step({ throttle: 0 });
+  const sample = physics.telemetry.current(machine.id)!,
+    left = sample.wheels.find((wheel) => wheel.role === "main-left")!,
+    right = sample.wheels.find((wheel) => wheel.role === "main-right")!;
+  expect(left.inContact).toBe(true);
+  expect(right.inContact).toBe(true);
+  expect(left.suspensionLengthM).toBeGreaterThanOrEqual(
+    left.minimumLengthM - 1e-3,
+  );
+  expect(right.suspensionLengthM).toBeGreaterThanOrEqual(
+    right.minimumLengthM - 1e-3,
+  );
+  expect(left.suspensionLengthM).toBeLessThanOrEqual(
+    left.restLengthM + left.maxTravelM + 1e-3,
+  );
+  expect(right.suspensionLengthM).toBeLessThanOrEqual(
+    right.restLengthM + right.maxTravelM + 1e-3,
+  );
+  // Rapierの接触解決による微小な揺らぎを許容し、左右差は5cm未満に制限する。
+  expect(
+    Math.abs(left.suspensionLengthM - right.suspensionLengthM),
+  ).toBeLessThan(0.05);
+  expect(
+    Math.abs((left.suspensionForceN ?? 0) - (right.suspensionForceN ?? 0)),
+  ).toBeLessThan(100);
+  expect(Math.abs(sample.rollRad)).toBeLessThan(0.05);
+  physics.dispose();
+});
+
 async function simulatePlane(
   configure?: (machine: ReturnType<typeof planeTemplate>) => void,
   steps = 600,

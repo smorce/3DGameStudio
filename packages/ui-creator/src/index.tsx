@@ -187,6 +187,7 @@ export function MachineInspector({
                 {(
                   [
                     "restLength",
+                    "maxTravel",
                     "stiffness",
                     "compression",
                     "relaxation",

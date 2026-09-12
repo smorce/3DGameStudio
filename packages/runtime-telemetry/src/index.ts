@@ -6,6 +6,9 @@ export interface WheelTelemetrySample {
   role?: string;
   inContact?: boolean;
   suspensionLengthM: number;
+  restLengthM: number;
+  maxTravelM: number;
+  minimumLengthM: number;
   suspensionForceN?: number;
 }
 export interface MotorTelemetrySample {

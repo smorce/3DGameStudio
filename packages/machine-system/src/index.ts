@@ -2,6 +2,7 @@ import {
   DEFAULT_MOTOR_MAX_TORQUE,
   DEFAULT_MOTOR_TARGET_ANGULAR_VELOCITY,
   DEFAULT_PANEL_THICKNESS,
+  DEFAULT_SUSPENSION_MAX_TRAVEL,
   PANEL_SIDE,
   panelMass,
   identity,
@@ -31,6 +32,7 @@ export const wheelSlots: Vec3[] = [
 ];
 export const DEFAULT_SUSPENSION: SuspensionSettings = {
   restLength: 0.65,
+  maxTravel: DEFAULT_SUSPENSION_MAX_TRAVEL,
   stiffness: 10,
   compression: 2,
   relaxation: 4,
@@ -174,7 +176,7 @@ export function attachmentDescendants(machine: Machine, partId: string) {
   return ids;
 }
 
-type Connector = Part["connectors"][number];
+export type Connector = Part["connectors"][number];
 const structuralKinds: Part["definitionId"][] = [
   "Panel",
   "Block",
@@ -216,9 +218,18 @@ export function placementConnectors(part: Part): Connector[] {
     if (!connectors.some((c) => c.id === connector.id))
       connectors.push(connector);
   };
+  const [, sizeY, sizeZ] = part.physics.size;
+  const mountPosition: Vec3 =
+    part.definitionId === "Thruster"
+      ? [0, 0, sizeZ / 2]
+      : part.definitionId === "Motor"
+        ? [0, 0, -sizeZ / 2]
+        : part.definitionId === "Block" || part.definitionId === "Steering"
+          ? [0, -sizeY / 2, 0]
+          : [0, 0, 0];
   add({
     id: "mount",
-    position: [0, 0, 0],
+    position: mountPosition,
     axis: [1, 0, 0],
     type: "mount",
     accepts: [],
@@ -284,6 +295,8 @@ export function placementConnectors(part: Part): Connector[] {
       });
     }
   } else if (part.definitionId === "Suspension") {
+    const restLength =
+      part.physics.suspension?.restLength ?? DEFAULT_SUSPENSION.restLength;
     add({
       id: "suspension-input",
       position: [0, 0, 0],
@@ -294,7 +307,7 @@ export function placementConnectors(part: Part): Connector[] {
     });
     add({
       id: "suspension-wheel",
-      position: [0, 0, 0],
+      position: [0, -restLength, 0],
       axis: [1, 0, 0],
       normal: [0, -1, 0],
       type: "wheel",
@@ -358,15 +371,72 @@ function placementRotation(
   return euler(multiply(quaternion(parentRotation), alignAxis(axis, normal)));
 }
 
-function attachmentPoint(
-  kind: Part["definitionId"],
-  size: Vec3,
-): Vec3 | undefined {
-  if (kind === "Thruster") return [0, 0, size[2] / 2];
-  // Hingeは中心を親端面上へ置き、棒状の回転軸として扱う。
-  if (kind === "Hinge") return [0, 0, 0];
-  if (kind === "Motor") return [0, 0, -size[2] / 2];
-  return undefined;
+function transformPoint(transform: Part["transform"], point: Vec3): Vec3 {
+  return rotate(
+    point.map((value, index) => value * transform.scale[index]) as Vec3,
+    quaternion(transform.rotation),
+  ).map((value, index) => value + transform.position[index]) as Vec3;
+}
+
+function attachmentTransform(part: Part): Part["transform"] {
+  return part.definitionId === "Panel"
+    ? { ...part.transform, scale: [1, 1, 1] }
+    : part.transform;
+}
+
+export function connectorWorldPosition(part: Part, connectorId: string): Vec3 {
+  const connector = placementConnectors(part).find(
+    (item) => item.id === connectorId,
+  );
+  if (!connector)
+    throw new Error(`Connector is unavailable: ${part.id}/${connectorId}`);
+  return transformPoint(attachmentTransform(part), connector.position);
+}
+
+export function wheelBottomY(machine: Machine, wheel: Part): number {
+  const center = connectorWorldPosition(wheel, "0"),
+    radius = wheel.physics.size[1] * wheel.transform.scale[1];
+  return center[1] - radius;
+}
+
+export function liftMachineToGround(
+  machine: Machine,
+  groundHeightAt: (x: number, z: number) => number | undefined,
+  epsilon = 1e-3,
+) {
+  let lift = 0;
+  for (const wheel of machine.parts.filter(
+    (part) => part.definitionId === "Wheel",
+  )) {
+    const center = connectorWorldPosition(wheel, "0"),
+      ground = groundHeightAt(center[0], center[2]);
+    if (ground === undefined) continue;
+    lift = Math.max(lift, ground - wheelBottomY(machine, wheel));
+  }
+  if (lift <= epsilon) return 0;
+  for (const part of machine.parts) part.transform.position[1] += lift;
+  return lift;
+}
+
+export function solveAttachmentTransform(
+  parentTransform: Part["transform"],
+  parentConnector: Connector,
+  childTransform: Part["transform"],
+  childConnector: Connector,
+): Part["transform"] {
+  const parentPoint = transformPoint(parentTransform, parentConnector.position),
+    childOffset = rotate(
+      childConnector.position.map(
+        (value, index) => value * childTransform.scale[index],
+      ) as Vec3,
+      quaternion(childTransform.rotation),
+    );
+  return {
+    ...childTransform,
+    position: childOffset.map(
+      (value, index) => parentPoint[index] - value,
+    ) as Vec3,
+  };
 }
 
 export function findAttachmentCandidates(
@@ -400,8 +470,8 @@ export function findAttachmentCandidates(
           },
         ]
       : [];
-  const size = existing?.physics.size ?? partSize(kind);
   const scale = existing?.transform.scale ?? [1, 1, 1];
+  const childPart = existing ?? createPart(kind);
   return machine.parts
     .filter((p) => !excluded.has(p.id))
     .flatMap((parent) =>
@@ -419,10 +489,6 @@ export function findAttachmentCandidates(
         )
         .map((c) => {
           const q = quaternion(parent.transform.rotation);
-          const parentScale =
-            parent.definitionId === "Panel"
-              ? ([1, 1, 1] as Vec3)
-              : parent.transform.scale;
           const rotation = placementRotation(
             kind,
             parent.transform.rotation,
@@ -441,34 +507,30 @@ export function findAttachmentCandidates(
                         (c.id.startsWith("top-") || c.id === "face-top")
                       ? "face-bottom"
                       : "mount";
-          const offset = c.position.map(
-            (n, i) =>
-              n * parentScale[i] +
-              ((c.normal?.[i] ?? 0) * size[i] * scale[i]) / 2,
-          ) as Vec3;
-          const parentPoint = rotate(
-            c.position.map((n, i) => n * parentScale[i]) as Vec3,
-            q,
-          ).map((n, i) => n + parent.transform.position[i]) as Vec3;
-          const mount = attachmentPoint(kind, size);
-          const position = mount
-            ? (parentPoint.map(
-                (n, i) =>
-                  n -
-                  rotate(
-                    mount.map((value, j) => value * scale[j]) as Vec3,
-                    quaternion(rotation),
-                  )[i],
-              ) as Vec3)
-            : (rotate(offset, q).map(
-                (n, i) => n + parent.transform.position[i],
-              ) as Vec3);
+          const childConnector = placementConnectors(childPart).find(
+            (connector) => connector.id === childConnectorId,
+          );
+          if (!childConnector)
+            throw new Error(
+              `Child connector is unavailable: ${kind}/${childConnectorId}`,
+            );
+          const childTransform = solveAttachmentTransform(
+            attachmentTransform(parent),
+            c,
+            {
+              ...childPart.transform,
+              position: [0, 0, 0],
+              rotation,
+              scale,
+            },
+            childConnector,
+          );
           return {
             id: JSON.stringify([parent.id, c.id, kind]),
             parentPartId: parent.id,
             parentConnectorId: c.id,
             childConnectorId,
-            position,
+            position: childTransform.position,
             rotation: rotation as Vec3,
             axis:
               kind === "Hinge"
@@ -490,27 +552,13 @@ export function commitAttachment(
 ) {
   part.transform.position = [...candidate.position];
   part.transform.rotation = [...candidate.rotation];
+  part.connectors = placementConnectors(part);
   if (candidate.parentPartId) {
     const parent = machine.parts.find((p) => p.id === candidate.parentPartId)!;
     parent.connectors = placementConnectors(parent);
     const connector = parent.connectors.find(
       (c) => c.id === candidate.parentConnectorId,
     )!;
-    if (
-      candidate.childConnectorId === "mount" ||
-      candidate.childConnectorId === "suspension-input" ||
-      candidate.childConnectorId === "hinge-input"
-    ) {
-      part.connectors = placementConnectors(part);
-      const childConnector = part.connectors.find(
-        (c) => c.id === candidate.childConnectorId,
-      )!;
-      childConnector.position =
-        attachmentPoint(part.definitionId, part.physics.size) ??
-        (part.physics.size.map(
-          (n, i) => (-(connector.normal?.[i] ?? 0) * n) / 2,
-        ) as Vec3);
-    }
     if (part.definitionId === "Wheel") {
       part.metadata.front = connector.position[2] > 0;
       part.metadata.drive = !part.metadata.front;
@@ -557,12 +605,6 @@ function templateConnector(part: Part, id: string) {
   return connector;
 }
 
-function scaledTemplatePoint(part: Part, point: Vec3) {
-  return point.map(
-    (value, index) => value * part.transform.scale[index],
-  ) as Vec3;
-}
-
 function connectTemplateParts(
   machine: Machine,
   parent: Part,
@@ -570,26 +612,18 @@ function connectTemplateParts(
   parentConnectorId: string,
   childConnectorId: string,
   childRotation: Vec3 = [...child.transform.rotation],
-  childAnchor?: Vec3,
   connectionType: "fixed" | "revolute" = "fixed",
   limits?: { minAngleRad: number; maxAngleRad: number },
 ) {
   const parentConnector = templateConnector(parent, parentConnectorId);
   const childConnector = templateConnector(child, childConnectorId);
-  const parentPoint = rotate(
-    scaledTemplatePoint(parent, parentConnector.position),
-    quaternion(parent.transform.rotation),
-  ).map((value, index) => value + parent.transform.position[index]) as Vec3;
-  const anchor = childAnchor ?? childConnector.position;
   child.transform.rotation = [...childRotation];
-  child.transform.position = parentPoint.map(
-    (value, index) =>
-      value -
-      rotate(
-        scaledTemplatePoint(child, anchor),
-        quaternion(child.transform.rotation),
-      )[index],
-  ) as Vec3;
+  child.transform = solveAttachmentTransform(
+    attachmentTransform(parent),
+    parentConnector,
+    child.transform,
+    childConnector,
+  );
   if (!machine.parts.some((part) => part.id === child.id))
     machine.parts.push(child);
   machine.connections.push({
@@ -759,6 +793,20 @@ export function planeTemplate() {
     controlSurfaceLimit = (15 * Math.PI) / 180,
     planePanelThickness = 0.04,
     fuselage: Part[] = [];
+  const planePanel = (position?: Vec3) => {
+    const panel =
+      position === undefined
+        ? createPart("Panel")
+        : createPart("Panel", position);
+    panel.physics.size = [PANEL_SIDE, planePanelThickness, PANEL_SIDE];
+    panel.physics.mass = panelMass(planePanelThickness);
+    // Wheel slotだけを旧データ互換として残し、面Connectorは薄いPanel寸法から再生成する。
+    panel.connectors = panel.connectors.filter((connector) =>
+      /^[0-3]$/.test(connector.id),
+    );
+    panel.connectors = placementConnectors(panel);
+    return panel;
+  };
   m.controlBindings = [
     { channel: "throttle", key: "KeyW", value: 1 },
     { channel: "throttle", key: "KeyS", value: -1 },
@@ -770,7 +818,7 @@ export function planeTemplate() {
     { channel: "steering", key: "ArrowRight", value: 1 },
     { channel: "brake", key: "Space", value: 1 },
   ];
-  const nose = createPart("Panel", [0, 0.85, 2]);
+  const nose = planePanel([0, 0.85, 2]);
   m.parts.push(nose);
   fuselage.push(nose);
   // +Zを機首として、中央胴体を5枚のPanelで決定論的に作る。
@@ -779,7 +827,7 @@ export function planeTemplate() {
       connectTemplateParts(
         m,
         fuselage[i - 1],
-        createPart("Panel"),
+        planePanel(),
         "edge-z-",
         "edge-z+",
       ),
@@ -797,7 +845,7 @@ export function planeTemplate() {
       parent = connectTemplateParts(
         m,
         parent,
-        createPart("Panel"),
+        planePanel(),
         parentConnector,
         childConnector,
         [wingAngle, 0, 0],
@@ -815,7 +863,7 @@ export function planeTemplate() {
     let parent = connectTemplateParts(
       m,
       tailRoot,
-      createPart("Panel"),
+      planePanel(),
       parentConnector,
       childConnector,
       [tailAngle, 0, 0],
@@ -825,7 +873,7 @@ export function planeTemplate() {
     parent = connectTemplateParts(
       m,
       parent,
-      createPart("Panel"),
+      planePanel(),
       parentConnector,
       childConnector,
       [tailAngle, 0, 0],
@@ -853,7 +901,6 @@ export function planeTemplate() {
     hinge.actuator.neutralAngleRad = 0;
     hinge.actuator.positionStiffness = 500;
     hinge.actuator.positionDamping = 50;
-    // childAnchorに中心[0,0,0]を渡し、回転軸を親Panelの端面上へ一致させる。
     connectTemplateParts(
       m,
       parent,
@@ -861,11 +908,10 @@ export function planeTemplate() {
       parentConnector,
       "hinge-input",
       surfaceRotation,
-      [0, 0, 0],
       "revolute",
       limits,
     );
-    const movable = createPart("Panel");
+    const movable = planePanel();
     // 可動Panelの前縁を回転軸へ密着させ、構造的な隙間を作らない。
     connectTemplateParts(
       m,
@@ -902,6 +948,14 @@ export function planeTemplate() {
     );
   }
 
+  // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
+  // 以降の取付面計算も薄いPanel寸法を使用する。
+  for (const part of m.parts)
+    if (part.definitionId === "Panel") {
+      part.physics.size = [PANEL_SIDE, planePanelThickness, PANEL_SIDE];
+      part.physics.mass = panelMass(planePanelThickness);
+    }
+
   // 機首に重いエンジンBlockを置き、重心を主翼付近まで前進させる。
   const engine = createPart("Block");
   engine.physics.mass = 30;
@@ -909,7 +963,7 @@ export function planeTemplate() {
   const verticalTail = connectTemplateParts(
     m,
     tailRoot,
-    createPart("Panel"),
+    planePanel(),
     "top-0",
     "edge-z-",
     [0, 0, Math.PI / 2],
@@ -937,17 +991,8 @@ export function planeTemplate() {
       side < 0 ? "edge-x-" : "edge-x+",
       "mount",
       [0, 0, 0],
-      [0, 0, thruster.physics.size[2] / 2],
     );
   }
-
-  // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
-  for (const part of m.parts)
-    if (part.definitionId === "Panel") {
-      part.physics.size = [PANEL_SIDE, planePanelThickness, PANEL_SIDE];
-      part.physics.mass = panelMass(planePanelThickness);
-    }
-
   // 実際の質量分布から重心を求め、Main Gearを重心の少し後方へ置く。
   const totalMass = m.parts.reduce((sum, part) => sum + part.physics.mass, 0);
   const centerOfMassZ =
@@ -1030,27 +1075,10 @@ export function boatTemplate() {
     );
   connectTemplateParts(m, rightRoot, hullPanel(), "edge-z+", "edge-z-");
   connectTemplateParts(m, deckRear, rightRear, "edge-x+", "edge-x-");
-  const cabin = connectTemplateParts(
-    m,
-    deckFront,
-    createPart("Block"),
-    "top-1",
-    "mount",
-  );
-  // 排水体積で決まる喫水を保ちつつ、Deckを明確に水面上へ出す。
-  for (const part of [deckFront, deckRear, cabin])
-    part.transform.position[1] += 0.08;
+  connectTemplateParts(m, deckFront, createPart("Block"), "top-1", "mount");
   for (const rear of [leftRear, rightRear]) {
     const thruster = createPart("Thruster");
-    connectTemplateParts(
-      m,
-      rear,
-      thruster,
-      "edge-z-",
-      "mount",
-      [0, 0, 0],
-      [0, 0, thruster.physics.size[2] / 2],
-    );
+    connectTemplateParts(m, rear, thruster, "edge-z-", "mount", [0, 0, 0]);
   }
   return m;
 }

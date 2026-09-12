@@ -40,7 +40,7 @@ it("編集Pose同期はVisualのTransformをProjectへ戻し、Projectを書き�
   expect(project).toEqual(before);
 });
 
-it("編集時のSuspension VisualとWheel中心をrestLengthで揃える", () => {
+it("編集時のSuspension VisualとWheel中心をAttachmentで揃える", () => {
   const project = emptyProject(),
     machine = createMachine(),
     panel = createPart("Panel");
@@ -71,8 +71,5 @@ it("編集時のSuspension VisualとWheel中心をrestLengthで揃える", () =>
   expect(suspensionVisual.position.toArray()).toEqual(
     suspension.transform.position,
   );
-  expect(wheelVisual.position.y).toBeCloseTo(
-    wheel.transform.position[1] -
-      (suspension.physics.suspension?.restLength ?? 0.65),
-  );
+  expect(wheelVisual.position.y).toBeCloseTo(wheel.transform.position[1]);
 });
