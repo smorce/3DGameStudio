@@ -4,29 +4,29 @@
 
 vite v7.3.6 building client environment for production...
 transforming...
-✓ 147 modules transformed.
+✓ 156 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                     0.75 kB │ gzip:   0.50 kB
-dist/assets/index-DkXjbmIx.css      9.62 kB │ gzip:   2.87 kB
-dist/assets/index-D6ga9nRe.js     951.92 kB │ gzip: 261.57 kB
+dist/assets/index-BJkVCnZX.css     10.87 kB │ gzip:   3.12 kB
+dist/assets/index-DucOo-gB.js   1,025.89 kB │ gzip: 284.00 kB
 dist/assets/rapier-DBjBuyhF.js  2,237.38 kB │ gzip: 830.44 kB
-✓ built in 1.43s
+✓ built in 1.54s
 vite v7.3.6 building client environment for production...
 transforming...
-✓ 114 modules transformed.
+✓ 123 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                     0.95 kB │ gzip:   0.63 kB
-dist/assets/index-CYJceya6.js     719.52 kB │ gzip: 188.53 kB
+dist/index.html                     1.50 kB │ gzip:   0.85 kB
+dist/assets/index-Cz5MDaLa.js     778.92 kB │ gzip: 206.78 kB
 dist/assets/rapier-DBjBuyhF.js  2,237.38 kB │ gzip: 830.44 kB
-✓ built in 1.15s
+✓ built in 1.21s
 vite v7.3.6 building ssr environment for production...
 transforming...
-✓ 7 modules transformed.
+✓ 11 modules transformed.
 rendering chunks...
-apps/server/dist/index.js  31.40 kB
-✓ built in 88ms
+apps/server/dist/index.js  51.23 kB
+✓ built in 110ms
 node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
 
 "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
@@ -44,11 +44,6 @@ in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains a
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
-
-"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
-
-in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
 node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
 
 "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
@@ -56,6 +51,11 @@ node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comme
  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
 
 in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+
+"// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+
+in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
 
 (!) Some chunks are larger than 2000 kB after minification. Consider:
 - Using dynamic import() to code-split the application

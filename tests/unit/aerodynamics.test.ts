@@ -86,4 +86,25 @@ describe("Panel surface aerodynamics", () => {
     expect(positiveAngle.angleOfAttack).toBeGreaterThan(0);
     expect(positiveAngle.lift[1]).toBeGreaterThan(0);
   });
+
+  it("速度方向を反転すると迎角と揚力Yの符号も反転する", () => {
+    const forward = computePanelAerodynamicForce({
+        ...input,
+        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        velocity: [0, 0, 20],
+      }),
+      backward = computePanelAerodynamicForce({
+        ...input,
+        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        velocity: [0, 0, -20],
+      });
+    expect(forward.angleOfAttack).toBeGreaterThan(0);
+    expect(backward.angleOfAttack).toBeLessThan(0);
+    expect(forward.lift[1]).toBeGreaterThan(0);
+    expect(backward.lift[1]).toBeLessThan(0);
+    expect(forward.liftCoefficient).toBeGreaterThan(0);
+    expect(backward.liftCoefficient).toBeLessThan(0);
+    expect(forward.drag[2]).toBeLessThan(0);
+    expect(backward.drag[2]).toBeGreaterThan(0);
+  });
 });

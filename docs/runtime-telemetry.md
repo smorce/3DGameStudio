@@ -29,6 +29,8 @@ flowchart LR
 - `totalLiftN`はPanelごとのLiftベクトルの大きさの合計、`liftVerticalN`はLiftベクトルのY成分の合計です。
 - `totalDragN`はPanelごとのDragベクトルの大きさの合計、`totalAerodynamicForceN`は全Panelの合力の大きさです。
 - `totalThrusterForceN`は適用したThruster力の大きさの合計です。
+- `thrusterForceWorldN`は適用したThruster力のWorldベクトル合計です。Starter Planeでは正のThrottle時に概ね`+Z`になります。
+- `averageAngleOfAttackRad`、`averageLiftCoefficient`、`averageDragCoefficient`はそのPhysics Stepで計算した全Panelの単純平均です。Panel単位の常時保存ではなく、前進・後退の符号調査用のMachine集計値です。
 - `massKg`はRigidBodyの質量、`weightN`は`massKg * |gravityY|`、`liftToWeightRatio`は`liftVerticalN / weightN`です。
 - Landing GearはRapier 0.19.3で確認できる接地状態、サスペンション長、サスペンション力をWheel単位で記録します。`contactStatusAvailable`がfalseの場合、接地状態は取得できません。
 
@@ -47,6 +49,12 @@ Panelごとの詳細値は通常Sampleへ含めません。現在は計算済み
 - `exportJsonLines()`：1行1SampleのJSON Lines出力
 
 Physicsは記録停止中も最新値を更新しますが、Ring Bufferへは追加しません。通常の長時間実行では記録を明示的に開始してください。既定容量は3600 Samplesです。複数Machineの場合はMachineごとのSampleが1 Stepに追加されるため、容量は全MachineのSample数で消費します。
+
+## Stable Forward Takeoff判定
+
+`findStableForwardTakeoff()`は、Telemetryの時系列から「正しい機首方向へ進みながら地面を離れ、その後も飛行を維持した」区間を探します。候補Sampleでは、接地APIが利用可能で全輪非接地、高度1.5m以上、World速度20m/s以上、`forwardSpeedMps > 0`、Pitch絶対値0.8rad以下を要求します。候補から90 Physics StepのWindow全体でも同じ前進・非接地・Pitch・高度条件を確認し、離陸時より0.5mを超えて下がる区間を除外します。Window終了高度が低い場合も、平均Vertical Speedが-0.5m/s未満なら失敗とします。
+
+接地状態を取得できない場合は安全側に倒し、安定離陸を成功とは判定しません。これにより、バック走行、瞬間的なHop、最高高度に到達した後の落下を通常の前進離陸と混同しません。
 
 ## 速度HUD
 

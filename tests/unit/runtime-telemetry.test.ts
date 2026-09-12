@@ -2,6 +2,7 @@ import { expect, it } from "vitest";
 import {
   RingBuffer,
   RuntimeTelemetry,
+  findStableForwardTakeoff,
   horizontalSpeedMps,
   speedKphFromMps,
   worldSpeedMps,
@@ -32,6 +33,10 @@ const sample = (step: number): MachineTelemetrySample => ({
   totalDragN: 0,
   totalAerodynamicForceN: 0,
   totalThrusterForceN: 0,
+  thrusterForceWorldN: [0, 0, 0],
+  averageAngleOfAttackRad: 0,
+  averageLiftCoefficient: 0,
+  averageDragCoefficient: 0,
   liftToWeightRatio: 0,
   massKg: 1,
   weightN: 9.81,
@@ -80,4 +85,37 @@ it("RuntimeTelemetryは記録状態と現在値を分離して管理する", () 
   telemetry.clear();
   expect(telemetry.current()).toBeUndefined();
   expect(telemetry.samples()).toEqual([]);
+});
+
+it("前進方向と持続高度を満たす離陸だけを安定離陸と判定する", () => {
+  const samples = Array.from({ length: 90 }, (_, index) => ({
+    ...sample(index + 1),
+    position: [0, 2, index] as [number, number, number],
+    linearVelocityMps: [0, 0, 21] as [number, number, number],
+    worldSpeedMps: 21,
+    horizontalSpeedMps: 21,
+    forwardSpeedMps: 21,
+    verticalSpeedMps: 0,
+    contactStatusAvailable: true,
+    groundedWheelCount: 0,
+  }));
+  expect(findStableForwardTakeoff(samples)?.windowSteps).toBe(90);
+  expect(
+    findStableForwardTakeoff(
+      samples.map((value) => ({ ...value, forwardSpeedMps: -21 })),
+    ),
+  ).toBeUndefined();
+  expect(
+    findStableForwardTakeoff(
+      samples.map((value, index) => ({
+        ...value,
+        position: [0, index < 45 ? 2 : 0.5, index] as [number, number, number],
+      })),
+    ),
+  ).toBeUndefined();
+  expect(
+    findStableForwardTakeoff(
+      samples.map((value) => ({ ...value, contactStatusAvailable: false })),
+    ),
+  ).toBeUndefined();
 });

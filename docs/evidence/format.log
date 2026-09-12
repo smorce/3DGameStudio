@@ -3,4 +3,12 @@
 > prettier --check .
 
 Checking formatting...
-All matched files use Prettier code style!
+ ELIFECYCLE  Command failed with exit code 1.
+[warn] 2026_0909_1650_報告内容.md
+[warn] 指示4.md
+[warn] 指示5.md
+[warn] 指示6.md
+[warn] 指示7.md
+[warn] 指示8.md
+[warn] 指示9.md
+[warn] Code style issues found in 7 files. Run Prettier with --write to fix.

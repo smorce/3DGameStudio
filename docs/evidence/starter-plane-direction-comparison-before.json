@@ -1,0 +1,238 @@
+{
+  "version": 1,
+  "steps": 600,
+  "wingAngleDeg": -8,
+  "steering": 0,
+  "forward": {
+    "summary": {
+      "wingAngleDeg": -8,
+      "throttle": 1,
+      "steps": 600,
+      "stableTakeoff": true,
+      "stableTakeoffStep": 357,
+      "stableTakeoffTimeSeconds": 5.949999999999984,
+      "stableFlightDurationSeconds": 1.483333333333328,
+      "stableWindowFinalHeightM": 14.048148155212402,
+      "takeoffStartSpeedMps": 21.71024349456989,
+      "takeoffStartForwardSpeedMps": 19.73380315248661,
+      "maxWorldSpeedMps": 39.40990179913489,
+      "maxForwardSpeedMps": 38.2259823432775,
+      "minForwardSpeedMps": 0.28171618458243985,
+      "maxHeightM": 55.341251373291016,
+      "finalHeightM": 55.341251373291016,
+      "minHeightAfterTakeoffM": 7.214705467224121,
+      "minHeightDuringStableWindowM": 7.214705467224121,
+      "maxVerticalSpeedMps": 17.368101119995117,
+      "minVerticalSpeedMps": -3.720513343811035,
+      "averageVerticalSpeedMps": 11.507229437944709,
+      "maxPitchAbsRad": 0.8360471856523034,
+      "pitchVibrationRangeRad": 1.481480767242065,
+      "maxLiftToWeightRatio": 8.127150954400676,
+      "averageLiftToWeightRatio": 0.9741642682707086,
+      "maxDragN": 8925.394260865627,
+      "averageDragN": 1416.4190477079635,
+      "averageAngleOfAttackRad": 0.26778703669214377,
+      "averageLiftCoefficient": 0.3983126891209809,
+      "averageDragCoefficient": 0.28323937735122673,
+      "liftSignByForwardDirection": {
+        "forward": {
+          "samples": 582,
+          "positive": 395,
+          "negative": 187,
+          "averageLiftVerticalN": 1864.9122593573172
+        },
+        "backward": {
+          "samples": 0,
+          "positive": 0,
+          "negative": 0,
+          "averageLiftVerticalN": 0
+        }
+      },
+      "forwardDistanceM": 186.73463439941406,
+      "continuousAirborneSteps": 403,
+      "continuousAirborneSeconds": 6.716666666666667
+    },
+    "samples": [
+      {
+        "step": 1,
+        "timeSeconds": 0.016666666666666666,
+        "forwardSpeedMps": 0.28171618458243985,
+        "liftVerticalN": 0,
+        "averageAngleOfAttackRad": 0,
+        "averageLiftCoefficient": 0,
+        "thrusterForceWorldN": [0, 0, 3200]
+      },
+      {
+        "step": 2,
+        "timeSeconds": 0.03333333333333333,
+        "forwardSpeedMps": 0.5628727578331535,
+        "liftVerticalN": -0.9625212197993834,
+        "averageAngleOfAttackRad": -0.5578128431513283,
+        "averageLiftCoefficient": -0.9519306246829152,
+        "thrusterForceWorldN": [
+          1.9616102812448955e-9, 0.02479653339833021, 3199.999999951963
+        ]
+      },
+      {
+        "step": 3,
+        "timeSeconds": 0.05,
+        "forwardSpeedMps": 0.8432967670049326,
+        "liftVerticalN": -3.843393352961609,
+        "averageAngleOfAttackRad": -0.5579764360101956,
+        "averageLiftCoefficient": -0.9520604942079343,
+        "thrusterForceWorldN": [
+          7.111354365656467e-9, 0.0872038071975112, 3199.999999405898
+        ]
+      },
+      {
+        "step": 4,
+        "timeSeconds": 0.06666666666666667,
+        "forwardSpeedMps": 1.1228163089102214,
+        "liftVerticalN": -8.631620916333578,
+        "averageAngleOfAttackRad": -0.5583376296158884,
+        "averageLiftCoefficient": -0.9523526122708615,
+        "thrusterForceWorldN": [
+          1.5369397001173277e-8, 0.184806645847857, 3199.999997331758
+        ]
+      },
+      {
+        "step": 5,
+        "timeSeconds": 0.08333333333333333,
+        "forwardSpeedMps": 1.4012612453149593,
+        "liftVerticalN": -15.314906648025884,
+        "averageAngleOfAttackRad": -0.558895424819023,
+        "averageLiftCoefficient": -0.952805267333741,
+        "thrusterForceWorldN": [
+          2.649309464814065e-8, 0.3147588111460209, 3199.9999922599136
+        ]
+      },
+      {
+        "step": 6,
+        "timeSeconds": 0.09999999999999999,
+        "forwardSpeedMps": 1.6784612898959435,
+        "liftVerticalN": -23.879609085611666,
+        "averageAngleOfAttackRad": -0.5596484993875342,
+        "averageLiftCoefficient": -0.953415992865335,
+        "thrusterForceWorldN": [
+          3.954993410717863e-8, 0.47381073236465454, 3199.9999824612023
+        ]
+      }
+    ]
+  },
+  "backward": {
+    "summary": {
+      "wingAngleDeg": -8,
+      "throttle": -1,
+      "steps": 600,
+      "stableTakeoff": false,
+      "stableTakeoffStep": -1,
+      "stableTakeoffTimeSeconds": null,
+      "stableFlightDurationSeconds": 0,
+      "stableWindowFinalHeightM": null,
+      "takeoffStartSpeedMps": null,
+      "takeoffStartForwardSpeedMps": null,
+      "maxWorldSpeedMps": 23.030154337333375,
+      "maxForwardSpeedMps": -0.28171618458243985,
+      "minForwardSpeedMps": -21.144094723645836,
+      "maxHeightM": 6.590534687042236,
+      "finalHeightM": -12.43610668182373,
+      "minHeightAfterTakeoffM": null,
+      "minHeightDuringStableWindowM": null,
+      "maxVerticalSpeedMps": 5.419616222381592,
+      "minVerticalSpeedMps": -5.399796009063721,
+      "averageVerticalSpeedMps": -1.44754791530926,
+      "maxPitchAbsRad": 1.0517635695745677,
+      "pitchVibrationRangeRad": 1.0547445667146116,
+      "maxLiftToWeightRatio": 3.0526655682186434,
+      "averageLiftToWeightRatio": 1.7695250156673694,
+      "maxDragN": 3430.142391137436,
+      "averageDragN": 1961.489152456179,
+      "averageAngleOfAttackRad": 0.6276046446519341,
+      "averageLiftCoefficient": 0.8744363943369527,
+      "averageDragCoefficient": 0.5415252316731027,
+      "liftSignByForwardDirection": {
+        "forward": {
+          "samples": 0,
+          "positive": 0,
+          "negative": 0,
+          "averageLiftVerticalN": 0
+        },
+        "backward": {
+          "samples": 582,
+          "positive": 569,
+          "negative": 13,
+          "averageLiftVerticalN": 3384.8263407957024
+        }
+      },
+      "forwardDistanceM": -169.8946990966797,
+      "continuousAirborneSteps": 500,
+      "continuousAirborneSeconds": 8.333333333333334
+    },
+    "samples": [
+      {
+        "step": 1,
+        "timeSeconds": 0.016666666666666666,
+        "forwardSpeedMps": -0.28171618458243985,
+        "liftVerticalN": 0,
+        "averageAngleOfAttackRad": 0,
+        "averageLiftCoefficient": 0,
+        "thrusterForceWorldN": [0, 0, -3200]
+      },
+      {
+        "step": 2,
+        "timeSeconds": 0.03333333333333333,
+        "forwardSpeedMps": -0.5628912666962436,
+        "liftVerticalN": -0.8275991428040786,
+        "averageAngleOfAttackRad": -0.43411373097086187,
+        "averageLiftCoefficient": -0.8183052911521086,
+        "thrusterForceWorldN": [
+          1.9611979775378774e-9, 0.02479653339833021, -3199.999999951963
+        ]
+      },
+      {
+        "step": 3,
+        "timeSeconds": 0.05,
+        "forwardSpeedMps": -0.843389296132587,
+        "liftVerticalN": -3.305051066135262,
+        "averageAngleOfAttackRad": -0.43424764410163286,
+        "averageLiftCoefficient": -0.8184785294481509,
+        "thrusterForceWorldN": [
+          7.129227997461843e-9, 0.08748158579692245, -3199.9999994021073
+        ]
+      },
+      {
+        "step": 4,
+        "timeSeconds": 0.06666666666666667,
+        "forwardSpeedMps": -1.1230748887153477,
+        "liftVerticalN": -7.42483421620171,
+        "averageAngleOfAttackRad": -0.43455281444530164,
+        "averageLiftCoefficient": -0.818878338296023,
+        "thrusterForceWorldN": [
+          1.549923135211047e-8, 0.1866171369329095, -3199.999997279222
+        ]
+      },
+      {
+        "step": 5,
+        "timeSeconds": 0.08333333333333333,
+        "forwardSpeedMps": -1.4018125527113927,
+        "liftVerticalN": -13.180060021254842,
+        "averageAngleOfAttackRad": -0.4350288234677178,
+        "averageLiftCoefficient": -0.8195035796020622,
+        "thrusterForceWorldN": [
+          2.6969868496751862e-8, 0.32115441281348467, -3199.9999919421753
+        ]
+      },
+      {
+        "step": 6,
+        "timeSeconds": 0.09999999999999999,
+        "forwardSpeedMps": -1.6794672727250404,
+        "liftVerticalN": -20.564409571445534,
+        "averageAngleOfAttackRad": -0.4356755377920138,
+        "averageLiftCoefficient": -0.82035315213612,
+        "thrusterForceWorldN": [
+          4.1469853703132204e-8, 0.4904148168861866, -3199.9999812104147
+        ]
+      }
+    ]
+  }
+}

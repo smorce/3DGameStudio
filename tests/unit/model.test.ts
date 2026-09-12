@@ -186,7 +186,7 @@ describe("Starter Template", () => {
       );
     expect(parsed.machines[0].parts).toHaveLength(25);
     expect(mainWing).toHaveLength(8);
-    expect(mainWing.every((part) => part.transform.rotation[0] < 0)).toBe(true);
+    expect(mainWing.every((part) => part.transform.rotation[0] > 0)).toBe(true);
     expect(horizontalTail).toHaveLength(4);
     expect(verticalTail).toHaveLength(1);
     expect(thrusters).toHaveLength(2);

@@ -1,75 +1,75 @@
 {
-  "checkedAt": "2026-09-08T21:12:39.598Z",
+  "checkedAt": "2026-09-11T15:52:50.096Z",
   "results": [
     {
       "name": "install",
       "command": "pnpm install --frozen-lockfile",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 0.5
+      "seconds": 0.7
     },
     {
       "name": "typecheck",
       "command": "pnpm typecheck",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 1.8
+      "seconds": 2.3
     },
     {
       "name": "lint",
       "command": "pnpm lint",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 1.5
+      "seconds": 1.9
     },
     {
       "name": "format",
       "command": "pnpm format:check",
-      "status": "PASS",
-      "exitCode": 0,
-      "seconds": 1.1
+      "status": "FAIL",
+      "exitCode": 1,
+      "seconds": 2.2
     },
     {
       "name": "unit",
       "command": "pnpm test:unit",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 0.7
+      "seconds": 0.9
     },
     {
       "name": "integration",
       "command": "pnpm test:integration",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 1.3
+      "seconds": 1.9
     },
     {
       "name": "test",
       "command": "pnpm test",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 1.3
+      "seconds": 2.1
     },
     {
       "name": "build",
       "command": "pnpm build",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 3.2
+      "seconds": 3.4
     },
     {
       "name": "e2e",
       "command": "pnpm test:e2e",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 29.2
+      "seconds": 125.3
     },
     {
       "name": "smoke",
       "command": "pnpm smoke",
       "status": "PASS",
       "exitCode": 0,
-      "seconds": 25.4
+      "seconds": 89.9
     }
   ]
 }

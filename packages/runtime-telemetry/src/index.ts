@@ -32,6 +32,10 @@ export interface MachineTelemetrySample {
   totalDragN: number;
   totalAerodynamicForceN: number;
   totalThrusterForceN: number;
+  thrusterForceWorldN: TelemetryVec3;
+  averageAngleOfAttackRad: number;
+  averageLiftCoefficient: number;
+  averageDragCoefficient: number;
   liftToWeightRatio: number;
   massKg: number;
   weightN: number;
@@ -70,6 +74,98 @@ export function forwardSpeedMps(
 
 export function vectorMagnitude(value: readonly number[]) {
   return magnitude(value);
+}
+
+export interface StableForwardTakeoffOptions {
+  minAltitudeM?: number;
+  minWorldSpeedMps?: number;
+  windowSteps?: number;
+  maxPitchRad?: number;
+  maxAltitudeDropM?: number;
+  minAverageVerticalSpeedMps?: number;
+}
+
+export interface StableForwardTakeoff {
+  liftoffIndex: number;
+  liftoffStep: number;
+  liftoffTimeSeconds: number;
+  liftoffAltitudeM: number;
+  finalAltitudeM: number;
+  averageVerticalSpeedMps: number;
+  windowSteps: number;
+  durationSeconds: number;
+}
+
+const isForwardFlightSample = (
+  sample: MachineTelemetrySample,
+  minAltitudeM: number,
+  minWorldSpeedMps: number,
+  maxPitchRad: number,
+) =>
+  sample.contactStatusAvailable &&
+  sample.groundedWheelCount === 0 &&
+  sample.position[1] >= minAltitudeM &&
+  sample.worldSpeedMps >= minWorldSpeedMps &&
+  sample.forwardSpeedMps > 0 &&
+  Math.abs(sample.pitchRad) <= maxPitchRad;
+
+export function findStableForwardTakeoff(
+  samples: readonly MachineTelemetrySample[],
+  options: StableForwardTakeoffOptions = {},
+): StableForwardTakeoff | undefined {
+  const minAltitudeM = options.minAltitudeM ?? 1.5;
+  const minWorldSpeedMps = options.minWorldSpeedMps ?? 20;
+  const windowSteps = options.windowSteps ?? 90;
+  const maxPitchRad = options.maxPitchRad ?? 0.8;
+  const maxAltitudeDropM = options.maxAltitudeDropM ?? 0.5;
+  const minAverageVerticalSpeedMps = options.minAverageVerticalSpeedMps ?? -0.5;
+  if (windowSteps <= 0 || !Number.isInteger(windowSteps)) return undefined;
+
+  for (let index = 0; index + windowSteps <= samples.length; index++) {
+    const liftoff = samples[index];
+    if (
+      !isForwardFlightSample(
+        liftoff,
+        minAltitudeM,
+        minWorldSpeedMps,
+        maxPitchRad,
+      )
+    )
+      continue;
+    const window = samples.slice(index, index + windowSteps);
+    if (
+      window.some(
+        (sample) =>
+          !isForwardFlightSample(
+            sample,
+            minAltitudeM,
+            minWorldSpeedMps,
+            maxPitchRad,
+          ) || sample.position[1] < liftoff.position[1] - maxAltitudeDropM,
+      )
+    )
+      continue;
+    const final = window.at(-1)!;
+    const averageVerticalSpeedMps =
+      window.reduce((total, sample) => total + sample.verticalSpeedMps, 0) /
+      window.length;
+    if (
+      final.position[1] < liftoff.position[1] &&
+      averageVerticalSpeedMps < minAverageVerticalSpeedMps
+    )
+      continue;
+    return {
+      liftoffIndex: index,
+      liftoffStep: liftoff.step,
+      liftoffTimeSeconds: liftoff.timeSeconds,
+      liftoffAltitudeM: liftoff.position[1],
+      finalAltitudeM: final.position[1],
+      averageVerticalSpeedMps,
+      windowSteps,
+      durationSeconds: final.timeSeconds - liftoff.timeSeconds,
+    };
+  }
+  return undefined;
 }
 
 export class RingBuffer<T> {

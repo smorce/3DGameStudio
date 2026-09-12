@@ -119,6 +119,10 @@ interface ForceAccumulator {
   aerodynamic: Vec3;
   thruster: Vec3;
   thrusterMagnitude: number;
+  panelCount: number;
+  angleOfAttackSum: number;
+  liftCoefficientSum: number;
+  dragCoefficientSum: number;
 }
 const emptyForceAccumulator = (): ForceAccumulator => ({
   lift: [0, 0, 0],
@@ -128,6 +132,10 @@ const emptyForceAccumulator = (): ForceAccumulator => ({
   aerodynamic: [0, 0, 0],
   thruster: [0, 0, 0],
   thrusterMagnitude: 0,
+  panelCount: 0,
+  angleOfAttackSum: 0,
+  liftCoefficientSum: 0,
+  dragCoefficientSum: 0,
 });
 function velocityAtPoint(body: RAPIER.RigidBody, point: Vec3): Vec3 {
   const api = body as unknown as {
@@ -644,6 +652,10 @@ export class RapierPhysics {
           addInto(forces.drag, force.drag);
           forces.dragMagnitude += vectorMagnitude(force.drag);
           addInto(forces.aerodynamic, force.force);
+          forces.panelCount++;
+          forces.angleOfAttackSum += force.angleOfAttack;
+          forces.liftCoefficientSum += force.liftCoefficient;
+          forces.dragCoefficientSum += force.dragCoefficient;
         }
         body.addForceAtPoint(
           vector(force.force),
@@ -803,6 +815,19 @@ export class RapierPhysics {
         totalDragN: forces.dragMagnitude,
         totalAerodynamicForceN: vectorMagnitude(forces.aerodynamic),
         totalThrusterForceN: forces.thrusterMagnitude,
+        thrusterForceWorldN: [...forces.thruster],
+        averageAngleOfAttackRad:
+          forces.panelCount > 0
+            ? forces.angleOfAttackSum / forces.panelCount
+            : 0,
+        averageLiftCoefficient:
+          forces.panelCount > 0
+            ? forces.liftCoefficientSum / forces.panelCount
+            : 0,
+        averageDragCoefficient:
+          forces.panelCount > 0
+            ? forces.dragCoefficientSum / forces.panelCount
+            : 0,
         liftToWeightRatio: weightN > 0 ? forces.lift[1] / weightN : 0,
         massKg,
         weightN,

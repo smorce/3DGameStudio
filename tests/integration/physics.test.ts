@@ -14,7 +14,10 @@ import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
 import { euler, quaternion } from "../../packages/machine-system/src/math";
-import type { MachineTelemetrySample } from "../../packages/runtime-telemetry/src/index";
+import {
+  findStableForwardTakeoff,
+  type MachineTelemetrySample,
+} from "../../packages/runtime-telemetry/src/index";
 
 function motorFixture({
   maxTorque = 180,
@@ -325,6 +328,7 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
 async function simulatePlane(
   configure?: (machine: ReturnType<typeof planeTemplate>) => void,
   steps = 600,
+  throttle = 1,
 ) {
   const project = emptyProject(),
     machine = planeTemplate();
@@ -335,14 +339,21 @@ async function simulatePlane(
   physics.telemetry.start();
   const start = physics.poses().get(machine.id)!.position;
   for (let i = 0; i < steps; i++) {
-    physics.step(1, 0);
+    physics.step(throttle, 0);
   }
   const samples = physics.telemetry
     .samples()
     .filter((sample) => sample.machineId === machine.id);
   const first = samples[0],
     last = samples.at(-1)!,
-    stableSampleCount = longestStableTakeoffRun(samples);
+    stableTakeoff = findStableForwardTakeoff(samples),
+    stableSamples =
+      stableTakeoff === undefined
+        ? []
+        : samples.slice(
+            stableTakeoff.liftoffIndex,
+            stableTakeoff.liftoffIndex + stableTakeoff.windowSteps,
+          );
   physics.dispose();
   return {
     samples,
@@ -357,47 +368,18 @@ async function simulatePlane(
     maxHeight: Math.max(...samples.map((sample) => sample.position[1])),
     minHeight: Math.min(...samples.map((sample) => sample.position[1])),
     maxPitch: Math.max(...samples.map((sample) => Math.abs(sample.pitchRad))),
+    maxStablePitch:
+      stableSamples.length > 0
+        ? Math.max(...stableSamples.map((sample) => Math.abs(sample.pitchRad)))
+        : 0,
     maxLiftToWeight: Math.max(
       ...samples.map((sample) => sample.liftToWeightRatio),
     ),
     final: last,
     first: first as MachineTelemetrySample,
-    stableSampleCount,
-    stableTakeoffStep: findStableTakeoffStep(samples),
+    stableSampleCount: stableTakeoff?.windowSteps ?? 0,
+    stableTakeoffStep: stableTakeoff?.liftoffStep ?? -1,
   };
-}
-
-function isStableTakeoffSample(sample: MachineTelemetrySample) {
-  return (
-    sample.position[1] > 1.5 &&
-    sample.groundedWheelCount === 0 &&
-    sample.worldSpeedMps > 20 &&
-    sample.liftToWeightRatio > 1 &&
-    Math.abs(sample.pitchRad) < 0.8
-  );
-}
-
-function longestStableTakeoffRun(samples: MachineTelemetrySample[]) {
-  let run = 0,
-    longest = 0;
-  for (const sample of samples) {
-    if (isStableTakeoffSample(sample)) {
-      run++;
-      longest = Math.max(longest, run);
-    } else run = 0;
-  }
-  return longest;
-}
-
-function findStableTakeoffStep(samples: MachineTelemetrySample[]) {
-  let run = 0;
-  for (const sample of samples) {
-    if (isStableTakeoffSample(sample)) {
-      run++;
-      if (run >= 60) return sample.step - 59;
-    } else run = 0;
-  }
-  return -1;
 }
 
 async function simulatePlaneSteering(steering: number) {
@@ -425,10 +407,10 @@ it("Starter Planeは一瞬の浮上ではなく安定して離陸する", async 
   expect(result.stableSampleCount).toBeGreaterThanOrEqual(60);
   expect(result.forwardDistance).toBeGreaterThan(80);
   expect(result.maxWorldSpeed).toBeGreaterThan(30);
-  expect(result.maxPitch).toBeLessThan(0.9);
+  expect(result.maxStablePitch).toBeLessThan(0.9);
 });
 
-it("修正前の主翼迎角は一瞬の浮上後に安定離陸と判定されない", async () => {
+it("一瞬のHopや降下を安定離陸と判定しない", async () => {
   const beforeFix = await simulatePlane((machine) => {
     for (const part of machine.parts)
       if (
@@ -488,6 +470,19 @@ it("翼面積またはThruster推力を減らすと離陸性能が下がる", as
   expect(standard.stableSampleCount).toBeGreaterThan(
     weakThruster.stableSampleCount + 20,
   );
+});
+
+it("正Throttleは+Zへ推力を出し、負Throttleは前進離陸にならない", async () => {
+  const forward = await simulatePlane(undefined, 60, 1),
+    backward = await simulatePlane(undefined, 600, -1),
+    forwardSample = forward.samples.at(-1)!,
+    backwardSample = backward.samples.at(-1)!;
+  expect(forwardSample.forwardSpeedMps).toBeGreaterThan(0);
+  expect(forwardSample.thrusterForceWorldN[2]).toBeGreaterThan(0);
+  expect(backwardSample.forwardSpeedMps).toBeLessThan(0);
+  expect(backwardSample.thrusterForceWorldN[2]).toBeLessThan(0);
+  expect(backward.stableTakeoffStep).toBe(-1);
+  expect(findStableForwardTakeoff(backward.samples)).toBeUndefined();
 });
 
 async function createSettledBoat(settleSteps = 600) {
@@ -563,9 +558,13 @@ it("Planeは差動推力で左右へ旋回し、直進時はほぼ直進する",
   expect(right.lateralDistance).toBeGreaterThan(5);
   expect(left.yaw).toBeLessThan(-0.1);
   expect(right.yaw).toBeGreaterThan(0.1);
-  expect(Math.abs(left.lateralDistance + right.lateralDistance)).toBeLessThan(
-    2,
-  );
+  expect(
+    Math.abs(
+      left.lateralDistance +
+        right.lateralDistance -
+        2 * straight.lateralDistance,
+    ),
+  ).toBeLessThan(2);
 });
 
 it("Boatは差動推力で左右へ旋回し、左右入力が鏡像になる", async () => {

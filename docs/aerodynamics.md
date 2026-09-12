@@ -8,7 +8,10 @@ Machine Studioの空力面は、専用のWingではなく、すべて同じ正�
 - `DEFAULT_PANEL_THICKNESS = 0.12`
 - `PANEL_DENSITY = 250`
 - `area = PANEL_SIDE * PANEL_SIDE`
+- 機体World座標は`+X = 右`、`+Y = 上`、`+Z = 機首方向`
 - LOCAL X：横、LOCAL Y：厚さ／Surface Normal、LOCAL Z：縦
+- Panel local `+Y`が面の法線で、PanelのWorld法線は機体姿勢で回転した`+Y`
+- X軸回転の正方向はlocal `+Z`を`+Y`へ近づける機首上げで、正のwing incidenceは前進時に正の迎角を作る
 - 新しいPanelの`transform.scale`は`[1, 1, 1]`
 - Studioで変更できる寸法は`physics.size[1]`の厚さだけ
 
@@ -28,6 +31,8 @@ q = 0.5 * airDensity * speed²
 
 `flow = normalize(relativeAirVelocity)`、`normalAlongFlow = clamp(dot(n, flow), -1, 1)`とし、NormalをFlowに直交する平面へ射影します。
 
+このモデルの迎角は「相対空気速度の向きから見たPanel法線の符号」です。したがって、機体前方`+Z`へ進む平板では、法線の`+Z`成分が正のとき正の迎角になります。正の迎角では`CL`が正になり、射影された法線のWorld Y成分が正であれば上向きLiftになります。速度を`-Z`へ反転すると、同じPanel法線に対する迎角とLift係数の符号も反転します。
+
 ```text
 alpha = atan2(normalAlongFlow, |project(n, plane perpendicular to flow)|)
 CL = clamp(1.1 * sin(2 * alpha), -1.1, 1.1)
@@ -42,6 +47,7 @@ force = lift + drag
 ## ThrusterとMotor
 
 - ThrusterのLOCAL +Zが推進方向、LOCAL -ZがNozzle／排気方向。
+- Starter Planeの機体forwardもWorld +Zで、正のThrottleはThrusterのWorld +Z推力と正の`forwardSpeedMps`を生む。
 - Thrusterは自身のWorld Positionへ継続`addForceAtPoint`を適用します。
 - MotorはWheel全体への加算値ではありません。
 - Motorは明示的に固定接続されたHinge側のRevolute Jointだけを駆動し、`configureMotorVelocity`を使います。
