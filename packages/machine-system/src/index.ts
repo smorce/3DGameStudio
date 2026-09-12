@@ -37,6 +37,9 @@ export const DEFAULT_SUSPENSION: SuspensionSettings = {
   maxForce: 10000,
 };
 const panelSize: Vec3 = [PANEL_SIDE, DEFAULT_PANEL_THICKNESS, PANEL_SIDE];
+/** 飛行機可動翼と同じ薄い棒状関節。立方体サイズの旧関節は使わない。 */
+export const DEFAULT_HINGE_SIZE: Vec3 = [PANEL_SIDE, 0.08, 0.08];
+export const DEFAULT_HINGE_MASS = 0.5;
 const partSize = (kind: Part["definitionId"]): Vec3 =>
   kind === "Panel"
     ? [...panelSize]
@@ -44,7 +47,9 @@ const partSize = (kind: Part["definitionId"]): Vec3 =>
       ? [0.4, 0.55, 0.55]
       : kind === "Suspension"
         ? [0.24, 0.62, 0.24]
-        : [0.6, 0.6, 0.6];
+        : kind === "Hinge"
+          ? [...DEFAULT_HINGE_SIZE]
+          : [0.6, 0.6, 0.6];
 export function createPart(
   kind: Part["definitionId"],
   position: Vec3 = [0, 0.85, 0],
@@ -63,7 +68,12 @@ export function createPart(
             : "#e5b557",
     },
     physics: {
-      mass: kind === "Panel" ? panelMass(DEFAULT_PANEL_THICKNESS) : 3,
+      mass:
+        kind === "Panel"
+          ? panelMass(DEFAULT_PANEL_THICKNESS)
+          : kind === "Hinge"
+            ? DEFAULT_HINGE_MASS
+            : 3,
       friction: 1.2,
       restitution: 0.05,
       collider:
@@ -78,7 +88,8 @@ export function createPart(
         ? [
             {
               id: "hinge-input",
-              position: [0, 0, -size[2] / 2],
+              // 回転軸(=中心)を親Panel端面上へ置く。
+              position: [0, 0, 0],
               axis: [1, 0, 0],
               normal: [0, 0, -1],
               type: "mount",
@@ -213,11 +224,11 @@ export function placementConnectors(part: Part): Connector[] {
     accepts: [],
   });
   if (part.definitionId === "Hinge") {
-    const [x, y, z] = part.physics.size,
-      gap = Math.min(x, y, z) * 0.1;
+    const [, , z] = part.physics.size,
+      gap = Math.max(z * 0.1, 0.008);
     add({
       id: "hinge-input",
-      position: [0, 0, -z / 2],
+      position: [0, 0, 0],
       axis: [1, 0, 0],
       normal: [0, 0, -1],
       type: "mount",
@@ -352,7 +363,9 @@ function attachmentPoint(
   size: Vec3,
 ): Vec3 | undefined {
   if (kind === "Thruster") return [0, 0, size[2] / 2];
-  if (kind === "Motor" || kind === "Hinge") return [0, 0, -size[2] / 2];
+  // Hingeは中心を親端面上へ置き、棒状の回転軸として扱う。
+  if (kind === "Hinge") return [0, 0, 0];
+  if (kind === "Motor") return [0, 0, -size[2] / 2];
   return undefined;
 }
 
@@ -833,8 +846,6 @@ export function planeTemplate() {
     limits: { minAngleRad: number; maxAngleRad: number },
   ) => {
     const hinge = createPart("Hinge");
-    hinge.physics.size = [PANEL_SIDE, 0.08, 0.08];
-    hinge.physics.mass = 0.5;
     hinge.connectors = placementConnectors(hinge);
     hinge.actuator.motorMode = "position";
     hinge.actuator.controlChannel = channel;

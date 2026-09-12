@@ -14,29 +14,31 @@ function meshes(group: THREE.Group) {
   );
 }
 
-it("HingeはローカルX軸のピンと左右ブラケットを生成する", () => {
+it("Hingeは棒状ロッドと中央バンドを生成する", () => {
   const part = createPart("Hinge");
   part.transform.position = [4, 2, -3];
   part.transform.rotation = [0.2, 0.4, 0.6];
   const visual = createPartVisual(part);
+  const rod = visual.getObjectByName("hinge-rod");
   const pin = visual.getObjectByName("hinge-pin");
 
+  expect(part.physics.size[1]).toBeLessThanOrEqual(0.1);
+  expect(part.physics.size[2]).toBeLessThanOrEqual(0.1);
+  expect(rod).toBeInstanceOf(THREE.Mesh);
+  expect((rod as THREE.Mesh).geometry).toBeInstanceOf(THREE.CylinderGeometry);
+  expect((rod as THREE.Mesh).rotation.z).toBeCloseTo(Math.PI / 2);
   expect(pin).toBeInstanceOf(THREE.Mesh);
   expect((pin as THREE.Mesh).geometry).toBeInstanceOf(THREE.CylinderGeometry);
-  expect((pin as THREE.Mesh).rotation.z).toBeCloseTo(Math.PI / 2);
   expect(pin?.position.toArray()).toEqual([0, 0, 0]);
   expect(visual.position.toArray()).toEqual([0, 0, 0]);
   expect(visual.rotation.toArray()).toEqual([0, 0, 0, "XYZ"]);
   expect(visual.userData.jointAxis).toEqual([1, 0, 0]);
-  expect(
-    ["hinge-bracket-left", "hinge-bracket-right"].every((name) =>
-      visual.getObjectByName(name),
-    ),
-  ).toBe(true);
+  expect(visual.getObjectByName("hinge-bracket-left")).toBeUndefined();
+  expect(visual.getObjectByName("hinge-bracket-right")).toBeUndefined();
   expect(visual.getObjectByName("hinge-rotating-mount")).toBeDefined();
-  expect(
-    (visual.getObjectByName("hinge-bracket-left") as THREE.Mesh).material,
-  ).toMatchObject({ color: new THREE.Color(part.visual.color) });
+  expect((rod as THREE.Mesh).material).toMatchObject({
+    color: new THREE.Color(part.visual.color),
+  });
 });
 
 it("Motorは短い円筒本体と外側へ出る出力軸を生成する", () => {

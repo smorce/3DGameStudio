@@ -305,70 +305,72 @@ function createHingeVisual(part: Part, options: PartVisualOptions) {
   group.userData.inputConnector = "hinge-input";
   group.userData.outputConnector = "hinge-output";
 
+  // 飛行機可動翼と同じ薄い棒状関節。旧い立方体／機械ブラケット形状は使わない。
   const [sx, sy, sz] = part.physics.size;
   const radialSize = Math.min(sy, sz);
-  const pinLength = sx * 0.92;
-  const pinRadius = radialSize * 0.18;
-  const bracketWidth = sx * 0.18;
-  const bracketHeight = sy * 0.72;
-  const bracketDepth = sz * 0.82;
-  const bracketOffset = sx * 0.32;
+  const rodRadius = radialSize * 0.42;
+  const rodLength = sx * 0.98;
+  const bandWidth = Math.min(sx * 0.18, radialSize * 2.4);
+  const sleeveWidth = Math.min(sx * 0.12, radialSize * 1.6);
   const darkMetal = "#35414a";
   const lightMetal = "#c3cdd1";
 
-  for (const [name, x] of [
-    ["hinge-bracket-left", -bracketOffset],
-    ["hinge-bracket-right", bracketOffset],
-  ] as const) {
-    const bracket = addMesh(
-      group,
-      new THREE.BoxGeometry(bracketWidth, bracketHeight, bracketDepth),
-      part.visual.color,
-      options,
-      name,
-    );
-    bracket.position.x = x;
-  }
-
-  const rotatingMountLength = sz * 0.42;
-  const rotatingMount = addMesh(
+  const rod = addMesh(
     group,
-    new THREE.BoxGeometry(sx * 0.52, sy * 0.36, rotatingMountLength),
+    new THREE.CylinderGeometry(rodRadius, rodRadius, rodLength, 16),
     part.visual.color,
     options,
-    "hinge-rotating-mount",
+    "hinge-rod",
   );
-  rotatingMount.position.z = rotatingMountLength / 2 + pinRadius * 0.65;
+  rod.rotation.z = Math.PI / 2;
 
-  const pin = addMesh(
+  const band = addMesh(
     group,
-    new THREE.CylinderGeometry(pinRadius, pinRadius, pinLength, 16),
+    new THREE.CylinderGeometry(
+      rodRadius * 1.18,
+      rodRadius * 1.18,
+      bandWidth,
+      16,
+    ),
     darkMetal,
     options,
     "hinge-pin",
   );
-  pin.rotation.z = Math.PI / 2;
+  band.rotation.z = Math.PI / 2;
 
-  const capDepth = sx * 0.08;
   for (const [name, x] of [
-    ["hinge-cap-left", -pinLength / 2 + capDepth / 2],
-    ["hinge-cap-right", pinLength / 2 - capDepth / 2],
+    ["hinge-cap-left", -rodLength / 2 + sleeveWidth / 2],
+    ["hinge-cap-right", rodLength / 2 - sleeveWidth / 2],
   ] as const) {
-    const cap = addMesh(
+    const sleeve = addMesh(
       group,
       new THREE.CylinderGeometry(
-        pinRadius * 1.12,
-        pinRadius * 1.12,
-        capDepth,
+        rodRadius * 1.28,
+        rodRadius * 1.28,
+        sleeveWidth,
         16,
       ),
       lightMetal,
       options,
       name,
     );
-    cap.position.x = x;
-    cap.rotation.z = Math.PI / 2;
+    sleeve.position.x = x;
+    sleeve.rotation.z = Math.PI / 2;
   }
+
+  const mountLength = Math.max(sz * 0.55, rodRadius * 1.4);
+  const rotatingMount = addMesh(
+    group,
+    new THREE.BoxGeometry(
+      Math.min(sx * 0.22, radialSize * 2.2),
+      rodRadius * 1.5,
+      mountLength,
+    ),
+    part.visual.color,
+    options,
+    "hinge-rotating-mount",
+  );
+  rotatingMount.position.z = mountLength / 2 + rodRadius * 0.35;
 
   return group;
 }

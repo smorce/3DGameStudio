@@ -37,7 +37,7 @@ test("正方形Panel、Tilt、Hinge空力面を確認する @smoke", async ({ pa
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await startPanel(page);
-  await page.getByRole("button", { name: "↔ 関節", exact: true }).click();
+  await page.getByRole("button", { name: "━ 関節", exact: true }).click();
   await pickCandidate(page);
   await page.getByRole("button", { name: "▱ 板", exact: true }).click();
   await pickCandidate(page, 5);

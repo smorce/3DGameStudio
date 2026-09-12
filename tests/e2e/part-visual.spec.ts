@@ -32,7 +32,7 @@ test("Machine PartのVisual Evidenceを保存する", async ({ page }) => {
     path: "docs/screenshots/part-visual-thruster.png",
   });
 
-  await page.getByRole("button", { name: "↔ 関節", exact: true }).click();
+  await page.getByRole("button", { name: "━ 関節", exact: true }).click();
   await expect(
     page.getByRole("button", { name: /^ここにつける / }),
   ).toHaveCount(6);

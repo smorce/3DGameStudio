@@ -9,7 +9,7 @@ export function EasyPalette({
   disabled?: boolean;
   activeKind?: Part["definitionId"];
 }) {
-  const icons = ["▱", "◉", "⌁", "⚙", "➤", "↔", "▣", "↶"];
+  const icons = ["▱", "◉", "⌁", "⚙", "➤", "━", "▣", "↶"];
   return (
     <nav className="palette" aria-label="パーツをえらぶ">
       {(

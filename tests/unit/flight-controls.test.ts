@@ -80,6 +80,8 @@ describe("Starter Planeの工作機構", () => {
   it("PlaneはMotor Partを使わず、Hinge自身をPosition制御へ割り当てる", () => {
     expect(createPart("Motor").actuator.motorMode).toBe("velocity");
     expect(createPart("Hinge").actuator.motorMode).toBe("velocity");
+    expect(createPart("Hinge").physics.size[1]).toBeLessThanOrEqual(0.1);
+    expect(createPart("Hinge").physics.size[2]).toBeLessThanOrEqual(0.1);
     const machine = planeTemplate(),
       motors = machine.parts.filter((part) => part.definitionId === "Motor"),
       hinges = machine.parts.filter((part) => part.definitionId === "Hinge"),

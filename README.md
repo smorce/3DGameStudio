@@ -13,6 +13,7 @@
 ## Main Features
 
 - 板・ブロック・タイヤ・モーター・ハンドル・関節・ジェットを「選んで、光る場所を押す」だけで配置。Panelを辺で並べ、回転・Tilt・つけ直し・色・コピー・削除に対応。
+- 関節は飛行機可動翼と同じ棒状Hinge。初期配置は受動関節で、Position制御とControl Channelを設定すると↑↓などでパネル角度を動かせる（[手順](docs/hinge-controls.md)）。
 - すべてのPanelを正方形の空力面として扱い、各Panelの位置速度とWorld Normalから力を計算。偏心したPanel／Thrusterの力は自然なTorqueを生みます。
 - 接続候補の表示、4輪の駆動・操舵設定、複合剛体、可動関節、キーボード／ゲームパッド／画面ボタンでの試走。
 - 6種類の地形ブラシ、水面、木・岩・建物、チャンク単位の描画・物理管理、同一素材のInstancing、距離LOD。
@@ -67,6 +68,7 @@ pnpm dev
 
 - W / ↑：前進、S / ↓：後退、A D / ← →：操舵。
 - Space：ブレーキ、R：リスポーン。画面下の運転ボタンと標準ゲームパッドにも対応。
+- 関節をPanelのあいだに置いただけでは↑↓で倒れません。動かす手順は[関節の配置とキー操作](docs/hinge-controls.md)を参照。
 - ドラッグ：カメラ回転、右ドラッグ：カメラ移動、スクロール：ズーム。
 - Ctrl / Cmd + Z：Undo、Shiftを加えるとRedo。
 - 道具を選択して地面をクリックすると地形／コースを編集。道路はドラッグでも描けます。
@@ -145,7 +147,7 @@ pnpm start:server
 
 ## Documentation
 
-[設計](docs/architecture.md) / [Command](docs/command-system.md) / [Machine](docs/machine-system.md) / [Aerodynamics](docs/aerodynamics.md) / [World](docs/world-system.md) / [Course](docs/course-system.md) / [Asset Pipeline](docs/asset-pipeline.md) / [AI](docs/ai-integration.md) / [性能](docs/performance.md) / [セキュリティ](docs/security.md) / [進捗と完成条件](docs/progress.md) / [実行計画](docs/implementation-plan.md) / [判断記録](docs/decisions)
+[設計](docs/architecture.md) / [Command](docs/command-system.md) / [Machine](docs/machine-system.md) / [関節のキー操作](docs/hinge-controls.md) / [Aerodynamics](docs/aerodynamics.md) / [World](docs/world-system.md) / [Course](docs/course-system.md) / [Asset Pipeline](docs/asset-pipeline.md) / [AI](docs/ai-integration.md) / [性能](docs/performance.md) / [セキュリティ](docs/security.md) / [進捗と完成条件](docs/progress.md) / [実行計画](docs/implementation-plan.md) / [判断記録](docs/decisions)
 
 スクリーンショットは[docs/screenshots](docs/screenshots)に7種類あります。デモは[車](demos/demo-simple-car.json)、[島コース](demos/demo-island-course.json)、[外部素材ワールド](demos/demo-asset-world.json)。StudioのJSON読込で開けます。同梱素材はServer起動時にデータディレクトリへコピーします。
 

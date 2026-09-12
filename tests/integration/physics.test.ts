@@ -248,7 +248,9 @@ it("最大トルクと目標角速度が独立し、負荷で加速が低下す�
     heavyPhysics = new RapierPhysics();
   await lightPhysics.load(lightFixture.project);
   await heavyPhysics.load(heavyFixture.project);
-  for (let i = 0; i < 60; i++) {
+  // 棒状Hingeでは負荷側がほぼ止まっても根側が反転するため、
+  // 相対角速度は長時間後に収束する。加速差が見える早い時点で比較する。
+  for (let i = 0; i < 15; i++) {
     lightPhysics.step(1, 0);
     heavyPhysics.step(1, 0);
   }
