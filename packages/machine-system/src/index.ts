@@ -1169,17 +1169,17 @@ export function planeTemplate() {
     { minAngleRad: -controlSurfaceLimit, maxAngleRad: controlSurfaceLimit },
   );
 
-  // 推力線を前方胴体の固定構造へ置く。可動翼には取り付けない。
+  // 推力線を主翼後縁の胴体脇（最内の固定主翼Panel）へ置く。可動翼には取り付けない。
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
     thruster.actuator.motorTorque = 1000;
     connectTemplateParts(
       m,
-      fuselage[1],
+      wingPanels[side][0],
       thruster,
-      side < 0 ? "edge-x-" : "edge-x+",
+      "edge-z-",
       "mount",
-      [0, 0, 0],
+      [wingAngle, 0, 0],
     );
   }
   // 実際の質量分布から重心を求め、Main Gearを重心の少し後方へ置く。

@@ -334,12 +334,18 @@ describe("Starter Template", () => {
         )
         .map((part) => part.transform.position[0])
         .sort(),
-      thrusterX = machine.parts
-        .filter((part) => part.definitionId === "Thruster")
+      thrusters = machine.parts.filter(
+        (part) => part.definitionId === "Thruster",
+      ),
+      thrusterX = thrusters
         .map((part) => Math.abs(part.transform.position[0]))
-        .sort();
+        .sort((a, b) => a - b),
+      thrusterZ = thrusters.map((part) => part.transform.position[2]);
     expect(leftWing).toEqual(rightWing);
-    expect(thrusterX).toEqual([0.5, 0.5]);
+    // 主翼最内Panel(x=±1)の後縁へ左右対称に置く。
+    expect(thrusterX[0]).toBeCloseTo(1, 5);
+    expect(thrusterX[1]).toBeCloseTo(1, 5);
+    expect(thrusterZ.every((z) => z < 0)).toBe(true);
   });
 
   it("Starter CarとPlaneの接地補正はMachine全体を移動しAttachmentを保つ", () => {
