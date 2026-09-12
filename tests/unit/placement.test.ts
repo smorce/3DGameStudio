@@ -436,6 +436,37 @@ test("Thrusterの排気方向は接続面の外側を向く", () => {
   }
 });
 
+test("Panelを立ててもWheelの車軸は水平で取付面はPanelへ向く", () => {
+  const { machine } = setup();
+  machine.parts[0].transform.rotation = [0, 0, Math.PI / 2];
+  for (const candidate of findAttachmentCandidates(machine, "Wheel")) {
+    const axle = rotate([1, 0, 0], quaternion(candidate.rotation)),
+      mount = rotate([0, 1, 0], quaternion(candidate.rotation)),
+      parent = machine.parts[0],
+      connector = placementConnectors(parent).find(
+        (item) => item.id === candidate.parentConnectorId,
+      )!,
+      towardPanel = rotate(connector.normal!, quaternion(parent.transform.rotation)).map(
+        (value) => -value,
+      ) as [number, number, number];
+    // 車軸は地面に対して水平(縦向きに倒れない)。
+    expect(Math.abs(axle[1])).toBeLessThan(0.1);
+    mount.forEach((value, index) =>
+      expect(value).toBeCloseTo(towardPanel[index], 5),
+    );
+  }
+});
+
+test("通常の下面取り付けではWheelは直立する", () => {
+  const { machine } = setup();
+  for (const candidate of findAttachmentCandidates(machine, "Wheel")) {
+    const axle = rotate([1, 0, 0], quaternion(candidate.rotation)),
+      mount = rotate([0, 1, 0], quaternion(candidate.rotation));
+    expect(Math.abs(axle[1])).toBeLessThan(0.1);
+    expect(mount[1]).toBeCloseTo(1, 5);
+  }
+});
+
 test.each(["Motor", "Hinge"] as const)(
   "%sの機能側は接続面の外側を向く",
   (kind) => {

@@ -430,7 +430,37 @@ function alignAxis(from: Vec3, to: Vec3): Quat {
 function outwardAxis(kind: Part["definitionId"]): Vec3 | undefined {
   if (kind === "Thruster") return [0, 0, -1];
   if (kind === "Motor" || kind === "Hinge") return [0, 0, 1];
+  // Wheel/Suspensionの取付面(+Y)を親Connectorへ向ける。
+  if (kind === "Wheel" || kind === "Suspension") return [0, 1, 0];
   return undefined;
+}
+
+/** Wheel/Suspension: 取付面をPanelへ密着させつつ、車軸(ローカルX)は水平を保つ。 */
+function undercarriagePlacementRotation(
+  parentRotation: Vec3,
+  normalLocal: Vec3,
+): Vec3 {
+  const parentQ = quaternion(parentRotation),
+    normalWorld = unit(rotate(normalLocal, parentQ)),
+    // 取付面は親の外側法線の反対(パネルへ向かう向き)。
+    mountDir = unit(normalWorld.map((value) => -value) as Vec3),
+    worldUp: Vec3 = [0, 1, 0];
+  let orientation = alignAxis([0, 1, 0], mountDir);
+  let desiredAxle = unit(cross(worldUp, mountDir));
+  if (Math.hypot(...desiredAxle) < 0.5) {
+    // 下面取り付け(mountDir≈上)では親の横方向を水平に投影する。
+    const parentRight = rotate([1, 0, 0], parentQ);
+    desiredAxle = unit([parentRight[0], 0, parentRight[2]] as Vec3);
+    if (Math.hypot(...desiredAxle) < 0.5) desiredAxle = [1, 0, 0];
+  }
+  const axle = rotate([1, 0, 0], orientation);
+  if (
+    axle[0] * desiredAxle[0] + axle[1] * desiredAxle[1] + axle[2] * desiredAxle[2] <
+    0
+  )
+    desiredAxle = desiredAxle.map((value) => -value) as Vec3;
+  orientation = multiply(alignAxis(axle, desiredAxle), orientation);
+  return euler(orientation);
 }
 
 function placementRotation(
@@ -438,6 +468,8 @@ function placementRotation(
   parentRotation: Vec3,
   normal?: Vec3,
 ): Vec3 {
+  if ((kind === "Wheel" || kind === "Suspension") && normal)
+    return undercarriagePlacementRotation(parentRotation, normal);
   const axis = normal && outwardAxis(kind);
   if (!axis) return [...parentRotation];
   return euler(multiply(quaternion(parentRotation), alignAxis(axis, normal)));
@@ -607,7 +639,7 @@ export function findAttachmentCandidates(
             position: childTransform.position,
             rotation: rotation as Vec3,
             axis:
-              kind === "Hinge"
+              kind === "Hinge" || kind === "Wheel"
                 ? rotate([1, 0, 0], quaternion(rotation))
                 : rotate(c.axis, q),
             connectionType:
