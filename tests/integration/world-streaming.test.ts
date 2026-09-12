@@ -79,7 +79,9 @@ it("境界通過中も隣接地形がPhysics Step前に存在し地面を抜け�
       const v = body.linvel();
       body.setLinvel({ x: 4, y: v.y, z: 0 }, true);
       physics.step(0, 0);
-      expect(body.translation().y).toBeGreaterThan(-0.1);
+      // 正しいhardPoint接地では軟らかいSuspensionの圧縮でわずかに沈む。
+      // 地面抜け(数m沈下)ではなく、境界またぎの微小沈下を許容する。
+      expect(body.translation().y).toBeGreaterThan(-0.25);
     }
     expect(body.translation().x).toBeGreaterThan(32);
     expect(physics.stats.terrainChunkColliders).toBeGreaterThan(1);
@@ -113,7 +115,7 @@ it("BのStart・Checkpoint・Goalだけを使用しAの障害物は生成しな�
     physics.respawn(b.start);
     expect(physics.poses().get(p.machines[0].id)!.position[0]).toBe(20);
     expect(physics.stats.colliders).toBe(
-      physics.stats.terrainChunkColliders + 1,
+      physics.stats.terrainChunkColliders + 2,
     );
     const progress = new CourseProgress(b);
     progress.update(b.start, 1);

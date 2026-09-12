@@ -105,9 +105,91 @@ test("移動・回転しても正方形Panelの候補は固定寸法で計算さ
     scale: [2, 3, 4],
   };
   const c = findAttachmentCandidates(machine, "Wheel")[0];
-  [11.25, 1.55, -4].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
+  // 下面四隅(-0.5,-0.06,0.5)へ密着し、Wheel半径0.55ぶん中心が下。
+  [10.5, 1.39, -4.5].forEach((n, i) => expect(c.position[i]).toBeCloseTo(n));
   expect(c.rotation).toEqual(machine.parts[0].transform.rotation);
 });
+
+test("Panelへ付けたWheelとSuspensionは下面へ密着し空白を作らない", () => {
+  for (const kind of ["Wheel", "Suspension"] as const) {
+    const { machine } = setup(),
+      candidate = findAttachmentCandidates(machine, kind)[0]!,
+      child = createPart(kind);
+    commitAttachment(machine, child, candidate);
+    const panel = machine.parts[0],
+      attached = machine.parts[1],
+      parentPoint = connectorWorldPosition(
+        panel,
+        machine.connections[0].connectorA,
+      ),
+      childPoint = connectorWorldPosition(
+        attached,
+        machine.connections[0].connectorB,
+      ),
+      panelBottomY = panel.transform.position[1] - panel.physics.size[1] / 2,
+      [hx, , hz] = panel.physics.size.map((value) => value / 2);
+    expect(
+      Math.hypot(
+        ...parentPoint.map((value, index) => value - childPoint[index]),
+      ),
+    ).toBeLessThan(1e-3);
+    expect(parentPoint[1]).toBeCloseTo(panelBottomY, 6);
+    // 取付点はPanel下面の内側(四隅含む)にしかない。
+    expect(Math.abs(parentPoint[0] - panel.transform.position[0])).toBeLessThanOrEqual(
+      hx + 1e-6,
+    );
+    expect(Math.abs(parentPoint[2] - panel.transform.position[2])).toBeLessThanOrEqual(
+      hz + 1e-6,
+    );
+    if (kind === "Wheel") {
+      const wheelTopY =
+        attached.transform.position[1] + attached.physics.size[1];
+      expect(wheelTopY).toBeCloseTo(panelBottomY, 6);
+    } else {
+      expect(attached.transform.position[1]).toBeCloseTo(panelBottomY, 6);
+    }
+  }
+});
+
+test("Panel下面より外側にWheel取付点を作れない", () => {
+  const { machine } = setup(),
+    panel = machine.parts[0];
+  panel.connectors.find((connector) => connector.id === "0")!.position = [
+    -1, -0.45, 1.25,
+  ];
+  const slots = placementConnectors(panel).filter((connector) =>
+    /^[0-3]$/.test(connector.id),
+  );
+  for (const slot of slots) {
+    expect(Math.abs(slot.position[0])).toBeLessThanOrEqual(0.5 + 1e-9);
+    expect(Math.abs(slot.position[2])).toBeLessThanOrEqual(0.5 + 1e-9);
+    expect(slot.position[1]).toBeCloseTo(-panel.physics.size[1] / 2);
+  }
+});
+
+test("SuspensionはMotor同様に面へ密着し、辺の外側には候補を出さない", () => {
+  const { machine } = setup(),
+    suspension = findAttachmentCandidates(machine, "Suspension"),
+    motor = findAttachmentCandidates(machine, "Motor");
+  expect(suspension.length).toBe(4);
+  expect(
+    suspension.every((candidate) => /^[0-3]$/.test(candidate.parentConnectorId)),
+  ).toBe(true);
+  expect(
+    suspension.some((candidate) =>
+      candidate.parentConnectorId.startsWith("edge-"),
+    ),
+  ).toBe(false);
+  // Motorは辺・上面の実面へ付く(参考挙動)。
+  expect(
+    motor.some(
+      (candidate) =>
+        candidate.parentConnectorId.startsWith("edge-") ||
+        candidate.parentConnectorId.startsWith("top-"),
+    ),
+  ).toBe(true);
+});
+
 test("取り付けは接続・自動設定とともに一回のUndo/Redoで復元する", () => {
   const { bus, machine } = setup(),
     before = bus.project;

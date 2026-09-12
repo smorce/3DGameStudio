@@ -22,6 +22,8 @@ test("候補だけから作った4輪車が回転・つけ直し後にも走行�
         .id,
     });
   attach("Panel", "panel");
+  // 前後2枚にしてWheel間隔を確保する。
+  attach("Panel", "panel-front");
   attach("Wheel", "wheel-0");
   bus.execute({
     type: "part.reattach",
@@ -31,7 +33,7 @@ test("候補だけから作った4輪車が回転・つけ直し後にも走行�
       bus.project.machines[0],
       "Wheel",
       "wheel-0",
-    )[2].id,
+    ).find((candidate) => candidate.parentPartId === "panel")!.id,
   });
   for (let i = 1; i < 4; i++) attach("Wheel", "wheel-" + i);
   bus.execute({

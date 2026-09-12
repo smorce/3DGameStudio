@@ -24,12 +24,24 @@ export const labels: Record<Part["definitionId"], string> = {
   Thruster: "ジェット",
 };
 export const DEFAULT_THRUSTER_TORQUE = 600;
-export const wheelSlots: Vec3[] = [
-  [-1, -0.45, 1.25],
-  [1, -0.45, 1.25],
-  [-1, -0.45, -1.25],
-  [1, -0.45, -1.25],
-];
+/** Panel下面の四隅。必ずPart表面上に置き、外側への浮きコネクタは作らない。 */
+export function panelWheelMountPositions(size: Vec3): Vec3[] {
+  const [x, y, z] = size,
+    hx = x / 2,
+    hz = z / 2,
+    bottom = -y / 2;
+  return [
+    [-hx, bottom, hz],
+    [hx, bottom, hz],
+    [-hx, bottom, -hz],
+    [hx, bottom, -hz],
+  ];
+}
+export const wheelSlots: Vec3[] = panelWheelMountPositions([
+  PANEL_SIDE,
+  DEFAULT_PANEL_THICKNESS,
+  PANEL_SIDE,
+]);
 export const DEFAULT_SUSPENSION: SuspensionSettings = {
   restLength: 0.65,
   maxTravel: DEFAULT_SUSPENSION_MAX_TRAVEL,
@@ -38,6 +50,13 @@ export const DEFAULT_SUSPENSION: SuspensionSettings = {
   relaxation: 4,
   maxForce: 10000,
 };
+/** 明示SuspensionがWheel半径へ食い込まないための最低クリアランス。 */
+export const SUSPENSION_WHEEL_CLEARANCE_M = 0.08;
+/** 圧縮時もストラット実体を残す最低長。クリアランスと同じ値を用いる。 */
+export const MINIMUM_VISIBLE_SUSPENSION_LENGTH_M = SUSPENSION_WHEEL_CLEARANCE_M;
+/** 明示Suspensionで正しいhardPoint接地を支える最低ばね剛性。 */
+export const EXPLICIT_SUSPENSION_MIN_STIFFNESS = 45;
+
 const panelSize: Vec3 = [PANEL_SIDE, DEFAULT_PANEL_THICKNESS, PANEL_SIDE];
 /** 飛行機可動翼と同じ薄い棒状関節。立方体サイズの旧関節は使わない。 */
 export const DEFAULT_HINGE_SIZE: Vec3 = [PANEL_SIDE, 0.08, 0.08];
@@ -177,10 +196,10 @@ export function attachmentDescendants(machine: Machine, partId: string) {
 }
 
 export type Connector = Part["connectors"][number];
+// 辺・上面の構造接続。Suspension/Wheelは下面専用なので含めない。
 const structuralKinds: Part["definitionId"][] = [
   "Panel",
   "Block",
-  "Suspension",
   "Motor",
   "Steering",
   "Hinge",
@@ -189,6 +208,7 @@ const hingeOutputKinds: Part["definitionId"][] = [
   ...structuralKinds,
   "Thruster",
 ];
+const undercarriageKinds: Part["definitionId"][] = ["Wheel", "Suspension"];
 
 // 古い保存データには不足する接続先だけを補完し、計算中は元の配列を変更しない。
 export function placementConnectors(part: Part): Connector[] {
@@ -226,15 +246,37 @@ export function placementConnectors(part: Part): Connector[] {
         ? [0, 0, -sizeZ / 2]
         : part.definitionId === "Block" || part.definitionId === "Steering"
           ? [0, -sizeY / 2, 0]
-          : [0, 0, 0];
+          : part.definitionId === "Wheel"
+            ? [0, part.physics.size[1], 0]
+            : [0, 0, 0];
   add({
     id: "mount",
     position: mountPosition,
     axis: [1, 0, 0],
-    type: "mount",
-    accepts: [],
+    ...(part.definitionId === "Wheel"
+      ? { normal: [0, 1, 0] as Vec3, type: "mount" as const, accepts: [] }
+      : { type: "mount" as const, accepts: [] }),
   });
-  if (part.definitionId === "Hinge") {
+  if (part.definitionId === "Wheel") {
+    // 車軸中心。Suspension接続とPhysicsのrestWheelCenterに使う。
+    const axle = connectors.find((connector) => connector.id === "0");
+    if (axle) {
+      axle.position = [0, 0, 0];
+      axle.axis = [1, 0, 0];
+      axle.normal = [0, -1, 0];
+      axle.type = "wheel";
+      axle.accepts = [];
+    } else {
+      add({
+        id: "0",
+        position: [0, 0, 0],
+        axis: [1, 0, 0],
+        normal: [0, -1, 0],
+        type: "wheel",
+        accepts: [],
+      });
+    }
+  } else if (part.definitionId === "Hinge") {
     const [, , z] = part.physics.size,
       gap = Math.max(z * 0.1, 0.008);
     add({
@@ -294,6 +336,36 @@ export function placementConnectors(part: Part): Connector[] {
         accepts: ["Thruster"],
       });
     }
+    // Wheel/Suspension取付はPanel下面上だけ。面外の旧オフセットは四隅へ戻す。
+    const faceMounts = panelWheelMountPositions([x, y, z]);
+    for (let i = 0; i < 4; i++) {
+      const id = String(i),
+        connector = connectors.find((item) => item.id === id),
+        fallback = faceMounts[i];
+      if (!connector) {
+        add({
+          id,
+          position: [...fallback] as Vec3,
+          axis: [1, 0, 0],
+          normal: [0, -1, 0],
+          type: "wheel",
+          accepts: ["Wheel", "Suspension"],
+        });
+        continue;
+      }
+      const insideFace =
+        Math.abs(connector.position[0]) <= x / 2 + 1e-6 &&
+        Math.abs(connector.position[2]) <= z / 2 + 1e-6;
+      connector.position = insideFace
+        ? [connector.position[0], -y / 2, connector.position[2]]
+        : ([...fallback] as Vec3);
+      connector.normal = [0, -1, 0];
+      connector.type = "wheel";
+      connector.accepts = [...undercarriageKinds];
+    }
+    // 下面中央はBlock用。足回りは四隅マウントに限定する。
+    const faceBottom = connectors.find((item) => item.id === "face-bottom");
+    if (faceBottom) faceBottom.accepts = ["Block"];
   } else if (part.definitionId === "Suspension") {
     const restLength =
       part.physics.suspension?.restLength ?? DEFAULT_SUSPENSION.restLength;
@@ -496,7 +568,9 @@ export function findAttachmentCandidates(
           );
           const childConnectorId =
             kind === "Wheel"
-              ? "0"
+              ? parent.definitionId === "Suspension"
+                ? "0"
+                : "mount"
               : kind === "Suspension"
                 ? "suspension-input"
                 : kind === "Hinge"
@@ -678,7 +752,28 @@ function attachTemplateSuspensionWheel(
 export function carTemplate() {
   const m = createMachine("はじめてのくるま");
   attachPart(m, createPart("Panel"));
-  for (let i = 0; i < 4; i++) attachPart(m, createPart("Wheel"));
+  // 最低2枚にして前後Wheelの間隔を確保する(1枚だと密着四隅で転倒しやすい)。
+  const frontCandidate = findAttachmentCandidates(m, "Panel").find(
+    (candidate) => candidate.parentConnectorId === "edge-z+",
+  );
+  if (!frontCandidate)
+    throw new Error("Car front panel attachment is unavailable");
+  const front = createPart("Panel");
+  commitAttachment(m, front, frontCandidate);
+  const rear = m.parts[0];
+  for (const [panel, slot] of [
+    [front, "0"],
+    [front, "1"],
+    [rear, "2"],
+    [rear, "3"],
+  ] as const) {
+    const candidate = findAttachmentCandidates(m, "Wheel").find(
+      (item) =>
+        item.parentPartId === panel.id && item.parentConnectorId === slot,
+    );
+    if (!candidate) throw new Error(`Car wheel slot is unavailable: ${slot}`);
+    commitAttachment(m, createPart("Wheel"), candidate);
+  }
   return m;
 }
 export function starterCarTemplate() {
@@ -686,16 +781,6 @@ export function starterCarTemplate() {
   const m = createMachine("はじめてのくるま"),
     root = createPart("Panel", [-0.5, 0.85, -2]);
   root.connectors = placementConnectors(root);
-  // 車輪半径0.55が接地し、Panel外周(x=±1)とも重ならない位置に固定する。
-  const starterWheelSlots: Vec3[] = [
-    [-0.7, -0.3, 4],
-    [1.7, -0.3, 4],
-    [-0.7, -0.3, 0],
-    [1.7, -0.3, 0],
-  ];
-  for (let i = 0; i < starterWheelSlots.length; i++)
-    root.connectors.find((connector) => connector.id === String(i))!.position =
-      starterWheelSlots[i];
   root.connectors.find((connector) => connector.id === "face-top")!.accepts = [
     "Block",
   ];
@@ -705,7 +790,6 @@ export function starterCarTemplate() {
     2,
   ];
   m.parts.push(root);
-  for (let i = 0; i < 4; i++) attachPart(m, createPart("Wheel"), i);
   const attachPanel = (parentPartId: string, parentConnectorId: string) => {
     const candidate = findAttachmentCandidates(m, "Panel").find(
       (item) =>
@@ -719,9 +803,28 @@ export function starterCarTemplate() {
   };
   let left = root,
     right = attachPanel(root.id, "edge-x+");
+  const rearLeft = root,
+    rearRight = right;
   for (let row = 1; row < 5; row++) {
     left = attachPanel(left.id, "edge-z+");
     right = attachPanel(right.id, "edge-z+");
+  }
+  const frontLeft = left,
+    frontRight = right;
+  // 四隅Panelの下面コーナーへ密着。離れた仮想コネクタは使わない。
+  for (const [panel, slot] of [
+    [frontLeft, "0"],
+    [frontRight, "1"],
+    [rearLeft, "2"],
+    [rearRight, "3"],
+  ] as const) {
+    const candidate = findAttachmentCandidates(m, "Wheel").find(
+      (item) =>
+        item.parentPartId === panel.id && item.parentConnectorId === slot,
+    );
+    if (!candidate)
+      throw new Error(`Starter wheel slot is unavailable: ${slot}`);
+    commitAttachment(m, createPart("Wheel"), candidate);
   }
   const blockCandidate = findAttachmentCandidates(m, "Block").find(
     (item) =>
@@ -767,6 +870,46 @@ export function compileMachine(machine: Machine) {
     ),
   };
 }
+/** Rapier hard point = 自然長時Wheel中心から suspensionDirection * restLength だけ戻った点。 */
+export function suspensionHardPoint(
+  restWheelCenter: Vec3,
+  suspensionDirection: Vec3,
+  restLength: number,
+): Vec3 {
+  return restWheelCenter.map(
+    (value, index) => value - suspensionDirection[index] * restLength,
+  ) as Vec3;
+}
+
+/** Play時Wheel中心 = hardPoint + direction * 現在のサスペンション長。 */
+export function wheelCenterFromSuspension(
+  hardPoint: Vec3,
+  suspensionDirection: Vec3,
+  suspensionLength: number,
+): Vec3 {
+  return hardPoint.map(
+    (value, index) => value + suspensionDirection[index] * suspensionLength,
+  ) as Vec3;
+}
+
+/** 明示Suspensionの最大圧縮をWheel寸法で制限する。 */
+export function clampSuspensionTravelForWheel(
+  settings: SuspensionSettings,
+  wheelRadius: number,
+): SuspensionSettings {
+  // restLength - maxTravel >= wheelRadius + clearance
+  const minimumLength = wheelRadius + SUSPENSION_WHEEL_CLEARANCE_M;
+  const maxAllowedTravel = Math.max(0.01, settings.restLength - minimumLength);
+  return {
+    ...settings,
+    maxTravel: Math.min(settings.maxTravel, maxAllowedTravel),
+    // クリアランス確保でストロークが減っても、機体が沈み込まない剛性を保証する。
+    stiffness: Math.max(settings.stiffness, EXPLICIT_SUSPENSION_MIN_STIFFNESS),
+    compression: Math.max(settings.compression, 4),
+    relaxation: Math.max(settings.relaxation, 6),
+  };
+}
+
 export function wheelSuspensionSettings(
   machine: Machine,
   wheelId: string,
@@ -780,9 +923,23 @@ export function wheelSuspensionSettings(
   const parent = connection
     ? machine.parts.find((part) => part.id === connection.a)
     : undefined;
+  const radius = wheel
+    ? wheel.physics.size[1] * wheel.transform.scale[1]
+    : 0;
   if (parent?.definitionId === "Suspension" && parent.physics.suspension)
-    return parent.physics.suspension;
-  return wheel?.physics.suspension ?? DEFAULT_SUSPENSION;
+    return clampSuspensionTravelForWheel(parent.physics.suspension, radius);
+  // 直接Wheel: Panel下面への密着と、Raycast用restLengthを分離する。
+  // hardPointはTire上面、restLengthは半径(車軸までの距離)。
+  const base = wheel?.physics.suspension ?? DEFAULT_SUSPENSION;
+  const restLength = Math.max(0.08, radius);
+  return {
+    ...base,
+    restLength,
+    maxTravel: Math.min(base.maxTravel, Math.max(0.05, restLength * 0.4)),
+    stiffness: Math.max(base.stiffness, EXPLICIT_SUSPENSION_MIN_STIFFNESS),
+    compression: Math.max(base.compression, 4),
+    relaxation: Math.max(base.relaxation, 6),
+  };
 }
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),

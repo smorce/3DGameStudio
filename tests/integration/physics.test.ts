@@ -8,12 +8,15 @@ import {
   createPart,
   findAttachmentCandidates,
   carTemplate,
+  MINIMUM_VISIBLE_SUSPENSION_LENGTH_M,
   planeTemplate,
+  starterCarTemplate,
+  SUSPENSION_WHEEL_CLEARANCE_M,
 } from "../../packages/machine-system/src/index";
 import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
-import { euler, quaternion } from "../../packages/machine-system/src/math";
+import { euler, quaternion, rotate } from "../../packages/machine-system/src/math";
 import { starterPlaneWorldPatch } from "../../packages/world-system/src/index";
 import {
   findStableForwardTakeoff,
@@ -101,7 +104,7 @@ function relativeAxisVelocity(
 }
 it("4輪車が物理世界で前進し編集・保存データを変更しない", async () => {
   const bus = new CommandBus(emptyProject());
-  bus.execute({ type: "machine.create", machine: carTemplate() });
+  bus.execute({ type: "machine.create", machine: starterCarTemplate() });
   const before = bus.project;
   const physics = new RapierPhysics();
   await physics.load(before);
@@ -384,6 +387,112 @@ it("Plane Main Gearは平坦地の静止条件で左右対称なSuspension状態
     Math.abs((left.suspensionForceN ?? 0) - (right.suspensionForceN ?? 0)),
   ).toBeLessThan(100);
   expect(Math.abs(sample.rollRad)).toBeLessThan(0.05);
+  physics.dispose();
+});
+
+it("Rapier hardPointとPlay時Wheel中心・接地が一致しSuspensionはWheel内部へ埋没しない", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate(),
+    planeWorld = starterPlaneWorldPatch(project.world);
+  project.world.terrain = planeWorld.terrain;
+  project.world.entities = planeWorld.entities;
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  for (let i = 0; i < 600; i++) physics.step({ throttle: 0 });
+  const render = physics.renderState(),
+    sample = physics.telemetry.current(machine.id)!,
+    vehicle = (
+      physics as unknown as {
+        vehicles: {
+          controller: {
+            wheelChassisConnectionPointCs: (i: number) => {
+              x: number;
+              y: number;
+              z: number;
+            } | null;
+            wheelContactPoint: (i: number) => {
+              x: number;
+              y: number;
+              z: number;
+            } | null;
+            wheelSuspensionLength: (i: number) => number | null;
+          };
+          wheelRuntime: {
+            part: { id: string; metadata: Record<string, unknown> };
+            hardPoint: [number, number, number];
+            restWheelCenter: [number, number, number];
+            suspensionDirection: [number, number, number];
+            restLengthM: number;
+            radiusM: number;
+          }[];
+          body: {
+            translation: () => { x: number; y: number; z: number };
+            rotation: () => {
+              x: number;
+              y: number;
+              z: number;
+              w: number;
+            };
+          };
+        }[];
+      }
+    ).vehicles[0];
+  expect(vehicle.wheelRuntime.length).toBe(3);
+  for (const [index, runtime] of vehicle.wheelRuntime.entries()) {
+    const hard = vehicle.controller.wheelChassisConnectionPointCs(index)!;
+    expect(hard.x).toBeCloseTo(runtime.hardPoint[0], 5);
+    expect(hard.y).toBeCloseTo(runtime.hardPoint[1], 5);
+    expect(hard.z).toBeCloseTo(runtime.hardPoint[2], 5);
+    // hardPoint + direction * restLength ≈ Edit時のWheel中心
+    const restCenter = [
+      runtime.hardPoint[0] +
+        runtime.suspensionDirection[0] * runtime.restLengthM,
+      runtime.hardPoint[1] +
+        runtime.suspensionDirection[1] * runtime.restLengthM,
+      runtime.hardPoint[2] +
+        runtime.suspensionDirection[2] * runtime.restLengthM,
+    ];
+    expect(restCenter[0]).toBeCloseTo(runtime.restWheelCenter[0], 5);
+    expect(restCenter[1]).toBeCloseTo(runtime.restWheelCenter[1], 5);
+    expect(restCenter[2]).toBeCloseTo(runtime.restWheelCenter[2], 5);
+
+    const length =
+        vehicle.controller.wheelSuspensionLength(index) ?? runtime.restLengthM,
+      wheelState = render.wheels.get(runtime.part.id)!,
+      pose = wheelState.pose,
+      localCenter = [
+        runtime.hardPoint[0] + runtime.suspensionDirection[0] * length,
+        runtime.hardPoint[1] + runtime.suspensionDirection[1] * length,
+        runtime.hardPoint[2] + runtime.suspensionDirection[2] * length,
+      ] as [number, number, number],
+      body = vehicle.body.translation(),
+      rot = vehicle.body.rotation(),
+      rotated = rotate(localCenter, [rot.x, rot.y, rot.z, rot.w]);
+    // Play時Wheel中心 = body + R*(hardPoint + direction * currentLength)
+    expect(pose.position[0]).toBeCloseTo(body.x + rotated[0], 3);
+    expect(pose.position[1]).toBeCloseTo(body.y + rotated[1], 3);
+    expect(pose.position[2]).toBeCloseTo(body.z + rotated[2], 3);
+
+    const telemetry = sample.wheels.find(
+      (wheel) => wheel.id === runtime.part.id,
+    )!;
+    expect(telemetry.suspensionLengthM).toBeGreaterThanOrEqual(
+      runtime.radiusM + MINIMUM_VISIBLE_SUSPENSION_LENGTH_M - 1e-3,
+    );
+    expect(telemetry.minimumLengthM).toBeGreaterThanOrEqual(
+      runtime.radiusM + SUSPENSION_WHEEL_CLEARANCE_M - 1e-3,
+    );
+
+    if (telemetry.inContact) {
+      const contact = vehicle.controller.wheelContactPoint(index);
+      expect(contact).toBeTruthy();
+      const visualBottomY = pose.position[1] - runtime.radiusM;
+      // 見た目の接地とRaycast接触点がずれないこと(二重restLengthの検出)。
+      expect(Math.abs(visualBottomY - contact!.y)).toBeLessThan(0.08);
+    }
+  }
   physics.dispose();
 });
 

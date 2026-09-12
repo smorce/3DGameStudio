@@ -80,26 +80,47 @@ export function updateSuspensionVisual(
   visual: THREE.Object3D,
   length: number,
   direction: [number, number, number] = [0, -1, 0],
+  wheelRadius = 0,
 ) {
   const outerLength = visual.userData.outerLength as number | undefined,
     rod = visual.getObjectByName("suspension-inner-rod") as THREE.Mesh | null,
     lowerMount = visual.getObjectByName(
       "suspension-lower-mount",
-    ) as THREE.Object3D | null;
+    ) as THREE.Object3D | null,
+    axleLink = visual.getObjectByName(
+      "suspension-axle-link",
+    ) as THREE.Mesh | null;
   if (!outerLength || !rod || !lowerMount) return;
-  const endpoint = new THREE.Vector3(...direction).normalize().multiplyScalar(
-      Math.max(0.01, length),
-    ),
-    outerEnd = new THREE.Vector3(0, -outerLength, 0),
-    segment = endpoint.clone().sub(outerEnd),
-    segmentLength = Math.max(0.02, segment.length());
+  const dir = new THREE.Vector3(...direction).normalize();
+  const fullLength = Math.max(0.01, length);
+  // 太いストラットはタイヤ表面より上で止め、ハブまでは細いリンクだけ伸ばす。
+  const strutLength =
+    wheelRadius > 0
+      ? Math.max(outerLength * 0.45, fullLength - wheelRadius)
+      : fullLength;
+  const endpoint = dir.clone().multiplyScalar(strutLength);
+  const hubPoint = dir.clone().multiplyScalar(fullLength);
+  const outerEnd = new THREE.Vector3(0, -outerLength, 0);
+  const segment = endpoint.clone().sub(outerEnd);
+  const segmentLength = Math.max(0.02, segment.length());
   rod.position.copy(outerEnd).add(endpoint).multiplyScalar(0.5);
   rod.scale.set(1, segmentLength, 1);
   rod.quaternion.setFromUnitVectors(
     new THREE.Vector3(0, 1, 0),
-    segment.normalize(),
+    segment.clone().normalize(),
   );
   lowerMount.position.copy(endpoint);
+  if (axleLink) {
+    const link = hubPoint.clone().sub(endpoint);
+    const linkLength = Math.max(0.001, link.length());
+    axleLink.visible = wheelRadius > 0 && linkLength > 0.005;
+    axleLink.position.copy(endpoint).add(hubPoint).multiplyScalar(0.5);
+    axleLink.scale.set(1, linkLength, 1);
+    axleLink.quaternion.setFromUnitVectors(
+      new THREE.Vector3(0, 1, 0),
+      link.normalize(),
+    );
+  }
 }
 
 function createWheelVisual(part: Part, options: PartVisualOptions) {
@@ -167,6 +188,14 @@ function createSuspensionVisual(part: Part, options: PartVisualOptions) {
     "suspension-lower-mount",
   );
   lowerMount.rotation.z = Math.PI / 2;
+  const axleLink = addMesh(
+    lower,
+    new THREE.CylinderGeometry(radius * 0.12, radius * 0.12, 1, 8),
+    "#8a9499",
+    options,
+    "suspension-axle-link",
+  );
+  axleLink.visible = false;
   group.add(lower);
   updateSuspensionVisual(group, restLength);
   return group;

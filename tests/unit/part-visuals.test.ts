@@ -105,16 +105,32 @@ it("Suspensionは上下Mount、外筒、伸縮Rodを生成し長さへ追従す�
   const part = createPart("Suspension"),
     visual = createPartVisual(part),
     lowerMount = visual.getObjectByName("suspension-lower-mount")!,
-    rod = visual.getObjectByName("suspension-inner-rod")!;
+    rod = visual.getObjectByName("suspension-inner-rod")!,
+    axleLink = visual.getObjectByName("suspension-axle-link")!;
   expect(visual.getObjectByName("suspension-upper-mount")).toBeDefined();
   expect(visual.getObjectByName("suspension-outer-cylinder")).toBeDefined();
   expect(rod).toBeDefined();
+  expect(axleLink).toBeDefined();
   expect(lowerMount.position.y).toBeCloseTo(
     -(part.physics.suspension?.restLength ?? 0.65),
   );
   updateSuspensionVisual(visual, 0.4);
   expect(lowerMount.position.y).toBeCloseTo(-0.4);
   expect(rod.scale.y).toBeGreaterThan(0);
+  expect(axleLink.visible).toBe(false);
+});
+
+it("Suspension VisualはWheel半径ぶんストラットを短くし細いAxle Linkでハブへ繋ぐ", () => {
+  const part = createPart("Suspension"),
+    visual = createPartVisual(part),
+    lowerMount = visual.getObjectByName("suspension-lower-mount")!,
+    axleLink = visual.getObjectByName("suspension-axle-link")!,
+    length = 0.65,
+    wheelRadius = 0.38;
+  updateSuspensionVisual(visual, length, [0, -1, 0], wheelRadius);
+  expect(lowerMount.position.y).toBeCloseTo(-(length - wheelRadius));
+  expect(axleLink.visible).toBe(true);
+  expect(axleLink.position.y).toBeCloseTo(-(length - wheelRadius / 2));
 });
 
 it("Ghostは通常Visualと同じ構成で全Meshを透過する", () => {

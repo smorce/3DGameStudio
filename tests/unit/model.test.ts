@@ -7,12 +7,20 @@ import { CommandBus } from "../../packages/command-system/src/index";
 import {
   boatTemplate,
   carTemplate,
+  clampSuspensionTravelForWheel,
   compileMachine,
+  connectorWorldPosition,
   createPart,
+  DEFAULT_SUSPENSION,
+  findAttachmentCandidates,
   liftMachineToGround,
   planeTemplate,
   starterCarTemplate,
+  SUSPENSION_WHEEL_CLEARANCE_M,
+  suspensionHardPoint,
   wheelBottomY,
+  wheelCenterFromSuspension,
+  wheelSuspensionSettings,
 } from "../../packages/machine-system/src/index";
 import {
   DEFAULT_MOTOR_MAX_TORQUE,
@@ -20,13 +28,14 @@ import {
   DEFAULT_SUSPENSION_MAX_TRAVEL,
   PANEL_SIDE,
   panelMass,
+  uid,
 } from "../../packages/project-schema/src/index";
 describe("モデルとコマンド", () => {
   it("履歴とシリアライズ、詳細値を保持する", () => {
     const bus = new CommandBus(emptyProject()),
       m = carTemplate();
     bus.execute({ type: "machine.create", machine: m });
-    const p = m.parts[1];
+    const p = m.parts.find((part) => part.definitionId === "Wheel")!;
     bus.execute({
       type: "part.update",
       machineId: m.id,
@@ -38,7 +47,10 @@ describe("モデルとコマンド", () => {
     });
     const after = bus.project;
     bus.undo();
-    expect(bus.project.machines[0].parts[1].actuator.motorTorque).toBe(180);
+    expect(
+      bus.project.machines[0].parts.find((part) => part.id === p.id)!.actuator
+        .motorTorque,
+    ).toBe(180);
     bus.redo();
     expect(bus.project).toEqual(after);
     expect(parseProject(JSON.parse(JSON.stringify(after)))).toEqual(after);
@@ -48,6 +60,16 @@ describe("モデルとコマンド", () => {
     const bus = new CommandBus(emptyProject()),
       m = carTemplate();
     bus.execute({ type: "machine.create", machine: m });
+    // 残スロットを埋めてから追加し、候補なしを拒否する。
+    while (findAttachmentCandidates(bus.project.machines[0], "Wheel").length)
+      bus.execute({
+        type: "part.attach",
+        machineId: m.id,
+        kind: "Wheel",
+        partId: uid(),
+        candidateId: findAttachmentCandidates(bus.project.machines[0], "Wheel")[0]
+          .id,
+      });
     const before = bus.project;
     expect(() =>
       bus.execute({
@@ -172,24 +194,43 @@ describe("モデルとコマンド", () => {
 });
 it("親部品の移動・回転で接続位置を保持する", () => {
   const m = carTemplate(),
-    bus = new CommandBus(emptyProject());
+    bus = new CommandBus(emptyProject()),
+    rear = m.parts[0],
+    wheel = m.parts.find(
+      (part) =>
+        part.definitionId === "Wheel" &&
+        m.connections.some(
+          (connection) =>
+            connection.a === rear.id && connection.b === part.id,
+        ),
+    )!;
   bus.execute({ type: "machine.create", machine: m });
   bus.execute({
     type: "part.move",
     machineId: m.id,
-    partId: m.parts[0].id,
+    partId: rear.id,
     value: [3, 0.85, 0],
   });
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(2);
+  // 後輪はPanel下面コーナー(x=±0.5)へ密着。
+  expect(
+    bus.project.machines[0].parts.find((part) => part.id === wheel.id)!
+      .transform.position[0],
+  ).toBeCloseTo(2.5);
   bus.execute({
     type: "part.rotate",
     machineId: m.id,
-    partId: m.parts[0].id,
+    partId: rear.id,
     value: [0, Math.PI, 0],
   });
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(4);
+  expect(
+    bus.project.machines[0].parts.find((part) => part.id === wheel.id)!
+      .transform.position[0],
+  ).toBeCloseTo(3.5);
   bus.undo();
-  expect(bus.project.machines[0].parts[1].transform.position[0]).toBeCloseTo(2);
+  expect(
+    bus.project.machines[0].parts.find((part) => part.id === wheel.id)!
+      .transform.position[0],
+  ).toBeCloseTo(2.5);
 });
 
 describe("Starter Template", () => {
@@ -363,6 +404,68 @@ describe("Starter Template", () => {
     expect(compileMachine(machine).bodies).toHaveLength(1);
   });
 });
+
+describe("Suspension hardPoint / travel 制約", () => {
+  it("hardPoint + direction * restLength は Edit時のWheel中心と一致する", () => {
+    const machine = planeTemplate(),
+      direction: [number, number, number] = [0, -1, 0];
+    for (const wheel of machine.parts.filter(
+      (part) => part.definitionId === "Wheel",
+    )) {
+      const connection = machine.connections.find(
+        (item) => item.type === "revolute" && item.b === wheel.id,
+      )!;
+      const restWheelCenter = connectorWorldPosition(
+          wheel,
+          connection.connectorB,
+        ),
+        settings = wheelSuspensionSettings(machine, wheel.id),
+        hardPoint = suspensionHardPoint(
+          restWheelCenter,
+          direction,
+          settings.restLength,
+        ),
+        reconstructed = wheelCenterFromSuspension(
+          hardPoint,
+          direction,
+          settings.restLength,
+        );
+      expect(reconstructed[0]).toBeCloseTo(restWheelCenter[0], 6);
+      expect(reconstructed[1]).toBeCloseTo(restWheelCenter[1], 6);
+      expect(reconstructed[2]).toBeCloseTo(restWheelCenter[2], 6);
+      // Suspension上端はWheel中心より restLength だけ上。
+      expect(hardPoint[1] - restWheelCenter[1]).toBeCloseTo(
+        settings.restLength,
+        6,
+      );
+    }
+  });
+
+  it("明示SuspensionのmaxTravelはWheel半径へ食い込まない", () => {
+    const machine = planeTemplate(),
+      wheel = machine.parts.find(
+        (part) =>
+          part.definitionId === "Wheel" && part.metadata.gearRole === "main-left",
+      )!,
+      radius = wheel.physics.size[1] * wheel.transform.scale[1],
+      settings = wheelSuspensionSettings(machine, wheel.id),
+      minimumLength = radius + SUSPENSION_WHEEL_CLEARANCE_M;
+    expect(settings.restLength - settings.maxTravel).toBeGreaterThanOrEqual(
+      minimumLength - 1e-9,
+    );
+    expect(settings.maxTravel).toBeLessThan(DEFAULT_SUSPENSION.maxTravel);
+    expect(settings.stiffness).toBeGreaterThanOrEqual(45);
+    const clamped = clampSuspensionTravelForWheel(
+      { ...DEFAULT_SUSPENSION, maxTravel: 0.55 },
+      0.38,
+    );
+    expect(clamped.maxTravel).toBeCloseTo(
+      DEFAULT_SUSPENSION.restLength - minimumLength,
+    );
+    expect(clamped.stiffness).toBe(45);
+  });
+});
+
 it("シリアライズしたコマンド履歴を再生できる", () => {
   const project = emptyProject(),
     bus = new CommandBus(project),

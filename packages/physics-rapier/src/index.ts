@@ -26,6 +26,8 @@ import {
 import {
   compileMachine,
   connectorWorldPosition,
+  suspensionHardPoint,
+  wheelCenterFromSuspension,
   wheelSuspensionSettings,
 } from "../../machine-system/src/index";
 import {
@@ -64,6 +66,7 @@ export interface WheelRenderState {
   minimumLengthM: number;
   suspensionForceN?: number;
   inContact?: boolean;
+  wheelRadiusM?: number;
 }
 export interface PhysicsRenderState {
   poses: Map<string, Pose>;
@@ -89,10 +92,14 @@ interface MotorRuntime extends RevoluteRuntime {
 }
 interface WheelRuntime {
   part: Part;
-  connectionPoint: Vec3;
+  /** Rapier addWheel 第1引数。サスペンション上端(車体側取付点)。 */
+  hardPoint: Vec3;
+  /** 編集データ上の自然長時Wheel中心。hardPoint + direction * restLength。 */
+  restWheelCenter: Vec3;
   suspensionDirection: Vec3;
   restLengthM: number;
   maxTravelM: number;
+  radiusM: number;
 }
 const vector = (v: Vec3) => ({ x: v[0], y: v[1], z: v[2] });
 const rotation = (q: Quat) => ({ x: q[0], y: q[1], z: q[2], w: q[3] });
@@ -633,18 +640,23 @@ export class RapierPhysics {
       for (const p of wheels) {
         const connection = m.wheelConnections.find((item) => item.b === p.id);
         if (!connection) continue;
-        const connectionPoint = connectorWorldPosition(
-          p,
-          connection.connectorB,
-        );
+        const restWheelCenter = connectorWorldPosition(p, "0");
         const i = controller.numWheels();
         const suspension = wheelSuspensionSettings(machine, p.id);
+        const suspensionDirection: Vec3 = [0, -1, 0];
+        const radius = p.physics.size[1] * p.transform.scale[1];
+        // Rapierの第1引数はWheel中心ではなく、車体側のサスペンション取付点。
+        const hardPoint = suspensionHardPoint(
+          restWheelCenter,
+          suspensionDirection,
+          suspension.restLength,
+        );
         controller.addWheel(
-          vector(connectionPoint),
+          vector(hardPoint),
           { x: 0, y: -1, z: 0 },
           { x: -1, y: 0, z: 0 },
           suspension.restLength,
-          p.physics.size[1] * p.transform.scale[1],
+          radius,
         );
         controller.setWheelSuspensionStiffness(i, suspension.stiffness);
         controller.setWheelSuspensionCompression(i, suspension.compression);
@@ -654,10 +666,12 @@ export class RapierPhysics {
         controller.setWheelMaxSuspensionTravel(i, suspension.maxTravel);
         wheelRuntime.push({
           part: p,
-          connectionPoint,
-          suspensionDirection: [0, -1, 0],
+          hardPoint,
+          restWheelCenter,
+          suspensionDirection,
           restLengthM: suspension.restLength,
           maxTravelM: suspension.maxTravel,
+          radiusM: radius,
         });
       }
       this.vehicles.push({
@@ -1157,12 +1171,11 @@ export class RapierPhysics {
       v.wheelRuntime.forEach((runtime, i) => {
         const length =
             v.controller.wheelSuspensionLength(i) ?? runtime.restLengthM,
-          p = runtime.connectionPoint.map(
-            (value, index) =>
-              value +
-              runtime.suspensionDirection[index] *
-                (length - runtime.restLengthM),
-          ) as Vec3,
+          p = wheelCenterFromSuspension(
+            runtime.hardPoint,
+            runtime.suspensionDirection,
+            length,
+          ),
           w = runtime.part;
         result.set(
           w.id,
@@ -1216,6 +1229,7 @@ export class RapierPhysics {
           minimumLengthM: Math.max(0.05, restLengthM - maxTravelM),
           inContact,
           suspensionForceN: suspensionForceN ?? undefined,
+          wheelRadiusM: runtime.radiusM,
         });
       });
     }

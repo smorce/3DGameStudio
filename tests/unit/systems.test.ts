@@ -58,15 +58,24 @@ describe("マシン", () => {
     const p = emptyProject(),
       m = carTemplate();
     p.machines.push(m);
-    const bus = new CommandBus(p);
+    const bus = new CommandBus(p),
+      before = structuredClone(bus.project),
+      removedId = m.parts[0].id,
+      remaining = m.connections.filter(
+        (connection) =>
+          connection.a !== removedId && connection.b !== removedId,
+      ).length;
     bus.execute({
       type: "part.remove",
       machineId: m.id,
-      partId: m.parts[0].id,
+      partId: removedId,
     });
-    expect(bus.project.machines[0].connections).toHaveLength(0);
+    expect(bus.project.machines[0].connections).toHaveLength(remaining);
+    expect(
+      bus.project.machines[0].parts.some((part) => part.id === removedId),
+    ).toBe(false);
     bus.undo();
-    expect(bus.project).toEqual(p);
+    expect(bus.project).toEqual(before);
   });
 });
 describe("地形とワールド", () => {

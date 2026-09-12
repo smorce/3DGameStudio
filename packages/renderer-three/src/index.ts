@@ -37,11 +37,29 @@ export function syncPartVisualTransforms(
       visual.position.fromArray(part.transform.position);
       visual.rotation.fromArray([...part.transform.rotation, "XYZ"]);
       visual.scale.fromArray(part.transform.scale);
-      if (part.definitionId === "Suspension")
+      if (part.definitionId === "Suspension") {
+        const wheelConnection = machine.connections.find(
+          (item) =>
+            item.a === part.id &&
+            item.type === "revolute" &&
+            machine.parts.some(
+              (candidate) =>
+                candidate.id === item.b && candidate.definitionId === "Wheel",
+            ),
+        );
+        const wheel = wheelConnection
+          ? machine.parts.find((candidate) => candidate.id === wheelConnection.b)
+          : undefined;
+        const wheelRadius = wheel
+          ? wheel.physics.size[1] * wheel.transform.scale[1]
+          : 0;
         updateSuspensionVisual(
           visual,
           part.physics.suspension?.restLength ?? 0.55,
+          [0, -1, 0],
+          wheelRadius,
         );
+      }
     }
 }
 export class ThreeRenderer implements RendererAdapter {
@@ -598,11 +616,12 @@ export class ThreeRenderer implements RendererAdapter {
             localDirection = new THREE.Vector3(
               ...wheelState.suspensionDirectionWorld,
             ).applyQuaternion(topQuaternion.clone().invert());
-          updateSuspensionVisual(visual, wheelState.suspensionLengthM, [
-            localDirection.x,
-            localDirection.y,
-            localDirection.z,
-          ]);
+          updateSuspensionVisual(
+            visual,
+            wheelState.suspensionLengthM,
+            [localDirection.x, localDirection.y, localDirection.z],
+            wheelState.wheelRadiusM ?? 0,
+          );
         }
       }
       const first = poses.values().next().value;
