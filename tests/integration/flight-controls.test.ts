@@ -53,6 +53,57 @@ function positionMotorFixture(
   return { project, machine, motor, panel };
 }
 
+function selfDrivenHingeFixture(
+  limits = { minAngleRad: -0.2, maxAngleRad: 0.2 },
+) {
+  const project = emptyProject();
+  project.settings.gravity = [0, 0, 0];
+  const machine = createMachine("Self Driven Hinge Test"),
+    root = createPart("Panel", [0, 1, 0]);
+  attachPart(machine, root);
+  const hinge = createPart("Hinge");
+  hinge.actuator.motorMode = "position";
+  hinge.actuator.controlChannel = "test";
+  hinge.actuator.positionStiffness = 120;
+  hinge.actuator.positionDamping = 20;
+  attachPart(machine, hinge);
+  const panel = createPart("Panel"),
+    panelCandidate = findAttachmentCandidates(machine, "Panel").find(
+      (candidate) =>
+        candidate.parentPartId === hinge.id &&
+        candidate.parentConnectorId === "hinge-output",
+    );
+  if (!panelCandidate)
+    throw new Error("Self driven hinge panel fixture unavailable");
+  commitAttachment(machine, panel, panelCandidate);
+  const revolute = machine.connections.find(
+    (connection) => connection.type === "revolute",
+  )!;
+  revolute.limits = limits;
+  project.machines.push(machine);
+  return { project, machine, hinge, panel };
+}
+
+it("Position制御のHingeはMotor Partなしで自分の関節を駆動する", async () => {
+  const fixture = selfDrivenHingeFixture(),
+    physics = new RapierPhysics();
+  await physics.load(fixture.project);
+  physics.telemetry.start();
+  for (let i = 0; i < 60; i++) physics.step({ test: 1 });
+  const positive = physics.telemetry.current(fixture.machine.id)!,
+    positiveMotor = positive.motorByPart![fixture.hinge.id];
+  expect(positiveMotor).toBeDefined();
+  expect(positiveMotor.controlInput).toBe(1);
+  expect(positiveMotor.targetAngleRad).toBeCloseTo(0.2);
+  expect(positiveMotor.actualRelativeAngleRad).toBeGreaterThan(0.05);
+  for (let i = 0; i < 90; i++) physics.step({});
+  const neutral = physics.telemetry.current(fixture.machine.id)!,
+    neutralMotor = neutral.motorByPart![fixture.hinge.id];
+  expect(neutralMotor.targetAngleRad).toBe(0);
+  expect(Math.abs(neutralMotor.actualRelativeAngleRad)).toBeLessThan(0.08);
+  physics.dispose();
+});
+
 it("Position Motorは正負入力とNeutral復帰を実際のJoint Poseへ反映する", async () => {
   const fixture = positionMotorFixture(),
     physics = new RapierPhysics();

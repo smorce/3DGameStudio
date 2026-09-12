@@ -77,7 +77,8 @@ export function computePanelAerodynamicForce(
     scale(flowDirection, normalAlongFlow),
   );
   const projectedLength = length(projectedNormal);
-  const angleOfAttack = Math.atan2(normalAlongFlow, projectedLength);
+  // 正の迎角は法線が進行方向と逆(後方)へ傾いた状態。前縁上げで法線側へ揚力が出る。
+  const angleOfAttack = Math.atan2(-normalAlongFlow, projectedLength);
   const dynamicPressure =
     0.5 *
     Math.max(

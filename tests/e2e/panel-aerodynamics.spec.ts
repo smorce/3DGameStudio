@@ -80,18 +80,16 @@ test("Generic Flight ControlのMotor・Hinge・Binding Inspectorを編集でき�
     .click();
   await page.getByRole("button", { name: "Studio", exact: true }).click();
 
-  const motors = page.getByRole("button", { name: /◈ モーター/ });
-  await expect(motors).toHaveCount(5);
-  await motors.first().click();
+  // 可動翼はMotor Partなしで、Hinge自身がPosition制御を持つ。
+  await expect(page.getByRole("button", { name: /◈ モーター/ })).toHaveCount(0);
+  const hinges = page.getByRole("button", { name: /◈ 関節/ });
+  await expect(hinges).toHaveCount(5);
+  await hinges.first().click();
   await expect(page.getByLabel("Motor Mode")).toBeVisible();
   await expect(page.getByLabel("Control Channel")).toBeVisible();
   await expect(page.getByLabel("Control Gain")).toBeVisible();
 
   await page.getByLabel("Control Channel").fill("pitch");
-  await page
-    .getByRole("button", { name: /◈ 関節/ })
-    .first()
-    .click();
   await expect(page.getByLabel("Limit Enabled")).toBeVisible();
   await expect(page.getByLabel("Min Angle")).toBeVisible();
   await expect(page.getByLabel("Max Angle")).toBeVisible();

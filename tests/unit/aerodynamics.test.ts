@@ -32,14 +32,15 @@ describe("Panel surface aerodynamics", () => {
   });
 
   it("正負のTiltで揚力方向が反転する", () => {
+    // 前縁上げ(法線が後方へ傾く)が正の迎角・上向き揚力。
     const positive = computePanelAerodynamicForce({
       ...input,
-      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      normal: [0, Math.cos(0.12), -Math.sin(0.12)],
       velocity: [0, 0, 10],
     });
     const negative = computePanelAerodynamicForce({
       ...input,
-      normal: [0, Math.cos(0.12), -Math.sin(0.12)],
+      normal: [0, Math.cos(0.12), Math.sin(0.12)],
       velocity: [0, 0, 10],
     });
     expect(positive.lift[1]).toBeGreaterThan(0);
@@ -61,12 +62,12 @@ describe("Panel surface aerodynamics", () => {
   it("速度を2倍にすると力は概ね4倍になる", () => {
     const slow = computePanelAerodynamicForce({
       ...input,
-      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      normal: [0, Math.cos(0.12), -Math.sin(0.12)],
       velocity: [0, 0, 5],
     });
     const fast = computePanelAerodynamicForce({
       ...input,
-      normal: [0, Math.cos(0.12), Math.sin(0.12)],
+      normal: [0, Math.cos(0.12), -Math.sin(0.12)],
       velocity: [0, 0, 10],
     });
     expect(fast.force[1] / slow.force[1]).toBeCloseTo(4, 1);
@@ -79,7 +80,7 @@ describe("Panel surface aerodynamics", () => {
       }),
       positiveAngle = computePanelAerodynamicForce({
         ...input,
-        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        normal: [0, Math.cos(0.18), -Math.sin(0.18)],
         velocity: [0, 0, 20],
       });
     expect(Math.abs(zeroAngle.lift[1])).toBeLessThan(1e-6);
@@ -90,12 +91,12 @@ describe("Panel surface aerodynamics", () => {
   it("速度方向を反転すると迎角と揚力Yの符号も反転する", () => {
     const forward = computePanelAerodynamicForce({
         ...input,
-        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        normal: [0, Math.cos(0.18), -Math.sin(0.18)],
         velocity: [0, 0, 20],
       }),
       backward = computePanelAerodynamicForce({
         ...input,
-        normal: [0, Math.cos(0.18), Math.sin(0.18)],
+        normal: [0, Math.cos(0.18), -Math.sin(0.18)],
         velocity: [0, 0, -20],
       });
     expect(forward.angleOfAttack).toBeGreaterThan(0);

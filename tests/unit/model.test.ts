@@ -187,9 +187,13 @@ describe("Starter Template", () => {
       thrusters = machine.parts.filter(
         (part) => part.definitionId === "Thruster",
       );
-    expect(parsed.machines[0].parts).toHaveLength(42);
+    expect(parsed.machines[0].parts).toHaveLength(37);
+    expect(
+      machine.parts.filter((part) => part.definitionId === "Motor"),
+    ).toHaveLength(0);
     expect(mainWing.length).toBeGreaterThanOrEqual(8);
-    expect(mainWing.every((part) => part.transform.rotation[0] > 0)).toBe(true);
+    // rotation[0]が負のとき前縁上げ(正の物理迎角)になる。
+    expect(mainWing.every((part) => part.transform.rotation[0] < 0)).toBe(true);
     expect(horizontalTail).toHaveLength(4);
     expect(verticalTail).toHaveLength(2);
     expect(

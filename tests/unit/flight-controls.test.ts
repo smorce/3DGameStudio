@@ -8,6 +8,7 @@ import {
   planeTemplate,
   createPart,
 } from "../../packages/machine-system/src/index";
+import { quaternion, rotate } from "../../packages/machine-system/src/math";
 
 describe("汎用Control Channel", () => {
   it("同一Channelを加算し、範囲をClampする", () => {
@@ -76,16 +77,19 @@ describe("汎用Control Channel", () => {
 });
 
 describe("Starter Planeの工作機構", () => {
-  it("MotorはVelocityを既定にし、PlaneはPosition Motorへ割り当てる", () => {
+  it("PlaneはMotor Partを使わず、Hinge自身をPosition制御へ割り当てる", () => {
     expect(createPart("Motor").actuator.motorMode).toBe("velocity");
+    expect(createPart("Hinge").actuator.motorMode).toBe("velocity");
     const machine = planeTemplate(),
       motors = machine.parts.filter((part) => part.definitionId === "Motor"),
-      positionModes = motors.filter(
+      hinges = machine.parts.filter((part) => part.definitionId === "Hinge"),
+      positionHinges = hinges.filter(
         (part) => part.actuator.motorMode === "position",
       );
-    expect(motors).toHaveLength(5);
-    expect(positionModes).toHaveLength(5);
-    expect(positionModes.map((part) => part.actuator.controlChannel)).toEqual(
+    expect(motors).toHaveLength(0);
+    expect(hinges).toHaveLength(5);
+    expect(positionHinges).toHaveLength(5);
+    expect(positionHinges.map((part) => part.actuator.controlChannel)).toEqual(
       expect.arrayContaining(["pitch", "turn"]),
     );
     expect(
@@ -93,5 +97,32 @@ describe("Starter Planeの工作機構", () => {
         .filter((connection) => connection.type === "revolute")
         .filter((connection) => connection.limits),
     ).toHaveLength(5);
+  });
+
+  it("Hingeは薄い蝶番として親Panelの端面上に回転軸を置く", () => {
+    const machine = planeTemplate(),
+      hinges = machine.parts.filter((part) => part.definitionId === "Hinge");
+    for (const hinge of hinges) {
+      expect(hinge.physics.size[2]).toBeLessThanOrEqual(0.1);
+      const revolute = machine.connections.find(
+        (connection) =>
+          connection.type === "revolute" && connection.b === hinge.id,
+      )!;
+      const parent = machine.parts.find((part) => part.id === revolute.a)!;
+      const connector = parent.connectors.find(
+        (item) => item.id === revolute.connectorA,
+      )!;
+      // 回転軸(=Hinge中心)が親Panelの接続端面上へ一致していること。
+      const edgePoint = rotate(
+        connector.position,
+        quaternion(parent.transform.rotation),
+      ).map((value, index) => value + parent.transform.position[index]);
+      const edgeDistance = Math.hypot(
+        ...hinge.transform.position.map(
+          (value, index) => value - edgePoint[index],
+        ),
+      );
+      expect(edgeDistance).toBeLessThan(0.001);
+    }
   });
 });

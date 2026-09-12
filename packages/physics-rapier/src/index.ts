@@ -567,17 +567,24 @@ export class RapierPhysics {
           limits: c.limits,
         };
         this.hinges.push(runtime);
-        const driver = m.parts.find(
-          (candidate) =>
-            candidate.definitionId === "Motor" &&
-            m.bodyForPart.get(candidate.id) === m.bodyForPart.get(c.b) &&
-            m.connections.some(
-              (link) =>
-                link.type === "fixed" &&
-                ((link.a === c.b && link.b === candidate.id) ||
-                  (link.b === c.b && link.a === candidate.id)),
-            ),
-        );
+        // Hinge自身がposition制御を持つ場合はMotor Partなしで関節を駆動する。
+        const selfDrivenHinge =
+          p.definitionId === "Hinge" && p.actuator.motorMode === "position"
+            ? p
+            : undefined;
+        const driver =
+          selfDrivenHinge ??
+          m.parts.find(
+            (candidate) =>
+              candidate.definitionId === "Motor" &&
+              m.bodyForPart.get(candidate.id) === m.bodyForPart.get(c.b) &&
+              m.connections.some(
+                (link) =>
+                  link.type === "fixed" &&
+                  ((link.a === c.b && link.b === candidate.id) ||
+                    (link.b === c.b && link.a === candidate.id)),
+              ),
+          );
         if (driver)
           this.motors.push({
             ...runtime,

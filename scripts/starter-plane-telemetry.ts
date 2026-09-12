@@ -65,6 +65,7 @@ const configureMachine = (
   configuredTailAngle = tailAngle,
   configuredSuspensionRestLength = suspensionRestLength,
 ) => {
+  // 角度引数は物理迎角(度、前縁上げが正)。rotation[0]は符号を反転して適用する。
   if (Number.isFinite(configuredWingAngle))
     for (const part of machine.parts)
       if (
@@ -72,14 +73,22 @@ const configureMachine = (
         part.metadata.aeroRole === "main-wing" &&
         part.transform.position[0] !== 0
       )
-        part.transform.rotation = [(configuredWingAngle * Math.PI) / 180, 0, 0];
+        part.transform.rotation = [
+          (-configuredWingAngle * Math.PI) / 180,
+          0,
+          0,
+        ];
   if (Number.isFinite(configuredTailAngle))
     for (const part of machine.parts)
       if (
         part.definitionId === "Panel" &&
         part.metadata.aeroRole === "horizontal-stabilizer"
       )
-        part.transform.rotation = [(configuredTailAngle * Math.PI) / 180, 0, 0];
+        part.transform.rotation = [
+          (-configuredTailAngle * Math.PI) / 180,
+          0,
+          0,
+        ];
   if (Number.isFinite(thrusterTorque))
     for (const part of machine.parts)
       if (part.definitionId === "Thruster")

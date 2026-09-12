@@ -739,10 +739,12 @@ export function wheelSuspensionSettings(
 }
 export function planeTemplate() {
   const m = createMachine("はじめてのひこうき"),
-    // 固定翼は小さな迎角に留め、離陸の機首上げは可動翼で行う。
-    wingAngle = (2 * Math.PI) / 180,
-    tailAngle = (-2 * Math.PI) / 180,
-    elevatorLimit = (10 * Math.PI) / 180,
+    // rotation[0]が負のとき前縁上げ(正の物理迎角)になる。
+    // 主翼は+2°の迎角、水平尾翼は-3°(下向き揚力)で機首上げを支援する。
+    wingAngle = (-2 * Math.PI) / 180,
+    tailAngle = (3 * Math.PI) / 180,
+    controlSurfaceLimit = (15 * Math.PI) / 180,
+    planePanelThickness = 0.04,
     fuselage: Part[] = [];
   m.controlBindings = [
     { channel: "throttle", key: "KeyW", value: 1 },
@@ -819,78 +821,80 @@ export function planeTemplate() {
     tailPanels[side].push(parent);
   }
 
-  const connectPositionMotor = (
+  // 可動翼はMotor Partを使わず、Hinge自身がposition制御を受ける。
+  // Hingeは2枚のPanelが接する境界に回転軸を置く薄い蝶番として扱う。
+  const connectControlSurface = (
     parent: Part,
     parentConnector: string,
-    childRotation: Vec3,
+    surfaceRotation: Vec3,
     channel: string,
     gain: number,
     role: string,
     limits: { minAngleRad: number; maxAngleRad: number },
   ) => {
     const hinge = createPart("Hinge");
+    hinge.physics.size = [PANEL_SIDE, 0.08, 0.08];
+    hinge.physics.mass = 0.5;
+    hinge.connectors = placementConnectors(hinge);
+    hinge.actuator.motorMode = "position";
+    hinge.actuator.controlChannel = channel;
+    hinge.actuator.controlGain = gain;
+    hinge.actuator.neutralAngleRad = 0;
+    hinge.actuator.positionStiffness = 500;
+    hinge.actuator.positionDamping = 50;
+    // childAnchorに中心[0,0,0]を渡し、回転軸を親Panelの端面上へ一致させる。
     connectTemplateParts(
       m,
       parent,
       hinge,
       parentConnector,
       "hinge-input",
-      childRotation,
-      undefined,
+      surfaceRotation,
+      [0, 0, 0],
       "revolute",
       limits,
     );
     const movable = createPart("Panel");
+    // 可動Panelの前縁を回転軸へ密着させ、構造的な隙間を作らない。
     connectTemplateParts(
       m,
       hinge,
       movable,
-      "hinge-output",
+      "mount",
       "edge-z+",
-      childRotation,
+      surfaceRotation,
     );
     movable.metadata.aeroRole = role;
-    const motor = createPart("Motor");
-    motor.actuator.motorMode = "position";
-    motor.actuator.controlChannel = channel;
-    motor.actuator.controlGain = gain;
-    motor.actuator.neutralAngleRad = 0;
-    motor.actuator.positionStiffness = 500;
-    motor.actuator.positionDamping = 50;
-    connectTemplateParts(
-      m,
-      hinge,
-      motor,
-      "hinge-output",
-      "mount",
-      childRotation,
-    );
-    return { hinge, movable, motor };
+    return { hinge, movable };
   };
 
   for (const side of [-1, 1] as const) {
-    connectPositionMotor(
+    // pitch=+1(↑)で関節角を正(法線前傾=尾翼の下向き揚力)にして機首を上げる。
+    connectControlSurface(
       tailPanels[side][1],
       "edge-z-",
       [tailAngle, 0, 0],
       "pitch",
-      -1,
+      1,
       side < 0 ? "elevator-left" : "elevator-right",
-      { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+      { minAngleRad: -controlSurfaceLimit, maxAngleRad: controlSurfaceLimit },
     );
-    connectPositionMotor(
+    // turn=-1(左)で左Aileronの揚力を減らし左へRollさせる。
+    connectControlSurface(
       wingPanels[side][3],
       "edge-z-",
       [wingAngle, 0, 0],
       "turn",
-      side < 0 ? 1 : -1,
+      side < 0 ? -1 : 1,
       side < 0 ? "aileron-left" : "aileron-right",
-      { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+      { minAngleRad: -controlSurfaceLimit, maxAngleRad: controlSurfaceLimit },
     );
   }
 
-  // 後方の水平尾翼上にBlockを置き、機首側には簡単なCockpitを置く。
-  connectTemplateParts(m, fuselage[1], createPart("Block"), "top-1", "mount");
+  // 機首に重いエンジンBlockを置き、重心を主翼付近まで前進させる。
+  const engine = createPart("Block");
+  engine.physics.mass = 30;
+  connectTemplateParts(m, fuselage[0], engine, "top-1", "mount");
   const verticalTail = connectTemplateParts(
     m,
     tailRoot,
@@ -900,23 +904,24 @@ export function planeTemplate() {
     [0, 0, Math.PI / 2],
   );
   verticalTail.metadata.aeroRole = "vertical-stabilizer";
-  connectPositionMotor(
+  // turn=+1(右)で尾部を左へ押し、機首を右へ向ける。
+  connectControlSurface(
     verticalTail,
     "edge-z-",
     [0, 0, Math.PI / 2],
     "turn",
-    1,
+    -1,
     "rudder",
-    { minAngleRad: -elevatorLimit, maxAngleRad: elevatorLimit },
+    { minAngleRad: -controlSurfaceLimit, maxAngleRad: controlSurfaceLimit },
   );
 
-  // 推力線を胴体の固定構造・重心付近へ置く。可動翼には取り付けない。
+  // 推力線を前方胴体の固定構造へ置く。可動翼には取り付けない。
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
     thruster.actuator.motorTorque = 1000;
     connectTemplateParts(
       m,
-      fuselage[3],
+      fuselage[1],
       thruster,
       side < 0 ? "edge-x-" : "edge-x+",
       "mount",
@@ -925,28 +930,46 @@ export function planeTemplate() {
     );
   }
 
-  // 機首側にNose Gearを1輪、重心より後方にMain Gearを左右1輪ずつ配置する。
-  const gearSlots: Vec3[] = [
-    [0, -0.3, 0.6],
-    [-1, -0.3, -4.1],
-    [1, -0.3, -4.1],
-  ];
-  nose.connectors = placementConnectors(nose);
-  gearSlots.forEach((position, index) => {
-    const connector = nose.connectors.find((item) => item.id === String(index));
-    if (!connector)
-      throw new Error(`Template landing gear slot is unavailable: ${index}`);
-    connector.position = position;
-  });
-  attachTemplateSuspensionWheel(m, nose, "0", true, "nose");
-  attachTemplateSuspensionWheel(m, nose, "1", false, "main-left");
-  attachTemplateSuspensionWheel(m, nose, "2", false, "main-right");
   // 軽量なPanelを使い、推進で得た速度を揚力へ変換しやすくする。
   for (const part of m.parts)
     if (part.definitionId === "Panel") {
-      part.physics.size = [PANEL_SIDE, 0.04, PANEL_SIDE];
-      part.physics.mass = panelMass(0.04);
+      part.physics.size = [PANEL_SIDE, planePanelThickness, PANEL_SIDE];
+      part.physics.mass = panelMass(planePanelThickness);
     }
+
+  // 実際の質量分布から重心を求め、Main Gearを重心の少し後方へ置く。
+  const totalMass = m.parts.reduce((sum, part) => sum + part.physics.mass, 0);
+  const centerOfMassZ =
+    m.parts.reduce(
+      (sum, part) => sum + part.physics.mass * part.transform.position[2],
+      0,
+    ) / totalMass;
+  const gearY = -planePanelThickness / 2;
+  // SuspensionはPanel下面へ密着させ、地上高はSuspension自身の長さで作る。
+  const gearMount = fuselage[3];
+  const mainGearLocalZ = Math.max(
+    -0.45,
+    Math.min(0.45, centerOfMassZ - 0.5 - gearMount.transform.position[2]),
+  );
+  nose.connectors = placementConnectors(nose);
+  const noseSlot = nose.connectors.find((item) => item.id === "0");
+  if (!noseSlot) throw new Error("Template nose gear slot is unavailable");
+  noseSlot.position = [0, gearY, 0.35];
+  noseSlot.normal = [0, -1, 0];
+  gearMount.connectors = placementConnectors(gearMount);
+  for (const [slot, x] of [
+    ["1", -0.5],
+    ["2", 0.5],
+  ] as const) {
+    const connector = gearMount.connectors.find((item) => item.id === slot);
+    if (!connector)
+      throw new Error(`Template main gear slot is unavailable: ${slot}`);
+    connector.position = [x, gearY, mainGearLocalZ];
+    connector.normal = [0, -1, 0];
+  }
+  attachTemplateSuspensionWheel(m, nose, "0", true, "nose");
+  attachTemplateSuspensionWheel(m, gearMount, "1", false, "main-left");
+  attachTemplateSuspensionWheel(m, gearMount, "2", false, "main-right");
   return m;
 }
 export function boatTemplate() {

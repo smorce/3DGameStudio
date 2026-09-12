@@ -427,6 +427,41 @@ async function simulatePlaneSteering(steering: number) {
   };
 }
 
+it("Starter PlaneはW+↑(pitch)で安定離陸する", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  const planeWorld = starterPlaneWorldPatch(project.world);
+  planeWorld.terrain.size = 1024;
+  project.world.terrain = planeWorld.terrain;
+  project.world.entities = planeWorld.entities;
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  for (let i = 0; i < 240; i++) physics.step({ throttle: 1 });
+  for (let i = 0; i < 660; i++) physics.step({ throttle: 1, pitch: 1 });
+  const samples = physics.telemetry
+      .samples()
+      .filter((sample) => sample.machineId === machine.id),
+    takeoff = findStableForwardTakeoff(samples);
+  physics.dispose();
+  expect(takeoff).toBeDefined();
+  // 接地順: 3輪 → Noseのみ離れる → Main 2輪 → 0輪
+  const states = samples
+    .map((sample) =>
+      sample.wheels.map((wheel) => (wheel.inContact ? "1" : "0")).join(""),
+    )
+    .filter((state, index, all) => index === 0 || state !== all[index - 1]);
+  const threeWheelIndex = states.indexOf("111"),
+    noseOffIndex = states.indexOf("011"),
+    airborneIndex = states.findIndex(
+      (state, index) => index > noseOffIndex && state === "000",
+    );
+  expect(threeWheelIndex).toBeGreaterThanOrEqual(0);
+  expect(noseOffIndex).toBeGreaterThan(threeWheelIndex);
+  expect(airborneIndex).toBeGreaterThan(noseOffIndex);
+});
+
 it("Starter PlaneはNeutralのWだけでは自動離陸しない", async () => {
   const result = await simulatePlane(undefined, 240);
   expect(result.stableTakeoffStep).toBe(-1);

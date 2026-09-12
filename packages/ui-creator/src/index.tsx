@@ -335,7 +335,8 @@ export function MachineInspector({
                   />
                 </label>
               ))}
-              {part.definitionId === "Motor" ? (
+              {part.definitionId === "Motor" ||
+              part.definitionId === "Hinge" ? (
                 <>
                   <label className="field">
                     Motor Mode
