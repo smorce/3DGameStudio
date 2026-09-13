@@ -22,3 +22,9 @@ export async function startPanel(page: Page) {
   await page.getByRole("button", { name: "▱ 板", exact: true }).click();
   await pickCandidate(page);
 }
+
+/** 1枚Panelだと四隅タイヤが密着して転倒しやすい。実走前に前後間隔を確保する。 */
+export async function attachFrontPanel(page: Page) {
+  await page.getByRole("button", { name: "▱ 板", exact: true }).click();
+  await pickCandidate(page);
+}

@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-09-13T15:02:48.587Z",
+  "gitHead": "7aec2e4b38aa29c4778918f67e49ed5f73e0625f",
+  "phase": "before",
+  "steps": 2400,
+  "flightDistanceM": 909.728346148386,
+  "finalGlobalPosition": [
+    -0.6011600494384766, 211.44419860839844, 893.5268974304199
+  ],
+  "finalSimulationPosition": [
+    31.398839950561523, 211.44419860839844, 29.526897430419922
+  ],
+  "finalWorldOrigin": [-32, 0, 864],
+  "rebaseCount": 9,
+  "maxWorldSpeedMps": 39.58278763372464,
+  "maxGlobalPositionDiscontinuityM": 0.6629563543634848,
+  "maximumControlSurfaceDistanceFromChassisM": 4.206816200126793,
+  "airStopSteps": 0,
+  "generationLatencyMs": {
+    "last": 0.1531400000001213,
+    "max": 0.24769400000002406
+  },
+  "finite": {
+    "position": true,
+    "velocity": true,
+    "rotation": true
+  },
+  "tests": {
+    "typecheck": "pass",
+    "lint": "pass",
+    "test": "pass"
+  },
+  "observations": {
+    "collider": "generated tree/building/rock colliders are uniform cuboids from scale*0.4",
+    "rebase": "RapierPhysics.step calls WorldRuntime.maybeRebase and setTranslation on bodies only",
+    "camera": "follow uses lerp 0.08 per frame",
+    "shadow": "DirectionalLight shadow camera is fixed around origin ±25m"
+  }
+}

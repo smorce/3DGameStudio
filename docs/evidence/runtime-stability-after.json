@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-09-13T15:50:00.000Z",
+  "gitHead": "7aec2e4b38aa29c4778918f67e49ed5f73e0625f",
+  "phase": "after",
+  "branch": "fix/runtime-stability-rebase-shadow-colliders",
+  "steps": 2400,
+  "flightDistanceM": 909.7247606221288,
+  "finalGlobalPosition": [
+    -0.6076431274414062, 211.4427032470703, 893.5235614776611
+  ],
+  "finalSimulationPosition": [
+    31.392356872558594, 211.4427032470703, 29.523561477661133
+  ],
+  "finalWorldOrigin": [-32, 0, 864],
+  "rebaseCount": 9,
+  "maxWorldSpeedMps": 39.58276003246006,
+  "maxGlobalPositionDiscontinuityM": 0.6629487105610992,
+  "maximumHingeAnchorErrorM": 0.006379602124032742,
+  "maxRebaseVelocityDeltaMps": 0,
+  "airStopSteps": 0,
+  "syncGenerationCount": 245,
+  "generationLatencyMs": {
+    "last": 0.15987600000005386,
+    "max": 2.299008000000015
+  },
+  "finite": {
+    "position": true,
+    "velocity": true,
+    "rotation": true
+  },
+  "tests": {
+    "typecheck": "pass",
+    "lint": "pass",
+    "test": "pass (192)",
+    "test:e2e": "pass (28)",
+    "smoke": "pass (subset of e2e @smoke)",
+    "build": "pass",
+    "format:check": "skipped-unrelated-legacy-docs (KNOWN_ISSUES)"
+  }
+}

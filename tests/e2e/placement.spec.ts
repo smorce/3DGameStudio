@@ -1,6 +1,11 @@
 import { test, expect } from "./fixtures";
 import { mkdir } from "node:fs/promises";
-import { pickCandidate, savedProject, startPanel } from "./placement-helpers";
+import {
+  attachFrontPanel,
+  pickCandidate,
+  savedProject,
+  startPanel,
+} from "./placement-helpers";
 test("タイヤ候補から取り付けて選択する @smoke", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "じゆうにつくる" }).click();
@@ -84,11 +89,12 @@ test("Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実�
     "もうタイヤをつけられる場所がないよ",
   );
   await page.getByRole("button", { name: "やめる", exact: true }).click();
+  await attachFrontPanel(page);
   const assembled = await savedProject(page);
-  expect(assembled.machines[0].parts).toHaveLength(5);
-  expect(assembled.machines[0].connections).toHaveLength(4);
+  expect(assembled.machines[0].parts).toHaveLength(6);
+  expect(assembled.machines[0].connections).toHaveLength(5);
   await page.getByRole("button", { name: "↶ 元に戻す" }).click();
-  expect((await savedProject(page)).machines[0].connections).toHaveLength(3);
+  expect((await savedProject(page)).machines[0].connections).toHaveLength(4);
   await page.getByRole("button", { name: "↷ やり直す" }).click();
   expect(await savedProject(page)).toEqual(assembled);
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
@@ -113,7 +119,7 @@ test("Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実�
   expect(await savedProject(page)).toEqual(assembled);
   await page.reload();
   expect(await savedProject(page)).toEqual(assembled);
-  await expect(page.getByText("5 パーツ")).toBeVisible();
+  await expect(page.getByText("6 パーツ")).toBeVisible();
   await expect(
     page.getByRole("button", { name: /^ここにつける / }),
   ).toHaveCount(0);

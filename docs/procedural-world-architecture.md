@@ -8,7 +8,7 @@
 
 `ChunkStreamer` は周辺Chunkの寿命だけを管理する。入力は有限メッシュの索引であり、座標から地形を生成しない。Waterの物理は `water.height` の無限平面だが、描画は `PlaneGeometry(terrain.size * 2)` の有限板である。Undo/RedoはProject全体の `structuredClone` である。Starterは `starterWorldPatch` / `starterPlaneWorldPatch` / Boatのinline water patchで分岐している。
 
-Origin Rebasingは未実装で、座標は絶対FloatのままRenderer/Physicsへ渡る。Telemetryの `position` はRapier `translation()` の直写しである。
+Origin RebaseはEngine Fixed UpdateのTransactionとして実装する。シミュレーション座標は `global - worldOrigin` であり、Telemetryの `position` はlogical globalである。
 
 ## 問題点
 
@@ -80,9 +80,44 @@ finite sourceは既存 `terrainChunks` を同一インターフェースへ載�
 
 論理座標は persistent global（Chunk座標 + local、または同等のglobalメートル）。シミュレーション座標は `global - worldOrigin`。
 
-Chunk変換は `floor` を使い、負座標 `(-1,0) / (-1,-1) / (0,-1)` を正しく扱う。Origin RebaseはChunk境界単位で行い、Physics Step境界でのみ実行する。Dynamic RigidBody、Terrain/Entity/Course Collider、Render Chunk、Cameraを同じ平行移動で揃える。
+Chunk変換は `floor` を使い、負座標 `(-1,0) / (-1,-1) / (0,-1)` を正しく扱う。
 
-Telemetryの `position` はlogical globalを返す。必要なら `simulationPosition` / `worldOrigin` / `chunkCoordinate` を併記する。512m地点が突然0mに見えてはならない。
+Origin RebaseはEngineのFixed Updateが1回のTransactionとして実行する。`RapierPhysics.step()` はworldOriginを変更しない。
+
+```
+Engine Fixed Update
+  physics.step()
+  WorldRuntime.planRebase(focusGlobal)
+    deltaなし → 継続
+    deltaあり
+      Physics.shiftOrigin(delta)
+      Renderer.shiftOrigin(delta)
+      WorldRuntime.commitRebase(plan)
+```
+
+`planRebase` は判定だけを行いoriginを変えない。`commitRebase` とPhysics/Rendererのシフトを同じdeltaで揃える。Dynamic RigidBody、Standalone Static Collider（Terrain / Entity / Course）、Render Chunk、Camera、Sun / Sun Targetを同じ平行移動で動かす。Rebase中はCCDを一時的に切り、`propagateModifiedBodyPositionsToColliders()` でBody付属Colliderを同期する。通常飛行中のCCDは維持する。
+
+Telemetryの `position` はlogical globalを返す。`simulationPosition` / `worldOrigin` / `chunkCoordinate` を併記する。512m地点が突然0mに見えてはならない。
+
+## Builtin Entity Definition
+
+tree / building / rock の見た目寸法とCollider寸法は `world-system` の `BuiltinEntityDefinition` が単一の正とする。RendererとPhysicsはここだけを参照する。Physicsがrenderer-threeをimportしてはならない。
+
+- tree: 幹をCylinder Collider（半径0.2m、高さ1.5m、中心Y 0.75m）。葉を巨大Boxにしない
+- building: 本体 Box 2 x 2.6 x 2（中心Y 1.3m）。屋根は別Collider
+- rock: Ball（半径0.8m）
+
+entity.transform の position / rotation / scale を両方へ適用する。
+
+## Render Interpolation / Camera / Shadow
+
+Physicsは 1/60 秒固定。描画は previous/current pose を `alpha = accumulator / fixedDt` でlerp/slerpする。Rebase時はprevious/currentの両方を同じdeltaで変換する。
+
+Camera Followは `1 - exp(-lambda * dt)` で時間基準にする。Shadow CameraはPlayer周辺（約48m）だけを覆い、光の方向はtimeOfDayから決める。
+
+## Chunk Generation
+
+既定 32m / 33解像度の同期生成は平均1ms未満。速度方向prefetch済みのため、通常の長距離飛行ではMain Thread Worker化は必須ではない。`syncGenerationCount` と `generationLatencyMs` をRuntime Statsで監視する。
 
 ## Chunk Lifecycle
 

@@ -7,6 +7,8 @@ import {
 import {
   WorldRuntime,
   chunkCoordinate,
+  generatedEntityColliders,
+  isBuiltinEntityKind,
   visibleChunksWithPrefetch,
 } from "../../world-system/src/index";
 import type RAPIER from "@dimforge/rapier3d-compat";
@@ -85,6 +87,7 @@ interface RevoluteRuntime {
   axisLocal: Vec3;
   damping: number;
   joint: RAPIER.RevoluteImpulseJoint;
+  label: string;
   limits?: {
     minAngleRad: number;
     maxAngleRad: number;
@@ -298,7 +301,7 @@ export class RapierPhysics {
   private terrain?: Project["world"]["terrain"];
   worldRuntime?: WorldRuntime;
   private ownsRuntime = false;
-  lastRebaseDelta?: Vec3;
+  private lastMaxJointAnchorErrorM = 0;
   private hinges: RevoluteRuntime[] = [];
   private motors: MotorRuntime[] = [];
   async load(
@@ -554,17 +557,34 @@ export class RapierPhysics {
           ? (this.worldRuntime.getChunk(key)?.entities ?? [])
           : [];
         for (const entity of generated) {
-          const local =
-            this.worldRuntime?.toSimulation(entity.position) ?? entity.position;
-          const half = entity.scale.map((n) => Math.max(0.15, n * 0.4));
-          entries.set(`entity:${entity.id}`, {
-            kind: "entity",
-            create: () =>
-              rapier.ColliderDesc.cuboid(
-                half[0],
-                half[1],
-                half[2],
-              ).setTranslation(local[0], local[1] + half[1], local[2]),
+          if (!isBuiltinEntityKind(entity.kind)) continue;
+          generatedEntityColliders(entity).forEach((pose, index) => {
+            entries.set(`entity:${entity.id}:${index}`, {
+              kind: "entity",
+              create: () => {
+                const local =
+                  this.worldRuntime?.toSimulation(pose.translation) ??
+                  pose.translation;
+                const desc =
+                  pose.type === "cylinder"
+                    ? rapier.ColliderDesc.cylinder(pose.halfHeight, pose.radius)
+                    : pose.type === "ball"
+                      ? rapier.ColliderDesc.ball(pose.radius)
+                      : rapier.ColliderDesc.cuboid(
+                          pose.halfExtents[0],
+                          pose.halfExtents[1],
+                          pose.halfExtents[2],
+                        );
+                return desc
+                  .setTranslation(local[0], local[1], local[2])
+                  .setRotation({
+                    x: pose.rotation[0],
+                    y: pose.rotation[1],
+                    z: pose.rotation[2],
+                    w: pose.rotation[3],
+                  });
+              },
+            });
           });
         }
         if (!entries.size) return;
@@ -668,12 +688,27 @@ export class RapierPhysics {
         joint.setContactsEnabled(false);
         if (c.limits)
           joint.setLimits(c.limits.minAngleRad, c.limits.maxAngleRad);
+        const attachedSurface = m.parts.find(
+          (candidate) =>
+            typeof candidate.metadata.aeroRole === "string" &&
+            m.connections.some(
+              (link) =>
+                link.type === "fixed" &&
+                ((link.a === c.b && link.b === candidate.id) ||
+                  (link.b === c.b && link.a === candidate.id)),
+            ),
+        );
         const runtime: RevoluteRuntime = {
           bodyA: a,
           bodyB: b,
           axisLocal: normalize(c.axis),
           damping: c.damping,
           joint,
+          label:
+            (typeof p.metadata.aeroRole === "string" && p.metadata.aeroRole) ||
+            (typeof attachedSurface?.metadata.aeroRole === "string" &&
+              attachedSurface.metadata.aeroRole) ||
+            p.id,
           limits: c.limits,
         };
         this.hinges.push(runtime);
@@ -1075,26 +1110,82 @@ export class RapierPhysics {
     this.world.step();
     this.physicsStep++;
     this.simulationTimeSeconds += PHYSICS_FIXED_DT;
-    this.applyOriginRebase();
     this.captureTelemetry(throttle, steeringValue, brakeValue, controls);
   }
-  private applyOriginRebase() {
-    if (!this.worldRuntime?.procedural) return;
-    const focus = this.vehicles[0]?.body.translation();
-    if (!focus) return;
-    const global = this.worldRuntime.toGlobal([focus.x, focus.y, focus.z]);
-    const delta = this.worldRuntime.maybeRebase(global);
-    if (!delta) return;
-    this.lastRebaseDelta = delta;
-    this.world.bodies.forEach((body) => {
-      const t = body.translation();
-      body.setTranslation(
-        { x: t.x - delta[0], y: t.y - delta[1], z: t.z - delta[2] },
-        true,
-      );
+  focusSimulation(): Vec3 | undefined {
+    const position = this.vehicles[0]?.body.translation();
+    return position ? [position.x, position.y, position.z] : undefined;
+  }
+  focusGlobal(): Vec3 | undefined {
+    const simulation = this.focusSimulation();
+    return simulation
+      ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
+      : undefined;
+  }
+  shiftOrigin(delta: Vec3) {
+    if (!this.world) return;
+    if (delta[0] === 0 && delta[1] === 0 && delta[2] === 0) return;
+    const ccd = new Map<number, boolean>();
+    this.world.forEachRigidBody((body) => {
+      ccd.set(body.handle, body.isCcdEnabled());
+      if (body.isCcdEnabled()) body.enableCcd(false);
     });
-    this.streamer?.dispose();
-    this.streamer?.update(global);
+    this.world.forEachRigidBody((body) => {
+      const translation = body.translation(),
+        linear = body.linvel(),
+        angular = body.angvel(),
+        rot = body.rotation();
+      body.setTranslation(
+        {
+          x: translation.x - delta[0],
+          y: translation.y - delta[1],
+          z: translation.z - delta[2],
+        },
+        false,
+      );
+      body.setRotation(rot, false);
+      body.setLinvel(linear, false);
+      body.setAngvel(angular, false);
+    });
+    this.world.forEachCollider((collider) => {
+      if (collider.parent()) return;
+      const translation = collider.translation();
+      collider.setTranslation({
+        x: translation.x - delta[0],
+        y: translation.y - delta[1],
+        z: translation.z - delta[2],
+      });
+    });
+    this.world.propagateModifiedBodyPositionsToColliders();
+    this.world.forEachRigidBody((body) => {
+      if (ccd.get(body.handle)) body.enableCcd(true);
+    });
+  }
+  jointAnchorErrors() {
+    return this.hinges.map((hinge) => {
+      const a1 = hinge.joint.anchor1(),
+        a2 = hinge.joint.anchor2(),
+        t1 = hinge.bodyA.translation(),
+        r1 = hinge.bodyA.rotation(),
+        t2 = hinge.bodyB.translation(),
+        r2 = hinge.bodyB.rotation(),
+        w1 = rotate([a1.x, a1.y, a1.z], [r1.x, r1.y, r1.z, r1.w]),
+        w2 = rotate([a2.x, a2.y, a2.z], [r2.x, r2.y, r2.z, r2.w]),
+        axis = worldAxis(hinge);
+      return {
+        id: hinge.label,
+        separationM: Math.hypot(
+          t1.x + w1[0] - (t2.x + w2[0]),
+          t1.y + w1[1] - (t2.y + w2[1]),
+          t1.z + w1[2] - (t2.z + w2[2]),
+        ),
+        relativeAngleRad: relativeAngle(hinge),
+        angularVelocity: relativeAngularVelocity(hinge, axis),
+      };
+    });
+  }
+  get maxJointAnchorErrorM() {
+    return this.lastMaxJointAnchorErrorM;
   }
   private captureTelemetry(
     throttle: number,
@@ -1193,6 +1284,14 @@ export class RapierPhysics {
         groundedWheelCount = contactStatusAvailable
           ? wheels.filter((wheel) => wheel.inContact).length
           : 0;
+      const joints = this.jointAnchorErrors();
+      this.lastMaxJointAnchorErrorM = joints.reduce(
+        (max, joint) => Math.max(max, joint.separationM),
+        0,
+      );
+      const jointAnchorErrors = Object.fromEntries(
+        joints.map((joint) => [joint.id, joint.separationM]),
+      );
       const aerodynamicByRole = Object.fromEntries(
         Object.entries(forces.aerodynamicByRole).map(([role, value]) => [
           role,
@@ -1278,6 +1377,8 @@ export class RapierPhysics {
           terrainHeightM === null ? null : global[1] - terrainHeightM,
         contactStatusAvailable,
         groundedWheelCount,
+        maxJointAnchorErrorM: this.lastMaxJointAnchorErrorM,
+        jointAnchorErrors,
         wheels,
       });
     }
@@ -1402,6 +1503,7 @@ export class RapierPhysics {
       rigidBodies: this.world?.bodies.len() ?? 0,
       colliders: this.world?.colliders.len() ?? 0,
       joints: this.world?.impulseJoints.len() ?? 0,
+      maxJointAnchorErrorM: this.lastMaxJointAnchorErrorM,
     };
   }
   dispose() {

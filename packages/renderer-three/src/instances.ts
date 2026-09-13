@@ -3,6 +3,10 @@ import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { clone } from "three/addons/utils/SkeletonUtils.js";
 import type { AssetRecord, Project } from "../../project-schema/src/index";
+import {
+  builtinEntityDefinition,
+  isBuiltinEntityKind,
+} from "../../world-system/src/entities";
 export type Entity = Project["world"]["entities"][number];
 export function disposeTemplate(group: THREE.Object3D) {
   const geometries = new Set<THREE.BufferGeometry>(),
@@ -27,54 +31,70 @@ export function disposeTemplate(group: THREE.Object3D) {
 }
 export function builtinTemplate(kind: Entity["kind"], level = 0) {
   const group = new THREE.Group();
-  const add = (geometry: THREE.BufferGeometry, color: string, y: number) => {
-    const mesh = new THREE.Mesh(
-      geometry,
-      new THREE.MeshStandardMaterial({ color, roughness: 0.72 }),
-    );
-    mesh.position.y = y;
-    group.add(mesh);
-  };
-  const addAt = (
+  const addMesh = (
     geometry: THREE.BufferGeometry,
     color: string,
     position: [number, number, number],
+    rotation: [number, number, number] = [0, 0, 0],
   ) => {
     const mesh = new THREE.Mesh(
       geometry,
       new THREE.MeshStandardMaterial({ color, roughness: 0.72 }),
     );
     mesh.position.set(...position);
+    mesh.rotation.set(...rotation);
     group.add(mesh);
   };
-  if (kind === "tree") {
-    add(
-      new THREE.CylinderGeometry(0.15, 0.2, 1.5, level ? 4 : 8),
-      "#856349",
-      0.75,
-    );
-    add(new THREE.ConeGeometry(1, 2.4, level ? 4 : 8), "#3e7956", 2);
-  } else if (kind === "building") {
-    add(new THREE.BoxGeometry(2, 2.6, 2), "#c8b891", 1.3);
-    const roof = new THREE.Mesh(
-      new THREE.ConeGeometry(1.55, 0.9, 4),
-      new THREE.MeshStandardMaterial({ color: "#a85f54", roughness: 0.72 }),
-    );
-    roof.position.y = 3.05;
-    roof.rotation.y = Math.PI / 4;
-    group.add(roof);
-    for (const x of [-0.55, 0.55])
-      addAt(new THREE.BoxGeometry(0.35, 0.38, 0.06), "#5a7780", [
-        x,
-        1.45,
-        1.03,
-      ]);
-  } else
-    add(
+  if (!isBuiltinEntityKind(kind)) {
+    addMesh(
       new THREE.IcosahedronGeometry(0.8, level ? 0 : 1),
-      kind === "asset" ? "#b68383" : "#8b9790",
-      0.5,
+      "#b68383",
+      [0, 0.5, 0],
     );
+    return group;
+  }
+  const definition = builtinEntityDefinition(kind);
+  const segments = level ? 4 : 8;
+  for (const part of definition.visual) {
+    const rotation = part.localRotation;
+    if (part.shape === "cylinder")
+      addMesh(
+        new THREE.CylinderGeometry(
+          part.radiusTop,
+          part.radiusBottom,
+          part.height,
+          segments,
+        ),
+        part.color,
+        part.localPosition,
+        rotation,
+      );
+    else if (part.shape === "cone")
+      addMesh(
+        new THREE.ConeGeometry(
+          part.radius,
+          part.height,
+          part.radialSegments ?? segments,
+        ),
+        part.color,
+        part.localPosition,
+        rotation,
+      );
+    else if (part.shape === "box")
+      addMesh(
+        new THREE.BoxGeometry(...part.size),
+        part.color,
+        part.localPosition,
+        rotation,
+      );
+    else
+      addMesh(
+        new THREE.IcosahedronGeometry(part.radius, level ? 0 : 1),
+        part.color,
+        part.localPosition,
+        rotation,
+      );
+  }
   return group;
 }
 export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {

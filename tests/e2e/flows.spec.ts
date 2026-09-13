@@ -33,7 +33,7 @@ test("3 LEVELの詳細値保持とUndo @smoke", async ({ page }) => {
   await page
     .getByRole("button", { name: "くわしくつくる", exact: true })
     .click();
-  await page.getByRole("button", { name: "◈ タイヤ 02", exact: true }).click();
+  await page.getByRole("button", { name: "◈ タイヤ 11", exact: true }).click();
   await page.getByLabel("はやさ", { exact: true }).fill("450");
   await screenshot(page, "02-level-2");
   await studio(page);
@@ -43,11 +43,11 @@ test("3 LEVELの詳細値保持とUndo @smoke", async ({ page }) => {
   await page.getByRole("button", { name: "つくる", exact: true }).click();
   await save(page);
   let p = await saved(page);
-  expect(p.machines[0].parts[1].actuator.motorTorque).toBe(823);
-  expect(p.machines[0].parts[1].physics.friction).toBe(1.16);
+  expect(p.machines[0].parts[10].actuator.motorTorque).toBe(823);
+  expect(p.machines[0].parts[10].physics.friction).toBe(1.16);
   await page.reload();
   await studio(page);
-  await page.getByRole("button", { name: "◈ タイヤ 02", exact: true }).click();
+  await page.getByRole("button", { name: "◈ タイヤ 11", exact: true }).click();
   await expect(page.getByLabel("motorTorque")).toHaveValue("823");
   await screenshot(page, "04-machine-edit");
   await expect(page.getByRole("button", { name: "↶ 元に戻す" })).toBeDisabled();

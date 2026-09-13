@@ -37,6 +37,12 @@ export interface RuntimeChunk {
   lodLevel: 0 | 1 | 2;
 }
 
+export interface OriginRebasePlan {
+  delta: Vec3;
+  originBefore: Vec3;
+  originAfter: Vec3;
+}
+
 export interface WorldRuntimeStats {
   currentChunk: string;
   worldOrigin: Vec3;
@@ -46,8 +52,10 @@ export interface WorldRuntimeStats {
   cachedChunks: number;
   pendingGenerationCount: number;
   generationLatencyMs: number;
+  maxGenerationLatencyMs: number;
   cacheHitRate: number;
   rebaseCount: number;
+  syncGenerationCount: number;
 }
 
 export interface WorldRuntimeOptions {
@@ -122,6 +130,8 @@ export class WorldRuntime {
   private hits = 0;
   private misses = 0;
   private lastLatency = 0;
+  private maxLatency = 0;
+  private syncGenerations = 0;
   private clock = 0;
   private pending = 0;
   private finiteMeshes?: Map<string, TerrainChunk>;
@@ -168,6 +178,11 @@ export class WorldRuntime {
     this.hits = 0;
     this.misses = 0;
     this.pending = 0;
+    this.lastLatency = 0;
+    this.maxLatency = 0;
+    this.syncGenerations = 0;
+    this.worldOrigin = [0, 0, 0];
+    this.rebaseCount = 0;
     this.log("reload");
   }
 
@@ -176,6 +191,8 @@ export class WorldRuntime {
     this.cache.clear();
     this.finiteMeshes = undefined;
     for (const set of this.refs.values()) set.clear();
+    this.worldOrigin = [0, 0, 0];
+    this.rebaseCount = 0;
     this.log("dispose");
   }
 
@@ -216,12 +233,14 @@ export class WorldRuntime {
       return cached.chunk;
     }
     this.misses++;
+    this.syncGenerations++;
     const started = performance.now();
     this.pending++;
     const ticket = this.generation;
     const generated = this.buildChunk(key);
     this.pending--;
     this.lastLatency = performance.now() - started;
+    this.maxLatency = Math.max(this.maxLatency, this.lastLatency);
     if (!generated || ticket !== this.generation) return undefined;
     const chunk = applyEditOverlay(generated, this.world.edits);
     this.cache.set(key, {
@@ -332,17 +351,31 @@ export class WorldRuntime {
     ];
   }
 
-  maybeRebase(focus: Vec3): Vec3 | undefined {
-    const delta = rebaseDelta(focus, this.worldOrigin, this.chunkSize, 3);
+  planRebase(focusGlobal: Vec3): OriginRebasePlan | undefined {
+    if (!this.procedural) return undefined;
+    const delta = rebaseDelta(focusGlobal, this.worldOrigin, this.chunkSize, 3);
     if (!delta) return undefined;
-    this.worldOrigin = [
-      this.worldOrigin[0] + delta[0],
-      this.worldOrigin[1] + delta[1],
-      this.worldOrigin[2] + delta[2],
+    const originBefore: Vec3 = [...this.worldOrigin];
+    const originAfter: Vec3 = [
+      originBefore[0] + delta[0],
+      originBefore[1] + delta[1],
+      originBefore[2] + delta[2],
     ];
+    return { delta, originBefore, originAfter };
+  }
+
+  commitRebase(plan: OriginRebasePlan) {
+    this.worldOrigin = [...plan.originAfter];
     this.rebaseCount++;
     this.log(`rebase:${this.worldOrigin[0]},${this.worldOrigin[2]}`);
-    return delta;
+  }
+
+  /** 判定とcommitを一度に行う。Physics/Engineの通常経路では使わない。 */
+  maybeRebase(focusGlobal: Vec3): Vec3 | undefined {
+    const plan = this.planRebase(focusGlobal);
+    if (!plan) return undefined;
+    this.commitRebase(plan);
+    return plan.delta;
   }
 
   stats(current: Vec3 = [0, 0, 0]): WorldRuntimeStats {
@@ -357,8 +390,10 @@ export class WorldRuntime {
       cachedChunks: this.cache.size,
       pendingGenerationCount: this.pending,
       generationLatencyMs: this.lastLatency,
+      maxGenerationLatencyMs: this.maxLatency,
       cacheHitRate: total ? this.hits / total : 1,
       rebaseCount: this.rebaseCount,
+      syncGenerationCount: this.syncGenerations,
     };
   }
 

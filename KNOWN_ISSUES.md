@@ -11,7 +11,7 @@
 
 - 車輪はRapierのRaycast Vehicleでシミュレーションします。独立した車輪Colliderによる側面衝突や実サスペンションのリンク機構はありません。可動Hingeは実Revolute Jointです。
 - 浮力・揚力は簡易近似です。Propeller、Servo、Spring、Suspension、Sensor、Battery、Logic、Ropeは未実装です。飛行機・ボートは工作の出発点であり、車と同等の操縦品質までは検証していません。
-- 描画と静的Colliderはチャンク単位でロード／破棄します。Projectの地形格子・空間索引、配置済み素材のCollider SourceはCPU側に保持します。Origin Rebasingは未実装です。実GPU・モバイル・長時間運用での大規模性能は未検証です。
+- 描画と静的Colliderはチャンク単位でロード／破棄します。Projectの地形格子・空間索引、配置済み素材のCollider SourceはCPU側に保持します。Origin RebaseはEngineがPhysics / Renderer / WorldRuntimeを同じdeltaで同期するTransactionです。実GPU・モバイル・長時間運用での大規模性能は未検証です。
 - Instancingの描画範囲判定とLOD切替はバッチ単位です。個体ごとのFrustum Cullingより描画三角形数が増える画角があります。スキン／Morph等は通常描画へ戻り、複雑な素材のLOD生成はLOD0のみになる場合があります。
 - CourseのLoop／Tunnelはデータ種別のみで、専用の曲面・トンネル形状の生成は未実装です。複数コースの選択・保存・実行は対応しています。
 - オンライン素材の実取込はPoly HavenのglTF／GLBを対象とします。ambientCGの検索・メタデータは実動作確認済みですが、ZIPマテリアルの変換は未実装です。Kenneyは展開済みGLBを個別に読み込みます。

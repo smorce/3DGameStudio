@@ -27,16 +27,39 @@ import {
   updateSuspensionVisual,
   updateThrusterFlame,
 } from "./part-visuals";
+import { SHADOW_EXTENT_M, cameraFollowAlpha, sunFollowPose } from "./follow";
+import { interpolatePhysicsRenderState } from "./interpolation";
 export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
+export {
+  CAMERA_FOLLOW_LAMBDA,
+  SHADOW_EXTENT_M,
+  SHADOW_LIGHT_DISTANCE_M,
+  cameraFollowAlpha,
+  sunDirectionFromTimeOfDay,
+  sunFollowPose,
+} from "./follow";
+export {
+  interpolatePhysicsRenderState,
+  interpolatePose,
+} from "./interpolation";
 /** Play中のカメラ俯仰上限（水平手前まで）。 */
 export const PLAY_MAX_POLAR_ANGLE = Math.PI * 0.48;
 /** 編集中は下面も見られるよう、ほぼ全周まで回せる。 */
 export const EDIT_MAX_POLAR_ANGLE = Math.PI * 0.95;
+export interface RenderFrameOptions {
+  previous?: PhysicsRenderState;
+  alpha?: number;
+  dt?: number;
+}
 export interface RendererAdapter {
   load(project: Project): void;
   restoreEditTransforms(project: Project): void;
-  render(state?: PhysicsRenderState, thrust?: number): void;
+  render(
+    state?: PhysicsRenderState,
+    thrust?: number,
+    options?: RenderFrameOptions,
+  ): void;
   dispose(): void;
 }
 export function syncPartVisualTransforms(
@@ -282,14 +305,16 @@ export class ThreeRenderer implements RendererAdapter {
     sun.position.set(15, 25, 8);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
-    Object.assign(sun.shadow.camera, {
-      left: -25,
-      right: 25,
-      top: 25,
-      bottom: -25,
-    });
+    sun.shadow.camera.left = -SHADOW_EXTENT_M;
+    sun.shadow.camera.right = SHADOW_EXTENT_M;
+    sun.shadow.camera.top = SHADOW_EXTENT_M;
+    sun.shadow.camera.bottom = -SHADOW_EXTENT_M;
+    sun.shadow.camera.near = 0.5;
+    sun.shadow.camera.far = SHADOW_EXTENT_M * 3;
+    sun.shadow.camera.updateProjectionMatrix();
     this.scene.add(
       sun,
+      sun.target,
       this.root,
       this.highlighted,
       this.ghost,
@@ -372,12 +397,7 @@ export class ThreeRenderer implements RendererAdapter {
       ? null
       : new THREE.FogExp2(p.world.environment.sky, p.world.environment.fog);
     this.sun.intensity = p.world.lighting.intensity;
-    const angle = ((p.world.lighting.timeOfDay - 6) / 12) * Math.PI;
-    this.sun.position.set(
-      Math.cos(angle) * 25,
-      Math.max(2, Math.sin(angle) * 25),
-      8,
-    );
+    this.updateShadowFollow([0, 0, 0]);
     const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
     grid.position.y = 0.015;
     (grid.material as THREE.Material).transparent = true;
@@ -569,9 +589,7 @@ export class ThreeRenderer implements RendererAdapter {
       : PLAY_MAX_POLAR_ANGLE;
     const sky = this.project?.world.environment.sky ?? "#cfe8f5";
     const fogDensity = this.project?.world.environment.fog ?? 0.01;
-    this.scene.fog = showWorld
-      ? new THREE.FogExp2(sky, fogDensity)
-      : null;
+    this.scene.fog = showWorld ? new THREE.FogExp2(sky, fogDensity) : null;
     if (this.gridHelper) this.gridHelper.visible = showWorld;
     if (this.waterMesh) this.waterMesh.visible = showWorld;
     for (const chunk of this.chunks.values()) chunk.visible = showWorld;
@@ -589,7 +607,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.editWorkspace = enabled;
     this.applyEditWorkspaceVisuals();
   }
-  applyOriginShift(delta: Vec3) {
+  shiftOrigin(delta: Vec3) {
     this.camera.position.x -= delta[0];
     this.camera.position.y -= delta[1];
     this.camera.position.z -= delta[2];
@@ -609,7 +627,41 @@ export class ThreeRenderer implements RendererAdapter {
       child.position.x -= delta[0];
       child.position.z -= delta[2];
     }
+    this.sun.position.x -= delta[0];
+    this.sun.position.y -= delta[1];
+    this.sun.position.z -= delta[2];
+    this.sun.target.position.x -= delta[0];
+    this.sun.target.position.y -= delta[1];
+    this.sun.target.position.z -= delta[2];
     this.controls.update();
+  }
+  applyOriginShift(delta: Vec3) {
+    this.shiftOrigin(delta);
+  }
+  private updateShadowFollow(focus: Vec3) {
+    const timeOfDay = this.project?.world.lighting.timeOfDay ?? 14;
+    const pose = sunFollowPose(focus, timeOfDay);
+    this.sun.position.set(...pose.position);
+    this.sun.target.position.set(...pose.target);
+    this.sun.shadow.camera.left = -SHADOW_EXTENT_M;
+    this.sun.shadow.camera.right = SHADOW_EXTENT_M;
+    this.sun.shadow.camera.top = SHADOW_EXTENT_M;
+    this.sun.shadow.camera.bottom = -SHADOW_EXTENT_M;
+    this.sun.shadow.camera.near = 0.5;
+    this.sun.shadow.camera.far = SHADOW_EXTENT_M * 3;
+    this.sun.shadow.camera.updateProjectionMatrix();
+    this.sun.target.updateMatrixWorld();
+    this.sun.updateMatrixWorld();
+  }
+  get shadowState() {
+    return {
+      light: this.sun.position.toArray() as Vec3,
+      target: this.sun.target.position.toArray() as Vec3,
+      left: this.sun.shadow.camera.left,
+      right: this.sun.shadow.camera.right,
+      top: this.sun.shadow.camera.top,
+      bottom: this.sun.shadow.camera.bottom,
+    };
   }
   restoreEditTransforms(p: Project) {
     this.project = p;
@@ -692,12 +744,21 @@ export class ThreeRenderer implements RendererAdapter {
       this.highlighted.add(sphere);
     }
   }
-  render(state?: PhysicsRenderState, thrust = 0) {
+  render(
+    state?: PhysicsRenderState,
+    thrust = 0,
+    options: RenderFrameOptions = {},
+  ) {
     this.parts.forEach((visual) => {
       updateThrusterFlame(visual, thrust);
       updateMotorActivity(visual, thrust);
     });
-    const poses = state?.poses;
+    const interpolated =
+      state && options.previous && options.alpha !== undefined
+        ? interpolatePhysicsRenderState(options.previous, state, options.alpha)
+        : state;
+    const poses = interpolated?.poses;
+    const wheels = interpolated?.wheels;
     if (poses) {
       this.editWorkspace = false;
       this.applyEditWorkspaceVisuals();
@@ -722,9 +783,7 @@ export class ThreeRenderer implements RendererAdapter {
           );
           const top = poses.get(suspension.id),
             wheel = connection ? poses.get(connection.b) : undefined,
-            wheelState = connection
-              ? state.wheels.get(connection.b)
-              : undefined,
+            wheelState = connection ? wheels?.get(connection.b) : undefined,
             visual = this.parts.get(suspension.id);
           if (!top || !wheel || !wheelState || !visual) continue;
           const topQuaternion = new THREE.Quaternion(...top.rotation),
@@ -742,9 +801,10 @@ export class ThreeRenderer implements RendererAdapter {
       const first = poses.values().next().value;
       if (first) {
         const target = new THREE.Vector3(...first.position),
+          follow = cameraFollowAlpha(options.dt ?? 1 / 60),
           delta = target.clone().sub(this.controls.target);
-        this.camera.position.add(delta.multiplyScalar(0.08));
-        this.controls.target.lerp(target, 0.08);
+        this.camera.position.add(delta.multiplyScalar(follow));
+        this.controls.target.lerp(target, follow);
       }
     } else if (this.project) {
       this.editWorkspace = true;
@@ -786,6 +846,7 @@ export class ThreeRenderer implements RendererAdapter {
         Math.round(this.controls.target.z / size) * size;
     }
     this.controls.update();
+    this.updateShadowFollow(this.controls.target.toArray() as Vec3);
     this.root.traverse((o) => o.userData.updateLod?.(this.camera.position));
     this.renderer.render(this.scene, this.camera);
     if (this.onCandidateScreens) {

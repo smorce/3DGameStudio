@@ -1,5 +1,9 @@
 import { test, expect } from "./fixtures";
-import { pickCandidate, savedProject } from "./placement-helpers";
+import {
+  attachFrontPanel,
+  pickCandidate,
+  savedProject,
+} from "./placement-helpers";
 
 test("Play停止後に編集Poseへ戻り候補とVisualが一致する", async ({ page }) => {
   await page.goto("/");
@@ -10,6 +14,7 @@ test("Play停止後に編集Poseへ戻り候補とVisualが一致する", async 
     await page.getByRole("button", { name: "◉ タイヤ", exact: true }).click();
     await pickCandidate(page);
   }
+  await attachFrontPanel(page);
   const before = await savedProject(page);
   const canvas = page.getByLabel("3Dビューポート");
 

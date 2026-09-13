@@ -6,14 +6,21 @@ import {
   type Vec3,
 } from "../../project-schema/src/index";
 import { ThreeRenderer } from "../../renderer-three/src/index";
-import { RapierPhysics } from "../../physics-rapier/src/index";
+import {
+  RapierPhysics,
+  type PhysicsRenderState,
+} from "../../physics-rapier/src/index";
 import { CourseProgress } from "../../course-system/src/index";
 import { WorldRuntime } from "../../world-system/src/index";
 import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
 } from "../../runtime-telemetry/src/index";
+import { shiftPhysicsRenderState } from "./interpolation";
+import { commitWorldOriginShift } from "./rebase";
 export type ControlValues = Record<string, number>;
+export { commitWorldOriginShift } from "./rebase";
+export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
 const clampControl = (value: number) =>
   Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
 export function aggregateControlChannels(
@@ -37,6 +44,9 @@ export class Engine {
   private frame = 0;
   private last = 0;
   private accumulator = 0;
+  private previousRenderState?: PhysicsRenderState;
+  private currentRenderState?: PhysicsRenderState;
+  private interpolationAlpha = 1;
   private keys = new Set<string>();
   private disposed = false;
   private ticket = 0;
@@ -82,6 +92,8 @@ export class Engine {
     this.mode = "EDIT";
     this.blur();
     this.course = undefined;
+    this.previousRenderState = undefined;
+    this.currentRenderState = undefined;
     this.physics.dispose();
     this.worldRuntime?.dispose();
     this.worldRuntime = new WorldRuntime(this.project.world);
@@ -109,6 +121,9 @@ export class Engine {
     if (this.course) this.physics.respawn(this.course.course.start);
     this.mode = "PLAY";
     this.accumulator = 0;
+    this.previousRenderState = undefined;
+    this.currentRenderState = undefined;
+    this.interpolationAlpha = 1;
   }
   stop(): Promise<void> {
     if (this.mode === "DROP") return this.dropPromise ?? Promise.resolve();
@@ -163,24 +178,44 @@ export class Engine {
         );
       while (this.accumulator >= 1 / 60) {
         this.physics.step(controls);
-        this.accumulator -= 1 / 60;
-        const renderState = this.physics.renderState(),
-          p = renderState.poses.values().next().value?.position,
-          global = p ? (this.worldRuntime?.toGlobal(p) ?? p) : undefined;
+        const next = this.physics.renderState();
+        this.previousRenderState = this.currentRenderState ?? next;
+        this.currentRenderState = next;
+        const simulation = next.poses.values().next().value?.position;
+        const global = simulation
+          ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
+          : undefined;
+        if (global && this.worldRuntime) {
+          const plan = commitWorldOriginShift(
+            this.worldRuntime,
+            this.physics,
+            this.renderer,
+            global,
+          );
+          if (plan) {
+            this.currentRenderState = this.physics.renderState();
+            if (this.previousRenderState)
+              this.previousRenderState = shiftPhysicsRenderState(
+                this.previousRenderState,
+                plan.delta,
+              );
+          }
+        }
         if (global && !dropping) {
           this.course?.update(global, 1 / 60);
           if (global[1] < -20) this.physics.respawn(this.course?.respawn);
         }
+        this.accumulator -= 1 / 60;
       }
-      const renderState = this.physics.renderState();
-      const shift = this.physics.lastRebaseDelta;
-      if (shift) {
-        this.renderer.applyOriginShift(shift);
-        this.physics.lastRebaseDelta = undefined;
-      }
+      this.interpolationAlpha = this.accumulator / (1 / 60);
       this.renderer.render(
-        renderState,
+        this.currentRenderState ?? this.physics.renderState(),
         dropping ? 0 : (controls.throttle ?? 0),
+        {
+          previous: this.previousRenderState,
+          alpha: this.interpolationAlpha,
+          dt,
+        },
       );
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();
@@ -207,6 +242,8 @@ export class Engine {
   }
   get stats() {
     const world = this.worldRuntime?.stats(this.position);
+    const sample = this.currentTelemetry;
+    const chunk = world?.currentChunk?.split(",").map(Number) ?? [0, 0];
     return {
       fps: this.fps,
       ...this.renderer.stats,
@@ -216,8 +253,21 @@ export class Engine {
       loadedPhysicsChunks: world?.loadedPhysicsChunks ?? 0,
       pendingGenerationCount: world?.pendingGenerationCount ?? 0,
       generationLatencyMs: world?.generationLatencyMs ?? 0,
+      maxGenerationLatencyMs: world?.maxGenerationLatencyMs ?? 0,
       cacheHitRate: world?.cacheHitRate ?? 1,
       rebaseCount: world?.rebaseCount ?? 0,
+      syncGenerationCount: world?.syncGenerationCount ?? 0,
+      worldOriginX: world?.worldOrigin[0] ?? 0,
+      worldOriginY: world?.worldOrigin[1] ?? 0,
+      worldOriginZ: world?.worldOrigin[2] ?? 0,
+      simulationX: sample?.simulationPosition?.[0] ?? 0,
+      simulationY: sample?.simulationPosition?.[1] ?? 0,
+      simulationZ: sample?.simulationPosition?.[2] ?? 0,
+      chunkX: chunk[0] ?? 0,
+      chunkZ: chunk[1] ?? 0,
+      worldSpeedMps: sample?.worldSpeedMps ?? 0,
+      maxJointAnchorErrorM: this.physics.maxJointAnchorErrorM,
+      interpolationAlpha: this.interpolationAlpha,
     };
   }
   dispose() {

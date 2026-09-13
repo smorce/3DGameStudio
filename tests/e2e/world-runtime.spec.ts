@@ -1,11 +1,13 @@
 import { test, expect } from "./fixtures";
 import { readFile } from "node:fs/promises";
 import { detailedGlb, rampGlb } from "../fixtures/runtime-assets";
+import { carTemplate } from "../../packages/machine-system/src/index";
+import { parseProject } from "../../packages/project-schema/src/index";
 test("広いWorldの物理Streaming・大量岩・2番目のコースを実走する @smoke", async ({
   page,
 }) => {
-  const project = JSON.parse(
-    await readFile("tests/fixtures/benchmark-world.json", "utf8"),
+  const project = parseProject(
+    JSON.parse(await readFile("tests/fixtures/benchmark-world.json", "utf8")),
   );
   project.courses[1].start = [200, 1, 0];
   project.courses[1].checkpoints = [{ id: "b-check", position: [200, 1, 5] }];
@@ -14,6 +16,7 @@ test("広いWorldの物理Streaming・大量岩・2番目のコースを実走�
     { id: "a-block", kind: "obstacle", position: [200, 0, 0], size: [8, 8, 8] },
   ];
   project.courses[1].obstacles = [];
+  project.machines = [carTemplate()];
   await page.addInitScript(
     (p) =>
       !localStorage.getItem("machine-studio.project") &&
@@ -70,9 +73,10 @@ test("圧縮LOD素材を読込・Instancing描画し、非Box Collider上を走�
   expect(response.ok()).toBe(true);
   const asset = await response.json();
   expect(asset.runtimeInfo.lods).toHaveLength(3);
-  const project = JSON.parse(
-    await readFile("demos/demo-simple-car.json", "utf8"),
+  const project = parseProject(
+    JSON.parse(await readFile("demos/demo-simple-car.json", "utf8")),
   );
+  project.machines = [carTemplate()];
   const rampResponse = await request.post(`/api/upload?${query}`, {
     headers: { "Content-Type": "model/gltf-binary" },
     data: Buffer.from(await rampGlb()),
@@ -94,6 +98,7 @@ test("圧縮LOD素材を読込・Instancing描画し、非Box Collider上を走�
       metadata: {},
     },
   ];
+  project.settings.activeCourseId = "ramp-course";
   project.world.terrain.size = 1024;
   project.world.entities = Array.from({ length: 100 }, (_, i) => ({
     id: `lod-${i}`,

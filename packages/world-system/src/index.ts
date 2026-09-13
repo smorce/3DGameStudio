@@ -39,5 +39,6 @@ export function starterWorldPatch(world: Project["world"]) {
 export * from "./chunks";
 export * from "./coordinates";
 export * from "./edits";
+export * from "./entities";
 export * from "./runtime";
 export * from "./streaming";

@@ -79,6 +79,8 @@ export interface MachineTelemetrySample {
   heightAboveTerrainM: number | null;
   contactStatusAvailable: boolean;
   groundedWheelCount: number;
+  maxJointAnchorErrorM?: number;
+  jointAnchorErrors?: Record<string, number>;
   wheels: WheelTelemetrySample[];
 }
 
