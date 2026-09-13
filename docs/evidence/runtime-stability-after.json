@@ -1,10 +1,9 @@
 {
-  "capturedAt": "2026-09-13T16:44:33.405Z",
+  "capturedAt": "2026-09-13T23:29:40.620Z",
   "phase": "after",
-  "gitHead": "2ceb86a669e3468370d1145e288fe8977f7cdd92",
+  "gitHead": "2688ab2d09c6d289f0082f1d0b0af80f0201aff3",
   "branch": "fix/runtime-stability-rebase-shadow-colliders",
-  "workingTreeDirty": true,
-  "note": "Evidenceはレビュー指摘の追加修正（Builtin Collider共有・Telemetry同期・Rebase連続性・Shadow e2e）を含む未コミット作業ツリーで取得。コミット後にprobeを再実行してgitHeadを更新すること。",
+  "workingTreeDirty": false,
   "steps": 2400,
   "flightDistanceM": 909.7247606221288,
   "finalGlobalPosition": [
@@ -23,8 +22,8 @@
   "airStopSteps": 0,
   "syncGenerationCount": 245,
   "generationLatencyMs": {
-    "last": 0.14142500000002656,
-    "max": 2.6487789999999904
+    "last": 0.1510439999999562,
+    "max": 2.37233999999998
   },
   "finite": {
     "position": true,

@@ -2,7 +2,7 @@
 
 ブランチ: `fix/runtime-stability-rebase-shadow-colliders`  
 ベース: `feat/procedural-world-runtime` (`7aec2e4`)  
-作業時点の HEAD: `2ceb86a` + レビュー指摘の追加修正（未コミット。`workingTreeDirty: true`）
+作業時点の HEAD: `2688ab2`（レビュー指摘の追加修正を含む）
 
 ## 1. 原因分析
 
