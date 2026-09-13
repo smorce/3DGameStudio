@@ -208,7 +208,16 @@ const hingeOutputKinds: Part["definitionId"][] = [
   ...structuralKinds,
   "Thruster",
 ];
+/** Motor出力軸先へ接続できる部品。Hinge出力と同様に回転側へ載せる。 */
+const motorOutputKinds: Part["definitionId"][] = [...hingeOutputKinds];
+/** Suspension下端へ接続できる部品。Wheelに加え構造部品も載せられる。 */
+const suspensionOutputKinds: Part["definitionId"][] = [
+  "Wheel",
+  ...structuralKinds,
+];
 const undercarriageKinds: Part["definitionId"][] = ["Wheel", "Suspension"];
+/** Motor Visualの出力軸先端(ローカル+Z)と一致させる比率。 */
+export const MOTOR_OUTPUT_TIP_Z_RATIO = 0.7;
 
 // 古い保存データには不足する接続先だけを補完し、計算中は元の配列を変更しない。
 export function placementConnectors(part: Part): Connector[] {
@@ -221,6 +230,11 @@ export function placementConnectors(part: Part): Connector[] {
             c.id === "hinge-input" ||
             c.id.startsWith("jet-") ||
             c.id.startsWith("top-"))
+        ) &&
+        !(part.definitionId === "Motor" && (c.id === "0" || c.id === "motor-output")) &&
+        !(
+          part.definitionId === "Suspension" &&
+          (c.id === "suspension-input" || c.id === "suspension-wheel")
         ),
     )
     .map((c) => ({
@@ -383,7 +397,26 @@ export function placementConnectors(part: Part): Connector[] {
       axis: [1, 0, 0],
       normal: [0, -1, 0],
       type: "wheel",
-      accepts: ["Wheel"],
+      accepts: [...suspensionOutputKinds],
+    });
+  } else if (part.definitionId === "Motor") {
+    const [, , sizeZ] = part.physics.size;
+    // 固定マウントは後端、出力はVisualのshaft tipと一致させる。
+    const mount = connectors.find((item) => item.id === "mount");
+    if (mount) {
+      mount.position = [0, 0, -sizeZ / 2];
+      mount.axis = [0, 0, 1];
+      mount.normal = [0, 0, -1];
+      mount.type = "mount";
+      mount.accepts = [];
+    }
+    add({
+      id: "motor-output",
+      position: [0, 0, sizeZ * MOTOR_OUTPUT_TIP_Z_RATIO],
+      axis: [0, 0, 1],
+      normal: [0, 0, 1],
+      type: "structural",
+      accepts: [...motorOutputKinds],
     });
   }
   return connectors;
@@ -643,7 +676,9 @@ export function findAttachmentCandidates(
                 ? rotate([1, 0, 0], quaternion(rotation))
                 : rotate(c.axis, q),
             connectionType:
-              kind === "Wheel" || kind === "Hinge"
+              kind === "Wheel" ||
+              kind === "Hinge" ||
+              c.id === "motor-output"
                 ? ("revolute" as const)
                 : ("fixed" as const),
           };

@@ -368,6 +368,109 @@ test("Hingeは固定側入力と回転側出力を分け、出力側の部品を
   ).toBe("hinge-output");
 });
 
+test("Suspension下端にはWheel以外の部品も取り付けられる", () => {
+  const { machine, bus } = setup();
+  const suspensionCandidate = findAttachmentCandidates(
+    machine,
+    "Suspension",
+  )[0];
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Suspension",
+    partId: "suspension",
+    candidateId: suspensionCandidate.id,
+  });
+
+  const suspension = bus.project.machines[0].parts.find(
+    (part) => part.id === "suspension",
+  )!;
+  const tip = placementConnectors(suspension).find(
+    (connector) => connector.id === "suspension-wheel",
+  )!;
+  expect(tip.accepts).toEqual(
+    expect.arrayContaining(["Wheel", "Motor", "Block", "Panel"]),
+  );
+
+  const motorCandidate = findAttachmentCandidates(
+    bus.project.machines[0],
+    "Motor",
+  ).find(
+    (candidate) =>
+      candidate.parentPartId === "suspension" &&
+      candidate.parentConnectorId === "suspension-wheel",
+  );
+  expect(motorCandidate).toBeDefined();
+  expect(motorCandidate!.connectionType).toBe("fixed");
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Motor",
+    partId: "tip-motor",
+    candidateId: motorCandidate!.id,
+  });
+  expect(
+    bus.project.machines[0].connections.find(
+      (connection) => connection.b === "tip-motor",
+    ),
+  ).toMatchObject({
+    connectorA: "suspension-wheel",
+    connectorB: "mount",
+    type: "fixed",
+  });
+});
+
+test("Motorは固定マウントと出力軸を持ち、出力先へ部品を取り付けられる", () => {
+  const { machine, bus } = setup();
+  const motorConnectors = placementConnectors(createPart("Motor"));
+  expect(motorConnectors.map((connector) => connector.id)).toEqual(
+    expect.arrayContaining(["mount", "motor-output"]),
+  );
+  const output = motorConnectors.find(
+    (connector) => connector.id === "motor-output",
+  )!;
+  expect(output.accepts).toEqual(
+    expect.arrayContaining(["Panel", "Block", "Thruster", "Hinge"]),
+  );
+  expect(output.position[2]).toBeGreaterThan(0);
+
+  const motorCandidate = findAttachmentCandidates(machine, "Motor")[0];
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Motor",
+    partId: "motor",
+    candidateId: motorCandidate.id,
+  });
+
+  const panelCandidate = findAttachmentCandidates(
+    bus.project.machines[0],
+    "Panel",
+  ).find(
+    (candidate) =>
+      candidate.parentPartId === "motor" &&
+      candidate.parentConnectorId === "motor-output",
+  );
+  expect(panelCandidate).toBeDefined();
+  expect(panelCandidate!.connectionType).toBe("revolute");
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Panel",
+    partId: "driven-panel",
+    candidateId: panelCandidate!.id,
+  });
+  expect(
+    bus.project.machines[0].connections.find(
+      (connection) => connection.b === "driven-panel",
+    ),
+  ).toMatchObject({
+    connectorA: "motor-output",
+    connectorB: "mount",
+    type: "revolute",
+  });
+});
+
 test("固定接続したPanelのTiltはAttachment Pointを維持する", () => {
   const { machine, bus } = setup();
   const candidate = findAttachmentCandidates(machine, "Panel")[0];

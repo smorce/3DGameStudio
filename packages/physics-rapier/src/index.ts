@@ -603,8 +603,17 @@ export class RapierPhysics {
           p.definitionId === "Hinge" && p.actuator.motorMode === "position"
             ? p
             : undefined;
+        // Motor出力軸のrevoluteは、Motor自身が関節の親側ドライバーになる。
+        const motorOutputDriver =
+          c.connectorA === "motor-output"
+            ? m.parts.find(
+                (candidate) =>
+                  candidate.id === c.a && candidate.definitionId === "Motor",
+              )
+            : undefined;
         const driver =
           selfDrivenHinge ??
+          motorOutputDriver ??
           m.parts.find(
             (candidate) =>
               candidate.definitionId === "Motor" &&

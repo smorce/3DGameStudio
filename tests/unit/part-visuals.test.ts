@@ -52,6 +52,7 @@ it("Motorは短い円筒本体と外側へ出る出力軸を生成する", () =>
   expect(shaft.geometry).toBeInstanceOf(THREE.CylinderGeometry);
   expect(shaft.position.z).toBeGreaterThan(body.position.z);
   expect(visual.userData.outputAxis).toEqual([0, 0, 1]);
+  expect(visual.userData.outputConnector).toBe("motor-output");
   expect(indicator?.visible).toBe(false);
 
   updateMotorActivity(visual, 1);

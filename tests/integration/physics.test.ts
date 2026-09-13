@@ -161,6 +161,36 @@ it("接続Motorは正方向へ回転させ、両Bodyへ反作用を伝える", a
   physics.dispose();
 });
 
+it("Motor出力軸へ直接接続した部品もMotorが駆動する", async () => {
+  const project = emptyProject();
+  project.settings.gravity = [0, 0, 0];
+  const machine = createMachine("Motor output"),
+    root = createPart("Panel", [0, 1, 0]);
+  attachPart(machine, root);
+  const motor = createPart("Motor");
+  attachPart(machine, motor);
+  const child = createPart("Panel");
+  const childCandidate = findAttachmentCandidates(machine, "Panel").find(
+    (candidate) =>
+      candidate.parentPartId === motor.id &&
+      candidate.parentConnectorId === "motor-output",
+  );
+  if (!childCandidate) throw new Error("Motor output attachment unavailable");
+  commitAttachment(machine, child, childCandidate);
+  project.machines.push(machine);
+
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  expect(physics.stats.joints).toBe(1);
+  for (let i = 0; i < 30; i++) physics.step(1, 0);
+  const connection = machine.connections.find(
+    (item) => item.connectorA === "motor-output",
+  )!;
+  const bodies = physics.world.bodies.getAll();
+  expect(relativeAxisVelocity(bodies, connection.axis)).toBeGreaterThan(0.5);
+  physics.dispose();
+});
+
 it("MotorなしHingeは受動的に回転し、Motorの0入力は駆動しない", async () => {
   const fixture = motorFixture({ withMotor: false }),
     physics = new RapierPhysics();

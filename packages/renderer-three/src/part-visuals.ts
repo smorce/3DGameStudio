@@ -206,6 +206,8 @@ function createMotorVisual(part: Part, options: PartVisualOptions) {
   group.name = "motor-visual";
   group.userData.ghost = options.ghost === true;
   group.userData.outputAxis = [0, 0, 1];
+  group.userData.outputConnector = "motor-output";
+  group.userData.inputConnector = "mount";
 
   const [sx, sy, sz] = part.physics.size;
   const radialSize = Math.min(sx, sy);
