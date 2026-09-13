@@ -8,6 +8,8 @@ import {
 } from "../../packages/machine-system/src/index";
 import { emptyProject } from "../../packages/project-schema/src/index";
 import {
+  EDIT_MAX_POLAR_ANGLE,
+  PLAY_MAX_POLAR_ANGLE,
   createPartVisual,
   syncPartVisualTransforms,
 } from "../../packages/renderer-three/src/index";
@@ -38,6 +40,12 @@ it("編集Pose同期はVisualのTransformをProjectへ戻し、Projectを書き�
   ]);
   expect(visual.scale.toArray()).toEqual(part.transform.scale);
   expect(project).toEqual(before);
+});
+
+it("編集カメラは下面まで回せ、Playは水平手前までに制限する", () => {
+  expect(EDIT_MAX_POLAR_ANGLE).toBeGreaterThan(PLAY_MAX_POLAR_ANGLE);
+  expect(PLAY_MAX_POLAR_ANGLE).toBeCloseTo(Math.PI * 0.48);
+  expect(EDIT_MAX_POLAR_ANGLE).toBeGreaterThan(Math.PI * 0.5);
 });
 
 it("編集時のSuspension VisualとWheel中心をAttachmentで揃える", () => {

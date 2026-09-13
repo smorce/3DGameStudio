@@ -105,6 +105,7 @@ export class Engine {
       courseId: course?.id ?? null,
       world,
     });
+    this.renderer.setEditMachineLift(false);
     if (this.course) this.physics.respawn(this.course.course.start);
     this.mode = "PLAY";
     this.accumulator = 0;
@@ -123,6 +124,7 @@ export class Engine {
     this.course = undefined;
     this.worldRuntime?.reload(this.project.world);
     this.renderer.load(this.project, { world: this.worldRuntime });
+    this.renderer.setEditMachineLift(false);
     this.physics.respawn(target);
     this.mode = "DROP";
     this.dropUntil = performance.now() + 1200;

@@ -29,6 +29,10 @@ import {
 } from "./part-visuals";
 export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
+/** Play中のカメラ俯仰上限（水平手前まで）。 */
+export const PLAY_MAX_POLAR_ANGLE = Math.PI * 0.48;
+/** 編集中は下面も見られるよう、ほぼ全周まで回せる。 */
+export const EDIT_MAX_POLAR_ANGLE = Math.PI * 0.95;
 export interface RendererAdapter {
   load(project: Project): void;
   restoreEditTransforms(project: Project): void;
@@ -99,6 +103,8 @@ export class ThreeRenderer implements RendererAdapter {
   private ghost = new THREE.Group();
   private candidates: AttachmentCandidate[] = [];
   private hoverId?: string;
+  /** EDIT中は true。地面を隠し、カメラを下面まで回せる。 */
+  private editWorkspace = true;
   private moved = false;
   private pointers = new Set<number>();
   onAttachmentPick?: (id: string) => void;
@@ -270,7 +276,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.target.set(0, 0.6, 0);
     this.controls.enableDamping = true;
-    this.controls.maxPolarAngle = Math.PI * 0.48;
+    this.controls.maxPolarAngle = EDIT_MAX_POLAR_ANGLE;
     this.scene.add(new THREE.HemisphereLight(0xe4f4ff, 0x6b7253, 2));
     const sun = (this.sun = new THREE.DirectionalLight(0xfff0d0, 3));
     sun.position.set(15, 25, 8);
@@ -348,6 +354,7 @@ export class ThreeRenderer implements RendererAdapter {
     options?: { courseId?: string | null; world?: WorldRuntime },
   ) {
     this.project = p;
+    this.editWorkspace = true;
     ++this.generation;
     this.ownsRuntime = !options?.world;
     this.worldRuntime = options?.world ?? new WorldRuntime(p.world);
@@ -361,10 +368,9 @@ export class ThreeRenderer implements RendererAdapter {
     this.machines.clear();
     this.chunks.clear();
     this.scene.background = new THREE.Color(p.world.environment.sky);
-    this.scene.fog = new THREE.FogExp2(
-      p.world.environment.sky,
-      p.world.environment.fog,
-    );
+    this.scene.fog = this.editWorkspace
+      ? null
+      : new THREE.FogExp2(p.world.environment.sky, p.world.environment.fog);
     this.sun.intensity = p.world.lighting.intensity;
     const angle = ((p.world.lighting.timeOfDay - 6) / 12) * Math.PI;
     this.sun.position.set(
@@ -408,6 +414,7 @@ export class ThreeRenderer implements RendererAdapter {
       }
     }
     this.syncProjectPartTransforms(p);
+    this.applyEditWorkspaceVisuals();
     for (const [batchKey, entities] of groupInstances(p)) {
       const key = batchKey.split(":")[0];
       const builders = this.chunkBuilders.get(key) ?? [];
@@ -548,10 +555,39 @@ export class ThreeRenderer implements RendererAdapter {
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS + 1 : 3,
     );
     this.streamer.update(this.controls.target.toArray() as Vec3);
+    this.applyEditWorkspaceVisuals();
     this.select(this.selected);
   }
   private syncProjectPartTransforms(p: Project) {
     syncPartVisualTransforms(this.parts, p);
+  }
+  /** 編集中は地面・地形を隠し、カメラを下面まで回せる。Playでは元に戻す。 */
+  private applyEditWorkspaceVisuals() {
+    const showWorld = !this.editWorkspace;
+    this.controls.maxPolarAngle = this.editWorkspace
+      ? EDIT_MAX_POLAR_ANGLE
+      : PLAY_MAX_POLAR_ANGLE;
+    const sky = this.project?.world.environment.sky ?? "#cfe8f5";
+    const fogDensity = this.project?.world.environment.fog ?? 0.01;
+    this.scene.fog = showWorld
+      ? new THREE.FogExp2(sky, fogDensity)
+      : null;
+    if (this.gridHelper) this.gridHelper.visible = showWorld;
+    if (this.waterMesh) this.waterMesh.visible = showWorld;
+    for (const chunk of this.chunks.values()) chunk.visible = showWorld;
+    const machines = new Set(this.machines.values());
+    for (const child of this.root.children) {
+      if (machines.has(child as THREE.Group)) continue;
+      if (child === this.gridHelper || child === this.waterMesh) continue;
+      if ([...this.chunks.values()].includes(child as THREE.Group)) continue;
+      // 道路・ゲートなど地形まわりも編集中は出さない。
+      child.visible = showWorld;
+    }
+  }
+  setEditMachineLift(enabled: boolean) {
+    // 互換API名。実体は編集ワークスペース（地面非表示＋カメラ制限）の切替。
+    this.editWorkspace = enabled;
+    this.applyEditWorkspaceVisuals();
   }
   applyOriginShift(delta: Vec3) {
     this.camera.position.x -= delta[0];
@@ -577,7 +613,9 @@ export class ThreeRenderer implements RendererAdapter {
   }
   restoreEditTransforms(p: Project) {
     this.project = p;
+    this.editWorkspace = true;
     this.syncProjectPartTransforms(p);
+    this.applyEditWorkspaceVisuals();
     // Play中はカメラがPhysics位置を追従するため、編集位置へ戻したマシンが
     // 画面外に残らないよう、角度とズームを保ったままターゲットを引き戻す。
     const parts = p.machines[0]?.parts;
@@ -661,6 +699,8 @@ export class ThreeRenderer implements RendererAdapter {
     });
     const poses = state?.poses;
     if (poses) {
+      this.editWorkspace = false;
+      this.applyEditWorkspaceVisuals();
       for (const [id, p] of poses) {
         const m = this.parts.get(id);
         if (m) {
@@ -706,7 +746,11 @@ export class ThreeRenderer implements RendererAdapter {
         this.camera.position.add(delta.multiplyScalar(0.08));
         this.controls.target.lerp(target, 0.08);
       }
-    } else if (this.project) this.syncProjectPartTransforms(this.project);
+    } else if (this.project) {
+      this.editWorkspace = true;
+      this.syncProjectPartTransforms(this.project);
+      this.applyEditWorkspaceVisuals();
+    }
     this.highlighted.visible = !poses;
     this.selectionOutline.visible = !poses;
     const focus = this.controls.target.toArray() as Vec3;
@@ -728,6 +772,8 @@ export class ThreeRenderer implements RendererAdapter {
       this.worldRuntime.acquire(poses ? "renderer" : "editor", keys);
     }
     this.streamer?.update(global);
+    // ストリーミングで新規chunkが入っても編集中は地面を出さない。
+    if (this.editWorkspace) this.applyEditWorkspaceVisuals();
     if (this.waterMesh) {
       this.waterMesh.position.x = this.camera.position.x;
       this.waterMesh.position.z = this.camera.position.z;
