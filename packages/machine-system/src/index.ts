@@ -291,8 +291,7 @@ export function placementConnectors(part: Part): Connector[] {
       });
     }
   } else if (part.definitionId === "Hinge") {
-    const [, , z] = part.physics.size,
-      gap = Math.max(z * 0.1, 0.008);
+    // 回転軸(=中心)に入出力を置く薄い蝶番。出力側Panelは辺で密着させる。
     add({
       id: "hinge-input",
       position: [0, 0, 0],
@@ -303,7 +302,7 @@ export function placementConnectors(part: Part): Connector[] {
     });
     add({
       id: "hinge-output",
-      position: [0, 0, z / 2 + gap],
+      position: [0, 0, 0],
       axis: [1, 0, 0],
       normal: [0, 0, 1],
       type: "structural",
@@ -640,12 +639,15 @@ export function findAttachmentCandidates(
                 ? "suspension-input"
                 : kind === "Hinge"
                   ? "hinge-input"
-                  : kind === "Panel" && c.id.startsWith("edge-")
-                    ? oppositeEdge(c.id)
-                    : kind === "Panel" &&
-                        (c.id.startsWith("top-") || c.id === "face-top")
-                      ? "face-bottom"
-                      : "mount";
+                  : kind === "Panel" && c.id === "hinge-output"
+                    ? // 出力法線(+Z)の外側へ伸ばすため、対向する前縁(-Z)を軸へ密着
+                      "edge-z-"
+                    : kind === "Panel" && c.id.startsWith("edge-")
+                      ? oppositeEdge(c.id)
+                      : kind === "Panel" &&
+                          (c.id.startsWith("top-") || c.id === "face-top")
+                        ? "face-bottom"
+                        : "mount";
           const childConnector = placementConnectors(childPart).find(
             (connector) => connector.id === childConnectorId,
           );
@@ -1141,7 +1143,7 @@ export function planeTemplate() {
       m,
       hinge,
       movable,
-      "mount",
+      "hinge-output",
       "edge-z+",
       surfaceRotation,
     );

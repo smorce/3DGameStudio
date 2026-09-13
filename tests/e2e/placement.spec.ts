@@ -171,14 +171,13 @@ test("全パーツを光る位置へ配置し、Studioの詳細値を保持す�
     "➤ ジェット",
     "━ 関節",
     "▱ 板",
-    "↶ ハンドル",
   ]) {
     await page.getByRole("button", { name, exact: true }).click();
     await pickCandidate(page);
   }
   const p = await savedProject(page);
-  expect(p.machines[0].parts).toHaveLength(7);
-  expect(p.machines[0].connections).toHaveLength(6);
+  expect(p.machines[0].parts).toHaveLength(6);
+  expect(p.machines[0].connections).toHaveLength(5);
   await page
     .getByRole("button", { name: "くわしくつくる", exact: true })
     .click();

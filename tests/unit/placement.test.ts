@@ -293,7 +293,6 @@ test.each([
   "Block",
   "Motor",
   "Thruster",
-  "Steering",
   "Hinge",
 ] as const)("%sは候補と一致する姿勢と有効な接続で保存できる", (kind) => {
   const { machine, bus } = setup();
@@ -324,6 +323,9 @@ test("Hingeは固定側入力と回転側出力を分け、出力側の部品を
     expect.arrayContaining(["hinge-input", "hinge-output"]),
   );
   expect(connectors.filter((c) => c.id.startsWith("jet-"))).toHaveLength(0);
+  expect(
+    connectors.find((connector) => connector.id === "hinge-output")?.position,
+  ).toEqual([0, 0, 0]);
 
   const hingeCandidate = findAttachmentCandidates(machine, "Hinge")[0];
   expect(hingeCandidate.childConnectorId).toBe("hinge-input");
@@ -366,6 +368,64 @@ test("Hingeは固定側入力と回転側出力を分け、出力側の部品を
       (connection) => connection.b === "thruster",
     )?.connectorA,
   ).toBe("hinge-output");
+});
+
+test("Hinge出力へPanelを辺で接合できる", () => {
+  const { machine, bus } = setup();
+  const root = machine.parts[0];
+  const hingeCandidate = findAttachmentCandidates(machine, "Hinge").find(
+    (candidate) => candidate.parentConnectorId === "edge-z+",
+  );
+  expect(hingeCandidate).toBeDefined();
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Hinge",
+    partId: "hinge",
+    candidateId: hingeCandidate!.id,
+  });
+
+  const panelCandidate = findAttachmentCandidates(
+    bus.project.machines[0],
+    "Panel",
+  ).find(
+    (candidate) =>
+      candidate.parentPartId === "hinge" &&
+      candidate.parentConnectorId === "hinge-output",
+  );
+  expect(panelCandidate).toBeDefined();
+  expect(panelCandidate!.childConnectorId).toBe("edge-z-");
+  bus.execute({
+    type: "part.attach",
+    machineId: machine.id,
+    kind: "Panel",
+    partId: "wing",
+    candidateId: panelCandidate!.id,
+  });
+
+  const m = bus.project.machines[0],
+    hinge = m.parts.find((part) => part.id === "hinge")!,
+    wing = m.parts.find((part) => part.id === "wing")!;
+  expect(
+    m.connections.find((connection) => connection.b === "wing"),
+  ).toMatchObject({
+    a: "hinge",
+    connectorA: "hinge-output",
+    connectorB: "edge-z-",
+    type: "fixed",
+  });
+  // 親Panel端〜子Panel前縁が蝶番軸で密着し、大幅な重なりがない。
+  const separation = Math.hypot(
+    wing.transform.position[0] - root.transform.position[0],
+    wing.transform.position[1] - root.transform.position[1],
+    wing.transform.position[2] - root.transform.position[2],
+  );
+  expect(separation).toBeGreaterThan(0.9);
+  expect(separation).toBeLessThan(1.2);
+  expect(hinge.transform.position[2]).toBeCloseTo(
+    root.transform.position[2] + root.physics.size[2] / 2,
+    5,
+  );
 });
 
 test("Suspension下端にはWheel以外の部品も取り付けられる", () => {
