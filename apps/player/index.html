@@ -30,16 +30,26 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 2px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        background: #263b37d9;
-        color: #fff4ca;
-        font: 22px monospace;
+        gap: 1px;
+        min-width: 96px;
+        padding: 8px 14px;
+        border: 1px solid #dce1d8;
+        border-radius: 12px;
+        background: #fffdf2e6;
+        color: #263f3d;
+        box-shadow: 0 4px 16px #32443814;
+        font: 700 20px 'Noto Sans JP', sans-serif;
+        pointer-events: none;
       "
     >
-      <span style="font-size: 10px; letter-spacing: 2px">SPEED</span>
-      <strong id="speed-hud-value">0 km/h</strong>
+      <span style="font-size: 9px; letter-spacing: 0.14em; color: #60776e"
+        >SPEED</span
+      >
+      <strong
+        id="speed-hud-value"
+        style="display: flex; align-items: baseline; gap: 4px; line-height: 1.15"
+        >0<span style="font-size: 11px; color: #60776e"> km/h</span></strong
+      >
     </output>
     <script type="module" src="/src/main.ts"></script>
   </body>

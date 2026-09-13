@@ -13,10 +13,18 @@ const speedHud = document.getElementById("speed-hud")!,
 engine.onFrame = () => {
   const playing = engine.mode === "PLAY";
   speedHud.hidden = !playing;
-  if (playing)
-    speedHudValue.textContent = `${Math.round(
+  if (playing) {
+    const kph = Math.round(
       speedKphFromMps(engine.currentTelemetry?.worldSpeedMps ?? 0),
-    )} km/h`;
+    );
+    speedHudValue.replaceChildren(
+      document.createTextNode(String(kph)),
+      Object.assign(document.createElement("span"), {
+        textContent: " km/h",
+        style: "font-size: 11px; color: #60776e",
+      }),
+    );
+  }
 };
 await engine.load(p);
 document.getElementById("play")!.onclick = () => {

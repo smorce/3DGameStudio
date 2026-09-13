@@ -761,7 +761,10 @@ function App() {
         {playing && (
           <output className="speed-hud" aria-label="Speed">
             <span>SPEED</span>
-            <strong data-testid="speed-hud-value">{speedKph} km/h</strong>
+            <strong data-testid="speed-hud-value">
+              {speedKph}
+              <small> km/h</small>
+            </strong>
           </output>
         )}
         <div className="tools">
