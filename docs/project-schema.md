@@ -1,10 +1,10 @@
-# Project Model v5
+# Project Model v6
 
 ProjectはschemaVersion、id、name、world、courses、machines、assets、missions、settingsを持ちます。Three.js／Rapierのオブジェクトや大きなGeometry配列を保存モデルへ埋め込みません。座標は右手系でYが上、前方が+Z、単位はメートル、回転はXYZ Eulerラジアンです。
 
 ## 今回の追加
 
-- `schemaVersion: 5`。
+- `schemaVersion: 6`。`world.source` は `finite`（旧1枚Heightmap）または `procedural`（seed / generatorVersion / preset）。`world.edits` に地形DeltaとGenerated Entity Tombstoneを保存する。v5 Projectは読込時にfinite sourceへ移行し、地形を変形しない。
 - ActuatorのMotorは`motorTorque`を最大トルク（N·m）、`targetAngularVelocity`を入力100%時の目標相対角速度（rad/s）として別々に保存する。
 - `partKinds`からWingを削除し、Panelを固定正方形の空力面として扱います。
 - `settings.activeCourseId`: コースIDまたはnull。欠落時のみ互換フォールバックを許容します。

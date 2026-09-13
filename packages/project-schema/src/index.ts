@@ -234,9 +234,50 @@ export const terrainSchema = z
     "Invalid terrain grid",
   );
 export type Terrain = z.infer<typeof terrainSchema>;
+export const CURRENT_SCHEMA_VERSION = 6;
+export const GENERATOR_VERSION = 1;
+export const environmentPresets = [
+  "grassland",
+  "airfield",
+  "archipelago",
+] as const;
+export const environmentPresetSchema = z.enum(environmentPresets);
+export type EnvironmentPreset = z.infer<typeof environmentPresetSchema>;
+export const finiteWorldSourceSchema = z.object({
+  kind: z.literal("finite"),
+});
+export const proceduralWorldSourceSchema = z.object({
+  kind: z.literal("procedural"),
+  seed: z.number().int(),
+  generatorVersion: z.number().int().positive(),
+  preset: environmentPresetSchema,
+  chunkSize: z.number().positive(),
+  chunkResolution: z.number().int().min(3).max(129),
+  parameters: z.record(z.string(), z.unknown()).default({}),
+});
+export const worldSourceSchema = z.discriminatedUnion("kind", [
+  finiteWorldSourceSchema,
+  proceduralWorldSourceSchema,
+]);
+export type WorldSource = z.infer<typeof worldSourceSchema>;
+export const terrainChunkEditSchema = z.object({
+  heightDeltas: z.record(z.string(), z.number().finite()),
+  colors: z.record(z.string(), z.string()).optional(),
+});
+export const worldEditsSchema = z.object({
+  terrainChunks: z.record(z.string(), terrainChunkEditSchema),
+  generatedEntityTombstones: z.array(z.string()),
+});
+export type WorldEdits = z.infer<typeof worldEditsSchema>;
+export const emptyWorldEdits = (): WorldEdits => ({
+  terrainChunks: {},
+  generatedEntityTombstones: [],
+});
 export const worldSchema = z.object({
   id: z.string(),
   name: z.string(),
+  source: worldSourceSchema,
+  edits: worldEditsSchema,
   terrain: terrainSchema,
   water: z.object({ enabled: z.boolean(), height: z.number().finite() }),
   entities: z.array(entitySchema),
@@ -248,6 +289,22 @@ export const worldSchema = z.object({
   spawnPoints: z.array(vec3),
   environment: z.object({ sky: z.string(), fog: z.number().min(0).max(1) }),
 });
+export type World = z.infer<typeof worldSchema>;
+export function isProceduralWorld(
+  world: Pick<World, "source">,
+): world is World & { source: z.infer<typeof proceduralWorldSourceSchema> } {
+  return world.source.kind === "procedural";
+}
+export function worldChunkSize(world: Pick<World, "source" | "chunkSize">) {
+  return world.source.kind === "procedural"
+    ? world.source.chunkSize
+    : world.chunkSize;
+}
+export function worldChunkResolution(world: Pick<World, "source" | "terrain">) {
+  return world.source.kind === "procedural"
+    ? world.source.chunkResolution
+    : world.terrain.resolution;
+}
 const marker = z.object({ id: z.string(), position: vec3 });
 export const courseSchema = z.object({
   id: z.string(),
@@ -270,7 +327,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(5),
+    schemaVersion: z.literal(6),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -582,6 +639,36 @@ function migrateV4Part(input: unknown) {
   };
 }
 
+function migrateV5World(input: unknown) {
+  if (!isRecord(input)) return input;
+  const source = isRecord(input.source) ? input.source : { kind: "finite" };
+  const edits = isRecord(input.edits)
+    ? {
+        terrainChunks: isRecord(input.edits.terrainChunks)
+          ? input.edits.terrainChunks
+          : {},
+        generatedEntityTombstones: Array.isArray(
+          input.edits.generatedEntityTombstones,
+        )
+          ? input.edits.generatedEntityTombstones
+          : [],
+      }
+    : emptyWorldEdits();
+  return {
+    ...input,
+    source,
+    edits,
+  };
+}
+
+function migrateV5Project(input: Record<string, unknown>) {
+  return {
+    ...input,
+    schemaVersion: 6,
+    world: migrateV5World(input.world),
+  };
+}
+
 function migrateV4Project(input: Record<string, unknown>) {
   return {
     ...input,
@@ -654,18 +741,28 @@ export function parseProject(input: unknown): Project {
   ) {
     input = migrateV4Project(input as Record<string, unknown>);
   }
+  if (
+    typeof input === "object" &&
+    input !== null &&
+    "schemaVersion" in input &&
+    input.schemaVersion === 5
+  ) {
+    input = migrateV5Project(input as Record<string, unknown>);
+  }
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 5,
+    schemaVersion: 6,
     id: uid(),
     name: "わたしのスタジオ",
     world: {
       id: uid(),
       name: "はじまりの草原",
+      source: { kind: "finite" },
+      edits: emptyWorldEdits(),
       terrain: {
         resolution: n,
         size: 128,

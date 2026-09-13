@@ -1,12 +1,18 @@
-import type { Project, Vec3 } from "../../project-schema/src/index";
-import { chunkCoordinate, visibleChunks } from "./index";
+import type { Vec3, World } from "../../project-schema/src/index";
+import {
+  chunkCoordinate,
+  visibleChunks,
+  visibleChunksWithPrefetch,
+} from "./chunks";
 export interface TerrainChunk {
   key: string;
   vertices: number[];
   indices: number[];
   colors: string[];
 }
-export function terrainChunks(project: Project): TerrainChunk[] {
+export function terrainChunks(project: {
+  world: Pick<World, "terrain" | "chunkSize">;
+}): TerrainChunk[] {
   const t = project.world.terrain;
   const chunks = new Map<string, TerrainChunk>();
   for (let z = 0; z < t.resolution - 1; z++)
@@ -53,8 +59,13 @@ export class ChunkStreamer<T> {
     private radius = 2,
     private unloadRadius = radius + 1,
   ) {}
-  update(position: Vec3) {
-    const active = visibleChunks(position, this.size, this.radius);
+  update(position: Vec3, velocity?: Vec3) {
+    const active = visibleChunksWithPrefetch(
+      position,
+      this.size,
+      this.radius,
+      velocity,
+    );
     for (const key of active)
       if (!this.loaded.has(key)) {
         const value = this.create(key);

@@ -5,6 +5,8 @@
   "type": "module",
   "exports": "./src/index.ts",
   "dependencies": {
-    "@machine-studio/project-schema": "workspace:*"
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/terrain-system": "workspace:*",
+    "@machine-studio/world-generator": "workspace:*"
   }
 }
