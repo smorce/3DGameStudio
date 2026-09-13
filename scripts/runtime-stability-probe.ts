@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { emptyProject } from "../packages/project-schema/src/index";
 import { planeTemplate } from "../packages/machine-system/src/index";
 import { RapierPhysics } from "../packages/physics-rapier/src/index";
@@ -22,6 +23,24 @@ const hypot3 = (a: readonly number[], b: readonly number[]) =>
 
 const finite = (value: number) => Number.isFinite(value);
 
+function gitMeta() {
+  try {
+    const gitHead = execFileSync("git", ["rev-parse", "HEAD"], {
+      encoding: "utf8",
+    }).trim();
+    const branch = execFileSync("git", ["branch", "--show-current"], {
+      encoding: "utf8",
+    }).trim();
+    const dirty =
+      execFileSync("git", ["status", "--porcelain"], {
+        encoding: "utf8",
+      }).trim().length > 0;
+    return { gitHead, branch, workingTreeDirty: dirty };
+  } catch {
+    return { gitHead: "unknown", branch: "unknown", workingTreeDirty: true };
+  }
+}
+
 async function main() {
   const project = emptyProject();
   Object.assign(project.world, createStarterWorld({ preset: "airfield" }));
@@ -35,6 +54,7 @@ async function main() {
 
   let airStopSteps = 0;
   let maxGlobalJump = 0;
+  let maxRebaseDiscontinuityM = 0;
   let maxHinge = 0;
   let previous: MachineTelemetrySample | undefined;
   const generationLatencies: number[] = [];
@@ -52,16 +72,24 @@ async function main() {
     const focus = physics.focusGlobal();
     if (focus) {
       const velocityBefore = physics.vehicles[0]?.body.linvel();
+      const globalBefore = physics.focusGlobal()!;
       const plan = commitWorldOriginShift(runtime, physics, undefined, focus);
-      if (plan && velocityBefore) {
-        const velocityAfter = physics.vehicles[0].body.linvel();
-        rebaseVelocityDeltas.push(
-          Math.hypot(
-            velocityAfter.x - velocityBefore.x,
-            velocityAfter.y - velocityBefore.y,
-            velocityAfter.z - velocityBefore.z,
-          ),
+      if (plan) {
+        const globalAfter = physics.focusGlobal()!;
+        maxRebaseDiscontinuityM = Math.max(
+          maxRebaseDiscontinuityM,
+          hypot3(globalBefore, globalAfter),
         );
+        if (velocityBefore) {
+          const velocityAfter = physics.vehicles[0].body.linvel();
+          rebaseVelocityDeltas.push(
+            Math.hypot(
+              velocityAfter.x - velocityBefore.x,
+              velocityAfter.y - velocityBefore.y,
+              velocityAfter.z - velocityBefore.z,
+            ),
+          );
+        }
       }
     }
     const sample = physics.telemetry.current(machine.id);
@@ -71,12 +99,8 @@ async function main() {
     );
     maxHinge = Math.max(maxHinge, sample.maxJointAnchorErrorM ?? 0);
     if (previous) {
-      const originChanged =
-        sample.worldOrigin && previous.worldOrigin
-          ? hypot3(sample.worldOrigin, previous.worldOrigin) > 0.001
-          : false;
       const globalJump = hypot3(sample.position, previous.position);
-      if (!originChanged) maxGlobalJump = Math.max(maxGlobalJump, globalJump);
+      maxGlobalJump = Math.max(maxGlobalJump, globalJump);
       if (
         sample.worldSpeedMps > 5 &&
         sample.throttle > 0 &&
@@ -92,9 +116,13 @@ async function main() {
   if (!last) throw new Error("Starter Plane telemetry was empty");
   const samples = physics.telemetry.samples();
   const start = samples[0];
+  const meta = gitMeta();
   const evidence = {
     capturedAt: new Date().toISOString(),
     phase: "after",
+    gitHead: meta.gitHead,
+    branch: meta.branch,
+    workingTreeDirty: meta.workingTreeDirty,
     steps,
     flightDistanceM: start ? hypot3(last.position, start.position) : 0,
     finalGlobalPosition: last.position,
@@ -103,6 +131,7 @@ async function main() {
     rebaseCount: runtime.rebaseCount,
     maxWorldSpeedMps: Math.max(...samples.map((s) => s.worldSpeedMps)),
     maxGlobalPositionDiscontinuityM: maxGlobalJump,
+    maxRebaseGlobalDiscontinuityM: maxRebaseDiscontinuityM,
     maximumHingeAnchorErrorM: maxHinge,
     maxRebaseVelocityDeltaMps: rebaseVelocityDeltas.length
       ? Math.max(...rebaseVelocityDeltas)

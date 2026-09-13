@@ -31,15 +31,17 @@ it("くるま用の初期景観は中央を空けて木・ビル・山を配置�
   expect(patch.source.kind).toBe("procedural");
   if (patch.source.kind !== "procedural") throw new Error("preset");
   expect(patch.source.preset).toBe("grassland");
-  expect(sampleGeneratedHeight({
-    seed: 42,
-    generatorVersion: 1,
-    preset: "grassland",
-    chunkSize: 32,
-    chunkResolution: 33,
-    x: 0,
-    z: 0,
-  })).toBeCloseTo(0, 1);
+  expect(
+    sampleGeneratedHeight({
+      seed: 42,
+      generatorVersion: 1,
+      preset: "grassland",
+      chunkSize: 32,
+      chunkResolution: 33,
+      x: 0,
+      z: 0,
+    }),
+  ).toBeCloseTo(0, 1);
   const far = generateChunk({
     seed: 42,
     generatorVersion: 1,

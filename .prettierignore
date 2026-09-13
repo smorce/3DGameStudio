@@ -9,6 +9,7 @@ test-results
 .data
 demos/assets/
 docs/evidence/*.log
+docs/evidence/runtime-stability-shadow/
 
 # 作業指示と前回報告の原本は整形対象にしない。
 指示2.md
@@ -16,3 +17,20 @@ docs/evidence/*.log
 
 指示3.md
 2026_0909_1152_報告内容.md
+指示4.md
+指示5.md
+指示6.md
+指示7.md
+指示8.md
+指示9.md
+指示10.md
+指示11.md
+指示12.md
+指示13.md
+2026_0909_1650_報告内容.md
+2026_0911_0037_報告内容.md
+2026_0911_0156_報告内容.md
+2026_0911_0927_報告内容.md
+2026_0911_1104_報告内容.md
+ワールド大規模改修指示.md
+安定化・物理描画改修.md

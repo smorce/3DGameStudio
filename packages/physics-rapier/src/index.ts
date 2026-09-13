@@ -10,6 +10,8 @@ import {
   generatedEntityColliders,
   isBuiltinEntityKind,
   visibleChunksWithPrefetch,
+  worldCollidersForEntity,
+  type WorldColliderPose,
 } from "../../world-system/src/index";
 import type RAPIER from "@dimforge/rapier3d-compat";
 import {
@@ -118,6 +120,33 @@ const normalize = (v: Vec3): Vec3 => {
 };
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
+function colliderExtent(pose: WorldColliderPose): number {
+  if (pose.type === "cylinder") return Math.hypot(pose.radius, pose.halfHeight);
+  if (pose.type === "ball") return pose.radius;
+  return Math.hypot(...pose.halfExtents);
+}
+function colliderDescFromPose(
+  rapier: typeof RAPIER,
+  pose: WorldColliderPose,
+  local: Vec3,
+) {
+  const desc =
+    pose.type === "cylinder"
+      ? rapier.ColliderDesc.cylinder(pose.halfHeight, pose.radius)
+      : pose.type === "ball"
+        ? rapier.ColliderDesc.ball(pose.radius)
+        : rapier.ColliderDesc.cuboid(
+            pose.halfExtents[0],
+            pose.halfExtents[1],
+            pose.halfExtents[2],
+          );
+  return desc.setTranslation(local[0], local[1], local[2]).setRotation({
+    x: pose.rotation[0],
+    y: pose.rotation[1],
+    z: pose.rotation[2],
+    w: pose.rotation[3],
+  });
+}
 function worldAxis(runtime: RevoluteRuntime): Vec3 {
   const q = runtime.bodyA.rotation();
   const bodyRotation: Quat = [q.x, q.y, q.z, q.w];
@@ -411,6 +440,28 @@ export class RapierPhysics {
     );
     if (generation !== this.generation) return;
     for (const e of project.world.entities) {
+      if (isBuiltinEntityKind(e.kind)) {
+        for (const [index, pose] of worldCollidersForEntity(
+          e.kind,
+          e.transform,
+        ).entries()) {
+          const extent = colliderExtent(pose);
+          const center = pose.translation;
+          register(
+            `entity:${e.id}:${index}`,
+            "entity",
+            [center[0] - extent, 0, center[2] - extent],
+            [center[0] + extent, 0, center[2] + extent],
+            () => {
+              const local =
+                this.worldRuntime?.toSimulation(pose.translation) ??
+                pose.translation;
+              return colliderDescFromPose(rapier, pose, local);
+            },
+          );
+        }
+        continue;
+      }
       const p = e.transform.position,
         s = e.transform.scale,
         bounds = project.assets.find((a) => a.id === e.assetId)?.runtimeInfo
@@ -565,24 +616,7 @@ export class RapierPhysics {
                 const local =
                   this.worldRuntime?.toSimulation(pose.translation) ??
                   pose.translation;
-                const desc =
-                  pose.type === "cylinder"
-                    ? rapier.ColliderDesc.cylinder(pose.halfHeight, pose.radius)
-                    : pose.type === "ball"
-                      ? rapier.ColliderDesc.ball(pose.radius)
-                      : rapier.ColliderDesc.cuboid(
-                          pose.halfExtents[0],
-                          pose.halfExtents[1],
-                          pose.halfExtents[2],
-                        );
-                return desc
-                  .setTranslation(local[0], local[1], local[2])
-                  .setRotation({
-                    x: pose.rotation[0],
-                    y: pose.rotation[1],
-                    z: pose.rotation[2],
-                    w: pose.rotation[3],
-                  });
+                return colliderDescFromPose(rapier, pose, local);
               },
             });
           });
@@ -1160,6 +1194,27 @@ export class RapierPhysics {
     this.world.forEachRigidBody((body) => {
       if (ccd.get(body.handle)) body.enableCcd(true);
     });
+  }
+  /** Rebase後に最新Telemetryのsimulation/originを現在座標系へ揃える。 */
+  syncOriginTelemetry() {
+    const origin = this.worldRuntime?.worldOrigin ?? ([0, 0, 0] as Vec3);
+    for (const vehicle of this.vehicles) {
+      const sample = this.telemetry.current(vehicle.id);
+      if (!sample) continue;
+      const translation = vehicle.body.translation();
+      const simulation: TelemetryVec3 = [
+        translation.x,
+        translation.y,
+        translation.z,
+      ];
+      const global =
+        this.worldRuntime?.toGlobal(simulation) ?? ([...simulation] as Vec3);
+      const chunk = chunkCoordinate(global, this.worldRuntime?.chunkSize ?? 32);
+      sample.simulationPosition = simulation;
+      sample.worldOrigin = [...origin] as TelemetryVec3;
+      sample.position = [...global] as TelemetryVec3;
+      sample.chunkCoordinate = [chunk[0], chunk[1]];
+    }
   }
   jointAnchorErrors() {
     return this.hinges.map((hinge) => {

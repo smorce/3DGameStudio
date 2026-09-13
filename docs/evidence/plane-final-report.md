@@ -35,11 +35,11 @@
 `0.45 / 0.55 / 0.65 / 0.75m`を同一条件で600 Physics Step試験した。既存のStable Forward Takeoff条件を満たしたのは`0.65m`だけだったため採用した。
 
 | restLength | Stable Takeoff | Peak Pitch Rate | Peak Vertical Accel |
-|---:|:---:|---:|---:|
-| 0.45 | No | 2.171 rad/s | 76.711 m/s² |
-| 0.55 | No | 0.420 rad/s | 38.029 m/s² |
-| 0.65 | Yes | 1.467 rad/s | 36.914 m/s² |
-| 0.75 | No | 1.034 rad/s | 43.965 m/s² |
+| ---------: | :------------: | --------------: | ------------------: |
+|       0.45 |       No       |     2.171 rad/s |         76.711 m/s² |
+|       0.55 |       No       |     0.420 rad/s |         38.029 m/s² |
+|       0.65 |      Yes       |     1.467 rad/s |         36.914 m/s² |
+|       0.75 |       No       |     1.034 rad/s |         43.965 m/s² |
 
 ### Horizontal Tail
 

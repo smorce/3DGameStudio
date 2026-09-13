@@ -36,11 +36,11 @@ Car / Plane / Boat は同一World Runtimeへ Environment Preset を渡す。Mach
 
 ## E. Presets
 
-| Preset | 用途 | Spawn | 特徴 |
-|---|---|---|---|
-| grassland | Starter Car | 平坦な安全圏半径14m | 緩丘、遠方の山、Tree/Rock/Building |
-| airfield | Starter Plane | 滑走路 z=-40..360, \|x\|<=20 | 滑走路のみ平坦。外側は平原と山 |
-| archipelago | Starter Boat | 水深<=-5m、半径24m | 島・海底・Endless Water |
+| Preset      | 用途          | Spawn                        | 特徴                               |
+| ----------- | ------------- | ---------------------------- | ---------------------------------- |
+| grassland   | Starter Car   | 平坦な安全圏半径14m          | 緩丘、遠方の山、Tree/Rock/Building |
+| airfield    | Starter Plane | 滑走路 z=-40..360, \|x\|<=20 | 滑走路のみ平坦。外側は平原と山     |
+| archipelago | Starter Boat  | 水深<=-5m、半径24m           | 島・海底・Endless Water            |
 
 Preset差は生成Data。Physics/Rendererに `if (preset)` 分岐を置かない。
 
@@ -87,13 +87,13 @@ v5→v6で finite source へ包む。旧デモ3種とv0〜v5をTest。Height/Col
 
 ## L. Performance
 
-| 指標 | 値 |
-|---|---|
-| 生成 32×33 平均 | 0.51 ms |
-| 生成 32×33 最大 | 4.30 ms |
-| Cache上限 | 256（試験時32でもBounded） |
+| 指標                        | 値                           |
+| --------------------------- | ---------------------------- |
+| 生成 32×33 平均             | 0.51 ms                      |
+| 生成 32×33 最大             | 4.30 ms                      |
+| Cache上限                   | 256（試験時32でもBounded）   |
 | Physics Load（1024 finite） | Terrain Collider 25（半径2） |
-| Worker | 未使用（生成が十分速い） |
+| Worker                      | 未使用（生成が十分速い）     |
 
 ## M. Car Test
 

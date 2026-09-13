@@ -231,7 +231,10 @@ export function placementConnectors(part: Part): Connector[] {
             c.id.startsWith("jet-") ||
             c.id.startsWith("top-"))
         ) &&
-        !(part.definitionId === "Motor" && (c.id === "0" || c.id === "motor-output")) &&
+        !(
+          part.definitionId === "Motor" &&
+          (c.id === "0" || c.id === "motor-output")
+        ) &&
         !(
           part.definitionId === "Suspension" &&
           (c.id === "suspension-input" || c.id === "suspension-wheel")
@@ -487,7 +490,9 @@ function undercarriagePlacementRotation(
   }
   const axle = rotate([1, 0, 0], orientation);
   if (
-    axle[0] * desiredAxle[0] + axle[1] * desiredAxle[1] + axle[2] * desiredAxle[2] <
+    axle[0] * desiredAxle[0] +
+      axle[1] * desiredAxle[1] +
+      axle[2] * desiredAxle[2] <
     0
   )
     desiredAxle = desiredAxle.map((value) => -value) as Vec3;
@@ -678,9 +683,7 @@ export function findAttachmentCandidates(
                 ? rotate([1, 0, 0], quaternion(rotation))
                 : rotate(c.axis, q),
             connectionType:
-              kind === "Wheel" ||
-              kind === "Hinge" ||
-              c.id === "motor-output"
+              kind === "Wheel" || kind === "Hinge" || c.id === "motor-output"
                 ? ("revolute" as const)
                 : ("fixed" as const),
           };
@@ -992,9 +995,7 @@ export function wheelSuspensionSettings(
   const parent = connection
     ? machine.parts.find((part) => part.id === connection.a)
     : undefined;
-  const radius = wheel
-    ? wheel.physics.size[1] * wheel.transform.scale[1]
-    : 0;
+  const radius = wheel ? wheel.physics.size[1] * wheel.transform.scale[1] : 0;
   if (parent?.definitionId === "Suspension" && parent.physics.suspension)
     return clampSuspensionTravelForWheel(parent.physics.suspension, radius);
   // 直接Wheel: Panel下面への密着と、Raycast用restLengthを分離する。
@@ -1210,14 +1211,11 @@ export function planeTemplate() {
   for (const side of [-1, 1] as const) {
     const thruster = createPart("Thruster");
     thruster.actuator.motorTorque = 1000;
-    connectTemplateParts(
-      m,
-      wingPanels[side][1],
-      thruster,
-      "edge-z-",
-      "mount",
-      [wingAngle, 0, 0],
-    );
+    connectTemplateParts(m, wingPanels[side][1], thruster, "edge-z-", "mount", [
+      wingAngle,
+      0,
+      0,
+    ]);
   }
   // 実際の質量分布から重心を求め、Main Gearを重心の少し後方へ置く。
   const totalMass = m.parts.reduce((sum, part) => sum + part.physics.mass, 0);

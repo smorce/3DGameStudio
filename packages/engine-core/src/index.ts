@@ -268,6 +268,12 @@ export class Engine {
       worldSpeedMps: sample?.worldSpeedMps ?? 0,
       maxJointAnchorErrorM: this.physics.maxJointAnchorErrorM,
       interpolationAlpha: this.interpolationAlpha,
+      shadowTargetX: this.renderer.shadowState.target[0],
+      shadowTargetY: this.renderer.shadowState.target[1],
+      shadowTargetZ: this.renderer.shadowState.target[2],
+      shadowLightX: this.renderer.shadowState.light[0],
+      shadowLightY: this.renderer.shadowState.light[1],
+      shadowLightZ: this.renderer.shadowState.light[2],
     };
   }
   dispose() {

@@ -16,5 +16,6 @@ export function commitWorldOriginShift(
   physics.shiftOrigin(plan.delta);
   renderer?.shiftOrigin(plan.delta);
   runtime.commitRebase(plan);
+  physics.syncOriginTelemetry();
   return plan;
 }

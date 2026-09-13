@@ -16,7 +16,11 @@ import {
 import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
-import { euler, quaternion, rotate } from "../../packages/machine-system/src/math";
+import {
+  euler,
+  quaternion,
+  rotate,
+} from "../../packages/machine-system/src/math";
 function applyFiniteFlatWorld(
   project: ReturnType<typeof emptyProject>,
   size = 1024,
@@ -641,12 +645,12 @@ it("Starter PlaneはW+↑(pitch)で安定離陸する", async () => {
       (state, index) => index > threeWheelIndex && state === "011",
     ),
     airborneIndex = states.findIndex(
-      (state, index) => index > Math.max(noseOffIndex, threeWheelIndex) && state === "000",
+      (state, index) =>
+        index > Math.max(noseOffIndex, threeWheelIndex) && state === "000",
     );
   expect(threeWheelIndex).toBeGreaterThanOrEqual(0);
   expect(airborneIndex).toBeGreaterThan(threeWheelIndex);
-  if (noseOffIndex >= 0)
-    expect(noseOffIndex).toBeGreaterThan(threeWheelIndex);
+  if (noseOffIndex >= 0) expect(noseOffIndex).toBeGreaterThan(threeWheelIndex);
 });
 
 it("Starter PlaneはNeutralのWだけでは自動離陸しない", async () => {

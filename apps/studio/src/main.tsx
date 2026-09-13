@@ -739,27 +739,49 @@ function App() {
                   LOD0 {stats.lod0Batches ?? 0} · LOD1 {stats.lod1Batches ?? 0}{" "}
                   · LOD2 {stats.lod2Batches ?? 0}
                 </span>
-                {playing && (
-                  <>
-                    <br />
-                    <span>
-                      Rebase {stats.rebaseCount ?? 0} · Origin{" "}
-                      {(stats.worldOriginX ?? 0).toFixed(0)},{" "}
-                      {(stats.worldOriginZ ?? 0).toFixed(0)} · Hinge{" "}
-                      {(stats.maxJointAnchorErrorM ?? 0).toFixed(3)}m · SyncGen{" "}
-                      {stats.syncGenerationCount ?? 0} · Gen{" "}
-                      {(stats.generationLatencyMs ?? 0).toFixed(1)}ms
-                    </span>
-                  </>
-                )}
+                <br />
+              </>
+            )}
+            {playing && (
+              <>
+                <span>
+                  Rebase {stats.rebaseCount ?? 0} · Origin{" "}
+                  {(stats.worldOriginX ?? 0).toFixed(0)},{" "}
+                  {(stats.worldOriginZ ?? 0).toFixed(0)} · Hinge{" "}
+                  {(stats.maxJointAnchorErrorM ?? 0).toFixed(3)}m · SyncGen{" "}
+                  {stats.syncGenerationCount ?? 0} · Gen{" "}
+                  {(stats.generationLatencyMs ?? 0).toFixed(1)}ms
+                </span>
+                <br />
+                <span
+                  data-testid="shadow-follow"
+                  data-target={JSON.stringify([
+                    stats.shadowTargetX ?? 0,
+                    stats.shadowTargetY ?? 0,
+                    stats.shadowTargetZ ?? 0,
+                  ])}
+                  data-light={JSON.stringify([
+                    stats.shadowLightX ?? 0,
+                    stats.shadowLightY ?? 0,
+                    stats.shadowLightZ ?? 0,
+                  ])}
+                >
+                  Shadow→ {(stats.shadowTargetX ?? 0).toFixed(1)},{" "}
+                  {(stats.shadowTargetZ ?? 0).toFixed(1)}
+                </span>
                 <br />
               </>
             )}
             <span
               data-testid="runtime-position"
               data-position={JSON.stringify([stats.x ?? 0, stats.z ?? 0])}
+              data-simulation={JSON.stringify([
+                stats.simulationX ?? 0,
+                stats.simulationY ?? 0,
+                stats.simulationZ ?? 0,
+              ])}
             >
-              {level === "easy" ? (
+              {level === "easy" && !playing ? (
                 "W / ↑ ですすもう"
               ) : (
                 <>

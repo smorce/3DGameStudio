@@ -67,8 +67,10 @@ describe("モデルとコマンド", () => {
         machineId: m.id,
         kind: "Wheel",
         partId: uid(),
-        candidateId: findAttachmentCandidates(bus.project.machines[0], "Wheel")[0]
-          .id,
+        candidateId: findAttachmentCandidates(
+          bus.project.machines[0],
+          "Wheel",
+        )[0].id,
       });
     const before = bus.project;
     expect(() =>
@@ -200,8 +202,7 @@ it("親部品の移動・回転で接続位置を保持する", () => {
       (part) =>
         part.definitionId === "Wheel" &&
         m.connections.some(
-          (connection) =>
-            connection.a === rear.id && connection.b === part.id,
+          (connection) => connection.a === rear.id && connection.b === part.id,
         ),
     )!;
   bus.execute({ type: "machine.create", machine: m });
@@ -451,7 +452,8 @@ describe("Suspension hardPoint / travel 制約", () => {
     const machine = planeTemplate(),
       wheel = machine.parts.find(
         (part) =>
-          part.definitionId === "Wheel" && part.metadata.gearRole === "main-left",
+          part.definitionId === "Wheel" &&
+          part.metadata.gearRole === "main-left",
       )!,
       radius = wheel.physics.size[1] * wheel.transform.scale[1],
       settings = wheelSuspensionSettings(machine, wheel.id),

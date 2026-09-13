@@ -3,13 +3,7 @@
   "steps": 600,
   "throttle": 1,
   "steering": 0,
-  "angles": [
-    4,
-    6,
-    8,
-    10,
-    12
-  ],
+  "angles": [4, 6, 8, 10, 12],
   "results": [
     {
       "wingAngleDeg": 4,

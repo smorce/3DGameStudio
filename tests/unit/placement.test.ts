@@ -135,12 +135,12 @@ test("Panelへ付けたWheelとSuspensionは下面へ密着し空白を作らな
     ).toBeLessThan(1e-3);
     expect(parentPoint[1]).toBeCloseTo(panelBottomY, 6);
     // 取付点はPanel下面の内側(四隅含む)にしかない。
-    expect(Math.abs(parentPoint[0] - panel.transform.position[0])).toBeLessThanOrEqual(
-      hx + 1e-6,
-    );
-    expect(Math.abs(parentPoint[2] - panel.transform.position[2])).toBeLessThanOrEqual(
-      hz + 1e-6,
-    );
+    expect(
+      Math.abs(parentPoint[0] - panel.transform.position[0]),
+    ).toBeLessThanOrEqual(hx + 1e-6);
+    expect(
+      Math.abs(parentPoint[2] - panel.transform.position[2]),
+    ).toBeLessThanOrEqual(hz + 1e-6);
     if (kind === "Wheel") {
       const wheelTopY =
         attached.transform.position[1] + attached.physics.size[1];
@@ -173,7 +173,9 @@ test("SuspensionはMotor同様に面へ密着し、辺の外側には候補を�
     motor = findAttachmentCandidates(machine, "Motor");
   expect(suspension.length).toBe(4);
   expect(
-    suspension.every((candidate) => /^[0-3]$/.test(candidate.parentConnectorId)),
+    suspension.every((candidate) =>
+      /^[0-3]$/.test(candidate.parentConnectorId),
+    ),
   ).toBe(true);
   expect(
     suspension.some((candidate) =>
@@ -288,32 +290,29 @@ test("互換性はパーツ別で、古い板も変更せずに候補を計算�
   expect(bus.project.machines[0]).toEqual(before);
 });
 
-test.each([
-  "Panel",
-  "Block",
-  "Motor",
-  "Thruster",
-  "Hinge",
-] as const)("%sは候補と一致する姿勢と有効な接続で保存できる", (kind) => {
-  const { machine, bus } = setup();
-  const candidate = findAttachmentCandidates(machine, kind)[0];
-  expect(candidate).toBeDefined();
-  bus.execute({
-    type: "part.attach",
-    machineId: machine.id,
-    partId: "added",
-    kind,
-    candidateId: candidate.id,
-  });
-  const m = bus.project.machines[0],
-    part = m.parts[1];
-  expect(part.transform.position).toEqual(candidate.position);
-  expect(part.transform.rotation).toEqual(candidate.rotation);
-  expect(m.connections[0].type).toBe(kind === "Hinge" ? "revolute" : "fixed");
-  expect(
-    part.connectors.some((c) => c.id === m.connections[0].connectorB),
-  ).toBe(true);
-});
+test.each(["Panel", "Block", "Motor", "Thruster", "Hinge"] as const)(
+  "%sは候補と一致する姿勢と有効な接続で保存できる",
+  (kind) => {
+    const { machine, bus } = setup();
+    const candidate = findAttachmentCandidates(machine, kind)[0];
+    expect(candidate).toBeDefined();
+    bus.execute({
+      type: "part.attach",
+      machineId: machine.id,
+      partId: "added",
+      kind,
+      candidateId: candidate.id,
+    });
+    const m = bus.project.machines[0],
+      part = m.parts[1];
+    expect(part.transform.position).toEqual(candidate.position);
+    expect(part.transform.rotation).toEqual(candidate.rotation);
+    expect(m.connections[0].type).toBe(kind === "Hinge" ? "revolute" : "fixed");
+    expect(
+      part.connectors.some((c) => c.id === m.connections[0].connectorB),
+    ).toBe(true);
+  },
+);
 
 test("Hingeは固定側入力と回転側出力を分け、出力側の部品を回転させる", () => {
   const { machine, bus } = setup();
@@ -609,9 +608,10 @@ test("Panelを立ててもWheelの車軸は水平で取付面はPanelへ向く",
       connector = placementConnectors(parent).find(
         (item) => item.id === candidate.parentConnectorId,
       )!,
-      towardPanel = rotate(connector.normal!, quaternion(parent.transform.rotation)).map(
-        (value) => -value,
-      ) as [number, number, number];
+      towardPanel = rotate(
+        connector.normal!,
+        quaternion(parent.transform.rotation),
+      ).map((value) => -value) as [number, number, number];
     // 車軸は地面に対して水平(縦向きに倒れない)。
     expect(Math.abs(axle[1])).toBeLessThan(0.1);
     mount.forEach((value, index) =>

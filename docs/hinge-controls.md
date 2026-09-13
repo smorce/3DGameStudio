@@ -8,14 +8,14 @@
 
 パレットや `createPart("Hinge")` で置いた関節の既定値は次のとおりです。
 
-| 項目 | 既定値 | 意味 |
-| --- | --- | --- |
-| 寸法 | `[1, 0.08, 0.08]` m | Panel辺に沿う棒状。旧い立方体関節ではない |
-| 質量 | `0.5` kg | Plane可動翼と同じ |
-| `motorMode` | `velocity` | 能動の角度追従はしない |
-| `controlChannel` | `throttle` | 入力Channel名 |
-| `motorTorque` | `0` | Hinge自身はTorqueを出さない |
-| 接続 | 親へ `revolute`、出力側へ構造パーツ | 物理上は可動関節になる |
+| 項目             | 既定値                              | 意味                                      |
+| ---------------- | ----------------------------------- | ----------------------------------------- |
+| 寸法             | `[1, 0.08, 0.08]` m                 | Panel辺に沿う棒状。旧い立方体関節ではない |
+| 質量             | `0.5` kg                            | Plane可動翼と同じ                         |
+| `motorMode`      | `velocity`                          | 能動の角度追従はしない                    |
+| `controlChannel` | `throttle`                          | 入力Channel名                             |
+| `motorTorque`    | `0`                                 | Hinge自身はTorqueを出さない               |
+| 接続             | 親へ `revolute`、出力側へ構造パーツ | 物理上は可動関節になる                    |
 
 空のMachineのキー割当（既定）では、↑↓は `throttle`、←→は `steering` です。
 
@@ -37,14 +37,14 @@ Hinge 自身を Position 制御にする方法が簡単です（Starter Planeと
 2. 「くわしくつくる」または Studio で関節を選ぶ
 3. Actuator を次のようにする
 
-| 項目 | 推奨値 | 説明 |
-| --- | --- | --- |
-| Motor Mode | `position` | 入力に応じて目標角度へ追従する |
-| Control Channel | `throttle` または `pitch` | どのキー入力を読むか |
-| Control Gain | `1`（必要なら符号反転で `-1`） | 入力の向き |
-| Position Stiffness | `500` 前後 | Plane可動翼の参考値 |
-| Position Damping | `50` 前後 | 同上 |
-| Neutral Angle | `0` | 入力0のときの角度 |
+| 項目               | 推奨値                         | 説明                           |
+| ------------------ | ------------------------------ | ------------------------------ |
+| Motor Mode         | `position`                     | 入力に応じて目標角度へ追従する |
+| Control Channel    | `throttle` または `pitch`      | どのキー入力を読むか           |
+| Control Gain       | `1`（必要なら符号反転で `-1`） | 入力の向き                     |
+| Position Stiffness | `500` 前後                     | Plane可動翼の参考値            |
+| Position Damping   | `50` 前後                      | 同上                           |
+| Neutral Angle      | `0`                            | 入力0のときの角度              |
 
 4. キー割当を Channel に合わせる
 

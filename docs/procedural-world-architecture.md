@@ -97,11 +97,11 @@ Engine Fixed Update
 
 `planRebase` は判定だけを行いoriginを変えない。`commitRebase` とPhysics/Rendererのシフトを同じdeltaで揃える。Dynamic RigidBody、Standalone Static Collider（Terrain / Entity / Course）、Render Chunk、Camera、Sun / Sun Targetを同じ平行移動で動かす。Rebase中はCCDを一時的に切り、`propagateModifiedBodyPositionsToColliders()` でBody付属Colliderを同期する。通常飛行中のCCDは維持する。
 
-Telemetryの `position` はlogical globalを返す。`simulationPosition` / `worldOrigin` / `chunkCoordinate` を併記する。512m地点が突然0mに見えてはならない。
+Telemetryの `position` はlogical globalを返す。`simulationPosition` / `worldOrigin` / `chunkCoordinate` を併記する。512m地点が突然0mに見えてはならない。Origin Rebase直後は `syncOriginTelemetry()` で最新サンプルのsimulation/originを現在座標系へ揃える。
 
 ## Builtin Entity Definition
 
-tree / building / rock の見た目寸法とCollider寸法は `world-system` の `BuiltinEntityDefinition` が単一の正とする。RendererとPhysicsはここだけを参照する。Physicsがrenderer-threeをimportしてはならない。
+tree / building / rock の見た目寸法とCollider寸法は `world-system` の `BuiltinEntityDefinition` が単一の正とする。RendererとPhysicsはここだけを参照する。Physicsがrenderer-threeをimportしてはならない。Procedural生成物と `project.world.entities` の配置済みtree/building/rockの両方で同じ定義を使う。`asset` kindだけ従来のAsset Collider経路へ進む。
 
 - tree: 幹をCylinder Collider（半径0.2m、高さ1.5m、中心Y 0.75m）。葉を巨大Boxにしない
 - building: 本体 Box 2 x 2.6 x 2（中心Y 1.3m）。屋根は別Collider

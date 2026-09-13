@@ -97,6 +97,95 @@ it("Tree Colliderは幹半径付近で接触し葉全体の巨大Boxではない
   world.free();
 });
 
+it("world.entitiesのrock/treeは共有Builtin Colliderを使う", async () => {
+  const project = emptyProject();
+  project.world.source = { kind: "finite" };
+  project.world.entities = [
+    {
+      id: "placed-rock",
+      name: "岩",
+      kind: "rock",
+      transform: {
+        position: [0, 0, 10],
+        rotation: [0, 0, 0],
+        scale: [1, 1, 1],
+      },
+    },
+    {
+      id: "placed-tree",
+      name: "木",
+      kind: "tree",
+      transform: {
+        position: [0, 0, 20],
+        rotation: [0, 0, 0],
+        scale: [1, 1, 1],
+      },
+    },
+  ];
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  expect(physics.world).toBeTruthy();
+  physics.world!.step();
+  const rapier = await import("@dimforge/rapier3d-compat");
+  const rockHit = physics.world!.castRay(
+    new rapier.Ray({ x: 5, y: 0.5, z: 10 }, { x: -1, y: 0, z: 0 }),
+    10,
+    true,
+  );
+  expect(rockHit).toBeTruthy();
+  // Ball半径0.8 → toi ≈ 4.2。旧generic Box半幅0.6なら ≈ 4.4。
+  expect(rockHit!.timeOfImpact).toBeCloseTo(4.2, 1);
+  expect(rockHit!.timeOfImpact).toBeLessThan(4.35);
+  const treeHit = physics.world!.castRay(
+    new rapier.Ray({ x: 5, y: 0.75, z: 20 }, { x: -1, y: 0, z: 0 }),
+    10,
+    true,
+  );
+  expect(treeHit).toBeTruthy();
+  expect(treeHit!.timeOfImpact).toBeCloseTo(4.8, 1);
+  physics.dispose();
+});
+
+it("Origin Rebaseの直前直後でGlobal座標は連続する", async () => {
+  const project = emptyProject();
+  Object.assign(project.world, createStarterWorld({ preset: "airfield" }));
+  project.machines.push(planeTemplate());
+  const runtime = new WorldRuntime(project.world);
+  const physics = new RapierPhysics();
+  await physics.load(project, { world: runtime });
+  physics.respawn(project.world.spawnPoints[0] ?? [0, 2, 8]);
+  let rebased = false;
+  for (let step = 0; step < 900; step++) {
+    const pitch = step >= 240 && step < 320 ? 1 : 0;
+    physics.step({ throttle: 1, pitch });
+    const focus = physics.focusGlobal();
+    if (!focus) continue;
+    const plan = runtime.planRebase(focus);
+    if (!plan) continue;
+    const before = physics.focusGlobal()!;
+    const sampleBefore = physics.telemetry.current(project.machines[0].id);
+    physics.shiftOrigin(plan.delta);
+    runtime.commitRebase(plan);
+    physics.syncOriginTelemetry();
+    const after = physics.focusGlobal()!;
+    const sampleAfter = physics.telemetry.current(project.machines[0].id)!;
+    expect(hypot3(before, after)).toBeLessThan(0.0001);
+    expect(hypot3(sampleBefore!.position, sampleAfter.position)).toBeLessThan(
+      0.0001,
+    );
+    expect(
+      hypot3(sampleAfter.simulationPosition!, physics.focusSimulation()!),
+    ).toBeLessThan(0.0001);
+    expect(sampleAfter.worldOrigin).toEqual([...runtime.worldOrigin]);
+    rebased = true;
+    break;
+  }
+  expect(rebased).toBe(true);
+  expect(runtime.rebaseCount).toBeGreaterThanOrEqual(1);
+  physics.dispose();
+  runtime.dispose();
+}, 20000);
+
 it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが離れない", async () => {
   const project = emptyProject();
   Object.assign(project.world, createStarterWorld({ preset: "airfield" }));
@@ -110,12 +199,15 @@ it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが�
   let airStop = 0;
   let maxGlobalJump = 0;
   let maxHinge = 0;
+  let maxRebaseDiscontinuity = 0;
   let previous = physics.telemetry.current(machineId);
   const rebaseSnapshots: {
     velocityBefore: number;
     velocityAfter: number;
     hingeBefore: number;
     hingeAfter: number;
+    globalBefore: number[];
+    globalAfter: number[];
   }[] = [];
   for (let step = 0; step < 2100; step++) {
     const pitch = step >= 240 && step < 320 ? 1 : 0;
@@ -129,12 +221,18 @@ it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが�
         0,
         ...physics.jointAnchorErrors().map((item) => item.separationM),
       );
+      const globalBefore = physics.focusGlobal()!;
       const plan = commitWorldOriginShift(runtime, physics, undefined, focus);
       if (plan) {
         const velocityAfter = physics.vehicles[0].body.linvel();
         const hingeAfter = Math.max(
           0,
           ...physics.jointAnchorErrors().map((item) => item.separationM),
+        );
+        const globalAfter = physics.focusGlobal()!;
+        maxRebaseDiscontinuity = Math.max(
+          maxRebaseDiscontinuity,
+          hypot3(globalBefore, globalAfter),
         );
         rebaseSnapshots.push({
           velocityBefore: Math.hypot(
@@ -149,17 +247,15 @@ it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが�
           ),
           hingeBefore,
           hingeAfter,
+          globalBefore: [...globalBefore],
+          globalAfter: [...globalAfter],
         });
       }
     }
     const sample = physics.telemetry.current(machineId);
     if (sample && previous) {
-      const originChanged =
-        sample.worldOrigin && previous.worldOrigin
-          ? hypot3(sample.worldOrigin, previous.worldOrigin) > 0.001
-          : false;
       const jump = hypot3(sample.position, previous.position);
-      if (!originChanged) maxGlobalJump = Math.max(maxGlobalJump, jump);
+      maxGlobalJump = Math.max(maxGlobalJump, jump);
       maxHinge = Math.max(maxHinge, sample.maxJointAnchorErrorM ?? 0);
       if (
         sample.worldSpeedMps > 5 &&
@@ -180,6 +276,7 @@ it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが�
   expect(last.rotation.every(Number.isFinite)).toBe(true);
   expect(airStop).toBe(0);
   expect(maxGlobalJump).toBeLessThan(5);
+  expect(maxRebaseDiscontinuity).toBeLessThan(0.0001);
   expect(maxHinge).toBeLessThan(0.03);
   expect(rebaseSnapshots.length).toBeGreaterThanOrEqual(3);
   for (const snapshot of rebaseSnapshots) {
@@ -187,6 +284,9 @@ it("Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが�
       Math.abs(snapshot.velocityAfter - snapshot.velocityBefore),
     ).toBeLessThan(0.05);
     expect(snapshot.hingeAfter).toBeLessThan(0.03);
+    expect(hypot3(snapshot.globalBefore, snapshot.globalAfter)).toBeLessThan(
+      0.0001,
+    );
   }
   const roles = new Set(physics.jointAnchorErrors().map((item) => item.id));
   for (const role of [
