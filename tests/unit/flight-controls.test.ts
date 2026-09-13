@@ -57,7 +57,7 @@ describe("汎用Control Channel", () => {
     });
     const migrated = parseProject(legacy),
       bindings = migrated.machines[0].controlBindings;
-    expect(migrated.schemaVersion).toBe(5);
+    expect(migrated.schemaVersion).toBe(6);
     expect(bindings).toContainEqual({
       channel: "throttle",
       key: "KeyW",

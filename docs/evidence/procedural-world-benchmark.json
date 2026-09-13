@@ -1,0 +1,36 @@
+{
+  "rows": [
+    {
+      "chunkSize": 32,
+      "resolution": 33,
+      "averageMs": 0.5082444166666669,
+      "maxMs": 4.2950159999999755
+    },
+    {
+      "chunkSize": 32,
+      "resolution": 65,
+      "averageMs": 0.9271209166666677,
+      "maxMs": 1.7535749999999837
+    },
+    {
+      "chunkSize": 64,
+      "resolution": 33,
+      "averageMs": 0.2532033333333293,
+      "maxMs": 0.506576999999993
+    },
+    {
+      "chunkSize": 64,
+      "resolution": 65,
+      "averageMs": 0.8019846250000017,
+      "maxMs": 1.0327760000000126
+    }
+  ],
+  "selected": {
+    "chunkSize": 32,
+    "resolution": 33,
+    "averageMs": 0.5082444166666669,
+    "maxMs": 4.2950159999999755,
+    "reason": "1m格子で車の接地が粗くならず、33^2の生成が数ms未満のためMain Thread同期で足りる。64m/65は生成が重く、Planeの同時Chunk数も増える。",
+    "worker": "not-required"
+  }
+}

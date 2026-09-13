@@ -6,7 +6,7 @@ import {
 } from "../packages/project-schema/src/index";
 import { planeTemplate } from "../packages/machine-system/src/index";
 import { RapierPhysics } from "../packages/physics-rapier/src/index";
-import { starterPlaneWorldPatch } from "../packages/world-system/src/index";
+import { createStarterWorld } from "../packages/world-system/src/index";
 import {
   findStableForwardTakeoff,
   type MachineTelemetrySample,
@@ -164,10 +164,8 @@ const simulate = async (
 ): Promise<Simulation> => {
   const project = emptyProject(),
     machine = planeTemplate();
-  const planeWorld = starterPlaneWorldPatch(project.world);
-  planeWorld.terrain.size = terrainSize;
-  project.world.terrain = planeWorld.terrain;
-  project.world.entities = planeWorld.entities;
+  const planeWorld = createStarterWorld({ preset: "airfield" });
+  Object.assign(project.world, planeWorld);
   configureMachine(
     machine,
     configuredWingAngle,

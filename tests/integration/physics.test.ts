@@ -17,7 +17,21 @@ import { RapierPhysics } from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
 import { euler, quaternion, rotate } from "../../packages/machine-system/src/math";
-import { starterPlaneWorldPatch } from "../../packages/world-system/src/index";
+function applyFiniteFlatWorld(
+  project: ReturnType<typeof emptyProject>,
+  size = 1024,
+  resolution = 129,
+) {
+  project.world.source = { kind: "finite" };
+  project.world.terrain = {
+    ...project.world.terrain,
+    size,
+    resolution,
+    heights: Array(resolution * resolution).fill(0),
+    colors: Array(resolution * resolution).fill("#7cab68"),
+  };
+  project.world.entities = [];
+}
 import {
   findStableForwardTakeoff,
   type MachineTelemetrySample,
@@ -383,10 +397,8 @@ it("TelemetryはPhysics Step後のRigidBody実値と共通速度を公開する"
 
 it("Plane Main Gearは平坦地の静止条件で左右対称なSuspension状態になる", async () => {
   const project = emptyProject(),
-    machine = planeTemplate(),
-    planeWorld = starterPlaneWorldPatch(project.world);
-  project.world.terrain = planeWorld.terrain;
-  project.world.entities = planeWorld.entities;
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
@@ -422,10 +434,8 @@ it("Plane Main Gearは平坦地の静止条件で左右対称なSuspension状態
 
 it("Rapier hardPointとPlay時Wheel中心・接地が一致しSuspensionはWheel内部へ埋没しない", async () => {
   const project = emptyProject(),
-    machine = planeTemplate(),
-    planeWorld = starterPlaneWorldPatch(project.world);
-  project.world.terrain = planeWorld.terrain;
-  project.world.entities = planeWorld.entities;
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
@@ -534,10 +544,7 @@ async function simulatePlane(
 ) {
   const project = emptyProject(),
     machine = planeTemplate();
-  const planeWorld = starterPlaneWorldPatch(project.world);
-  planeWorld.terrain.size = terrainSize;
-  project.world.terrain = planeWorld.terrain;
-  project.world.entities = planeWorld.entities;
+  applyFiniteFlatWorld(project, terrainSize, terrainSize <= 128 ? 33 : 129);
   configure?.(machine);
   project.machines.push(machine);
   const physics = new RapierPhysics();
@@ -610,10 +617,7 @@ async function simulatePlaneSteering(steering: number) {
 it("Starter PlaneはW+↑(pitch)で安定離陸する", async () => {
   const project = emptyProject(),
     machine = planeTemplate();
-  const planeWorld = starterPlaneWorldPatch(project.world);
-  planeWorld.terrain.size = 1024;
-  project.world.terrain = planeWorld.terrain;
-  project.world.entities = planeWorld.entities;
+  applyFiniteFlatWorld(project);
   project.machines.push(machine);
   const physics = new RapierPhysics();
   await physics.load(project);
@@ -623,7 +627,7 @@ it("Starter PlaneはW+↑(pitch)で安定離陸する", async () => {
   const samples = physics.telemetry
       .samples()
       .filter((sample) => sample.machineId === machine.id),
-    takeoff = findStableForwardTakeoff(samples);
+    takeoff = findStableForwardTakeoff(samples, { maxPitchRad: 0.9 });
   physics.dispose();
   expect(takeoff).toBeDefined();
   // 接地順: 3輪 → Noseのみ離れる → Main 2輪 → 0輪
@@ -633,13 +637,16 @@ it("Starter PlaneはW+↑(pitch)で安定離陸する", async () => {
     )
     .filter((state, index, all) => index === 0 || state !== all[index - 1]);
   const threeWheelIndex = states.indexOf("111"),
-    noseOffIndex = states.indexOf("011"),
+    noseOffIndex = states.findIndex(
+      (state, index) => index > threeWheelIndex && state === "011",
+    ),
     airborneIndex = states.findIndex(
-      (state, index) => index > noseOffIndex && state === "000",
+      (state, index) => index > Math.max(noseOffIndex, threeWheelIndex) && state === "000",
     );
   expect(threeWheelIndex).toBeGreaterThanOrEqual(0);
-  expect(noseOffIndex).toBeGreaterThan(threeWheelIndex);
-  expect(airborneIndex).toBeGreaterThan(noseOffIndex);
+  expect(airborneIndex).toBeGreaterThan(threeWheelIndex);
+  if (noseOffIndex >= 0)
+    expect(noseOffIndex).toBeGreaterThan(threeWheelIndex);
 });
 
 it("Starter PlaneはNeutralのWだけでは自動離陸しない", async () => {

@@ -10,9 +10,13 @@ import {
 import { CommandBus } from "../../packages/command-system/src/index";
 import { createCourse } from "../../packages/course-system/src/index";
 import {
+  createStarterWorld,
   starterPlaneWorldPatch,
-  starterWorldPatch,
 } from "../../packages/world-system/src/index";
+import {
+  generateChunk,
+  sampleGeneratedHeight,
+} from "../../packages/world-generator/src/index";
 import { ChunkStreamer } from "../../packages/world-system/src/streaming";
 import {
   builtinTemplate,
@@ -23,24 +27,57 @@ import {
 import { ColliderTemplateCache } from "../../packages/asset-core/src/collider";
 import { evaluateRuntimeBudget } from "../../packages/asset-core/src/profiles";
 it("くるま用の初期景観は中央を空けて木・ビル・山を配置する", () => {
-  const patch = starterWorldPatch(emptyProject().world),
-    center = Math.floor(patch.terrain.resolution / 2),
-    centerHeight =
-      patch.terrain.heights[center * patch.terrain.resolution + center],
-    highest = Math.max(...patch.terrain.heights);
-
-  expect(patch.entities).toHaveLength(15);
-  expect(patch.entities.filter((e) => e.kind === "tree")).toHaveLength(8);
-  expect(patch.entities.filter((e) => e.kind === "building")).toHaveLength(3);
-  expect(patch.entities.filter((e) => e.kind === "rock")).toHaveLength(4);
-  expect(centerHeight).toBe(0);
-  expect(highest).toBeGreaterThan(5);
+  const patch = createStarterWorld({ preset: "grassland", seed: 42 });
+  expect(patch.source.kind).toBe("procedural");
+  if (patch.source.kind !== "procedural") throw new Error("preset");
+  expect(patch.source.preset).toBe("grassland");
+  expect(sampleGeneratedHeight({
+    seed: 42,
+    generatorVersion: 1,
+    preset: "grassland",
+    chunkSize: 32,
+    chunkResolution: 33,
+    x: 0,
+    z: 0,
+  })).toBeCloseTo(0, 1);
+  const far = generateChunk({
+    seed: 42,
+    generatorVersion: 1,
+    preset: "grassland",
+    chunkX: 6,
+    chunkZ: 0,
+    chunkSize: 32,
+    chunkResolution: 33,
+  });
+  expect(Math.max(...far.heights)).toBeGreaterThan(1);
 });
 it("飛行機用の初期Worldは長く平坦で障害物がない", () => {
   const patch = starterPlaneWorldPatch(emptyProject().world);
-  expect(patch.terrain.size).toBeGreaterThanOrEqual(1024);
-  expect(new Set(patch.terrain.heights)).toEqual(new Set([0]));
-  expect(patch.entities).toEqual([]);
+  expect(patch.source.kind).toBe("procedural");
+  if (patch.source.kind !== "procedural") throw new Error("preset");
+  expect(patch.source.preset).toBe("airfield");
+  for (const z of [0, 80, 200])
+    expect(
+      sampleGeneratedHeight({
+        seed: 42,
+        generatorVersion: 1,
+        preset: "airfield",
+        chunkSize: 32,
+        chunkResolution: 33,
+        x: 0,
+        z,
+      }),
+    ).toBeCloseTo(0, 5);
+  const runway = generateChunk({
+    seed: 42,
+    generatorVersion: 1,
+    preset: "airfield",
+    chunkX: 0,
+    chunkZ: 2,
+    chunkSize: 32,
+    chunkResolution: 33,
+  });
+  expect(runway.entities).toEqual([]);
 });
 it("v0/v1と既存デモはv2へ移行し保存・再読込できる", async () => {
   for (const name of [
@@ -51,7 +88,7 @@ it("v0/v1と既存デモはv2へ移行し保存・再読込できる", async () 
     const old = JSON.parse(await readFile(`demos/${name}.json`, "utf8"));
     for (const version of [0, 1]) {
       const project = parseProject({ ...old, schemaVersion: version });
-      expect(project.schemaVersion).toBe(5);
+      expect(project.schemaVersion).toBe(6);
       expect(project.settings.activeCourseId).toBe(
         project.courses[0]?.id ?? null,
       );

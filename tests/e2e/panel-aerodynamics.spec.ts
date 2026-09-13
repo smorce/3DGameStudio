@@ -103,7 +103,7 @@ test("Generic Flight ControlのMotor・Hinge・Binding Inspectorを編集でき�
   const project = await page.evaluate(() =>
     JSON.parse(localStorage.getItem("machine-studio.project") ?? "null"),
   );
-  expect(project.schemaVersion).toBe(5);
+  expect(project.schemaVersion).toBe(6);
   expect(project.machines[0].controlBindings[0]).toMatchObject({
     channel: "throttle",
     value: 1,
