@@ -8,6 +8,7 @@ import {
 import { ThreeRenderer } from "../../renderer-three/src/index";
 import { RapierPhysics } from "../../physics-rapier/src/index";
 import { CourseProgress } from "../../course-system/src/index";
+import { WorldRuntime } from "../../world-system/src/index";
 import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
@@ -31,6 +32,7 @@ export function aggregateControlChannels(
 export class Engine {
   readonly renderer: ThreeRenderer;
   readonly physics = new RapierPhysics();
+  worldRuntime?: WorldRuntime;
   private project?: Project;
   private frame = 0;
   private last = 0;
@@ -81,19 +83,28 @@ export class Engine {
     this.blur();
     this.course = undefined;
     this.physics.dispose();
-    this.renderer.load(this.project);
+    this.worldRuntime?.dispose();
+    this.worldRuntime = new WorldRuntime(this.project.world);
+    this.renderer.load(this.project, { world: this.worldRuntime });
     this.resolveDropWaiter();
   }
   async play(options: { courseId?: string | null } = {}) {
     if (!this.project || this.mode !== "EDIT") return;
     const ticket = ++this.ticket;
     const course = activeCourse(this.project, options.courseId);
+    this.worldRuntime?.reload(this.project.world);
+    const world = this.worldRuntime ?? new WorldRuntime(this.project.world);
+    this.worldRuntime = world;
     await this.physics.load(structuredClone(this.project), {
       courseId: course?.id ?? null,
+      world,
     });
     if (this.disposed || ticket !== this.ticket) return;
     this.course = course ? new CourseProgress(course) : undefined;
-    this.renderer.load(this.project, { courseId: course?.id ?? null });
+    this.renderer.load(this.project, {
+      courseId: course?.id ?? null,
+      world,
+    });
     if (this.course) this.physics.respawn(this.course.course.start);
     this.mode = "PLAY";
     this.accumulator = 0;
@@ -110,7 +121,8 @@ export class Engine {
     }
     const target = this.renderer.viewTarget;
     this.course = undefined;
-    this.renderer.load(this.project);
+    this.worldRuntime?.reload(this.project.world);
+    this.renderer.load(this.project, { world: this.worldRuntime });
     this.physics.respawn(target);
     this.mode = "DROP";
     this.dropUntil = performance.now() + 1200;
@@ -151,13 +163,19 @@ export class Engine {
         this.physics.step(controls);
         this.accumulator -= 1 / 60;
         const renderState = this.physics.renderState(),
-          p = renderState.poses.values().next().value?.position;
-        if (p && !dropping) {
-          this.course?.update(p, 1 / 60);
-          if (p[1] < -20) this.physics.respawn(this.course?.respawn);
+          p = renderState.poses.values().next().value?.position,
+          global = p ? (this.worldRuntime?.toGlobal(p) ?? p) : undefined;
+        if (global && !dropping) {
+          this.course?.update(global, 1 / 60);
+          if (global[1] < -20) this.physics.respawn(this.course?.respawn);
         }
       }
       const renderState = this.physics.renderState();
+      const shift = this.physics.lastRebaseDelta;
+      if (shift) {
+        this.renderer.applyOriginShift(shift);
+        this.physics.lastRebaseDelta = undefined;
+      }
       this.renderer.render(
         renderState,
         dropping ? 0 : (controls.throttle ?? 0),
@@ -174,7 +192,10 @@ export class Engine {
     this.frame = requestAnimationFrame(this.tick);
   };
   get position(): Vec3 {
-    return this.physics.poses().values().next().value?.position ?? [0, 0, 0];
+    const sim = this.physics.poses().values().next().value?.position ?? [
+      0, 0, 0,
+    ];
+    return this.worldRuntime?.toGlobal(sim) ?? sim;
   }
   get telemetry(): RuntimeTelemetry {
     return this.physics.telemetry;
@@ -183,7 +204,19 @@ export class Engine {
     return this.telemetry.current(this.project?.machines[0]?.id);
   }
   get stats() {
-    return { fps: this.fps, ...this.renderer.stats, ...this.physics.stats };
+    const world = this.worldRuntime?.stats(this.position);
+    return {
+      fps: this.fps,
+      ...this.renderer.stats,
+      ...this.physics.stats,
+      cachedChunks: world?.cachedChunks ?? 0,
+      loadedRenderChunks: world?.loadedRenderChunks ?? 0,
+      loadedPhysicsChunks: world?.loadedPhysicsChunks ?? 0,
+      pendingGenerationCount: world?.pendingGenerationCount ?? 0,
+      generationLatencyMs: world?.generationLatencyMs ?? 0,
+      cacheHitRate: world?.cacheHitRate ?? 1,
+      rebaseCount: world?.rebaseCount ?? 0,
+    };
   }
   dispose() {
     this.disposed = true;
@@ -194,6 +227,7 @@ export class Engine {
     window.removeEventListener("blur", this.blur);
     this.physics.dispose();
     this.renderer.dispose();
+    this.worldRuntime?.dispose();
     this.resolveDropWaiter();
   }
 }

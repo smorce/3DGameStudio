@@ -16,6 +16,7 @@ import {
   controlBindingSchema,
   vec3,
   uid,
+  isProceduralWorld,
   type Project,
   type Part,
   type Vec3,
@@ -34,6 +35,7 @@ import {
   euler,
 } from "../../machine-system/src/math";
 import { brushTerrain } from "../../terrain-system/src/index";
+import { applyProceduralBrush } from "../../world-system/src/edits";
 const id = z.string();
 export const commandSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("project.create"), project: projectSchema }),
@@ -452,15 +454,26 @@ function apply(p: Project, c: Command) {
     case "terrain.paint":
     case "terrain.smooth":
     case "terrain.noise":
-      brushTerrain(
-        p.world.terrain,
-        c.type.split(".")[1] as Parameters<typeof brushTerrain>[1],
-        c.x,
-        c.z,
-        c.radius,
-        c.strength,
-        c.color,
-      );
+      if (isProceduralWorld(p.world))
+        applyProceduralBrush(
+          p.world,
+          c.type.split(".")[1] as Parameters<typeof brushTerrain>[1],
+          c.x,
+          c.z,
+          c.radius,
+          c.strength,
+          c.color,
+        );
+      else
+        brushTerrain(
+          p.world.terrain,
+          c.type.split(".")[1] as Parameters<typeof brushTerrain>[1],
+          c.x,
+          c.z,
+          c.radius,
+          c.strength,
+          c.color,
+        );
       break;
     case "asset.import":
       if (!p.assets.some((a) => a.id === c.asset.id)) p.assets.push(c.asset);
@@ -469,7 +482,10 @@ function apply(p: Project, c: Command) {
       p.world.entities.push(c.entity);
       break;
     case "asset.remove":
-      p.world.entities = p.world.entities.filter((a) => a.id !== c.entityId);
+      if (p.world.entities.some((a) => a.id === c.entityId))
+        p.world.entities = p.world.entities.filter((a) => a.id !== c.entityId);
+      else if (!p.world.edits.generatedEntityTombstones.includes(c.entityId))
+        p.world.edits.generatedEntityTombstones.push(c.entityId);
       break;
     case "course.activate":
       if (c.courseId !== null) course();

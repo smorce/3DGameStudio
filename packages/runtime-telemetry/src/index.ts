@@ -34,6 +34,9 @@ export interface MachineTelemetrySample {
   timeSeconds: number;
   machineId: string;
   position: TelemetryVec3;
+  simulationPosition?: TelemetryVec3;
+  worldOrigin?: TelemetryVec3;
+  chunkCoordinate?: [number, number];
   rotation: TelemetryQuat;
   linearVelocityMps: TelemetryVec3;
   angularVelocityRadPerSecond: TelemetryVec3;

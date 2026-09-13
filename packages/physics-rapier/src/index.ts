@@ -1,10 +1,14 @@
 import { ColliderTemplateCache } from "../../asset-core/src/collider";
 import {
-  terrainChunks,
   ChunkStreamer,
   physicsStreaming,
+  terrainChunks,
 } from "../../world-system/src/streaming";
-import { chunkCoordinate } from "../../world-system/src/index";
+import {
+  WorldRuntime,
+  chunkCoordinate,
+  visibleChunksWithPrefetch,
+} from "../../world-system/src/index";
 import type RAPIER from "@dimforge/rapier3d-compat";
 import {
   activeCourse,
@@ -292,17 +296,31 @@ export class RapierPhysics {
   private water: WaterSurface = { enabled: false, height: 0 };
   private gravityMagnitude = 9.81;
   private terrain?: Project["world"]["terrain"];
+  worldRuntime?: WorldRuntime;
+  private ownsRuntime = false;
+  lastRebaseDelta?: Vec3;
   private hinges: RevoluteRuntime[] = [];
   private motors: MotorRuntime[] = [];
-  async load(project: Project, options: { courseId?: string | null } = {}) {
+  async load(
+    project: Project,
+    options: { courseId?: string | null; world?: WorldRuntime } = {},
+  ) {
     this.dispose();
     const generation = this.generation;
     const rapier = await initialize();
     if (generation !== this.generation) return;
     this.world = new rapier.World(vector(project.settings.gravity));
     this.world.timestep = PHYSICS_FIXED_DT;
+    this.ownsRuntime = !options.world;
+    this.worldRuntime =
+      options.world ??
+      (project.world.source.kind === "procedural"
+        ? new WorldRuntime(project.world)
+        : undefined);
     this.terrain = project.world.terrain;
-    this.water = structuredClone(project.world.water);
+    this.water = structuredClone(
+      this.worldRuntime?.seaLevel ?? project.world.water,
+    );
     this.gravityMagnitude = Math.abs(project.settings.gravity[1]);
     type StaticEntry = {
       kind: string;
@@ -324,8 +342,14 @@ export class RapierPhysics {
       create: () => RAPIER.ColliderDesc,
       fallback?: () => RAPIER.ColliderDesc,
     ) => {
-      const [x0, z0] = chunkCoordinate(min, project.world.chunkSize),
-        [x1, z1] = chunkCoordinate(max, project.world.chunkSize);
+      const [x0, z0] = chunkCoordinate(
+          min,
+          this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+        ),
+        [x1, z1] = chunkCoordinate(
+          max,
+          this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+        );
       if ((x1 - x0 + 1) * (z1 - z0 + 1) > 4096) {
         spanning.push({
           id,
@@ -343,20 +367,30 @@ export class RapierPhysics {
           builders.set(key, entries);
         }
     };
-    for (const chunk of terrainChunks(project)) {
-      const xs = chunk.vertices.filter((_, i) => i % 3 === 0),
-        zs = chunk.vertices.filter((_, i) => i % 3 === 2);
-      register(
-        `terrain:${chunk.key}`,
-        "terrain",
-        [Math.min(...xs), 0, Math.min(...zs)],
-        [Math.max(...xs) - 1e-6, 0, Math.max(...zs) - 1e-6],
-        () =>
-          rapier.ColliderDesc.trimesh(
-            new Float32Array(chunk.vertices),
-            new Uint32Array(chunk.indices),
-          ).setFriction(1.4),
-      );
+    const createTerrainCollider = (key: string) => {
+      const chunk = this.worldRuntime?.meshFor(key);
+      if (!chunk || chunk.vertices.length < 9) return;
+      return rapier.ColliderDesc.trimesh(
+        new Float32Array(chunk.vertices),
+        new Uint32Array(chunk.indices),
+      ).setFriction(1.4);
+    };
+    if (!this.worldRuntime?.procedural) {
+      for (const chunk of terrainChunks(project)) {
+        const xs = chunk.vertices.filter((_, i) => i % 3 === 0),
+          zs = chunk.vertices.filter((_, i) => i % 3 === 2);
+        register(
+          `terrain:${chunk.key}`,
+          "terrain",
+          [Math.min(...xs), 0, Math.min(...zs)],
+          [Math.max(...xs) - 1e-6, 0, Math.max(...zs) - 1e-6],
+          () =>
+            rapier.ColliderDesc.trimesh(
+              new Float32Array(chunk.vertices),
+              new Uint32Array(chunk.indices),
+            ).setFriction(1.4),
+        );
+      }
     }
     const usedAssets = new Set(project.world.entities.map((e) => e.assetId));
     const templates = new Map(
@@ -388,10 +422,18 @@ export class RapierPhysics {
         : [0, s[1] * 0.6, 0];
       const offset = rotate(center as Vec3, quaternion(e.transform.rotation));
       const radius = Math.hypot(...half) + Math.hypot(...center);
-      const box = () =>
-        rapier.ColliderDesc.cuboid(half[0], half[1], half[2])
-          .setTranslation(p[0] + offset[0], p[1] + offset[1], p[2] + offset[2])
+      const local = (point: Vec3): Vec3 =>
+        this.worldRuntime?.toSimulation(point) ?? point;
+      const box = () => {
+        const center = local([
+          p[0] + offset[0],
+          p[1] + offset[1],
+          p[2] + offset[2],
+        ]);
+        return rapier.ColliderDesc.cuboid(half[0], half[1], half[2])
+          .setTranslation(center[0], center[1], center[2])
           .setRotation(rotation(quaternion(e.transform.rotation)));
+      };
       register(
         `entity:${e.id}`,
         "entity",
@@ -414,7 +456,7 @@ export class RapierPhysics {
                   : rapier.ColliderDesc.convexHull(vertices);
               if (desc)
                 return desc
-                  .setTranslation(...p)
+                  .setTranslation(...local(p))
                   .setRotation(rotation(quaternion(e.transform.rotation)));
             } catch {
               /* 壊れた素材は境界ボックスへ戻す。 */
@@ -446,14 +488,16 @@ export class RapierPhysics {
           "course",
           [Math.min(a[0], b[0]) - 3, 0, Math.min(a[2], b[2]) - 3],
           [Math.max(a[0], b[0]) + 3, 0, Math.max(a[2], b[2]) + 3],
-          () =>
-            rapier.ColliderDesc.cuboid(2, 0.04, length / 2)
-              .setTranslation(
-                (a[0] + b[0]) / 2,
-                (a[1] + b[1]) / 2,
-                (a[2] + b[2]) / 2,
-              )
-              .setRotation(rotation(q)),
+          () => {
+            const mid = this.worldRuntime?.toSimulation([
+              (a[0] + b[0]) / 2,
+              (a[1] + b[1]) / 2,
+              (a[2] + b[2]) / 2,
+            ]) ?? [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+            return rapier.ColliderDesc.cuboid(2, 0.04, length / 2)
+              .setTranslation(mid[0], mid[1], mid[2])
+              .setRotation(rotation(q));
+          },
         );
       }
       for (const o of c.obstacles) {
@@ -470,9 +514,15 @@ export class RapierPhysics {
               o.size[2] / 2,
             )
               .setTranslation(
-                o.position[0],
-                o.position[1] + o.size[1] / 2,
-                o.position[2],
+                ...(this.worldRuntime?.toSimulation([
+                  o.position[0],
+                  o.position[1] + o.size[1] / 2,
+                  o.position[2],
+                ]) ?? [
+                  o.position[0],
+                  o.position[1] + o.size[1] / 2,
+                  o.position[2],
+                ]),
               )
               .setRotation(
                 rotation(quaternion([o.kind === "jump" ? -0.36 : 0, 0, 0])),
@@ -492,6 +542,31 @@ export class RapierPhysics {
             z <= item.max[1]
           )
             entries.set(item.id, item.entry);
+        if (this.worldRuntime?.procedural) {
+          const terrain = createTerrainCollider(key);
+          if (terrain)
+            entries.set(`terrain:${key}`, {
+              kind: "terrain",
+              create: () => createTerrainCollider(key) ?? terrain,
+            });
+        }
+        const generated = this.worldRuntime?.procedural
+          ? (this.worldRuntime.getChunk(key)?.entities ?? [])
+          : [];
+        for (const entity of generated) {
+          const local =
+            this.worldRuntime?.toSimulation(entity.position) ?? entity.position;
+          const half = entity.scale.map((n) => Math.max(0.15, n * 0.4));
+          entries.set(`entity:${entity.id}`, {
+            kind: "entity",
+            create: () =>
+              rapier.ColliderDesc.cuboid(
+                half[0],
+                half[1],
+                half[2],
+              ).setTranslation(local[0], local[1] + half[1], local[2]),
+          });
+        }
         if (!entries.size) return;
         for (const [id, entry] of entries) {
           const existing = this.staticColliders.get(id);
@@ -522,9 +597,13 @@ export class RapierPhysics {
           }
         }
       },
-      project.world.chunkSize,
-      physicsStreaming.loadRadius,
-      physicsStreaming.unloadRadius,
+      this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+      this.worldRuntime?.procedural
+        ? physicsStreaming.loadRadius + 1
+        : physicsStreaming.loadRadius,
+      this.worldRuntime?.procedural
+        ? physicsStreaming.unloadRadius + 1
+        : physicsStreaming.unloadRadius,
     );
     this.streamer.update(selectedCourse?.start ?? [0, 1, 0]);
     for (const machine of project.machines) {
@@ -706,7 +785,24 @@ export class RapierPhysics {
           ? brake
           : Number.isFinite(controls.brake) && controls.brake > 0;
     const position = this.vehicles[0]?.body.translation();
-    if (position) this.streamer?.update([position.x, position.y, position.z]);
+    const velocity = this.vehicles[0]?.body.linvel();
+    if (position) {
+      const sim: Vec3 = [position.x, position.y, position.z];
+      const global = this.worldRuntime?.toGlobal(sim) ?? sim;
+      const vel: Vec3 | undefined = velocity
+        ? [velocity.x, velocity.y, velocity.z]
+        : undefined;
+      if (this.worldRuntime?.procedural) {
+        const keys = visibleChunksWithPrefetch(
+          global,
+          this.worldRuntime.chunkSize,
+          physicsStreaming.loadRadius + 1,
+          vel,
+        );
+        this.worldRuntime.acquire("physics", keys);
+        this.streamer?.update(global, vel);
+      } else this.streamer?.update(global);
+    }
     for (const machineId of this.forceByMachine.keys())
       this.forceByMachine.set(machineId, emptyForceAccumulator());
     const resetBodies = new Set<RAPIER.RigidBody>();
@@ -979,7 +1075,26 @@ export class RapierPhysics {
     this.world.step();
     this.physicsStep++;
     this.simulationTimeSeconds += PHYSICS_FIXED_DT;
+    this.applyOriginRebase();
     this.captureTelemetry(throttle, steeringValue, brakeValue, controls);
+  }
+  private applyOriginRebase() {
+    if (!this.worldRuntime?.procedural) return;
+    const focus = this.vehicles[0]?.body.translation();
+    if (!focus) return;
+    const global = this.worldRuntime.toGlobal([focus.x, focus.y, focus.z]);
+    const delta = this.worldRuntime.maybeRebase(global);
+    if (!delta) return;
+    this.lastRebaseDelta = delta;
+    this.world.bodies.forEach((body) => {
+      const t = body.translation();
+      body.setTranslation(
+        { x: t.x - delta[0], y: t.y - delta[1], z: t.z - delta[2] },
+        true,
+      );
+    });
+    this.streamer?.dispose();
+    this.streamer?.update(global);
   }
   private captureTelemetry(
     throttle: number,
@@ -1023,12 +1138,26 @@ export class RapierPhysics {
           0,
         ),
         weightN = massKg * this.gravityMagnitude,
-        terrainAvailable = this.terrain
-          ? terrainContainsPoint(this.terrain, position.x, position.z)
-          : false,
-        terrainHeightM = this.terrain
-          ? (heightAtIfInside(this.terrain, position.x, position.z) ?? null)
-          : null,
+        simulation: Vec3 = [position.x, position.y, position.z],
+        global = this.worldRuntime?.toGlobal(simulation) ?? simulation,
+        origin = this.worldRuntime?.worldOrigin ?? [0, 0, 0],
+        chunk = chunkCoordinate(global, this.worldRuntime?.chunkSize ?? 32),
+        sampled = this.worldRuntime
+          ? this.worldRuntime.sampleHeight(global[0], global[2])
+          : this.terrain
+            ? heightAtIfInside(this.terrain, global[0], global[2])
+            : undefined,
+        terrainAvailable =
+          sampled !== undefined ||
+          (this.terrain
+            ? terrainContainsPoint(this.terrain, global[0], global[2])
+            : false) ||
+          Boolean(this.worldRuntime?.procedural),
+        terrainHeightM =
+          sampled ??
+          (this.terrain
+            ? (heightAtIfInside(this.terrain, global[0], global[2]) ?? null)
+            : null),
         wheelApi = vehicle.controller as unknown as {
           wheelIsInContact?: (index: number) => boolean;
           wheelSuspensionForce?: (index: number) => number;
@@ -1089,7 +1218,10 @@ export class RapierPhysics {
         step: this.physicsStep,
         timeSeconds: this.simulationTimeSeconds,
         machineId: vehicle.id,
-        position: [position.x, position.y, position.z],
+        position: global,
+        simulationPosition: simulation,
+        worldOrigin: [...origin] as TelemetryVec3,
+        chunkCoordinate: [chunk[0], chunk[1]],
         rotation,
         linearVelocityMps,
         angularVelocityRadPerSecond,
@@ -1143,7 +1275,7 @@ export class RapierPhysics {
         terrainAvailable,
         terrainHeightM,
         heightAboveTerrainM:
-          terrainHeightM === null ? null : position.y - terrainHeightM,
+          terrainHeightM === null ? null : global[1] - terrainHeightM,
         contactStatusAvailable,
         groundedWheelCount,
         wheels,
@@ -1250,11 +1382,9 @@ export class RapierPhysics {
   respawn(position: Vec3 = [0, 2, 0]) {
     if (!this.world) return;
     this.streamer?.update(position);
+    const local = this.worldRuntime?.toSimulation(position) ?? position;
     this.world.bodies.forEach((body) => {
-      body.setTranslation(
-        { x: position[0], y: position[1] + 1, z: position[2] },
-        true,
-      );
+      body.setTranslation({ x: local[0], y: local[1] + 1, z: local[2] }, true);
       body.setRotation({ x: 0, y: 0, z: 0, w: 1 }, true);
       body.setLinvel({ x: 0, y: 0, z: 0 }, true);
       body.setAngvel({ x: 0, y: 0, z: 0 }, true);
@@ -1288,6 +1418,8 @@ export class RapierPhysics {
     this.parts = [];
     this.forceByMachine.clear();
     this.terrain = undefined;
+    if (this.ownsRuntime) this.worldRuntime?.dispose();
+    if (this.ownsRuntime) this.worldRuntime = undefined;
     this.physicsStep = 0;
     this.simulationTimeSeconds = 0;
     this.telemetry.stop();

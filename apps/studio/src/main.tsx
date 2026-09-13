@@ -35,10 +35,9 @@ import {
   type EditTool,
 } from "../../../packages/ui-studio/src/index";
 import { createCourse } from "../../../packages/course-system/src/index";
-import { heightAt } from "../../../packages/terrain-system/src/index";
 import {
-  starterPlaneWorldPatch,
-  starterWorldPatch,
+  createStarterWorld,
+  sampleWorldHeight,
 } from "../../../packages/world-system/src/index";
 import { applyPlan } from "../../../packages/ai-core/src/index";
 import "./style.css";
@@ -214,7 +213,11 @@ function App() {
           ...course.path,
           ...points.map(
             (v) =>
-              [v[0], heightAt(p.world.terrain, v[0], v[2]) + 0.1, v[2]] as Vec3,
+              [
+                v[0],
+                sampleWorldHeight(p.world, v[0], v[2]) + 0.1,
+                v[2],
+              ] as Vec3,
           ),
         ],
       });
@@ -314,12 +317,17 @@ function App() {
       if (template === true)
         bus.execute({
           type: "world.update",
-          patch: starterWorldPatch(p.world),
+          patch: createStarterWorld({ preset: "grassland" }),
         });
       if (template === "plane")
         bus.execute({
           type: "world.update",
-          patch: starterPlaneWorldPatch(p.world),
+          patch: createStarterWorld({ preset: "airfield" }),
+        });
+      if (template === "boat")
+        bus.execute({
+          type: "world.update",
+          patch: createStarterWorld({ preset: "archipelago" }),
         });
       const machine =
         template === "plane"
@@ -329,16 +337,13 @@ function App() {
             : template
               ? starterCarTemplate()
               : createMachine();
-      liftMachineToGround(machine, (x, z) => heightAt(p.world.terrain, x, z));
+      liftMachineToGround(machine, (x, z) =>
+        sampleWorldHeight(bus.project.world, x, z),
+      );
       bus.execute({
         type: "machine.create",
         machine,
       });
-      if (template === "boat")
-        bus.execute({
-          type: "world.update",
-          patch: { water: { enabled: true, height: 1 } },
-        });
       setStarted(true);
       setSelected(undefined);
       setTool("select");
@@ -348,7 +353,7 @@ function App() {
     const p = bus.project;
     const position: Vec3 = [
       Math.round(point[0]),
-      heightAt(p.world.terrain, point[0], point[2]) + 0.06,
+      sampleWorldHeight(p.world, point[0], point[2]) + 0.06,
       Math.round(point[2]),
     ];
     if (["raise", "lower", "flatten", "smooth", "paint", "noise"].includes(t)) {

@@ -1,7 +1,12 @@
 import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { AssetTemplates, WorldAssetBatch } from "./instances";
+import {
+  AssetTemplates,
+  WorldAssetBatch,
+  builtinTemplate,
+  instanceTemplate,
+} from "./instances";
 import {
   activeCourse,
   type Project,
@@ -9,8 +14,12 @@ import {
   type Vec3,
 } from "../../project-schema/src/index";
 import type { PhysicsRenderState } from "../../physics-rapier/src/index";
-import { groupInstances } from "../../world-system/src/index";
-import { terrainChunks, ChunkStreamer } from "../../world-system/src/streaming";
+import { groupInstances, WorldRuntime } from "../../world-system/src/index";
+import { ChunkStreamer } from "../../world-system/src/streaming";
+import {
+  EDITOR_CHUNK_RADIUS,
+  RENDER_CHUNK_RADIUS,
+} from "../../world-generator/src/index";
 import { type AttachmentCandidate } from "../../machine-system/src/index";
 import {
   createPartVisual,
@@ -48,7 +57,9 @@ export function syncPartVisualTransforms(
             ),
         );
         const wheel = wheelConnection
-          ? machine.parts.find((candidate) => candidate.id === wheelConnection.b)
+          ? machine.parts.find(
+              (candidate) => candidate.id === wheelConnection.b,
+            )
           : undefined;
         const wheelRadius = wheel
           ? wheel.physics.size[1] * wheel.transform.scale[1]
@@ -65,7 +76,7 @@ export function syncPartVisualTransforms(
 export class ThreeRenderer implements RendererAdapter {
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1500);
+  camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2500);
   controls: OrbitControls;
   root = new THREE.Group();
   machines = new Map<string, THREE.Group>();
@@ -78,6 +89,10 @@ export class ThreeRenderer implements RendererAdapter {
   private project?: Project;
   private streamer?: ChunkStreamer<THREE.Group>;
   private chunkBuilders = new Map<string, ((g: THREE.Group) => void)[]>();
+  worldRuntime?: WorldRuntime;
+  private ownsRuntime = false;
+  private waterMesh?: THREE.Mesh;
+  private gridHelper?: THREE.Object3D;
   private sun!: THREE.DirectionalLight;
   private highlighted = new THREE.Group();
   private selectionOutline = new THREE.Group();
@@ -328,11 +343,18 @@ export class ThreeRenderer implements RendererAdapter {
     });
     group.clear();
   }
-  load(p: Project, options?: { courseId: string | null }) {
+  load(
+    p: Project,
+    options?: { courseId?: string | null; world?: WorldRuntime },
+  ) {
     this.project = p;
     ++this.generation;
+    this.ownsRuntime = !options?.world;
+    this.worldRuntime = options?.world ?? new WorldRuntime(p.world);
     this.streamer?.dispose();
     this.chunkBuilders.clear();
+    this.waterMesh = undefined;
+    this.gridHelper = undefined;
     this.clear(this.root);
     this.showAttachmentCandidates([]);
     this.parts.clear();
@@ -343,7 +365,6 @@ export class ThreeRenderer implements RendererAdapter {
       p.world.environment.sky,
       p.world.environment.fog,
     );
-    const t = p.world.terrain;
     this.sun.intensity = p.world.lighting.intensity;
     const angle = ((p.world.lighting.timeOfDay - 6) / 12) * Math.PI;
     this.sun.position.set(
@@ -351,43 +372,15 @@ export class ThreeRenderer implements RendererAdapter {
       Math.max(2, Math.sin(angle) * 25),
       8,
     );
-    for (const data of terrainChunks(p)) {
-      this.chunkBuilders.set(data.key, [
-        (group) => {
-          const geo = new THREE.BufferGeometry();
-          geo.setAttribute(
-            "position",
-            new THREE.Float32BufferAttribute(data.vertices, 3),
-          );
-          geo.setIndex(data.indices);
-          geo.setAttribute(
-            "color",
-            new THREE.Float32BufferAttribute(
-              data.colors.flatMap((hex) => new THREE.Color(hex).toArray()),
-              3,
-            ),
-          );
-          geo.computeVertexNormals();
-          const mesh = new THREE.Mesh(
-            geo,
-            new THREE.MeshStandardMaterial({
-              vertexColors: true,
-              roughness: 1,
-            }),
-          );
-          mesh.receiveShadow = true;
-          group.add(mesh);
-        },
-      ]);
-    }
     const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
     grid.position.y = 0.015;
     (grid.material as THREE.Material).transparent = true;
     (grid.material as THREE.Material).opacity = 0.18;
     this.root.add(grid);
+    this.gridHelper = grid;
     if (p.world.water.enabled) {
       const water = new THREE.Mesh(
-        new THREE.PlaneGeometry(t.size * 2, t.size * 2),
+        new THREE.PlaneGeometry(800, 800),
         new THREE.MeshStandardMaterial({
           color: "#4db5c6",
           transparent: true,
@@ -398,6 +391,7 @@ export class ThreeRenderer implements RendererAdapter {
       water.rotation.x = -Math.PI / 2;
       water.position.y = p.world.water.height;
       this.root.add(water);
+      this.waterMesh = water;
     }
     for (const m of p.machines) {
       const group = new THREE.Group();
@@ -478,11 +472,68 @@ export class ThreeRenderer implements RendererAdapter {
     }
     this.streamer = new ChunkStreamer(
       (key) => {
-        const builders = this.chunkBuilders.get(key);
-        if (!builders) return;
         const group = new THREE.Group();
+        const data = this.worldRuntime?.meshFor(key);
+        if (data) {
+          const geo = new THREE.BufferGeometry();
+          geo.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(
+              new Float32Array(data.vertices),
+              3,
+            ),
+          );
+          geo.setIndex(data.indices);
+          geo.setAttribute(
+            "color",
+            new THREE.Float32BufferAttribute(
+              new Float32Array(
+                data.colors.flatMap((hex) => new THREE.Color(hex).toArray()),
+              ),
+              3,
+            ),
+          );
+          geo.computeVertexNormals();
+          const mesh = new THREE.Mesh(
+            geo,
+            new THREE.MeshStandardMaterial({
+              vertexColors: true,
+              roughness: 1,
+            }),
+          );
+          mesh.receiveShadow = true;
+          group.add(mesh);
+        }
+        const generated = this.worldRuntime?.getChunk(key)?.entities ?? [];
+        const byKind = new Map<string, typeof generated>();
+        for (const entity of generated) {
+          const list = byKind.get(entity.kind) ?? [];
+          list.push(entity);
+          byKind.set(entity.kind, list);
+        }
+        for (const [kind, entities] of byKind) {
+          const template = builtinTemplate(
+            kind as "tree" | "rock" | "building",
+          );
+          group.add(
+            instanceTemplate(
+              template,
+              entities.map((entity) => ({
+                id: entity.id,
+                name: entity.name,
+                kind: entity.kind,
+                transform: {
+                  position: this.worldRuntime!.toSimulation(entity.position),
+                  rotation: entity.rotation,
+                  scale: entity.scale,
+                },
+              })),
+            ),
+          );
+        }
+        for (const build of this.chunkBuilders.get(key) ?? []) build(group);
+        if (!group.children.length) return;
         this.root.add(group);
-        for (const build of builders) build(group);
         this.chunks.set(key, group);
         return group;
       },
@@ -492,13 +543,37 @@ export class ThreeRenderer implements RendererAdapter {
         for (const [key, value] of this.chunks)
           if (value === group) this.chunks.delete(key);
       },
-      p.world.chunkSize,
+      this.worldRuntime?.chunkSize ?? p.world.chunkSize,
+      this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS : 2,
+      this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS + 1 : 3,
     );
     this.streamer.update(this.controls.target.toArray() as Vec3);
     this.select(this.selected);
   }
   private syncProjectPartTransforms(p: Project) {
     syncPartVisualTransforms(this.parts, p);
+  }
+  applyOriginShift(delta: Vec3) {
+    this.camera.position.x -= delta[0];
+    this.camera.position.y -= delta[1];
+    this.camera.position.z -= delta[2];
+    this.controls.target.x -= delta[0];
+    this.controls.target.y -= delta[1];
+    this.controls.target.z -= delta[2];
+    const chunkGroups = new Set(this.chunks.values());
+    for (const group of chunkGroups) {
+      group.position.x -= delta[0];
+      group.position.z -= delta[2];
+    }
+    const machines = new Set(this.machines.values());
+    for (const child of this.root.children) {
+      if (machines.has(child as THREE.Group)) continue;
+      if (child === this.gridHelper || child === this.waterMesh) continue;
+      if (chunkGroups.has(child as THREE.Group)) continue;
+      child.position.x -= delta[0];
+      child.position.z -= delta[2];
+    }
+    this.controls.update();
   }
   restoreEditTransforms(p: Project) {
     this.project = p;
@@ -634,7 +709,36 @@ export class ThreeRenderer implements RendererAdapter {
     } else if (this.project) this.syncProjectPartTransforms(this.project);
     this.highlighted.visible = !poses;
     this.selectionOutline.visible = !poses;
-    this.streamer?.update(this.controls.target.toArray() as Vec3);
+    const focus = this.controls.target.toArray() as Vec3;
+    const global = this.worldRuntime?.toGlobal(focus) ?? focus;
+    if (this.worldRuntime) {
+      const keys = new Set<string>();
+      const size = this.worldRuntime.chunkSize;
+      const radius = this.worldRuntime.procedural
+        ? poses
+          ? RENDER_CHUNK_RADIUS
+          : EDITOR_CHUNK_RADIUS
+        : 2;
+      const [cx, cz] = [
+        Math.floor(global[0] / size),
+        Math.floor(global[2] / size),
+      ];
+      for (let i = cx - radius; i <= cx + radius; i++)
+        for (let j = cz - radius; j <= cz + radius; j++) keys.add(`${i},${j}`);
+      this.worldRuntime.acquire(poses ? "renderer" : "editor", keys);
+    }
+    this.streamer?.update(global);
+    if (this.waterMesh) {
+      this.waterMesh.position.x = this.camera.position.x;
+      this.waterMesh.position.z = this.camera.position.z;
+    }
+    if (this.gridHelper) {
+      const size = 32;
+      this.gridHelper.position.x =
+        Math.round(this.controls.target.x / size) * size;
+      this.gridHelper.position.z =
+        Math.round(this.controls.target.z / size) * size;
+    }
     this.controls.update();
     this.root.traverse((o) => o.userData.updateLod?.(this.camera.position));
     this.renderer.render(this.scene, this.camera);
@@ -718,6 +822,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.dispose();
     this.streamer?.dispose();
     this.chunkBuilders.clear();
+    if (this.ownsRuntime) this.worldRuntime?.dispose();
     this.clear(this.root);
     this.clear(this.highlighted);
     this.clear(this.ghost);
