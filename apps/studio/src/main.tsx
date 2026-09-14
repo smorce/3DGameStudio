@@ -753,6 +753,15 @@ function App() {
                   {(stats.generationLatencyMs ?? 0).toFixed(1)}ms
                 </span>
                 <br />
+                <span>
+                  Frame {(stats.frameTimeMs ?? 0).toFixed(1)}ms · Commit{" "}
+                  {(
+                    (stats.renderCommitMs ?? 0) + (stats.physicsCommitMs ?? 0)
+                  ).toFixed(1)}
+                  ms · Queue {stats.pendingQueueCount ?? 0} · Spike20{" "}
+                  {stats.spikeCount20ms ?? 0}/{stats.spikeCount33ms ?? 0}
+                </span>
+                <br />
                 <span
                   data-testid="shadow-follow"
                   data-target={JSON.stringify([

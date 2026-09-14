@@ -117,7 +117,7 @@ Camera Followは `1 - exp(-lambda * dt)` で時間基準にする。Shadow Camer
 
 ## Chunk Generation
 
-既定 32m / 33解像度の同期生成は平均1ms未満。速度方向prefetch済みのため、通常の長距離飛行ではMain Thread Worker化は必須ではない。`syncGenerationCount` と `generationLatencyMs` をRuntime Statsで監視する。
+境界通過で半径6（13×13）の辺が一度に必要になると、同期一括生成は Frame Spike の主因になる。`ChunkStreamer` は予算付き待ち行列、`WorldRuntime` は `enqueuePrefetch` / `pumpGeneration` で Cache を先埋めする。Physics 緊急半径だけ `ensureChunks` で同期保証する。`generationLatencyMs` 単体では判定せず、`frameTimeMs` / commit ms / Spike を併用する。Worker スレッド化は次段（`pumpGeneration` が入口）。
 
 ## Chunk Lifecycle
 

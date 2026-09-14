@@ -5,6 +5,7 @@ import {
   AssetTemplates,
   WorldAssetBatch,
   builtinTemplate,
+  disposeTemplate,
   instanceTemplate,
 } from "./instances";
 import {
@@ -15,11 +16,15 @@ import {
 } from "../../project-schema/src/index";
 import type { PhysicsRenderState } from "../../physics-rapier/src/index";
 import { groupInstances, WorldRuntime } from "../../world-system/src/index";
-import { ChunkStreamer } from "../../world-system/src/streaming";
+import {
+  ChunkStreamer,
+  renderStreaming,
+} from "../../world-system/src/streaming";
 import {
   EDITOR_CHUNK_RADIUS,
   RENDER_CHUNK_RADIUS,
 } from "../../world-generator/src/index";
+import { visibleChunks } from "../../world-system/src/chunks";
 import { type AttachmentCandidate } from "../../machine-system/src/index";
 import {
   createPartVisual,
@@ -51,6 +56,7 @@ export interface RenderFrameOptions {
   previous?: PhysicsRenderState;
   alpha?: number;
   dt?: number;
+  velocity?: Vec3;
 }
 export interface RendererAdapter {
   load(project: Project): void;
@@ -116,6 +122,18 @@ export class ThreeRenderer implements RendererAdapter {
   private project?: Project;
   private streamer?: ChunkStreamer<THREE.Group>;
   private chunkBuilders = new Map<string, ((g: THREE.Group) => void)[]>();
+  private sharedBuiltinTemplates = new Map<
+    "tree" | "rock" | "building",
+    THREE.Group
+  >();
+  private lastStreamStats = {
+    created: 0,
+    pending: 0,
+    commitMs: 0,
+    normalsMs: 0,
+  };
+  private frameNormalsMs = 0;
+  private lastVelocity?: Vec3;
   worldRuntime?: WorldRuntime;
   private ownsRuntime = false;
   private waterMesh?: THREE.Mesh;
@@ -497,6 +515,7 @@ export class ThreeRenderer implements RendererAdapter {
         this.root.add(mesh);
       }
     }
+    this.clearSharedBuiltinTemplates();
     this.streamer = new ChunkStreamer(
       (key) => {
         const group = new THREE.Group();
@@ -520,7 +539,9 @@ export class ThreeRenderer implements RendererAdapter {
               3,
             ),
           );
+          const normalsStarted = performance.now();
           geo.computeVertexNormals();
+          this.frameNormalsMs += performance.now() - normalsStarted;
           const mesh = new THREE.Mesh(
             geo,
             new THREE.MeshStandardMaterial({
@@ -539,7 +560,7 @@ export class ThreeRenderer implements RendererAdapter {
           byKind.set(entity.kind, list);
         }
         for (const [kind, entities] of byKind) {
-          const template = builtinTemplate(
+          const template = this.sharedBuiltinTemplate(
             kind as "tree" | "rock" | "building",
           );
           group.add(
@@ -573,6 +594,14 @@ export class ThreeRenderer implements RendererAdapter {
       this.worldRuntime?.chunkSize ?? p.world.chunkSize,
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS : 2,
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS + 1 : 3,
+      this.worldRuntime?.procedural
+        ? {
+            maxCreatesPerUpdate: renderStreaming.maxCreatesPerUpdate,
+            budgetMs: renderStreaming.budgetMs,
+            urgentRadius: renderStreaming.urgentRadius,
+            prefetch: { aheadMax: renderStreaming.prefetchAheadMax },
+          }
+        : undefined,
     );
     this.streamer.update(this.controls.target.toArray() as Vec3);
     this.applyEditWorkspaceVisuals();
@@ -815,6 +844,8 @@ export class ThreeRenderer implements RendererAdapter {
     this.selectionOutline.visible = !poses;
     const focus = this.controls.target.toArray() as Vec3;
     const global = this.worldRuntime?.toGlobal(focus) ?? focus;
+    const velocity = options?.velocity ?? this.lastVelocity;
+    if (velocity) this.lastVelocity = velocity;
     if (this.worldRuntime) {
       const keys = new Set<string>();
       const size = this.worldRuntime.chunkSize;
@@ -823,15 +854,19 @@ export class ThreeRenderer implements RendererAdapter {
           ? RENDER_CHUNK_RADIUS
           : EDITOR_CHUNK_RADIUS
         : 2;
-      const [cx, cz] = [
-        Math.floor(global[0] / size),
-        Math.floor(global[2] / size),
-      ];
-      for (let i = cx - radius; i <= cx + radius; i++)
-        for (let j = cz - radius; j <= cz + radius; j++) keys.add(`${i},${j}`);
+      for (const key of visibleChunks(global, size, radius)) keys.add(key);
       this.worldRuntime.acquire(poses ? "renderer" : "editor", keys);
+      this.worldRuntime.enqueuePrefetch(keys);
     }
-    this.streamer?.update(global);
+    const stream = this.streamer?.update(global, velocity);
+    if (stream) {
+      this.lastStreamStats = {
+        created: stream.created,
+        pending: stream.pending,
+        commitMs: stream.commitMs,
+        normalsMs: this.drainNormalsMs(),
+      };
+    }
     // ストリーミングで新規chunkが入っても編集中は地面を出さない。
     if (this.editWorkspace) this.applyEditWorkspaceVisuals();
     if (this.waterMesh) {
@@ -915,6 +950,10 @@ export class ThreeRenderer implements RendererAdapter {
       triangles: this.renderer.info.render.triangles,
       loadedChunks: [...this.chunks.values()].filter((g) => g.visible).length,
       loadedAssets: assetIds.size,
+      renderChunksCreated: this.lastStreamStats.created,
+      renderChunkPending: this.lastStreamStats.pending,
+      renderCommitMs: this.lastStreamStats.commitMs,
+      normalsMs: this.lastStreamStats.normalsMs,
       textureMemoryEstimate,
     };
   }
@@ -929,11 +968,33 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.dispose();
     this.streamer?.dispose();
     this.chunkBuilders.clear();
+    this.clearSharedBuiltinTemplates();
     if (this.ownsRuntime) this.worldRuntime?.dispose();
     this.clear(this.root);
     this.clear(this.highlighted);
     this.clear(this.ghost);
     this.clear(this.selectionOutline);
     this.renderer.dispose();
+  }
+
+  private sharedBuiltinTemplate(kind: "tree" | "rock" | "building") {
+    let template = this.sharedBuiltinTemplates.get(kind);
+    if (!template) {
+      template = builtinTemplate(kind);
+      this.sharedBuiltinTemplates.set(kind, template);
+    }
+    return template;
+  }
+
+  private clearSharedBuiltinTemplates() {
+    for (const template of this.sharedBuiltinTemplates.values())
+      disposeTemplate(template);
+    this.sharedBuiltinTemplates.clear();
+  }
+
+  private drainNormalsMs() {
+    const value = this.frameNormalsMs;
+    this.frameNormalsMs = 0;
+    return value;
   }
 }

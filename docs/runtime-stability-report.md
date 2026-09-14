@@ -62,7 +62,7 @@ Physics 1/60 固定のまま、previous/current poseを `alpha = accumulator / d
 
 ## 9. Chunk生成
 
-長距離飛行の同期生成は最大約 2.6 ms、平均は 1 ms未満。速度方向prefetchがあり、飛行中の大きなカクつき主因ではないため Web Worker 化は行わない。
+当初の「最大約 2.6ms なので Worker 不要」判断は、**1 Chunk の `buildChunk` だけ**を測っていたため誤りだった。境界通過時に 13 Chunk を同一 Frame で同期生成・描画 commit すると Main Thread Hitch になる。`fix/streaming-frame-budget` で時間分散 Streaming・先読み Queue・Frame Spike 計測へ切り替えた。詳細は [streaming-frame-budget-report.md](streaming-frame-budget-report.md)。
 
 ## 10. Before / After
 

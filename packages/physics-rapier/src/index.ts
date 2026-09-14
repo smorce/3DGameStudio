@@ -9,6 +9,7 @@ import {
   chunkCoordinate,
   generatedEntityColliders,
   isBuiltinEntityKind,
+  visibleChunks,
   visibleChunksWithPrefetch,
   worldCollidersForEntity,
   type WorldColliderPose,
@@ -308,6 +309,13 @@ export class RapierPhysics {
   private physicsStep = 0;
   private simulationTimeSeconds = 0;
   private streamer?: ChunkStreamer<string[]>;
+  private lastStreamStats = {
+    created: 0,
+    pending: 0,
+    commitMs: 0,
+    syncFallback: 0,
+  };
+  private pendingStreamFocus?: { global: Vec3; vel?: Vec3 };
   private staticColliders = new Map<
     string,
     { collider: RAPIER.Collider; refs: number; kind: string }
@@ -658,6 +666,14 @@ export class RapierPhysics {
       this.worldRuntime?.procedural
         ? physicsStreaming.unloadRadius + 1
         : physicsStreaming.unloadRadius,
+      this.worldRuntime?.procedural
+        ? {
+            maxCreatesPerUpdate: physicsStreaming.maxCreatesPerUpdate,
+            budgetMs: physicsStreaming.budgetMs,
+            urgentRadius: physicsStreaming.urgentRadius,
+            prefetch: { aheadMax: physicsStreaming.prefetchAheadMax },
+          }
+        : undefined,
     );
     this.streamer.update(selectedCourse?.start ?? [0, 1, 0]);
     for (const machine of project.machines) {
@@ -867,9 +883,20 @@ export class RapierPhysics {
           this.worldRuntime.chunkSize,
           physicsStreaming.loadRadius + 1,
           vel,
+          {
+            aheadMax: physicsStreaming.prefetchAheadMax,
+            direction: this.streamer?.direction,
+          },
         );
+        const urgent = visibleChunks(
+          global,
+          this.worldRuntime.chunkSize,
+          physicsStreaming.urgentRadius,
+        );
+        this.worldRuntime.ensureChunks(urgent);
         this.worldRuntime.acquire("physics", keys);
-        this.streamer?.update(global, vel);
+        this.worldRuntime.enqueuePrefetch(keys);
+        this.pendingStreamFocus = { global, vel };
       } else this.streamer?.update(global);
     }
     for (const machineId of this.forceByMachine.keys())
@@ -1488,6 +1515,20 @@ export class RapierPhysics {
       });
     return result;
   }
+  /** Fixed Update の catch-up 後に1回だけ呼び、Collider 作成予算を Frame 単位にする。 */
+  flushStreaming() {
+    const focus = this.pendingStreamFocus;
+    this.pendingStreamFocus = undefined;
+    if (!focus || !this.streamer) return this.lastStreamStats;
+    const stream = this.streamer.update(focus.global, focus.vel);
+    this.lastStreamStats = {
+      created: stream.created,
+      pending: stream.pending,
+      commitMs: stream.commitMs,
+      syncFallback: stream.syncFallback,
+    };
+    return this.lastStreamStats;
+  }
   renderState(): PhysicsRenderState {
     const poses = this.poses(),
       wheels = new Map<string, WheelRenderState>();
@@ -1549,6 +1590,10 @@ export class RapierPhysics {
   get stats() {
     return {
       physicsChunksLoaded: this.streamer?.loaded.size ?? 0,
+      physicsChunksCreated: this.lastStreamStats.created,
+      physicsChunkPending: this.lastStreamStats.pending,
+      physicsCommitMs: this.lastStreamStats.commitMs,
+      physicsSyncFallback: this.lastStreamStats.syncFallback,
       terrainChunkColliders: [...this.staticColliders.values()].filter(
         (c) => c.kind === "terrain",
       ).length,

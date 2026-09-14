@@ -21,6 +21,21 @@ import { commitWorldOriginShift } from "./rebase";
 export type ControlValues = Record<string, number>;
 export { commitWorldOriginShift } from "./rebase";
 export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
+
+export interface FrameSpikeSample {
+  timeMs: number;
+  positionZ: number;
+  frameTimeMs: number;
+  physicsStepMs: number;
+  renderMs: number;
+  chunksCreated: number;
+  renderCommitMs: number;
+  physicsCommitMs: number;
+  normalsMs: number;
+  syncGenDelta: number;
+}
+
+const SPIKE_RING = 32;
 const clampControl = (value: number) =>
   Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
 export function aggregateControlChannels(
@@ -58,6 +73,13 @@ export class Engine {
   course?: CourseProgress;
   input = { throttle: 0, steering: 0 };
   onFrame?: () => void;
+  private frameTimeMs = 0;
+  private physicsStepMs = 0;
+  private renderMs = 0;
+  private spikeCount20ms = 0;
+  private spikeCount33ms = 0;
+  private readonly spikeRing: FrameSpikeSample[] = [];
+  private lastSyncGen = 0;
   private keyDown = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.matches("input,textarea,select")) return;
     if (
@@ -157,10 +179,12 @@ export class Engine {
   }
   private tick = (now: number) => {
     if (this.disposed) return;
+    const frameStarted = performance.now();
     const dt = Math.min((now - (this.last || now)) / 1000, 0.1);
     this.last = now;
     this.fps = dt ? Math.round(1 / dt) : 60;
     if (this.mode !== "EDIT" && !this.physics.world) this.mode = "EDIT";
+    let velocity: Vec3 | undefined;
     if (this.mode === "PLAY" || this.mode === "DROP") {
       const dropping = this.mode === "DROP";
       this.accumulator += dt;
@@ -176,6 +200,7 @@ export class Engine {
                 steering: this.input.steering - (pad?.axes[0] ?? 0),
               },
         );
+      const physicsStarted = performance.now();
       while (this.accumulator >= 1 / 60) {
         this.physics.step(controls);
         const next = this.physics.renderState();
@@ -207,7 +232,13 @@ export class Engine {
         }
         this.accumulator -= 1 / 60;
       }
+      this.physics.flushStreaming();
+      this.physicsStepMs = performance.now() - physicsStarted;
+      const body = this.physics.vehicles[0]?.body;
+      const linvel = body?.linvel();
+      if (linvel) velocity = [linvel.x, linvel.y, linvel.z];
       this.interpolationAlpha = this.accumulator / (1 / 60);
+      const renderStarted = performance.now();
       this.renderer.render(
         this.currentRenderState ?? this.physics.renderState(),
         dropping ? 0 : (controls.throttle ?? 0),
@@ -215,8 +246,10 @@ export class Engine {
           previous: this.previousRenderState,
           alpha: this.interpolationAlpha,
           dt,
+          velocity,
         },
       );
+      this.renderMs = performance.now() - renderStarted;
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();
         if (this.project) this.renderer.restoreEditTransforms(this.project);
@@ -224,10 +257,50 @@ export class Engine {
         this.accumulator = 0;
         this.resolveDropWaiter();
       }
-    } else this.renderer.render();
+    } else {
+      this.physicsStepMs = 0;
+      const renderStarted = performance.now();
+      this.renderer.render();
+      this.renderMs = performance.now() - renderStarted;
+    }
+    this.worldRuntime?.pumpGeneration(3, 2);
+    this.frameTimeMs = performance.now() - frameStarted;
+    this.recordFrameSpike(now);
     this.onFrame?.();
     this.frame = requestAnimationFrame(this.tick);
   };
+
+  private recordFrameSpike(now: number) {
+    const world = this.worldRuntime?.stats(this.position);
+    const syncGen = world?.syncGenerationCount ?? 0;
+    const syncGenDelta = Math.max(0, syncGen - this.lastSyncGen);
+    this.lastSyncGen = syncGen;
+    const renderStats = this.renderer.stats;
+    const physicsStats = this.physics.stats;
+    const chunksCreated =
+      (renderStats.renderChunksCreated ?? 0) +
+      (physicsStats.physicsChunksCreated ?? 0);
+    if (this.frameTimeMs > 20) this.spikeCount20ms++;
+    if (this.frameTimeMs > 33) this.spikeCount33ms++;
+    if (this.frameTimeMs > 20) {
+      this.spikeRing.push({
+        timeMs: now,
+        positionZ: this.position[2],
+        frameTimeMs: this.frameTimeMs,
+        physicsStepMs: this.physicsStepMs,
+        renderMs: this.renderMs,
+        chunksCreated,
+        renderCommitMs: renderStats.renderCommitMs ?? 0,
+        physicsCommitMs: physicsStats.physicsCommitMs ?? 0,
+        normalsMs: renderStats.normalsMs ?? 0,
+        syncGenDelta,
+      });
+      if (this.spikeRing.length > SPIKE_RING) this.spikeRing.shift();
+    }
+  }
+  get recentSpikes(): readonly FrameSpikeSample[] {
+    return this.spikeRing;
+  }
   get position(): Vec3 {
     const sim = this.physics.poses().values().next().value?.position ?? [
       0, 0, 0,
@@ -252,11 +325,20 @@ export class Engine {
       loadedRenderChunks: world?.loadedRenderChunks ?? 0,
       loadedPhysicsChunks: world?.loadedPhysicsChunks ?? 0,
       pendingGenerationCount: world?.pendingGenerationCount ?? 0,
+      pendingQueueCount: world?.pendingQueueCount ?? 0,
       generationLatencyMs: world?.generationLatencyMs ?? 0,
       maxGenerationLatencyMs: world?.maxGenerationLatencyMs ?? 0,
+      lastCommitBatchMs: world?.lastCommitBatchMs ?? 0,
       cacheHitRate: world?.cacheHitRate ?? 1,
       rebaseCount: world?.rebaseCount ?? 0,
       syncGenerationCount: world?.syncGenerationCount ?? 0,
+      syncFallbackCount: world?.syncFallbackCount ?? 0,
+      prefetchGenerationCount: world?.prefetchGenerationCount ?? 0,
+      frameTimeMs: this.frameTimeMs,
+      physicsStepMs: this.physicsStepMs,
+      renderMs: this.renderMs,
+      spikeCount20ms: this.spikeCount20ms,
+      spikeCount33ms: this.spikeCount33ms,
       worldOriginX: world?.worldOrigin[0] ?? 0,
       worldOriginY: world?.worldOrigin[1] ?? 0,
       worldOriginZ: world?.worldOrigin[2] ?? 0,

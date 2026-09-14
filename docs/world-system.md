@@ -6,7 +6,7 @@ MachineとWorldは別の保存データです。Worldは標高格子、各点の
 
 `terrainChunks(project)`で既存の地形セルを分割し、描画と物理に同じ頂点・境界を使います。Terrain Colliderはチャンク単位Trimeshです。格子とチャンク幅が一致しない場合もセルを途中で切断せず、隣接セルの端点を一致させるため、今回はHeightfieldへ変換していません。
 
-`ChunkStreamer<T>`は必要な範囲の決定と寿命管理を担当し、Three.js／Rapierに依存しません。ロード半径2、保持半径3のヒステリシスを持ち、新規チャンクを作成してから遠方を破棄します。Physicsの値は`physicsStreaming`に集約しています。
+`ChunkStreamer<T>`は必要な範囲の決定と寿命管理を担当し、Three.js／Rapierに依存しません。ロード半径と保持半径のヒステリシスに加え、予算付き待ち行列（`maxCreatesPerUpdate` / `budgetMs`）と緊急半径（`urgentRadius`）で Frame Spike を抑えます。進行方向の先読みはヒステリシス付きの進行線コリドーです。Physicsの既定値は`physicsStreaming`、描画は`renderStreaming`に集約しています。
 
 Rapier AdapterはTerrain、World Entity、選択コースの道路・障害物を空間索引へ登録します。チャンクをロードするとColliderを作り、最後の参照が外れると削除します。複数チャンクにまたがる物体は同じColliderを共有します。非常に大きな境界の物体は索引への大量複製を避け、ロード対象チャンクとの重なりを調べます。
 

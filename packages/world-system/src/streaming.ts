@@ -1,15 +1,19 @@
 import type { Vec3, World } from "../../project-schema/src/index";
 import {
+  PrefetchDirectionState,
   chunkCoordinate,
   visibleChunks,
   visibleChunksWithPrefetch,
+  type PrefetchOptions,
 } from "./chunks";
+
 export interface TerrainChunk {
   key: string;
   vertices: number[];
   indices: number[];
   colors: string[];
 }
+
 export function terrainChunks(project: {
   world: Pick<World, "terrain" | "chunkSize">;
 }): TerrainChunk[] {
@@ -50,38 +54,189 @@ export function terrainChunks(project: {
     }
   return [...chunks.values()];
 }
+
+export interface ChunkStreamerOptions {
+  /** 1 update あたりの最大 create 数。既定 Infinity（後方互換）。 */
+  maxCreatesPerUpdate?: number;
+  /** create に使える時間予算(ms)。既定 Infinity。 */
+  budgetMs?: number;
+  /**
+   * この半径内の不足 Chunk は予算を無視して必ず同期作成する。
+   * Renderer は 0、Physics は 1 を想定。
+   */
+  urgentRadius?: number;
+  prefetch?: PrefetchOptions;
+}
+
+export interface ChunkStreamerUpdateStats {
+  created: number;
+  pending: number;
+  commitMs: number;
+  syncFallback: number;
+  urgentCreated: number;
+}
+
+const unlimited = Number.POSITIVE_INFINITY;
+
 export class ChunkStreamer<T> {
   readonly loaded = new Map<string, T>();
+  readonly pending = new Set<string>();
+  readonly direction = new PrefetchDirectionState();
+  private lastStats: ChunkStreamerUpdateStats = {
+    created: 0,
+    pending: 0,
+    commitMs: 0,
+    syncFallback: 0,
+    urgentCreated: 0,
+  };
+  private syncFallbackTotal = 0;
+  private readonly maxCreates: number;
+  private readonly budgetMs: number;
+  private readonly urgentRadius: number;
+  private readonly prefetchOptions: PrefetchOptions;
+
   constructor(
     private create: (key: string) => T | undefined,
     private destroy: (value: T) => void,
     private size: number,
     private radius = 2,
     private unloadRadius = radius + 1,
-  ) {}
-  update(position: Vec3, velocity?: Vec3) {
+    options: ChunkStreamerOptions = {},
+  ) {
+    this.maxCreates = options.maxCreatesPerUpdate ?? unlimited;
+    this.budgetMs = options.budgetMs ?? unlimited;
+    this.urgentRadius = options.urgentRadius ?? unlimited;
+    this.prefetchOptions = {
+      ...options.prefetch,
+      direction: options.prefetch?.direction ?? this.direction,
+    };
+  }
+
+  get stats(): ChunkStreamerUpdateStats & { syncFallbackTotal: number } {
+    return { ...this.lastStats, syncFallbackTotal: this.syncFallbackTotal };
+  }
+
+  update(position: Vec3, velocity?: Vec3): ChunkStreamerUpdateStats {
     const active = visibleChunksWithPrefetch(
       position,
       this.size,
       this.radius,
       velocity,
+      this.prefetchOptions,
     );
-    for (const key of active)
-      if (!this.loaded.has(key)) {
-        const value = this.create(key);
-        if (value !== undefined) this.loaded.set(key, value);
+    for (const key of active) if (!this.loaded.has(key)) this.pending.add(key);
+    for (const key of [...this.pending])
+      if (!active.has(key) || this.loaded.has(key)) this.pending.delete(key);
+
+    const [cx, cz] = chunkCoordinate(position, this.size);
+    const urgent =
+      this.urgentRadius < unlimited
+        ? visibleChunks(position, this.size, this.urgentRadius)
+        : active;
+
+    const started = performance.now();
+    let created = 0;
+    let urgentCreated = 0;
+    let syncFallback = 0;
+
+    const tryCreate = (key: string, force: boolean) => {
+      if (this.loaded.has(key)) {
+        this.pending.delete(key);
+        return false;
       }
+      if (
+        !force &&
+        (created >= this.maxCreates ||
+          performance.now() - started >= this.budgetMs)
+      )
+        return false;
+      const value = this.create(key);
+      this.pending.delete(key);
+      if (value !== undefined) this.loaded.set(key, value);
+      created++;
+      if (force && this.urgentRadius < unlimited) {
+        urgentCreated++;
+        if (this.maxCreates < unlimited || this.budgetMs < unlimited) {
+          syncFallback++;
+          this.syncFallbackTotal++;
+        }
+      }
+      return true;
+    };
+
+    for (const key of urgent) tryCreate(key, true);
+
+    const ranked = [...this.pending].sort((a, b) => {
+      const pa = priority(a, cx, cz, velocity, this.direction);
+      const pb = priority(b, cx, cz, velocity, this.direction);
+      return pa - pb;
+    });
+    for (const key of ranked) {
+      if (!tryCreate(key, false)) break;
+    }
+
     const retained = visibleChunks(position, this.size, this.unloadRadius);
     for (const [key, value] of this.loaded)
       if (!retained.has(key)) {
         this.destroy(value);
         this.loaded.delete(key);
+        this.pending.delete(key);
       }
+
+    this.lastStats = {
+      created,
+      pending: this.pending.size,
+      commitMs: performance.now() - started,
+      syncFallback,
+      urgentCreated,
+    };
+    return this.lastStats;
   }
+
   dispose() {
     this.loaded.forEach(this.destroy);
     this.loaded.clear();
+    this.pending.clear();
+    this.direction.reset();
   }
 }
 
-export const physicsStreaming = { loadRadius: 2, unloadRadius: 3 };
+function priority(
+  key: string,
+  cx: number,
+  cz: number,
+  velocity: Vec3 | undefined,
+  direction: PrefetchDirectionState,
+) {
+  const [x, z] = key.split(",").map(Number);
+  const dx = x - cx;
+  const dz = z - cz;
+  const dist = dx * dx + dz * dz;
+  const resolved = direction.active
+    ? { nx: direction.nx, nz: direction.nz }
+    : velocity && Math.hypot(velocity[0], velocity[2]) >= 8
+      ? {
+          nx: velocity[0] / Math.hypot(velocity[0], velocity[2]),
+          nz: velocity[2] / Math.hypot(velocity[0], velocity[2]),
+        }
+      : undefined;
+  const ahead = resolved ? -(dx * resolved.nx + dz * resolved.nz) : 0;
+  return dist + ahead * 0.25;
+}
+
+export const physicsStreaming = {
+  loadRadius: 2,
+  unloadRadius: 3,
+  /** 進行線先読みの上限（チャンク数）。 */
+  prefetchAheadMax: 6,
+  urgentRadius: 1,
+  maxCreatesPerUpdate: 2,
+  budgetMs: 3,
+};
+
+export const renderStreaming = {
+  maxCreatesPerUpdate: 2,
+  budgetMs: 3,
+  urgentRadius: 0,
+  prefetchAheadMax: 5,
+};

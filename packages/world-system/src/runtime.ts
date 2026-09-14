@@ -51,11 +51,15 @@ export interface WorldRuntimeStats {
   loadedEditorChunks: number;
   cachedChunks: number;
   pendingGenerationCount: number;
+  pendingQueueCount: number;
   generationLatencyMs: number;
   maxGenerationLatencyMs: number;
+  lastCommitBatchMs: number;
   cacheHitRate: number;
   rebaseCount: number;
   syncGenerationCount: number;
+  syncFallbackCount: number;
+  prefetchGenerationCount: number;
 }
 
 export interface WorldRuntimeOptions {
@@ -131,9 +135,14 @@ export class WorldRuntime {
   private misses = 0;
   private lastLatency = 0;
   private maxLatency = 0;
+  private lastCommitBatchMs = 0;
   private syncGenerations = 0;
+  private syncFallbacks = 0;
+  private prefetchGenerations = 0;
   private clock = 0;
   private pending = 0;
+  private readonly prefetchQueue: string[] = [];
+  private readonly prefetchQueued = new Set<string>();
   private finiteMeshes?: Map<string, TerrainChunk>;
   private cacheLimit: number;
   private debug: boolean;
@@ -180,7 +189,11 @@ export class WorldRuntime {
     this.pending = 0;
     this.lastLatency = 0;
     this.maxLatency = 0;
+    this.lastCommitBatchMs = 0;
     this.syncGenerations = 0;
+    this.syncFallbacks = 0;
+    this.prefetchGenerations = 0;
+    this.clearPrefetchQueue();
     this.worldOrigin = [0, 0, 0];
     this.rebaseCount = 0;
     this.log("reload");
@@ -191,6 +204,7 @@ export class WorldRuntime {
     this.cache.clear();
     this.finiteMeshes = undefined;
     for (const set of this.refs.values()) set.clear();
+    this.clearPrefetchQueue();
     this.worldOrigin = [0, 0, 0];
     this.rebaseCount = 0;
     this.log("dispose");
@@ -200,16 +214,21 @@ export class WorldRuntime {
     return ticket === this.generation;
   }
 
+  /**
+   * Consumer の保持集合を更新する。refcount のみ更新し、欠けた Chunk は
+   * 先読み待ち行列へ積む（同期一括 getChunk はしない）。
+   */
   acquire(consumer: WorldConsumer, keys: Iterable<string>) {
     const held = this.refs.get(consumer)!;
     const next = new Set(keys);
+    const missing: string[] = [];
     for (const key of next) {
       if (!held.has(key)) {
         held.add(key);
-        this.getChunk(key);
         const entry = this.cache.get(key);
         if (entry)
           entry.refs.set(consumer, (entry.refs.get(consumer) ?? 0) + 1);
+        else missing.push(key);
       }
     }
     for (const key of [...held])
@@ -222,7 +241,43 @@ export class WorldRuntime {
           else entry.refs.set(consumer, count);
         }
       }
+    if (missing.length) this.enqueuePrefetch(missing);
     this.evict();
+  }
+
+  /** 指定キーを同期生成して Cache に載せる（Physics 緊急半径向け）。 */
+  ensureChunks(keys: Iterable<string>) {
+    for (const key of keys) this.getChunk(key);
+  }
+
+  enqueuePrefetch(keys: Iterable<string>) {
+    for (const key of keys) {
+      if (this.cache.has(key) || this.prefetchQueued.has(key)) continue;
+      this.prefetchQueued.add(key);
+      this.prefetchQueue.push(key);
+    }
+  }
+
+  /**
+   * 先読み待ち行列から予算内で生成して Cache へ commit する。
+   * Worker 化時も同じ入口を使う。
+   */
+  pumpGeneration(budgetMs = 3, maxChunks = 2) {
+    const started = performance.now();
+    let built = 0;
+    while (
+      this.prefetchQueue.length &&
+      built < maxChunks &&
+      performance.now() - started < budgetMs
+    ) {
+      const key = this.prefetchQueue.shift()!;
+      this.prefetchQueued.delete(key);
+      if (this.cache.has(key)) continue;
+      this.commitGenerated(key, "prefetch");
+      built++;
+    }
+    this.lastCommitBatchMs = performance.now() - started;
+    return built;
   }
 
   getChunk(key: string): RuntimeChunk | undefined {
@@ -233,24 +288,7 @@ export class WorldRuntime {
       return cached.chunk;
     }
     this.misses++;
-    this.syncGenerations++;
-    const started = performance.now();
-    this.pending++;
-    const ticket = this.generation;
-    const generated = this.buildChunk(key);
-    this.pending--;
-    this.lastLatency = performance.now() - started;
-    this.maxLatency = Math.max(this.maxLatency, this.lastLatency);
-    if (!generated || ticket !== this.generation) return undefined;
-    const chunk = applyEditOverlay(generated, this.world.edits);
-    this.cache.set(key, {
-      chunk,
-      refs: new Map(),
-      lastHit: ++this.clock,
-    });
-    this.log(`generate:${key}`);
-    this.evict();
-    return chunk;
+    return this.commitGenerated(key, "sync");
   }
 
   peekChunk(key: string) {
@@ -389,11 +427,15 @@ export class WorldRuntime {
       loadedEditorChunks: this.refs.get("editor")!.size,
       cachedChunks: this.cache.size,
       pendingGenerationCount: this.pending,
+      pendingQueueCount: this.prefetchQueue.length,
       generationLatencyMs: this.lastLatency,
       maxGenerationLatencyMs: this.maxLatency,
+      lastCommitBatchMs: this.lastCommitBatchMs,
       cacheHitRate: total ? this.hits / total : 1,
       rebaseCount: this.rebaseCount,
       syncGenerationCount: this.syncGenerations,
+      syncFallbackCount: this.syncFallbacks,
+      prefetchGenerationCount: this.prefetchGenerations,
     };
   }
 
@@ -402,6 +444,44 @@ export class WorldRuntime {
       const built = this.buildChunk(key);
       if (built) entry.chunk = applyEditOverlay(built, this.world.edits);
     }
+  }
+
+  private commitGenerated(
+    key: string,
+    reason: "sync" | "prefetch",
+  ): RuntimeChunk | undefined {
+    if (reason === "sync") {
+      this.syncGenerations++;
+      this.syncFallbacks++;
+    } else this.prefetchGenerations++;
+    const started = performance.now();
+    this.pending++;
+    const ticket = this.generation;
+    const generated = this.buildChunk(key);
+    this.pending--;
+    this.lastLatency = performance.now() - started;
+    this.maxLatency = Math.max(this.maxLatency, this.lastLatency);
+    if (!generated || ticket !== this.generation) return undefined;
+    const chunk = applyEditOverlay(generated, this.world.edits);
+    const refs = new Map<WorldConsumer, number>();
+    for (const [consumer, held] of this.refs)
+      if (held.has(key)) refs.set(consumer, 1);
+    this.cache.set(key, {
+      chunk,
+      refs,
+      lastHit: ++this.clock,
+    });
+    this.prefetchQueued.delete(key);
+    const queuedAt = this.prefetchQueue.indexOf(key);
+    if (queuedAt >= 0) this.prefetchQueue.splice(queuedAt, 1);
+    this.log(`${reason}:${key}`);
+    this.evict();
+    return chunk;
+  }
+
+  private clearPrefetchQueue() {
+    this.prefetchQueue.length = 0;
+    this.prefetchQueued.clear();
   }
 
   private buildChunk(key: string): RuntimeChunk | undefined {
