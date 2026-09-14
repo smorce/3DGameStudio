@@ -117,16 +117,60 @@ Camera Followは `1 - exp(-lambda * dt)` で時間基準にする。Shadow Camer
 
 ## Chunk Generation
 
-境界通過で半径6（13×13）の辺が一度に必要になると、同期一括生成は Frame Spike の主因になる。`ChunkStreamer` は予算付き待ち行列、`WorldRuntime` は `enqueuePrefetch` / `pumpGeneration` で Cache を先埋めする。Physics 緊急半径だけ `ensureChunks` で同期保証する。`generationLatencyMs` 単体では判定せず、`frameTimeMs` / commit ms / Spike を併用する。Worker スレッド化は次段（`pumpGeneration` が入口）。
+境界通過で半径6（13×13）の辺が一度に必要になると、同期一括生成は Frame Spike の主因になる。`ChunkStreamer` は予算付き待ち行列で Scene / Collider への Commit を分割する。
+
+## Async World Streaming
+
+```
+Worker Pool
+  ↓
+Generation Queue (Priority P0..P4, dedupe)
+  ↓
+Prepared Chunk Cache (heights / positions / normals / colors / indices)
+  ↓
+Render / Physics Ready Queue
+  ↓
+Frame-Budgeted Commit (Render ≤2/frame・2ms, Physics Critical @ Fixed Step)
+```
+
+- Worker は `prepareChunk` 純関数で Typed Array を生成し、Transferable ArrayBuffer で Main へ返す。
+- Main Thread の PLAY hot path では `generateChunk` / `computeVertexNormals` / hex→Color 変換を行わない。
+- Physics Critical は Renderer より高 Priority。`ensurePhysicsReady` で Play 開始・Respawn 時に Barrier する。
+- Prefetch は進行線に加え `t=0.5/1.0/1.5/2.0s` の未来位置と Retention（約0.75s）で旋回時の振動を抑える。
+- `sampleHeight` の Cache Miss は軽量 `sampleGeneratedHeight` を使い Full Chunk を起こさない。
+
+## Frame Lifecycle
+
+```
+Input
+  ↓
+Streaming Request / Prefetch
+  ↓
+while accumulator >= 1/60
+  Physics Critical Ready Commit
+  Physics Fixed Step
+  Origin Rebase Transaction
+  previous ← current ← physics pose
+  ↓
+Interpolation (alpha = accumulator / fixedDt)
+  ↓
+Machine / Camera / Shadow Follow
+  ↓
+Streaming General Commit (Frame Budget)
+  ↓
+Render
+```
 
 ## Chunk Lifecycle
 
-1. Consumerが必要なChunk Keyを列挙（円形半径 + 速度方向prefetch）
-2. RuntimeがCacheを探し、なければGenerator（+ Edit Overlay）で作る
-3. 参照カウントを増やす
-4. ConsumerがUnloadしたら参照だけ減らす
-5. 参照0かつLRU超過でCacheから落とす
-6. 永続EditsとTombstoneはProjectに残る
+1. Consumerが必要なChunk Keyを列挙（円形半径 + 未来位置 prefetch + Retention）
+2. Runtimeが Cache / Prepared / Worker Queue を探し、なければ Job を enqueue（重複禁止・Priority昇格）
+3. Worker が PreparedChunk を返し Ready Queue へ
+4. Frame Budget / Fixed Step 境界で Commit（Renderer / Physics）
+5. 参照カウントを増やす
+6. ConsumerがUnloadしたら参照だけ減らす
+7. 参照0かつLRU超過でCacheから落とす
+8. 永続EditsとTombstoneはProjectに残る
 
 Border頂点は同一Global Grid座標から高さを取る。Adjacent Chunkの共有辺は完全一致する。
 

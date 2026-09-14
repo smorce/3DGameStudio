@@ -11,8 +11,8 @@
 
 - 車輪はRapierのRaycast Vehicleでシミュレーションします。独立した車輪Colliderによる側面衝突や実サスペンションのリンク機構はありません。可動Hingeは実Revolute Jointです。
 - 浮力・揚力は簡易近似です。Propeller、Servo、Spring、Suspension、Sensor、Battery、Logic、Ropeは未実装です。飛行機・ボートは工作の出発点であり、車と同等の操縦品質までは検証していません。
-- 描画と静的Colliderはチャンク単位でロード／破棄します。Projectの地形格子・空間索引、配置済み素材のCollider SourceはCPU側に保持します。Origin RebaseはEngineがPhysics / Renderer / WorldRuntimeを同じdeltaで同期するTransactionです。実GPU・モバイル・長時間運用での大規模性能は未検証です。
-- Instancingの描画範囲判定とLOD切替はバッチ単位です。個体ごとのFrustum Cullingより描画三角形数が増える画角があります。スキン／Morph等は通常描画へ戻り、複雑な素材のLOD生成はLOD0のみになる場合があります。
+- 描画と静的Colliderはチャンク単位でロード／破棄します。Procedural Terrain の重い生成（heights / mesh / normals / colors）は Worker Pool 側で行い、Main Thread は Frame Budget 内の Commit に限定します。Physics Terrain Collider の Chunk-local + translation 化は未完了で、当面は simulation 座標 trimesh です。Projectの地形格子・空間索引、配置済み素材のCollider SourceはCPU側に保持します。Origin RebaseはEngineがPhysics / Renderer / WorldRuntimeを同じdeltaで同期するTransactionです。実GPU・モバイル・長時間運用での大規模性能は未検証です。
+- Instancingの描画範囲判定とLOD切替は専用 Collection で分散更新します。個体ごとのFrustum Cullingより描画三角形数が増える画角があります。スキン／Morph等は通常描画へ戻り、複雑な素材のLOD生成はLOD0のみになる場合があります。
 - CourseのLoop／Tunnelはデータ種別のみで、専用の曲面・トンネル形状の生成は未実装です。複数コースの選択・保存・実行は対応しています。
 - オンライン素材の実取込はPoly HavenのglTF／GLBを対象とします。ambientCGの検索・メタデータは実動作確認済みですが、ZIPマテリアルの変換は未実装です。Kenneyは展開済みGLBを個別に読み込みます。
 - Importには設定可能な安全上限とStorage予算があります。Runtime Profileの値は初期値です。TextureはWebP、MeshはMeshoptを使用し、KTX2は未導入です。Runtime予算超過は監視表示であり、自動的な品質調整や強制退避は行いません。

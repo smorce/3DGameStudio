@@ -9,6 +9,7 @@ import {
   chunkCoordinate,
   generatedEntityColliders,
   isBuiltinEntityKind,
+  PrefetchRetentionState,
   visibleChunks,
   visibleChunksWithPrefetch,
   worldCollidersForEntity,
@@ -316,6 +317,7 @@ export class RapierPhysics {
     syncFallback: 0,
   };
   private pendingStreamFocus?: { global: Vec3; vel?: Vec3 };
+  private prefetchRetention = new PrefetchRetentionState();
   private staticColliders = new Map<
     string,
     { collider: RAPIER.Collider; refs: number; kind: string }
@@ -408,6 +410,8 @@ export class RapierPhysics {
         }
     };
     const createTerrainCollider = (key: string) => {
+      // 衝突精度を優先し、当面は simulation 座標 trimesh を使う。
+      // Chunk-local + translation 化は別タスクで進める。
       const chunk = this.worldRuntime?.meshFor(key);
       if (!chunk || chunk.vertices.length < 9) return;
       return rapier.ColliderDesc.trimesh(
@@ -613,7 +617,7 @@ export class RapierPhysics {
             });
         }
         const generated = this.worldRuntime?.procedural
-          ? (this.worldRuntime.getChunk(key)?.entities ?? [])
+          ? (this.worldRuntime.peekChunk(key)?.entities ?? [])
           : [];
         for (const entity of generated) {
           if (!isBuiltinEntityKind(entity.kind)) continue;
@@ -671,7 +675,12 @@ export class RapierPhysics {
             maxCreatesPerUpdate: physicsStreaming.maxCreatesPerUpdate,
             budgetMs: physicsStreaming.budgetMs,
             urgentRadius: physicsStreaming.urgentRadius,
-            prefetch: { aheadMax: physicsStreaming.prefetchAheadMax },
+            prefetch: {
+              aheadMax: physicsStreaming.prefetchAheadMax,
+              futureHorizonsSec: physicsStreaming.futureHorizonsSec,
+              retention: this.prefetchRetention,
+              retentionSec: physicsStreaming.retentionSec,
+            },
           }
         : undefined,
     );
@@ -886,6 +895,9 @@ export class RapierPhysics {
           {
             aheadMax: physicsStreaming.prefetchAheadMax,
             direction: this.streamer?.direction,
+            futureHorizonsSec: physicsStreaming.futureHorizonsSec,
+            retention: this.prefetchRetention,
+            retentionSec: physicsStreaming.retentionSec,
           },
         );
         const urgent = visibleChunks(
@@ -893,10 +905,28 @@ export class RapierPhysics {
           this.worldRuntime.chunkSize,
           physicsStreaming.urgentRadius,
         );
-        this.worldRuntime.ensureChunks(urgent);
+        // テストや非 PLAY 経路では urgent を同期準備する。
+        // PLAY hot path では Worker Ready + Fixed Step Commit に任せる。
+        if (!this.worldRuntime.isPlayHotPath)
+          this.worldRuntime.ensureChunks(urgent);
+        this.worldRuntime.requestChunks([
+          ...[...urgent].map((key) => ({
+            key,
+            priority: "P0_PHYSICS_CRITICAL" as const,
+          })),
+          ...[...keys]
+            .filter((key) => !urgent.has(key))
+            .map((key) => ({
+              key,
+              priority: "P1_PHYSICS_PREFETCH" as const,
+            })),
+        ]);
         this.worldRuntime.acquire("physics", keys);
         this.worldRuntime.enqueuePrefetch(keys);
         this.pendingStreamFocus = { global, vel };
+        // Engine を経由しない呼び出しでも urgent Collider を追いつかせる。
+        if (!this.worldRuntime.isPlayHotPath)
+          this.streamer?.update(global, vel);
       } else this.streamer?.update(global);
     }
     for (const machineId of this.forceByMachine.keys())
@@ -1609,6 +1639,8 @@ export class RapierPhysics {
   dispose() {
     this.generation++;
     this.streamer?.dispose();
+    this.prefetchRetention.reset();
+    this.pendingStreamFocus = undefined;
     this.streamer = undefined;
     this.staticColliders.clear();
     this.colliderTemplates.clear();

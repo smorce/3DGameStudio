@@ -1,0 +1,45 @@
+{
+  "label": "flight",
+  "gitHead": "2109535201e36e298a7f8ebe220f0ae1de950554",
+  "branch": "perf/async-world-streaming-frame-budget",
+  "workingTreeDirty": true,
+  "capturedAt": "2026-09-14T00:29:02.500Z",
+  "frame": {
+    "p50Ms": 1.7907599999998638,
+    "p95Ms": 2.3591410000003634,
+    "p99Ms": 2.959361999999601,
+    "maxMs": 28.797369999999972,
+    "over16_7": 0,
+    "over33_3": 0,
+    "over50": 0,
+    "sampleCount": 1200
+  },
+  "physics": {
+    "lastMs": 0,
+    "maxMs": 0
+  },
+  "render": {
+    "lastMs": 0,
+    "maxMs": 0,
+    "note": "headless probe has no WebGL render path"
+  },
+  "streaming": {
+    "workerCount": 0,
+    "generated": 10,
+    "cancelled": 0,
+    "syncFallbackCount": 0,
+    "syncFallbackTotal": 0,
+    "maxQueueLength": 39,
+    "maxReadyQueueLength": 0,
+    "maxWorkerGenerationMs": 1.309168000000227,
+    "maxCommitMs": 0.0008680000000822474,
+    "preparedVertexCount": 1089,
+    "preparedHasNormals": true
+  },
+  "flight": {
+    "distanceM": 788.959191278121,
+    "rebaseCount": 8,
+    "airStopSteps": 0,
+    "maxHingeAnchorErrorM": 0.006379602124032742
+  }
+}

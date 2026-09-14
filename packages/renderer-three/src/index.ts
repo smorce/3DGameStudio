@@ -24,7 +24,11 @@ import {
   EDITOR_CHUNK_RADIUS,
   RENDER_CHUNK_RADIUS,
 } from "../../world-generator/src/index";
-import { visibleChunks } from "../../world-system/src/chunks";
+import {
+  PrefetchRetentionState,
+  visibleChunks,
+} from "../../world-system/src/chunks";
+import { preparedChunkLocalOrigin } from "../../world-system/src/runtime";
 import { type AttachmentCandidate } from "../../machine-system/src/index";
 import {
   createPartVisual,
@@ -134,6 +138,11 @@ export class ThreeRenderer implements RendererAdapter {
   };
   private frameNormalsMs = 0;
   private lastVelocity?: Vec3;
+  private readonly lodBatches = new Set<WorldAssetBatch>();
+  private lodFrameIndex = 0;
+  private prefetchRetention = new PrefetchRetentionState();
+  private instanceBatchCount = 0;
+  private lodLevelCounts = [0, 0, 0];
   worldRuntime?: WorldRuntime;
   private ownsRuntime = false;
   private waterMesh?: THREE.Mesh;
@@ -459,6 +468,7 @@ export class ThreeRenderer implements RendererAdapter {
       builders.push((chunk) => {
         const asset = p.assets.find((a) => a.id === entities[0].assetId);
         const batch = new WorldAssetBatch(entities, asset, this.templates);
+        this.lodBatches.add(batch);
         chunk.add(batch.group);
       });
       this.chunkBuilders.set(key, builders);
@@ -516,32 +526,31 @@ export class ThreeRenderer implements RendererAdapter {
       }
     }
     this.clearSharedBuiltinTemplates();
+    this.lodBatches.clear();
+    this.prefetchRetention.reset();
     this.streamer = new ChunkStreamer(
       (key) => {
         const group = new THREE.Group();
-        const data = this.worldRuntime?.meshFor(key);
-        if (data) {
+        const prepared = this.worldRuntime?.peekPreparedChunk(key);
+        const chunkLocalOrigin = prepared
+          ? preparedChunkLocalOrigin(prepared, this.worldRuntime!.worldOrigin)
+          : undefined;
+        if (prepared && chunkLocalOrigin) {
           const geo = new THREE.BufferGeometry();
           geo.setAttribute(
             "position",
-            new THREE.Float32BufferAttribute(
-              new Float32Array(data.vertices),
-              3,
-            ),
+            new THREE.BufferAttribute(prepared.positions, 3),
           );
-          geo.setIndex(data.indices);
+          geo.setAttribute(
+            "normal",
+            new THREE.BufferAttribute(prepared.normals, 3),
+          );
           geo.setAttribute(
             "color",
-            new THREE.Float32BufferAttribute(
-              new Float32Array(
-                data.colors.flatMap((hex) => new THREE.Color(hex).toArray()),
-              ),
-              3,
-            ),
+            new THREE.BufferAttribute(prepared.colors, 3),
           );
-          const normalsStarted = performance.now();
-          geo.computeVertexNormals();
-          this.frameNormalsMs += performance.now() - normalsStarted;
+          geo.setIndex(new THREE.BufferAttribute(prepared.indices, 1));
+          // Main Thread では Terrain Normal / Color を再計算しない。
           const mesh = new THREE.Mesh(
             geo,
             new THREE.MeshStandardMaterial({
@@ -551,8 +560,51 @@ export class ThreeRenderer implements RendererAdapter {
           );
           mesh.receiveShadow = true;
           group.add(mesh);
+          group.position.set(
+            chunkLocalOrigin[0],
+            chunkLocalOrigin[1],
+            chunkLocalOrigin[2],
+          );
+        } else {
+          const data = this.worldRuntime?.meshFor(key);
+          if (data) {
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute(
+              "position",
+              new THREE.Float32BufferAttribute(
+                new Float32Array(data.vertices),
+                3,
+              ),
+            );
+            geo.setIndex(data.indices);
+            geo.setAttribute(
+              "color",
+              new THREE.Float32BufferAttribute(
+                new Float32Array(
+                  data.colors.flatMap((hex) => new THREE.Color(hex).toArray()),
+                ),
+                3,
+              ),
+            );
+            const normalsStarted = performance.now();
+            geo.computeVertexNormals();
+            this.frameNormalsMs += performance.now() - normalsStarted;
+            const mesh = new THREE.Mesh(
+              geo,
+              new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                roughness: 1,
+              }),
+            );
+            mesh.receiveShadow = true;
+            group.add(mesh);
+          }
         }
-        const generated = this.worldRuntime?.getChunk(key)?.entities ?? [];
+        const generated =
+          this.worldRuntime?.peekChunk(key)?.entities ??
+          (this.worldRuntime?.isPlayHotPath
+            ? []
+            : (this.worldRuntime?.getChunk(key)?.entities ?? []));
         const byKind = new Map<string, typeof generated>();
         for (const entity of generated) {
           const list = byKind.get(entity.kind) ?? [];
@@ -566,18 +618,29 @@ export class ThreeRenderer implements RendererAdapter {
           group.add(
             instanceTemplate(
               template,
-              entities.map((entity) => ({
-                id: entity.id,
-                name: entity.name,
-                kind: entity.kind,
-                transform: {
-                  position: this.worldRuntime!.toSimulation(entity.position),
-                  rotation: entity.rotation,
-                  scale: entity.scale,
-                },
-              })),
+              entities.map((entity) => {
+                const sim = this.worldRuntime!.toSimulation(entity.position);
+                const position: Vec3 = chunkLocalOrigin
+                  ? [
+                      sim[0] - chunkLocalOrigin[0],
+                      sim[1] - chunkLocalOrigin[1],
+                      sim[2] - chunkLocalOrigin[2],
+                    ]
+                  : sim;
+                return {
+                  id: entity.id,
+                  name: entity.name,
+                  kind: entity.kind,
+                  transform: {
+                    position,
+                    rotation: entity.rotation,
+                    scale: entity.scale,
+                  },
+                };
+              }),
             ),
           );
+          this.instanceBatchCount++;
         }
         for (const build of this.chunkBuilders.get(key) ?? []) build(group);
         if (!group.children.length) return;
@@ -599,7 +662,12 @@ export class ThreeRenderer implements RendererAdapter {
             maxCreatesPerUpdate: renderStreaming.maxCreatesPerUpdate,
             budgetMs: renderStreaming.budgetMs,
             urgentRadius: renderStreaming.urgentRadius,
-            prefetch: { aheadMax: renderStreaming.prefetchAheadMax },
+            prefetch: {
+              aheadMax: renderStreaming.prefetchAheadMax,
+              futureHorizonsSec: renderStreaming.futureHorizonsSec,
+              retention: this.prefetchRetention,
+              retentionSec: renderStreaming.retentionSec,
+            },
           }
         : undefined,
     );
@@ -856,7 +924,18 @@ export class ThreeRenderer implements RendererAdapter {
         : 2;
       for (const key of visibleChunks(global, size, radius)) keys.add(key);
       this.worldRuntime.acquire(poses ? "renderer" : "editor", keys);
+      this.worldRuntime.requestChunks(
+        [...keys].map((key) => ({
+          key,
+          priority: poses
+            ? ("P2_VISIBLE_RENDER" as const)
+            : ("P4_EDITOR" as const),
+        })),
+      );
       this.worldRuntime.enqueuePrefetch(keys);
+      // Frame 遅延時は Render Commit を skip 可能。
+      const skipCommit = (options.dt ?? 0) > 0.033;
+      this.worldRuntime.commitGeneralWithinBudget({ skip: skipCommit });
     }
     const stream = this.streamer?.update(global, velocity);
     if (stream) {
@@ -882,7 +961,7 @@ export class ThreeRenderer implements RendererAdapter {
     }
     this.controls.update();
     this.updateShadowFollow(this.controls.target.toArray() as Vec3);
-    this.root.traverse((o) => o.userData.updateLod?.(this.camera.position));
+    this.updateLodBatches();
     this.renderer.render(this.scene, this.camera);
     if (this.onCandidateScreens) {
       const rect = this.canvas.getBoundingClientRect();
@@ -904,21 +983,29 @@ export class ThreeRenderer implements RendererAdapter {
     const assetIds = new Set<string>();
     const files = new Map<string, number>();
     const textures = new Set<THREE.Texture>();
-    const lodBatches = [0, 0, 0];
-    let instanceBatches = 0;
+    const lodBatches = [...this.lodLevelCounts];
+    let instanceBatches = this.instanceBatchCount;
+    for (const batch of this.lodBatches) {
+      const level = batch.group.userData.lodLevel;
+      if (typeof level === "number" && level >= 0 && level < 3)
+        lodBatches[level]++;
+      if (batch.group.userData.runtimeFile)
+        files.set(
+          batch.group.userData.runtimeFile,
+          batch.group.userData.runtimeBytes ?? 0,
+        );
+      if (batch.group.userData.assetId)
+        assetIds.add(batch.group.userData.assetId);
+    }
+    // テクスチャ推定のみ必要時に軽量スキャン（LOD traverse はしない）。
     this.root.traverse((o) => {
-      if (o.userData.lodLevel !== undefined) lodBatches[o.userData.lodLevel]++;
       if (o instanceof THREE.InstancedMesh) instanceBatches++;
-      if (o.userData.runtimeFile)
-        files.set(o.userData.runtimeFile, o.userData.runtimeBytes ?? 0);
       if (o instanceof THREE.Mesh)
         for (const material of Array.isArray(o.material)
           ? o.material
           : [o.material])
           for (const value of Object.values(material))
             if (value instanceof THREE.Texture) textures.add(value);
-      if (o.userData.assetId && o.children.length)
-        assetIds.add(o.userData.assetId);
     });
     const runtimeAssetBytes = [...files.values()].reduce((a, b) => a + b, 0);
     const textureMemoryEstimate = [...textures].reduce((sum, t) => {
@@ -990,6 +1077,16 @@ export class ThreeRenderer implements RendererAdapter {
     for (const template of this.sharedBuiltinTemplates.values())
       disposeTemplate(template);
     this.sharedBuiltinTemplates.clear();
+  }
+
+  /** LOD 更新を専用 Collection で分散する（root.traverse を使わない）。 */
+  private updateLodBatches() {
+    this.lodFrameIndex++;
+    const camera = this.camera.position;
+    let index = 0;
+    for (const batch of this.lodBatches) {
+      if (index++ % 4 === this.lodFrameIndex % 4) batch.update(camera);
+    }
   }
 
   private drainNormalsMs() {

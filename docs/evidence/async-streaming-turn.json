@@ -1,0 +1,45 @@
+{
+  "label": "turn",
+  "gitHead": "2109535201e36e298a7f8ebe220f0ae1de950554",
+  "branch": "perf/async-world-streaming-frame-budget",
+  "workingTreeDirty": true,
+  "capturedAt": "2026-09-14T00:29:04.427Z",
+  "frame": {
+    "p50Ms": 1.85650499999997,
+    "p95Ms": 2.5275249999999687,
+    "p99Ms": 3.2433200000000397,
+    "maxMs": 24.617084999999975,
+    "over16_7": 1,
+    "over33_3": 0,
+    "over50": 0,
+    "sampleCount": 900
+  },
+  "physics": {
+    "lastMs": 0,
+    "maxMs": 0
+  },
+  "render": {
+    "lastMs": 0,
+    "maxMs": 0,
+    "note": "headless probe has no WebGL render path"
+  },
+  "streaming": {
+    "workerCount": 0,
+    "generated": 11,
+    "cancelled": 0,
+    "syncFallbackCount": 0,
+    "syncFallbackTotal": 0,
+    "maxQueueLength": 38,
+    "maxReadyQueueLength": 0,
+    "maxWorkerGenerationMs": 0.9188249999999982,
+    "maxCommitMs": 0.0007630000000062864,
+    "preparedVertexCount": 1089,
+    "preparedHasNormals": true
+  },
+  "flight": {
+    "distanceM": 425.80267294126327,
+    "rebaseCount": 4,
+    "airStopSteps": 0,
+    "maxHingeAnchorErrorM": 0.006379602124032742
+  }
+}

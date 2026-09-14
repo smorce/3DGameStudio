@@ -37,6 +37,7 @@ export function starterWorldPatch(world: Project["world"]) {
 }
 
 export * from "./chunks";
+export * from "./chunk-worker-pool";
 export * from "./coordinates";
 export * from "./edits";
 export * from "./entities";

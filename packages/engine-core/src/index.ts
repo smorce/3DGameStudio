@@ -16,11 +16,14 @@ import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
 } from "../../runtime-telemetry/src/index";
+import { FrameProfiler } from "./frame-profiler";
 import { shiftPhysicsRenderState } from "./interpolation";
 import { commitWorldOriginShift } from "./rebase";
 export type ControlValues = Record<string, number>;
 export { commitWorldOriginShift } from "./rebase";
 export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
+export { FrameProfiler } from "./frame-profiler";
+export type { FrameTimingSnapshot } from "./frame-profiler";
 
 export interface FrameSpikeSample {
   timeMs: number;
@@ -80,6 +83,7 @@ export class Engine {
   private spikeCount33ms = 0;
   private readonly spikeRing: FrameSpikeSample[] = [];
   private lastSyncGen = 0;
+  readonly frameProfiler = new FrameProfiler(900);
   private keyDown = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.matches("input,textarea,select")) return;
     if (
@@ -89,7 +93,7 @@ export class Engine {
     )
       e.preventDefault();
     this.keys.add(e.code);
-    if (e.code === "KeyR") this.physics.respawn(this.course?.respawn);
+    if (e.code === "KeyR") void this.respawnWithPhysicsReady();
   };
   private keyUp = (e: KeyboardEvent) => {
     this.keys.delete(e.code);
@@ -103,6 +107,7 @@ export class Engine {
     window.addEventListener("keydown", this.keyDown);
     window.addEventListener("keyup", this.keyUp);
     window.addEventListener("blur", this.blur);
+    this.frameProfiler.startLongFrameObserver();
     this.frame = requestAnimationFrame(this.tick);
   }
   async load(project: Project) {
@@ -118,7 +123,10 @@ export class Engine {
     this.currentRenderState = undefined;
     this.physics.dispose();
     this.worldRuntime?.dispose();
-    this.worldRuntime = new WorldRuntime(this.project.world);
+    this.worldRuntime = new WorldRuntime(this.project.world, {
+      forceSyncWorkers: typeof Worker === "undefined",
+    });
+    this.worldRuntime.setPlayHotPath(false);
     this.renderer.load(this.project, { world: this.worldRuntime });
     this.resolveDropWaiter();
   }
@@ -129,6 +137,11 @@ export class Engine {
     this.worldRuntime?.reload(this.project.world);
     const world = this.worldRuntime ?? new WorldRuntime(this.project.world);
     this.worldRuntime = world;
+    world.setPlayHotPath(false);
+    const start = course?.start ??
+      this.project.world.spawnPoints[0] ?? [0, 2, 0];
+    await world.ensurePhysicsReady(start, 1);
+    if (this.disposed || ticket !== this.ticket) return;
     await this.physics.load(structuredClone(this.project), {
       courseId: course?.id ?? null,
       world,
@@ -141,17 +154,29 @@ export class Engine {
     });
     this.renderer.setEditMachineLift(false);
     if (this.course) this.physics.respawn(this.course.course.start);
+    world.setPlayHotPath(true);
     this.mode = "PLAY";
     this.accumulator = 0;
     this.previousRenderState = undefined;
     this.currentRenderState = undefined;
     this.interpolationAlpha = 1;
+    this.frameProfiler.reset();
+  }
+  private async respawnWithPhysicsReady() {
+    const point = this.course?.respawn;
+    if (point && this.worldRuntime) {
+      this.worldRuntime.setPlayHotPath(false);
+      await this.worldRuntime.ensurePhysicsReady(point, 1);
+      this.worldRuntime.setPlayHotPath(true);
+    }
+    this.physics.respawn(point);
   }
   stop(): Promise<void> {
     if (this.mode === "DROP") return this.dropPromise ?? Promise.resolve();
     if (this.mode === "EDIT") return Promise.resolve();
     this.ticket++;
     this.blur();
+    this.worldRuntime?.setPlayHotPath(false);
     if (!this.project) {
       this.mode = "EDIT";
       this.physics.dispose();
@@ -202,7 +227,10 @@ export class Engine {
         );
       const physicsStarted = performance.now();
       while (this.accumulator >= 1 / 60) {
+        // Physics Critical Ready は Fixed Step 境界で Commit する。
+        this.worldRuntime?.commitPhysicsCriticalReady();
         this.physics.step(controls);
+        this.worldRuntime?.commitPhysicsCriticalReady();
         const next = this.physics.renderState();
         this.previousRenderState = this.currentRenderState ?? next;
         this.currentRenderState = next;
@@ -228,7 +256,7 @@ export class Engine {
         }
         if (global && !dropping) {
           this.course?.update(global, 1 / 60);
-          if (global[1] < -20) this.physics.respawn(this.course?.respawn);
+          if (global[1] < -20) void this.respawnWithPhysicsReady();
         }
         this.accumulator -= 1 / 60;
       }
@@ -263,8 +291,9 @@ export class Engine {
       this.renderer.render();
       this.renderMs = performance.now() - renderStarted;
     }
-    this.worldRuntime?.pumpGeneration(3, 2);
+    this.worldRuntime?.pumpGeneration(2, 2);
     this.frameTimeMs = performance.now() - frameStarted;
+    this.frameProfiler.record(this.frameTimeMs);
     this.recordFrameSpike(now);
     this.onFrame?.();
     this.frame = requestAnimationFrame(this.tick);
@@ -317,28 +346,49 @@ export class Engine {
     const world = this.worldRuntime?.stats(this.position);
     const sample = this.currentTelemetry;
     const chunk = world?.currentChunk?.split(",").map(Number) ?? [0, 0];
+    const frameTiming = this.frameProfiler.snapshot(this.frameTimeMs);
     return {
       fps: this.fps,
       ...this.renderer.stats,
       ...this.physics.stats,
       cachedChunks: world?.cachedChunks ?? 0,
+      preparedChunks: world?.preparedChunks ?? 0,
       loadedRenderChunks: world?.loadedRenderChunks ?? 0,
       loadedPhysicsChunks: world?.loadedPhysicsChunks ?? 0,
       pendingGenerationCount: world?.pendingGenerationCount ?? 0,
       pendingQueueCount: world?.pendingQueueCount ?? 0,
+      readyRenderCount: world?.readyRenderCount ?? 0,
+      readyPhysicsCount: world?.readyPhysicsCount ?? 0,
+      workerQueued: world?.workerQueued ?? 0,
+      workerInFlight: world?.workerInFlight ?? 0,
+      workerCount: world?.workerCount ?? 0,
       generationLatencyMs: world?.generationLatencyMs ?? 0,
       maxGenerationLatencyMs: world?.maxGenerationLatencyMs ?? 0,
       lastCommitBatchMs: world?.lastCommitBatchMs ?? 0,
+      streamingRequestMs: world?.streamingRequestMs ?? 0,
+      streamingCommitMs: world?.streamingCommitMs ?? 0,
+      renderChunkCommitMs: world?.renderChunkCommitMs ?? 0,
+      physicsChunkCommitMs: world?.physicsChunkCommitMs ?? 0,
+      workerGenerationMs: world?.workerGenerationMs ?? 0,
       cacheHitRate: world?.cacheHitRate ?? 1,
       rebaseCount: world?.rebaseCount ?? 0,
       syncGenerationCount: world?.syncGenerationCount ?? 0,
       syncFallbackCount: world?.syncFallbackCount ?? 0,
+      syncGenerationFallbackCount: world?.syncGenerationFallbackCount ?? 0,
       prefetchGenerationCount: world?.prefetchGenerationCount ?? 0,
+      cancelledJobs: world?.cancelledJobs ?? 0,
       frameTimeMs: this.frameTimeMs,
       physicsStepMs: this.physicsStepMs,
       renderMs: this.renderMs,
       spikeCount20ms: this.spikeCount20ms,
       spikeCount33ms: this.spikeCount33ms,
+      frameP50Ms: frameTiming.p50Ms,
+      frameP95Ms: frameTiming.p95Ms,
+      frameP99Ms: frameTiming.p99Ms,
+      frameMaxMs: frameTiming.maxMs,
+      frameOver16_7: frameTiming.over16_7,
+      frameOver33_3: frameTiming.over33_3,
+      frameOver50: frameTiming.over50,
       worldOriginX: world?.worldOrigin[0] ?? 0,
       worldOriginY: world?.worldOrigin[1] ?? 0,
       worldOriginZ: world?.worldOrigin[2] ?? 0,
@@ -365,6 +415,7 @@ export class Engine {
     window.removeEventListener("keydown", this.keyDown);
     window.removeEventListener("keyup", this.keyUp);
     window.removeEventListener("blur", this.blur);
+    this.frameProfiler.dispose();
     this.physics.dispose();
     this.renderer.dispose();
     this.worldRuntime?.dispose();

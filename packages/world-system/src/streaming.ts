@@ -231,12 +231,16 @@ export const physicsStreaming = {
   prefetchAheadMax: 6,
   urgentRadius: 1,
   maxCreatesPerUpdate: 2,
-  budgetMs: 3,
+  budgetMs: 2,
+  futureHorizonsSec: [0.5, 1.0, 1.5, 2.0],
+  retentionSec: 0.75,
 };
 
 export const renderStreaming = {
   maxCreatesPerUpdate: 2,
-  budgetMs: 3,
+  budgetMs: 2,
   urgentRadius: 0,
   prefetchAheadMax: 5,
+  futureHorizonsSec: [0.5, 1.0, 1.5, 2.0],
+  retentionSec: 0.75,
 };

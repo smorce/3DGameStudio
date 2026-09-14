@@ -1,0 +1,50 @@
+{
+  "label": "before",
+  "gitHead": "2109535",
+  "branch": "fix/streaming-frame-budget",
+  "workingTreeDirty": false,
+  "capturedAt": "2026-09-14T00:00:00.000Z",
+  "note": "Baseline from fix/streaming-frame-budget prior to async Worker pipeline. Frame budget streamer existed but chunk generation remained main-thread sync (getChunk / computeVertexNormals / Color flatMap).",
+  "frame": {
+    "p50Ms": null,
+    "p95Ms": null,
+    "p99Ms": null,
+    "maxMs": null,
+    "over16_7": null,
+    "over33_3": null,
+    "over50": null,
+    "sampleCount": 0,
+    "observation": "Browser frame timing was not ring-buffered; Spike20/33 and generationLatencyMs were the primary signals."
+  },
+  "physics": {
+    "lastMs": null,
+    "maxMs": null
+  },
+  "render": {
+    "lastMs": null,
+    "maxMs": null,
+    "normalsOnMainThread": true,
+    "colorConversionOnMainThread": true
+  },
+  "streaming": {
+    "workerCount": 0,
+    "generated": "sync+prefetch on main thread",
+    "cancelled": 0,
+    "syncFallbackCount": "equal to syncGenerationCount (undifferentiated)",
+    "maxQueueLength": null,
+    "maxReadyQueueLength": 0,
+    "maxWorkerGenerationMs": 0,
+    "maxCommitMs": 3,
+    "bottleneck": "Boundary crossing could request many chunks; each create paid generateChunk + BufferGeometry + computeVertexNormals + Color flatMap + collider on the main thread even with maxCreates=2."
+  },
+  "flight": {
+    "distanceM": 909.7,
+    "rebaseCount": 9,
+    "airStopSteps": 0,
+    "maxHingeAnchorErrorM": 0.0064
+  },
+  "tests": {
+    "unit": "pass",
+    "integration": "pass"
+  }
+}

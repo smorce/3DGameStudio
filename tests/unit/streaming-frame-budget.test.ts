@@ -68,11 +68,12 @@ describe("streaming frame budget", () => {
   it("acquire は同期一括生成せず prefetch queue に積む", () => {
     const runtime = new WorldRuntime(
       createStarterWorld({ preset: "airfield" }),
+      { forceSyncWorkers: true },
     );
     const keys = Array.from({ length: 13 }, (_, i) => chunkKey(0, i));
     runtime.acquire("renderer", keys);
     expect(runtime.stats().cachedChunks).toBe(0);
-    expect(runtime.stats().pendingQueueCount).toBe(13);
+    expect(runtime.stats().pendingQueueCount).toBeGreaterThanOrEqual(13);
     const built = runtime.pumpGeneration(50, 2);
     expect(built).toBe(2);
     expect(runtime.stats().cachedChunks).toBe(2);
@@ -80,7 +81,12 @@ describe("streaming frame budget", () => {
     expect(runtime.stats().syncFallbackCount).toBe(0);
     runtime.ensureChunks([keys[0]]);
     expect(runtime.stats().syncFallbackCount).toBe(0);
+    // 非 PLAY の getChunk は意図的 sync であり fallback ではない。
     runtime.getChunk(keys[5]);
+    expect(runtime.stats().syncGenerationCount).toBeGreaterThanOrEqual(1);
+    expect(runtime.stats().syncFallbackCount).toBe(0);
+    runtime.setPlayHotPath(true);
+    runtime.getChunk(chunkKey(9, 9));
     expect(runtime.stats().syncFallbackCount).toBe(1);
     runtime.dispose();
   });

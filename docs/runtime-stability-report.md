@@ -62,7 +62,7 @@ Physics 1/60 固定のまま、previous/current poseを `alpha = accumulator / d
 
 ## 9. Chunk生成
 
-当初の「最大約 2.6ms なので Worker 不要」判断は、**1 Chunk の `buildChunk` だけ**を測っていたため誤りだった。境界通過時に 13 Chunk を同一 Frame で同期生成・描画 commit すると Main Thread Hitch になる。`fix/streaming-frame-budget` で時間分散 Streaming・先読み Queue・Frame Spike 計測へ切り替えた。詳細は [streaming-frame-budget-report.md](streaming-frame-budget-report.md)。
+当初の「最大約 2.6ms なので Worker 不要」判断は、**1 Chunk の `buildChunk` だけ**を測っていたため誤りだった。境界通過時に 13 Chunk を同一 Frame で同期生成・描画 commit すると Main Thread Hitch になる。`fix/streaming-frame-budget` で時間分散 Streaming・先読み Queue・Frame Spike 計測へ切り替えた。続く `perf/async-world-streaming-frame-budget` で実 Worker Pool・PreparedChunk・Transferable・Ready Queue・Frame Budget Commit を導入した。詳細は [async-streaming-report.md](async-streaming-report.md)。
 
 ## 10. Before / After
 

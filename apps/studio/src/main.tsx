@@ -754,12 +754,15 @@ function App() {
                 </span>
                 <br />
                 <span>
-                  Frame {(stats.frameTimeMs ?? 0).toFixed(1)}ms · Commit{" "}
+                  Frame {(stats.frameTimeMs ?? 0).toFixed(1)}ms · p95{" "}
+                  {(stats.frameP95Ms ?? 0).toFixed(1)} · Commit{" "}
                   {(
                     (stats.renderCommitMs ?? 0) + (stats.physicsCommitMs ?? 0)
                   ).toFixed(1)}
-                  ms · Queue {stats.pendingQueueCount ?? 0} · Spike20{" "}
-                  {stats.spikeCount20ms ?? 0}/{stats.spikeCount33ms ?? 0}
+                  ms · Queue {stats.pendingQueueCount ?? 0} · W{" "}
+                  {stats.workerInFlight ?? 0}/{stats.workerCount ?? 0} · Spike20{" "}
+                  {stats.spikeCount20ms ?? 0}/{stats.spikeCount33ms ?? 0} ·
+                  SyncFb {stats.syncGenerationFallbackCount ?? 0}
                 </span>
                 <br />
                 <span
