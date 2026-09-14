@@ -71,7 +71,7 @@ Fixed Step 1/60・補間・Engine Rebase Transaction は維持。
 
 ## 7. 残 Known Issues
 
-- Physics Terrain Collider の真の chunk-local + translation 化は未完了。当面は PreparedChunk を Simulation 座標へ TypedArray 直焼きした Standalone Trimesh（車両コントローラ互換）
+- Physics Terrain は PreparedChunk を Simulation 座標へ TypedArray 直焼きした Standalone Trimesh が当面の正式方式。chunk-local + translation / Fixed Body / HeightField は試行したが、`DynamicRayCastVehicleController` を含む接地回帰のため撤回（根本原因は未特定）。詳細は [async-streaming-followup-report.md](async-streaming-followup-report.md)
 - headless probe の frame time は WebGL を含まない
 - Browser 実 Worker の p95/p99 は CI 絶対 Fail 条件にしていない
 - 空力簡易モデル、Rapier deprecated 警告は従来どおり

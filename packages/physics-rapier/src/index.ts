@@ -412,9 +412,10 @@ export class RapierPhysics {
     };
     const createTerrainCollider = (key: string) => {
       // PreparedChunk の local 頂点を Simulation 座標へ焼き込んで Standalone Trimesh にする。
-      // ColliderDesc.setTranslation / Fixed Body 親付けは Rapier の
-      // DynamicRayCastVehicleController と組み合わせると接地が壊れるため使わない。
-      // meshFor() の number[] 経由は避け、TypedArray へ直接焼く。
+      // local Trimesh + translation および Fixed Body 方式は、現行の
+      // DynamicRayCastVehicleController を含む回帰試験で接地不整合が発生したため
+      // 現在は採用していない。根本原因は未特定。当面は Simulation 座標へ bake した
+      // Standalone Trimesh を維持する。meshFor() の number[] 経由は避け、TypedArray へ直接焼く。
       if (this.worldRuntime && !this.worldRuntime.isPlayHotPath)
         this.worldRuntime.getChunk(key);
       const prepared = this.worldRuntime?.peekPreparedChunk(key);
