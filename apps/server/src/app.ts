@@ -25,6 +25,8 @@ import {
   parseProject,
   type AssetRecord,
 } from "../../../packages/project-schema/src/index";
+import { writeSpikeFlightSummaryFromDisk } from "../../../scripts/spike-flight-summary";
+import { writeTurnMotionSummaryFromDisk } from "../../../scripts/turn-motion-summary";
 export async function createApp(
   dataDir = process.env.ASSET_DATA_DIR ?? ".data",
 ) {
@@ -291,9 +293,14 @@ export async function createApp(
     );
     res.json({ saved: true });
   });
-  /** Spike 診断 JSON を docs/evidence/ へ保存（Studio の「やめる」から自動投稿）。 */
+  /** Spike / Turn-Motion 診断 JSON を docs/evidence/ へ保存。 */
   app.post("/api/evidence", async (req, res) => {
-    const rawLabel = String(req.body?.label ?? "baseline");
+    const familyRaw = String(req.body?.family ?? "spike-flight");
+    const family =
+      familyRaw === "turn-motion" || familyRaw === "turn-motion-diagnostics"
+        ? "turn-motion-diagnostics"
+        : "spike-flight";
+    const rawLabel = String(req.body?.label ?? (family === "spike-flight" ? "baseline" : "a"));
     const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
     if (!label) {
       res.status(400).json({ error: "Invalid evidence label" });
@@ -301,10 +308,15 @@ export async function createApp(
     }
     const evidenceDir = path.resolve("docs/evidence");
     await mkdir(evidenceDir, { recursive: true });
-    const relativePath = `docs/evidence/spike-flight-${label}.json`;
-    const absolutePath = path.join(evidenceDir, `spike-flight-${label}.json`);
+    const fileName =
+      family === "turn-motion-diagnostics"
+        ? `turn-motion-diagnostics-${label}.json`
+        : `spike-flight-${label}.json`;
+    const relativePath = `docs/evidence/${fileName}`;
+    const absolutePath = path.join(evidenceDir, fileName);
     const payload = {
       label,
+      family,
       query: typeof req.body?.query === "string" ? req.body.query : "",
       savedAt: new Date().toISOString(),
       hud: typeof req.body?.hud === "string" ? req.body.hud : undefined,
@@ -312,7 +324,24 @@ export async function createApp(
       dump: req.body?.dump ?? req.body,
     };
     await writeFile(absolutePath, JSON.stringify(payload, null, 2));
-    res.json({ saved: true, path: relativePath });
+    const summaryResult =
+      family === "turn-motion-diagnostics"
+        ? await writeTurnMotionSummaryFromDisk(evidenceDir)
+        : await writeSpikeFlightSummaryFromDisk(evidenceDir);
+    res.json({
+      saved: true,
+      path: relativePath,
+      summaryUpdated:
+        "written" in summaryResult
+          ? Boolean(summaryResult.written)
+          : true,
+      summaryPath:
+        "path" in summaryResult ? summaryResult.path : undefined,
+      summaryMissing:
+        "missing" in summaryResult ? summaryResult.missing : [],
+      summaryComplete:
+        "complete" in summaryResult ? summaryResult.complete : undefined,
+    });
   });
   app.get("/api/project", async (_req, res) =>
     res.json(

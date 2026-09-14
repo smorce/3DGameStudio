@@ -24,6 +24,9 @@ import {
   type AttachmentCandidate,
 } from "../../../packages/machine-system/src/index";
 import { Engine } from "../../../packages/engine-core/src/index";
+import {
+  parseMotionDiagMode,
+} from "../../../packages/engine-core/src/turn-motion-diagnostics";
 import { speedKphFromMps } from "../../../packages/runtime-telemetry/src/index";
 import { loadProject, saveProject } from "../../../packages/storage/src/index";
 import { EasyPalette } from "../../../packages/ui-easy/src/index";
@@ -69,6 +72,7 @@ async function saveSpikeEvidenceToServer(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      family: "spike-flight",
       label,
       query: location.search,
       hud,
@@ -79,11 +83,58 @@ async function saveSpikeEvidenceToServer(
   const data = (await res.json().catch(() => ({}))) as {
     path?: string;
     error?: string;
+    summaryUpdated?: boolean;
+    summaryPath?: string;
+    summaryMissing?: string[];
   };
   if (!res.ok) {
     throw new Error(data.error ?? `Evidence save failed (${res.status})`);
   }
-  return data.path ?? `docs/evidence/spike-flight-${label}.json`;
+  return {
+    path: data.path ?? `docs/evidence/spike-flight-${label}.json`,
+    summaryUpdated: Boolean(data.summaryUpdated),
+    summaryPath: data.summaryPath,
+    summaryMissing: data.summaryMissing ?? [],
+  };
+}
+
+/** 旋回 Motion 診断を docs/evidence/turn-motion-diagnostics-*.json へ保存。 */
+async function saveTurnMotionEvidenceToServer(engine: Engine) {
+  const dump = engine.exportTurnMotionDiagnostics();
+  const label = dump.mode;
+  const res = await fetch("/api/evidence", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      family: "turn-motion",
+      label,
+      query: location.search,
+      position: engine.position,
+      dump,
+    }),
+  });
+  const data = (await res.json().catch(() => ({}))) as {
+    path?: string;
+    error?: string;
+    summaryUpdated?: boolean;
+    summaryPath?: string;
+    summaryMissing?: string[];
+    summaryComplete?: boolean;
+  };
+  if (!res.ok) {
+    throw new Error(data.error ?? `Turn motion save failed (${res.status})`);
+  }
+  return {
+    path: data.path ?? `docs/evidence/turn-motion-diagnostics-${label}.json`,
+    modeLabel: dump.modeLabel,
+    turnStartTimeMs: dump.turnStartTimeMs,
+    summaryUpdated: Boolean(data.summaryUpdated),
+    summaryPath: data.summaryPath ?? "docs/evidence/turn-motion-diagnostics.json",
+    summaryMissing: data.summaryMissing ?? [],
+    summaryComplete: Boolean(data.summaryComplete),
+    separation: dump.verdict.separation,
+    notes: dump.verdict.notes,
+  };
 }
 
 const bus = new CommandBus(emptyProject());
@@ -206,12 +257,22 @@ function App() {
       shadows: params.get("disableShadow") !== "1",
       maxPixelRatio: params.get("pixelRatio") === "1" ? 1 : 2,
     });
+    // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
+    e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
     (
       window as unknown as {
         __exportSpikeDiagnostics?: (label?: string) => ReturnType<
           Engine["exportSpikeDiagnostics"]
         >;
-        __saveSpikeEvidence?: (label?: string) => Promise<string>;
+        __saveSpikeEvidence?: (label?: string) => Promise<{
+          path: string;
+          summaryUpdated: boolean;
+          summaryPath?: string;
+          summaryMissing: string[];
+        }>;
+        __exportTurnMotionDiagnostics?: () => ReturnType<
+          Engine["exportTurnMotionDiagnostics"]
+        >;
       }
     ).__exportSpikeDiagnostics = (label = "manual") => {
       const dump = e.exportSpikeDiagnostics();
@@ -221,9 +282,26 @@ function App() {
     };
     (
       window as unknown as {
-        __saveSpikeEvidence?: (label?: string) => Promise<string>;
+        __saveSpikeEvidence?: (label?: string) => Promise<{
+          path: string;
+          summaryUpdated: boolean;
+          summaryPath?: string;
+          summaryMissing: string[];
+        }>;
       }
     ).__saveSpikeEvidence = (label) => saveSpikeEvidenceToServer(e, label);
+    (
+      window as unknown as {
+        __exportTurnMotionDiagnostics?: () => ReturnType<
+          Engine["exportTurnMotionDiagnostics"]
+        >;
+      }
+    ).__exportTurnMotionDiagnostics = () => {
+      const dump = e.exportTurnMotionDiagnostics();
+      console.info("[turn-motion-diagnostics]", dump);
+      void saveTurnMotionEvidenceToServer(e);
+      return dump;
+    };
     e.onFrame = () => {
       if (performance.now() - lastStats > 250) {
         lastStats = performance.now();
@@ -527,13 +605,35 @@ function App() {
         const current = engine.current;
         if (current) {
           try {
-            const path = await saveSpikeEvidenceToServer(
-              current,
-              spikeEvidenceLabelFromQuery(),
-            );
-            const text = `診断JSONを保存した:\n${path}`;
-            setMessage(text.replace("\n", " "));
-            // 画面メッセージは見逃しやすいのでダイアログでも知らせる。
+            const params = new URLSearchParams(location.search);
+            const spikeQuery =
+              params.get("disableShadow") === "1" ||
+              params.get("pixelRatio") === "1" ||
+              params.get("spikeEvidence") === "1";
+            // 既定は Motion 診断を保存。Spike A/B クエリ時のみ Spike も保存。
+            const turn = await saveTurnMotionEvidenceToServer(current);
+            const sep = turn.separation;
+            const lines = [
+              `Motion診断を保存: ${turn.path}`,
+              turn.modeLabel,
+              turn.turnStartTimeMs == null
+                ? "警告: 旋回入力が検出されなかった（A/Dで約5秒旋回して再試行）"
+                : "turnStart検出 OK",
+              `判定 physics=${sep.physics} interp=${sep.interpolation} camera=${sep.camera}`,
+              turn.summaryComplete
+                ? `summary更新: ${turn.summaryPath}`
+                : `summary未完了（不足: ${turn.summaryMissing.join(", ") || "—"}）`,
+              ...turn.notes.slice(0, 2),
+            ];
+            if (spikeQuery) {
+              const saved = await saveSpikeEvidenceToServer(
+                current,
+                spikeEvidenceLabelFromQuery(),
+              );
+              lines.push(`Spikeも保存: ${saved.path}`);
+            }
+            const text = lines.join("\n");
+            setMessage(text.replace(/\n/g, " · "));
             window.alert(text);
           } catch (e) {
             const text = `Evidence save failed. Is pnpm dev (server :8787) running?\n${String(e)}`;

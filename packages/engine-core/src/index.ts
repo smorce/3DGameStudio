@@ -29,6 +29,12 @@ import {
   type SpikeDiagnosticsDump,
   type SpikeEnvironmentSnapshot,
 } from "./spike-diagnostics";
+import {
+  TurnMotionDiagnostics,
+  parseMotionDiagMode,
+  type MotionDiagMode,
+  type TurnMotionDump,
+} from "./turn-motion-diagnostics";
 export type ControlValues = Record<string, number>;
 export { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
 export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
@@ -44,6 +50,17 @@ export {
   type SpikeEnvironmentSnapshot,
   type SpikeWindow,
 } from "./spike-diagnostics";
+export {
+  TurnMotionDiagnostics,
+  parseMotionDiagMode,
+  motionDiagModeLabel,
+  quatAngularDeltaDeg,
+  type MotionDiagMode,
+  type TurnMotionDump,
+  type TurnPhysicsStepSample,
+  type TurnRafSample,
+  type TurnMotionVerdict,
+} from "./turn-motion-diagnostics";
 
 export interface FrameSpikeSample {
   timeMs: number;
@@ -144,11 +161,21 @@ export class Engine {
   private lastSyncGen = 0;
   readonly frameProfiler = new FrameProfiler(900);
   readonly spikeDiagnostics = new SpikeDiagnostics();
+  readonly turnMotionDiagnostics = new TurnMotionDiagnostics();
   /**
    * 診断用 A/B。false にすると Origin Rebase Transaction をスキップする。
    * Production 設定として恒久無効化してはならない。
    */
   originRebaseEnabled = true;
+  /** Motion 診断モード A/B/C（Production 挙動は a）。 */
+  setMotionDiagMode(mode: MotionDiagMode | string) {
+    const parsed = parseMotionDiagMode(String(mode));
+    this.turnMotionDiagnostics.mode = parsed;
+    this.renderer.applyMotionDiagnostics({
+      disableRotationInterpolation: parsed === "b",
+      disableCameraFollow: parsed === "c",
+    });
+  }
   private rebaseThisFrame = false;
   private frameRebaseTiming?: RebaseTimingBreakdown;
   private keyDown = (e: KeyboardEvent) => {
@@ -229,6 +256,7 @@ export class Engine {
     this.interpolationAlpha = 1;
     this.frameProfiler.reset();
     this.resetSpikeDiagnostics();
+    this.turnMotionDiagnostics.reset();
   }
   /** 診断カウンタとリングを PLAY 開始時にリセットする。 */
   resetSpikeDiagnostics() {
@@ -313,6 +341,7 @@ export class Engine {
               },
         );
       const physicsStarted = performance.now();
+      let physicsStepsThisFrame = 0;
       while (this.accumulator >= 1 / 60) {
         // Physics Critical Ready は Fixed Step 境界で Commit する。
         this.worldRuntime?.commitPhysicsCriticalReady();
@@ -324,6 +353,20 @@ export class Engine {
         const next = this.physics.renderState();
         this.previousRenderState = this.currentRenderState ?? next;
         this.currentRenderState = next;
+        const leadBody = this.physics.vehicles[0]?.body;
+        if (leadBody) {
+          const q = leadBody.rotation();
+          const w = leadBody.angvel();
+          this.turnMotionDiagnostics.recordPhysicsStep({
+            timeMs: now,
+            stepIndexInFrame: physicsStepsThisFrame,
+            frameTimeMs: this.rafIntervalMs,
+            steering: controls.steering ?? 0,
+            physicsQuaternion: [q.x, q.y, q.z, q.w],
+            physicsAngularVelocity: [w.x, w.y, w.z],
+          });
+        }
+        physicsStepsThisFrame++;
         const simulation = next.poses.values().next().value?.position;
         const global = simulation
           ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
@@ -371,9 +414,34 @@ export class Engine {
           alpha: this.interpolationAlpha,
           dt,
           velocity,
+          disableRotationInterpolation:
+            this.renderer.disableRotationInterpolation,
+          disableCameraFollow: this.renderer.disableCameraFollow,
         },
       );
       this.renderMs = performance.now() - renderStarted;
+      const leadCurrent =
+        this.currentRenderState?.poses.values().next().value?.rotation ??
+        ([0, 0, 0, 1] as [number, number, number, number]);
+      const leadPrevious =
+        this.previousRenderState?.poses.values().next().value?.rotation ??
+        leadCurrent;
+      const ang = body?.angvel();
+      const cam = this.renderer.getMotionCameraState();
+      this.turnMotionDiagnostics.recordRaf({
+        timeMs: now,
+        rafMs: this.rafIntervalMs,
+        physicsStepsThisFrame,
+        interpolationAlpha: this.interpolationAlpha,
+        steering: controls.steering ?? 0,
+        physicsQuaternion: leadCurrent,
+        physicsPreviousQuaternion: leadPrevious,
+        renderQuaternion: this.renderer.lastLeadRenderQuaternion,
+        physicsAngularVelocity: ang ? [ang.x, ang.y, ang.z] : [0, 0, 0],
+        cameraPosition: cam.position,
+        cameraTarget: cam.target,
+        cameraQuaternion: cam.quaternion,
+      });
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();
         if (this.project) this.renderer.restoreEditTransforms(this.project);
@@ -515,6 +583,11 @@ export class Engine {
       ...dump,
       environment: this.collectSpikeEnvironment(),
     };
+  }
+
+  /** 旋回 Motion Smoothness 診断 JSON。 */
+  exportTurnMotionDiagnostics(): TurnMotionDump {
+    return this.turnMotionDiagnostics.dump();
   }
 
   /** 表示タイミング / GPU / Canvas 解像度の切り分け用メタデータ。 */

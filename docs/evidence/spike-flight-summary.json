@@ -1,5 +1,12 @@
 {
-  "note": "Origin Rebase は主因ではない前提。GPU/Compositor/解像度 A/B（録画なし）。",
+  "note": "Origin Rebase は主因ではない前提。GPU/Compositor/解像度 A/B（録画なし）。ディスク上の最新4 JSON からのみ生成。",
+  "generatedAt": "2026-09-14T04:40:21.973Z",
+  "sourceSavedAts": [
+    "2026-09-14T04:39:06.817Z",
+    "2026-09-14T04:33:34.513Z",
+    "2026-09-14T04:34:07.816Z",
+    "2026-09-14T04:34:31.601Z"
+  ],
   "readingGuide": {
     "baseline only bad vs manual recording": "画面キャプチャ / Chrome Compositor が主因の可能性",
     "shadow-off improves": "Shadow GPU 負荷が主因の可能性",
@@ -10,189 +17,193 @@
   "baseline": {
     "path": "docs/evidence/spike-flight-baseline.json",
     "query": "",
+    "savedAt": "2026-09-14T04:39:06.817Z",
     "position": [
-      -4.850749969482422,
-      558.1459732055664
+      -10.26118278503418,
+      10.932446479797363,
+      293.6777563095093
     ],
     "spikes": [
-      394,
-      375,
-      102
+      1,
+      0,
+      0
     ],
     "early": [
-      124,
-      108,
-      17
+      0,
+      0,
+      0
     ],
-    "p50": 50,
-    "p95": 66.70000000000073,
-    "p99": 66.80000000000291,
-    "maxMs": 116.60000000000002,
-    "rebaseEvents": 5,
-    "spikeWindows": 2,
+    "p50": 16.699999999953434,
+    "p95": 16.800000000046566,
+    "p99": 16.900000000023283,
+    "maxMs": 33.20000000001164,
+    "rebaseEvents": 3,
+    "spikeWindows": 1,
     "environment": {
       "visibilityState": "visible",
       "hasFocus": true,
       "devicePixelRatio": 1,
       "canvasCss": [
-        1280,
-        491
+        969,
+        375
       ],
       "drawingBuffer": [
-        1280,
-        491
+        969,
+        375
       ],
-      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-      "longAnimationFrameCount": 64,
+      "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "longAnimationFrameCount": 1,
       "shadowMapEnabled": true,
       "effectivePixelRatio": 1,
       "gpuTimerSupported": true,
       "gpuSamples": 240,
-      "gpuP50": 44.648629,
-      "gpuP95": 51.424894,
-      "gpuMax": 93.769614
-    },
-    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 16 · Gen 0.4ms\nRAF 50.0ms · max 116.6 · p95 66.7 · p99 66.8 · CPU 2.2 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4\nSpike >20/>33/>50 393/374/102 · early 124/108/17 · SyncFb 0 · fastStats\nRebaseMs 0.20 (P 0.10 / R 0.10 / C 0.00 / T 0.00) · RB 6 · SC 69 · Ch 193 · LOD 0\nShadow→ 27.4, 75.1\n位置 -4.85, 558.15 · 高さ 89.20"
+      "gpuP50": 2.120704,
+      "gpuP95": 4.764672,
+      "gpuMax": 27.707392
+    }
   },
   "shadowOff": {
     "path": "docs/evidence/spike-flight-shadow-off.json",
     "query": "?disableShadow=1",
+    "savedAt": "2026-09-14T04:33:34.513Z",
     "position": [
-      -3.8262863159179688,
-      545.6896209716797
+      0.3996467590332031,
+      24.31302261352539,
+      273.17799377441406
     ],
     "spikes": [
-      439,
-      374,
-      38
+      1,
+      1,
+      0
     ],
     "early": [
-      139,
-      110,
-      5
+      1,
+      1,
+      0
     ],
-    "p50": 33.40000000000009,
-    "p95": 50.100000000000364,
-    "p99": 100,
-    "maxMs": 666.6000000000004,
-    "rebaseEvents": 5,
-    "spikeWindows": 10,
+    "p50": 16.700000000000728,
+    "p95": 16.899999999999636,
+    "p99": 17,
+    "maxMs": 49.80000000000109,
+    "rebaseEvents": 2,
+    "spikeWindows": 1,
     "environment": {
       "visibilityState": "visible",
       "hasFocus": true,
       "devicePixelRatio": 1,
       "canvasCss": [
-        1280,
-        491
+        969,
+        375
       ],
       "drawingBuffer": [
-        1280,
-        491
+        969,
+        375
       ],
-      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-      "longAnimationFrameCount": 23,
+      "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "longAnimationFrameCount": 1,
       "shadowMapEnabled": false,
       "effectivePixelRatio": 1,
       "gpuTimerSupported": true,
       "gpuSamples": 240,
-      "gpuP50": 36.60492,
-      "gpuP95": 42.837742,
-      "gpuMax": 81.390446
-    },
-    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 13 · Gen 0.2ms\nRAF 50.0ms · max 666.6 · p95 50.1 · p99 100.0 · CPU 3.4 · UI 0.0 · Commit 0.9ms · Queue 0 · W 0/4\nSpike >20/>33/>50 437/372/38 · early 139/110/5 · SyncFb 0 · fastStats\nRebaseMs 0.30 (P 0.10 / R 0.10 / C 0.10 / T 0.00) · RB 6 · SC 69 · Ch 193 · LOD 0\nShadow→ 28.4, 62.2\n位置 -3.83, 545.69 · 高さ 78.92"
+      "gpuP50": 2.046976,
+      "gpuP95": 5.851136,
+      "gpuMax": 13.751296
+    }
   },
   "dpr1": {
     "path": "docs/evidence/spike-flight-dpr1.json",
     "query": "?pixelRatio=1",
+    "savedAt": "2026-09-14T04:34:07.816Z",
     "position": [
-      -3.7342700958251953,
-      553.41845703125
+      0.9297100305557251,
+      21.31597137451172,
+      255.88153839111328
     ],
     "spikes": [
-      404,
-      386,
-      89
+      2,
+      0,
+      0
     ],
     "early": [
-      129,
-      111,
-      20
+      2,
+      0,
+      0
     ],
-    "p50": 50,
-    "p95": 66.69999999999982,
-    "p99": 66.70000000000073,
-    "maxMs": 116.69999999999993,
-    "rebaseEvents": 5,
-    "spikeWindows": 2,
+    "p50": 16.69999999999891,
+    "p95": 16.899999999999636,
+    "p99": 16.900000000001455,
+    "maxMs": 33.19999999999982,
+    "rebaseEvents": 2,
+    "spikeWindows": 1,
     "environment": {
       "visibilityState": "visible",
       "hasFocus": true,
       "devicePixelRatio": 1,
       "canvasCss": [
-        1280,
-        491
+        969,
+        375
       ],
       "drawingBuffer": [
-        1280,
-        491
+        969,
+        375
       ],
-      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-      "longAnimationFrameCount": 64,
+      "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "longAnimationFrameCount": 1,
       "shadowMapEnabled": true,
       "effectivePixelRatio": 1,
       "gpuTimerSupported": true,
       "gpuSamples": 240,
-      "gpuP50": 43.365939,
-      "gpuP95": 49.357423,
-      "gpuMax": 93.03904
-    },
-    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 11 · Gen 0.2ms\nRAF 49.9ms · max 116.7 · p95 66.7 · p99 66.7 · CPU 2.4 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4\nSpike >20/>33/>50 399/381/88 · early 129/111/20 · SyncFb 0 · fastStats\nRebaseMs 0.10 (P 0.00 / R 0.10 / C 0.00 / T 0.00) · RB 6 · SC 71 · Ch 195 · LOD 0\nShadow→ 28.5, 70.2\n位置 -3.73, 553.42 · 高さ 85.75"
+      "gpuP50": 2.635776,
+      "gpuP95": 6.166528,
+      "gpuMax": 22.918144
+    }
   },
   "shadowOffDpr1": {
     "path": "docs/evidence/spike-flight-shadow-off-dpr1.json",
     "query": "?disableShadow=1&pixelRatio=1",
+    "savedAt": "2026-09-14T04:34:31.601Z",
     "position": [
-      -4.701776504516602,
-      556.4441070556641
+      -1.3273298740386963,
+      35.124168395996094,
+      320.6204948425293
     ],
     "spikes": [
-      465,
-      384,
-      46
+      1,
+      0,
+      0
     ],
     "early": [
-      139,
-      109,
-      7
+      1,
+      0,
+      0
     ],
-    "p50": 49.89999999999782,
-    "p95": 50.100000000000364,
-    "p99": 50.10000000000218,
-    "maxMs": 66.80000000000001,
-    "rebaseEvents": 5,
-    "spikeWindows": 4,
+    "p50": 16.69999999999891,
+    "p95": 16.899999999999636,
+    "p99": 16.900000000001455,
+    "maxMs": 33.200000000000045,
+    "rebaseEvents": 3,
+    "spikeWindows": 1,
     "environment": {
       "visibilityState": "visible",
       "hasFocus": true,
       "devicePixelRatio": 1,
       "canvasCss": [
-        1280,
-        491
+        969,
+        375
       ],
       "drawingBuffer": [
-        1280,
-        491
+        969,
+        375
       ],
-      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
-      "longAnimationFrameCount": 14,
+      "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "longAnimationFrameCount": 0,
       "shadowMapEnabled": false,
       "effectivePixelRatio": 1,
       "gpuTimerSupported": true,
       "gpuSamples": 240,
-      "gpuP50": 36.551089,
-      "gpuP95": 41.274644,
-      "gpuMax": 77.852518
-    },
-    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 13 · Gen 0.4ms\nRAF 49.9ms · max 66.8 · p95 50.1 · p99 50.1 · CPU 2.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4\nSpike >20/>33/>50 462/382/45 · early 139/109/7 · SyncFb 0 · fastStats\nRebaseMs 0.20 (P 0.10 / R 0.10 / C 0.00 / T 0.00) · RB 6 · SC 69 · Ch 193 · LOD 0\nShadow→ 27.6, 73.3\n位置 -4.70, 556.44 · 高さ 87.77"
+      "gpuP50": 0.25088,
+      "gpuP95": 0.390144,
+      "gpuMax": 24.992768
+    }
   }
 }

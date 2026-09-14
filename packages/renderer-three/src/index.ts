@@ -63,6 +63,10 @@ export interface RenderFrameOptions {
   alpha?: number;
   dt?: number;
   velocity?: Vec3;
+  /** 診断用: Rotation 補間だけOFF（位置は補間継続）。Production 既定は false。 */
+  disableRotationInterpolation?: boolean;
+  /** 診断用: Camera follow だけOFF（即時追従）。Production 既定は false。 */
+  disableCameraFollow?: boolean;
 }
 export interface RendererAdapter {
   load(project: Project): void;
@@ -163,6 +167,11 @@ export class ThreeRenderer implements RendererAdapter {
   /** 診断 A/B 用。既定は min(DPR, 2)。 */
   private maxPixelRatio = 2;
   private antialiasEnabled = true;
+  /** Motion 診断 A/B（Production 既定は両方 false）。 */
+  disableRotationInterpolation = false;
+  disableCameraFollow = false;
+  /** 直近 render の先頭機体 Quaternion（補間後）。 */
+  lastLeadRenderQuaternion: [number, number, number, number] = [0, 0, 0, 1];
   onAttachmentPick?: (id: string) => void;
   onAttachmentHover?: (id?: string) => void;
   onCandidateScreens?: (points: { id: string; x: number; y: number }[]) => void;
@@ -404,6 +413,30 @@ export class ThreeRenderer implements RendererAdapter {
       );
       this.resize();
     }
+  }
+
+  applyMotionDiagnostics(options: {
+    disableRotationInterpolation?: boolean;
+    disableCameraFollow?: boolean;
+  }) {
+    if (options.disableRotationInterpolation !== undefined)
+      this.disableRotationInterpolation = options.disableRotationInterpolation;
+    if (options.disableCameraFollow !== undefined)
+      this.disableCameraFollow = options.disableCameraFollow;
+  }
+
+  /** Motion 診断用: 描画直後の Camera 状態。 */
+  getMotionCameraState() {
+    return {
+      position: this.camera.position.toArray() as [number, number, number],
+      target: this.controls.target.toArray() as [number, number, number],
+      quaternion: this.camera.quaternion.toArray() as [
+        number,
+        number,
+        number,
+        number,
+      ],
+    };
   }
 
   get diagnosticsEnvironment() {
@@ -984,7 +1017,11 @@ export class ThreeRenderer implements RendererAdapter {
     });
     const interpolated =
       state && options.previous && options.alpha !== undefined
-        ? interpolatePhysicsRenderState(options.previous, state, options.alpha)
+        ? interpolatePhysicsRenderState(options.previous, state, options.alpha, {
+            disableRotationInterpolation:
+              options.disableRotationInterpolation ??
+              this.disableRotationInterpolation,
+          })
         : state;
     const poses = interpolated?.poses;
     const wheels = interpolated?.wheels;
@@ -1031,9 +1068,19 @@ export class ThreeRenderer implements RendererAdapter {
       }
       const first = poses.values().next().value;
       if (first) {
-        const target = new THREE.Vector3(...first.position),
-          follow = cameraFollowAlpha(options.dt ?? 1 / 60),
-          delta = target.clone().sub(this.controls.target);
+        this.lastLeadRenderQuaternion = [
+          first.rotation[0],
+          first.rotation[1],
+          first.rotation[2],
+          first.rotation[3],
+        ];
+        const target = new THREE.Vector3(...first.position);
+        const cameraFollowOff =
+          options.disableCameraFollow ?? this.disableCameraFollow;
+        const follow = cameraFollowOff
+          ? 1
+          : cameraFollowAlpha(options.dt ?? 1 / 60);
+        const delta = target.clone().sub(this.controls.target);
         this.camera.position.add(delta.multiplyScalar(follow));
         this.controls.target.lerp(target, follow);
       }

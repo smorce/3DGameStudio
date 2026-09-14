@@ -128,8 +128,7 @@ pnpm test:e2e tests/e2e/spike-flight-diagnostics.spec.ts
    - DPR1: `http://localhost:5183/?pixelRatio=1`
    - 両方: `http://localhost:5183/?disableShadow=1&pixelRatio=1`
 3. **✈️ ひこうき** → **▶ あそぶ** → 約20秒飛行 → **■ やめる**
-4. 画面メッセージに `診断JSONを保存した: docs/evidence/spike-flight-….json` と出る  
-   → ファイルはリポジトリの `docs/evidence/` に上書き保存される
+4. ダイアログに保存パスが出る。4ケース（baseline / shadow-off / dpr1 / shadow-off-dpr1）が揃った時点で、**ディスク上のその4ファイルだけ**から `docs/evidence/spike-flight-summary.json` を再生成する（メモリ上の古い計測は使わない）
 
 コンソール操作は不要です。
 

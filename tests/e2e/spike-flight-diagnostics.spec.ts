@@ -1,5 +1,6 @@
 import { test, expect } from "./fixtures";
 import { mkdir, writeFile } from "node:fs/promises";
+import { writeSpikeFlightSummaryFromDisk } from "../../scripts/spike-flight-summary";
 
 type SpikeDump = {
   spikeCount20ms: number;
@@ -32,11 +33,6 @@ type SpikeDump = {
     gpuFrameP95Ms: number;
     gpuFrameMaxMs: number;
   };
-  lastRebase?: {
-    rebaseTotalMs: number;
-    physicsRebaseMs: number;
-    rendererRebaseMs: number;
-  };
   recentRebases: unknown[];
   spikeWindows: unknown[];
 };
@@ -45,54 +41,8 @@ type CaseResult = {
   label: string;
   query: string;
   path: string;
-  hud: string;
-  position: number[];
   dump: SpikeDump;
 };
-
-function summarize(result: CaseResult) {
-  const env = result.dump.environment;
-  return {
-    path: result.path,
-    query: result.query,
-    position: result.position,
-    spikes: [
-      result.dump.spikeCount20ms,
-      result.dump.spikeCount33ms,
-      result.dump.spikeCount50ms,
-    ],
-    early: [
-      result.dump.earlySpikeCount20ms,
-      result.dump.earlySpikeCount33ms,
-      result.dump.earlySpikeCount50ms,
-    ],
-    p50: result.dump.frameP50Ms,
-    p95: result.dump.frameP95Ms,
-    p99: result.dump.frameP99Ms,
-    maxMs: result.dump.frameMaxMs,
-    rebaseEvents: result.dump.recentRebases.length,
-    spikeWindows: result.dump.spikeWindows.length,
-    environment: env
-      ? {
-          visibilityState: env.visibilityState,
-          hasFocus: env.hasFocus,
-          devicePixelRatio: env.devicePixelRatio,
-          canvasCss: [env.canvasCssWidth, env.canvasCssHeight],
-          drawingBuffer: [env.drawingBufferWidth, env.drawingBufferHeight],
-          webglRenderer: env.webglRenderer,
-          longAnimationFrameCount: env.longAnimationFrameCount,
-          shadowMapEnabled: env.shadowMapEnabled,
-          effectivePixelRatio: env.effectivePixelRatio,
-          gpuTimerSupported: env.gpuTimerSupported,
-          gpuSamples: env.gpuFrameSampleCount,
-          gpuP50: env.gpuFrameP50Ms,
-          gpuP95: env.gpuFrameP95Ms,
-          gpuMax: env.gpuFrameMaxMs,
-        }
-      : undefined,
-    hud: result.hud,
-  };
-}
 
 async function flyAndDump(
   page: import("@playwright/test").Page,
@@ -138,6 +88,7 @@ async function flyAndDump(
       {
         label,
         query,
+        savedAt: new Date().toISOString(),
         note: "playwright-e2e: no display/tab capture (recording-off baseline)",
         hud,
         position,
@@ -148,7 +99,7 @@ async function flyAndDump(
     ),
   );
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
-  return { label, query, hud, dump, path, position };
+  return { label, query, dump, path };
 }
 
 test.describe("spike flight diagnostics", () => {
@@ -177,26 +128,22 @@ test.describe("spike flight diagnostics", () => {
     expect(both.dump.environment?.shadowMapEnabled).toBe(false);
     expect(both.dump.environment?.effectivePixelRatio).toBeLessThanOrEqual(1.01);
 
-    const summary = {
-      note: "Origin Rebase は主因ではない前提。GPU/Compositor/解像度 A/B（録画なし）。",
-      readingGuide: {
-        "baseline only bad vs manual recording":
-          "画面キャプチャ / Chrome Compositor が主因の可能性",
-        "shadow-off improves": "Shadow GPU 負荷が主因の可能性",
-        "dpr1 improves": "描画解像度・Fill Rate が主因の可能性",
-        "only both improves": "GPU 総負荷が限界に近い可能性",
-        "all unchanged": "Chrome/OS/ディスプレイ側、または別の GPU 同期を調査",
-      },
-      baseline: summarize(baseline),
-      shadowOff: summarize(shadowOff),
-      dpr1: summarize(dpr1),
-      shadowOffDpr1: summarize(both),
-    };
-
-    await writeFile(
-      "docs/evidence/spike-flight-summary.json",
-      JSON.stringify(summary, null, 2),
+    // summary はメモリ上の dump を使わず、書き出した4ファイルから再生成する。
+    const summaryResult = await writeSpikeFlightSummaryFromDisk();
+    expect(summaryResult.written).toBe(true);
+    expect(summaryResult.summary?.baseline?.p95).toBe(
+      baseline.dump.frameP95Ms,
     );
-    console.log("[spike-flight-summary]", JSON.stringify(summary, null, 2));
+    expect(summaryResult.summary?.shadowOff?.p95).toBe(
+      shadowOff.dump.frameP95Ms,
+    );
+    expect(summaryResult.summary?.dpr1?.p95).toBe(dpr1.dump.frameP95Ms);
+    expect(summaryResult.summary?.shadowOffDpr1?.p95).toBe(
+      both.dump.frameP95Ms,
+    );
+    console.log(
+      "[spike-flight-summary]",
+      JSON.stringify(summaryResult.summary, null, 2),
+    );
   });
 });

@@ -162,8 +162,16 @@ it("サーバーの検索→取込→キャッシュ→GLB配信と永続化", a
       }),
     });
     expect(evidence.status).toBe(200);
-    const evidenceBody = (await evidence.json()) as { path: string };
-    expect(evidenceBody.path).toBe("docs/evidence/spike-flight-test-pipeline.json");
+    const evidenceBody = (await evidence.json()) as {
+      path: string;
+      summaryUpdated: boolean;
+      summaryMissing?: string[];
+    };
+    expect(evidenceBody.path).toBe(
+      "docs/evidence/spike-flight-test-pipeline.json",
+    );
+    // summary は docs/evidence 上の4ケース有無で決まる（このラベル自体は対象外）。
+    expect(typeof evidenceBody.summaryUpdated).toBe("boolean");
     const forbidden = await fetch(`${base}/api/jobs`, {
       method: "POST",
       headers: {
