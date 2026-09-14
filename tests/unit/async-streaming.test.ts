@@ -77,6 +77,12 @@ describe("async streaming foundations", () => {
       drawCalls: 10,
       triangles: 100,
       positionZ: 10,
+      frame: 0,
+      thrustActive: false,
+      thrustBecameActive: false,
+      shaderProgramCount: 8,
+      geometryCount: 20,
+      textureCount: 4,
     };
     for (let i = 0; i < 5; i++) {
       diagnostics.recordFrame({

@@ -58,6 +58,7 @@ function spikeEvidenceLabelFromQuery(search = location.search) {
   if (params.get("disableShadow") === "1") parts.push("shadow-off");
   if (params.get("pixelRatio") === "1") parts.push("dpr1");
   if (params.get("disableRebase") === "1") parts.push("disable-rebase");
+  if (params.get("prewarmShaders") === "1") parts.push("prewarm-shaders");
   return parts.length ? parts.join("-") : "baseline";
 }
 
@@ -286,6 +287,8 @@ function App() {
       shadows: params.get("disableShadow") !== "1",
       maxPixelRatio: params.get("pixelRatio") === "1" ? 1 : 2,
     });
+    // Thruster炎初回表示の Shader Compile Stall 切り分け A/B。恒久設定ではない。
+    e.shaderPrewarmEnabled = params.get("prewarmShaders") === "1";
     // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
     e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
     // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。回帰比較用。既定OFF、?cameraToggle=1 で有効。
@@ -641,6 +644,7 @@ function App() {
             const spikeQuery =
               params.get("disableShadow") === "1" ||
               params.get("pixelRatio") === "1" ||
+              params.get("prewarmShaders") === "1" ||
               params.get("spikeEvidence") === "1";
             const cameraToggle = params.get("cameraToggle") === "1";
             const lines: string[] = [];

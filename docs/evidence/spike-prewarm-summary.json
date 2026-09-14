@@ -1,0 +1,116 @@
+{
+  "note": "Thruster初スロットル / Shader Prewarm A/B。ディスク上の prewarm-a/b からのみ生成。",
+  "generatedAt": "2026-09-14T07:58:30.752Z",
+  "verdict": "prewarm removed early RAF spikes and kept PLAY render under 15ms — first-use WebGL init is likely",
+  "a": {
+    "path": "docs/evidence/spike-flight-prewarm-a.json",
+    "query": "",
+    "savedAt": "2026-09-14T07:56:17.329Z",
+    "spikes": [
+      1,
+      1,
+      0
+    ],
+    "early": [
+      1,
+      1,
+      0
+    ],
+    "p50": 16.69999999999709,
+    "p95": 16.80000000000291,
+    "maxMs": 33.400000000001455,
+    "longAnimationFrameCount": 0,
+    "shaderPrewarmEnabled": false,
+    "shaderPrewarmMs": 0,
+    "shaderPrewarmDeferredCount": 0,
+    "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "gpuMax": 25.33376,
+    "gpuMaxSample": {
+      "frame": 1,
+      "gpuMs": 25.33376,
+      "timeMs": 31424
+    },
+    "maxRenderFrame": {
+      "timeMs": 31424,
+      "frame": 1,
+      "renderMs": 27.700000002980232,
+      "rafIntervalMs": 16.400000000001455,
+      "thrustBecameActive": false,
+      "thrustActive": false,
+      "shaderProgramCount": 4,
+      "geometryCount": 82,
+      "textureCount": 1,
+      "positionZ": 0
+    },
+    "firstThrust": null,
+    "heavyRenders": [
+      {
+        "timeMs": 31424,
+        "frame": 1,
+        "renderMs": 27.700000002980232,
+        "rafIntervalMs": 16.400000000001455,
+        "thrustBecameActive": false,
+        "thrustActive": false,
+        "shaderProgramCount": 4,
+        "geometryCount": 82,
+        "textureCount": 1,
+        "positionZ": 0
+      }
+    ],
+    "spikeWindows": [
+      {
+        "centerTimeMs": 31457.4,
+        "spikeRafIntervalMs": 33.400000000001455,
+        "earlySpike": true,
+        "peakRenderMs": 27.700000002980232,
+        "peakThrustBecameActive": false,
+        "peakThrustActive": false,
+        "peakProgramCount": 4
+      }
+    ]
+  },
+  "b": {
+    "path": "docs/evidence/spike-flight-prewarm-b.json",
+    "query": "?prewarmShaders=1",
+    "savedAt": "2026-09-14T07:57:51.371Z",
+    "spikes": [
+      0,
+      0,
+      0
+    ],
+    "early": [
+      0,
+      0,
+      0
+    ],
+    "p50": 16.69999999999709,
+    "p95": 16.799999999999272,
+    "maxMs": 16.900000000001455,
+    "longAnimationFrameCount": 0,
+    "shaderPrewarmEnabled": true,
+    "shaderPrewarmMs": 27.299999997019768,
+    "shaderPrewarmDeferredCount": 4,
+    "webglRenderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "gpuMax": 11.220992,
+    "gpuMaxSample": {
+      "frame": 5,
+      "gpuMs": 11.220992,
+      "timeMs": 17144.9
+    },
+    "maxRenderFrame": {
+      "timeMs": 17144.9,
+      "frame": 5,
+      "renderMs": 9.899999991059303,
+      "rafIntervalMs": 16.600000000002183,
+      "thrustBecameActive": false,
+      "thrustActive": false,
+      "shaderProgramCount": 7,
+      "geometryCount": 97,
+      "textureCount": 1,
+      "positionZ": -0.0000015497207641601562
+    },
+    "firstThrust": null,
+    "heavyRenders": [],
+    "spikeWindows": []
+  }
+}

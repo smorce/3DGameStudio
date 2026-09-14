@@ -176,6 +176,18 @@ export class Engine {
    * Production 設定として恒久無効化してはならない。
    */
   originRebaseEnabled = true;
+  /**
+   * 診断用 A/B。true で PLAY 直前に Thruster炎等を compileAsync + 1描画で Prewarm する。
+   * Production 既定は false。
+   */
+  shaderPrewarmEnabled = false;
+  /** PLAY 診断用の連番フレーム（GPU Query 紐付け用）。 */
+  private playFrameIndex = 0;
+  /** 直前フレームで推力表示がアクティブだったか（初スロットル検出）。 */
+  private previousThrustActive = false;
+  /** 直近フレームの推力表示状態（recordFrameSpike 用）。 */
+  private lastThrustActive = false;
+  private lastThrustBecameActive = false;
   /** Motion 診断モード A/B/C（Production 挙動は a）。 */
   setMotionDiagMode(mode: MotionDiagMode | string) {
     const parsed = parseMotionDiagMode(String(mode));
@@ -282,6 +294,16 @@ export class Engine {
     });
     this.renderer.setEditMachineLift(false);
     if (this.course) this.physics.respawn(this.course.course.start);
+    if (this.shaderPrewarmEnabled) {
+      await this.renderer.prewarmDeferredVisuals();
+      if (this.disposed || ticket !== this.ticket) return;
+    } else {
+      this.renderer.lastShaderPrewarm = {
+        enabled: false,
+        ms: 0,
+        deferredCount: 0,
+      };
+    }
     world.setPlayHotPath(true);
     this.mode = "PLAY";
     this.accumulator = 0;
@@ -311,6 +333,10 @@ export class Engine {
     this.renderer.resetGpuTimer();
     this.rebaseThisFrame = false;
     this.frameRebaseTiming = undefined;
+    this.playFrameIndex = 0;
+    this.previousThrustActive = false;
+    this.lastThrustActive = false;
+    this.lastThrustBecameActive = false;
   }
   private async respawnWithPhysicsReady() {
     const point = this.course?.respawn;
@@ -444,10 +470,21 @@ export class Engine {
       const linvel = body?.linvel();
       if (linvel) velocity = [linvel.x, linvel.y, linvel.z];
       this.interpolationAlpha = this.accumulator / (1 / 60);
+      const throttle = dropping ? 0 : (controls.throttle ?? 0);
+      const thrustActive = Math.abs(throttle) > 0.01;
+      this.lastThrustBecameActive =
+        thrustActive && !this.previousThrustActive;
+      this.lastThrustActive = thrustActive;
+      this.previousThrustActive = thrustActive;
+      this.playFrameIndex += 1;
+      this.renderer.setGpuTimerMeta({
+        frame: this.playFrameIndex,
+        timeMs: now,
+      });
       const renderStarted = performance.now();
       this.renderer.render(
         this.currentRenderState ?? this.physics.renderState(),
-        dropping ? 0 : (controls.throttle ?? 0),
+        throttle,
         {
           previous: this.previousRenderState,
           alpha: this.interpolationAlpha,
@@ -508,6 +545,13 @@ export class Engine {
       }
     } else {
       this.physicsStepMs = 0;
+      this.lastThrustActive = false;
+      this.lastThrustBecameActive = false;
+      this.playFrameIndex += 1;
+      this.renderer.setGpuTimerMeta({
+        frame: this.playFrameIndex,
+        timeMs: now,
+      });
       const renderStarted = performance.now();
       this.renderer.render();
       this.renderMs = performance.now() - renderStarted;
@@ -542,6 +586,7 @@ export class Engine {
     const rebaseCount = world?.rebaseCount ?? 0;
     const trace: FrameTraceSample = {
       timeMs: now,
+      frame: this.playFrameIndex,
       rafIntervalMs: this.rafIntervalMs,
       cpuWorkMs: this.cpuWorkMs,
       uiUpdateMs: this.uiUpdateMs,
@@ -578,6 +623,11 @@ export class Engine {
       drawCalls: renderStats.drawCalls ?? 0,
       triangles: renderStats.triangles ?? 0,
       positionZ: this.position[2],
+      thrustActive: this.lastThrustActive,
+      thrustBecameActive: this.lastThrustBecameActive,
+      shaderProgramCount: renderStats.shaderProgramCount ?? 0,
+      geometryCount: renderStats.geometryCount ?? 0,
+      textureCount: renderStats.textureCount ?? 0,
     };
     this.spikeDiagnostics.recordFrame(trace);
     if (this.rafIntervalMs > 20) this.spikeCount20ms++;
@@ -670,6 +720,11 @@ export class Engine {
       longAnimationFrameCount: longFrames.length,
       recentLongAnimationFrames: longFrames,
       ...renderEnv,
+      recentGpuSamples: renderEnv.recentGpuSamples ?? [],
+      shaderPrewarmEnabled:
+        renderEnv.shaderPrewarmEnabled ?? this.shaderPrewarmEnabled,
+      shaderPrewarmMs: renderEnv.shaderPrewarmMs ?? 0,
+      shaderPrewarmDeferredCount: renderEnv.shaderPrewarmDeferredCount ?? 0,
     };
   }
   get position(): Vec3 {

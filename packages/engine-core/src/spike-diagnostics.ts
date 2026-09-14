@@ -31,6 +31,7 @@ export interface RebaseTimingBreakdown {
 /** 毎フレームの軽量トレース（スパイク前後切り出し用）。 */
 export interface FrameTraceSample {
   timeMs: number;
+  frame: number;
   rafIntervalMs: number;
   cpuWorkMs: number;
   uiUpdateMs: number;
@@ -63,6 +64,16 @@ export interface FrameTraceSample {
   drawCalls: number;
   triangles: number;
   positionZ: number;
+  /** そのフレームで推力表示が閾値を超えていたか。 */
+  thrustActive: boolean;
+  /** 推力表示がオフ→オンへ切り替わったフレーム（初スロットル検出）。 */
+  thrustBecameActive: boolean;
+  /** WebGLRenderer.info.programs.length（Shader Program 数）。 */
+  shaderProgramCount: number;
+  /** WebGLRenderer.info.memory.geometries。 */
+  geometryCount: number;
+  /** WebGLRenderer.info.memory.textures。 */
+  textureCount: number;
 }
 
 export interface SpikeWindow {
@@ -98,6 +109,14 @@ export interface SpikeEnvironmentSnapshot {
   gpuFrameP95Ms: number;
   gpuFrameMaxMs: number;
   gpuFrameLastMs: number;
+  /** GPU 最大サンプル（frame / timeMs 付き）。Render Stall との対応用。 */
+  gpuFrameMaxSample?: { gpuMs: number; frame: number; timeMs: number };
+  /** 直近の時刻付き GPU サンプル（新しい順・最大48）。 */
+  recentGpuSamples: { gpuMs: number; frame: number; timeMs: number }[];
+  /** PLAY 前 Shader Prewarm を実行したか（A/B）。 */
+  shaderPrewarmEnabled: boolean;
+  shaderPrewarmMs: number;
+  shaderPrewarmDeferredCount: number;
 }
 
 export interface SpikeDiagnosticsDump {
@@ -113,6 +132,10 @@ export interface SpikeDiagnosticsDump {
   frameP95Ms: number;
   frameP99Ms: number;
   frameMaxMs: number;
+  /** 初スロットル（推力表示オン）フレーム。リングから落ちても残す。 */
+  firstThrustFrame?: FrameTraceSample;
+  /** PLAY 中で renderMs が最大だったフレーム。 */
+  maxRenderFrame?: FrameTraceSample;
   lastRebase?: RebaseTimingBreakdown;
   recentRebases: RebaseTimingBreakdown[];
   recentFrames: FrameTraceSample[];
@@ -134,10 +157,21 @@ export class SpikeDiagnostics {
   private pendingAfter = 0;
   private lastSealedSpikeTimeMs = -1;
   lastRebase?: RebaseTimingBreakdown;
+  firstThrustFrame?: FrameTraceSample;
+  maxRenderFrame?: FrameTraceSample;
 
   recordFrame(sample: FrameTraceSample) {
     this.frames.push(sample);
     if (this.frames.length > FRAME_HISTORY) this.frames.shift();
+    if (sample.thrustBecameActive && !this.firstThrustFrame) {
+      this.firstThrustFrame = sample;
+    }
+    if (
+      !this.maxRenderFrame ||
+      sample.renderMs > this.maxRenderFrame.renderMs
+    ) {
+      this.maxRenderFrame = sample;
+    }
     if (this.pendingAfter > 0) {
       this.pendingAfter--;
       if (this.pendingAfter === 0) this.sealSpikeWindow();
@@ -211,6 +245,8 @@ export class SpikeDiagnostics {
     this.pendingAfter = 0;
     this.lastSealedSpikeTimeMs = -1;
     this.lastRebase = undefined;
+    this.firstThrustFrame = undefined;
+    this.maxRenderFrame = undefined;
   }
 
   dump(meta: {
@@ -230,6 +266,8 @@ export class SpikeDiagnostics {
     return {
       exportedAtMs: performance.now(),
       ...meta,
+      firstThrustFrame: this.firstThrustFrame,
+      maxRenderFrame: this.maxRenderFrame,
       lastRebase: this.lastRebase,
       recentRebases: [...this.rebaseHistory],
       recentFrames: [...this.frames],

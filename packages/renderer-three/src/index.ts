@@ -167,9 +167,13 @@ export class ThreeRenderer implements RendererAdapter {
   private moved = false;
   private pointers = new Set<number>();
   private gpuTimer!: DisjointGpuTimer;
+  /** GPU Timer begin に渡す診断メタ（Engine が毎フレーム更新）。 */
+  private gpuTimerMeta = { frame: 0, timeMs: 0 };
   /** 診断 A/B 用。既定は min(DPR, 2)。 */
   private maxPixelRatio = 2;
   private antialiasEnabled = true;
+  /** PLAY 前 Shader Prewarm の結果（診断 dump 用）。 */
+  lastShaderPrewarm = { enabled: false, ms: 0, deferredCount: 0 };
   /** Motion 診断 A/B（Production 既定は両方 false）。 */
   disableRotationInterpolation = false;
   /**
@@ -525,11 +529,64 @@ export class ThreeRenderer implements RendererAdapter {
       gpuFrameP95Ms: gpu.p95Ms,
       gpuFrameMaxMs: gpu.maxMs,
       gpuFrameLastMs: gpu.lastMs,
+      gpuFrameMaxSample: gpu.maxSample,
+      recentGpuSamples: gpu.recentSamples.slice(0, 48),
+      shaderPrewarmEnabled: this.lastShaderPrewarm.enabled,
+      shaderPrewarmMs: this.lastShaderPrewarm.ms,
+      shaderPrewarmDeferredCount: this.lastShaderPrewarm.deferredCount,
     };
   }
 
   resetGpuTimer() {
     this.gpuTimer.reset();
+  }
+
+  /** Engine が毎フレーム、GPU Query に紐付ける frame / timeMs を渡す。 */
+  setGpuTimerMeta(meta: { frame: number; timeMs: number }) {
+    this.gpuTimerMeta = meta;
+  }
+
+  /**
+   * PLAY 直前の Shader / 遅延表示物 Prewarm。
+   * Thruster 炎・Motor indicator など通常は visible=false の物を一時表示し、
+   * compileAsync + 1回 render で初回コンパイル／バッファ転送を済ませる。
+   */
+  async prewarmDeferredVisuals(): Promise<{
+    ms: number;
+    deferredCount: number;
+  }> {
+    const started = performance.now();
+    const deferred: THREE.Object3D[] = [];
+    this.root.traverse((object) => {
+      if (
+        object.userData.thrusterFlame === true ||
+        object.userData.motorIndicator === true
+      ) {
+        deferred.push(object);
+      }
+    });
+    const previous = deferred.map((object) => object.visible);
+    for (const object of deferred) object.visible = true;
+    try {
+      await this.renderer.compileAsync(this.scene, this.camera);
+      // compileAsync は Shader まで。Geometry/Buffer 初回転送も温めるため1回描画する。
+      this.renderer.render(this.scene, this.camera);
+    } finally {
+      deferred.forEach((object, index) => {
+        object.visible = previous[index] ?? false;
+      });
+      // 炎スケール等を推力0の見た目へ戻す。
+      this.parts.forEach((visual) => {
+        updateThrusterFlame(visual, 0);
+        updateMotorActivity(visual, 0);
+      });
+    }
+    const result = {
+      ms: performance.now() - started,
+      deferredCount: deferred.length,
+    };
+    this.lastShaderPrewarm = { enabled: true, ...result };
+    return result;
   }
   private mesh(geometry: THREE.BufferGeometry, color: string) {
     const m = new THREE.Mesh(
@@ -1218,7 +1275,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.update();
     this.updateShadowFollow(this.controls.target.toArray() as Vec3);
     this.updateLodBatches();
-    this.gpuTimer.begin();
+    this.gpuTimer.begin(this.gpuTimerMeta);
     this.renderer.render(this.scene, this.camera);
     this.gpuTimer.end();
     if (this.onCandidateScreens) {
@@ -1248,6 +1305,9 @@ export class ThreeRenderer implements RendererAdapter {
       // renderer.info は安価。PLAY HUD / Spike 向けに traverse なしで提供する。
       drawCalls: this.renderer.info.render.calls,
       triangles: this.renderer.info.render.triangles,
+      shaderProgramCount: this.renderer.info.programs?.length ?? 0,
+      geometryCount: this.renderer.info.memory.geometries,
+      textureCount: this.renderer.info.memory.textures,
       instanceBatches: this.instanceBatchCount,
       // 以下は full stats 専用（root.traverse）。fast 経路では 0。
       loadedAssets: 0,
