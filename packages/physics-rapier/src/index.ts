@@ -85,9 +85,21 @@ export interface PhysicsRenderState {
 }
 /** CCD A/B 実験用。all=現行、off=全無効、chassis-only=主胴体のみ、hinge-only=Hinge側のみ。 */
 export type CcdExperimentMode = "all" | "off" | "chassis-only" | "hinge-only";
-/** membership=bit1(機体), filter=機体bit以外 → 同一機体Collider同士は衝突しない。 */
-const MACHINE_COLLISION_GROUPS =
-  (0x0002 << 16) | (0xffff & ~0x0002);
+/**
+ * Rapier InteractionGroups は membership/filter 各16bit。
+ * bit0は外界(既定0xFFFF)との共有用に空け、bit1..15を機体へ割り当てる。
+ * 同時に16機以上ある場合はbitを周回再利用する（長期はPhysics Hookへ移行予定）。
+ */
+const MACHINE_MEMBERSHIP_BITS = 15;
+const MACHINE_MEMBERSHIP_BIT0 = 1;
+/** 自機membershipだけfilterから外し、他機・地形とは衝突させる。 */
+export function machineCollisionGroups(machineIndex: number): number {
+  const bit =
+    MACHINE_MEMBERSHIP_BIT0 +
+    (Math.max(0, machineIndex) % MACHINE_MEMBERSHIP_BITS);
+  const membership = 1 << bit;
+  return (membership << 16) | (0xffff & ~membership);
+}
 export interface BodyMotionSnapshot {
   groupId: string;
   role: "chassis" | "hinge";
@@ -457,15 +469,20 @@ export class RapierPhysics {
     machineId: string;
   }[] = [];
   private jointConnectedBodies = new Set<string>();
+  private machineCollisionGroupById = new Map<string, number>();
   async load(
     project: Project,
     options: {
       courseId?: string | null;
       world?: WorldRuntime;
       ccdMode?: CcdExperimentMode;
-      /** 既定false（現行）。実験Eではtrueにして自己衝突を戻す。 */
+      /** 既定false。trueでJoint接続BodyのContactを有効化（診断用）。 */
       jointContactsEnabled?: boolean;
-      /** trueで同一機体Collider同士のcollisionGroups衝突を無効化（外界とは衝突継続）。 */
+      /**
+       * 同一機体Collider同士の衝突をcollisionGroupsで除外する。
+       * 既定true（air-stop対策）。falseで旧挙動を再現できる。
+       * 機体ごとに別membership bitを割り当て、機体間衝突は維持する。
+       */
       excludeMachineSelfCollision?: boolean;
     } = {},
   ) {
@@ -824,9 +841,19 @@ export class RapierPhysics {
         : undefined,
     );
     this.streamer.update(selectedCourse?.start ?? [0, 1, 0]);
+    // 既定で機体内自己衝突を除外する（CCD air-stop対策）。診断時のみ明示的にfalseへ。
+    const excludeMachineSelfCollision =
+      options.excludeMachineSelfCollision !== false;
+    let machineIndex = 0;
     for (const machine of project.machines) {
       const m = compileMachine(machine);
       if (!m.bodies.length) continue;
+      const collisionGroups = excludeMachineSelfCollision
+        ? machineCollisionGroups(machineIndex)
+        : undefined;
+      if (collisionGroups !== undefined)
+        this.machineCollisionGroupById.set(machine.id, collisionGroups);
+      machineIndex++;
       this.forceByMachine.set(machine.id, emptyForceAccumulator());
       const bodies = new Map<string, RAPIER.RigidBody>();
       const chassisGroupId = m.bodyForPart.get(
@@ -872,8 +899,8 @@ export class RapierPhysics {
                   quaternion([0, 0, Math.PI / 2]),
                 )
               : quaternion(p.transform.rotation);
-          if (options.excludeMachineSelfCollision)
-            desc.setCollisionGroups(MACHINE_COLLISION_GROUPS);
+          if (collisionGroups !== undefined)
+            desc.setCollisionGroups(collisionGroups);
           const collider = this.world.createCollider(
             desc
               .setTranslation(...q)
@@ -1599,6 +1626,20 @@ export class RapierPhysics {
       };
     });
   }
+  /** machineId → InteractionGroups。Origin Rebase後も不変であることを検証できる。 */
+  machineCollisionGroupsById(): Map<string, number> {
+    return new Map(this.machineCollisionGroupById);
+  }
+  /** 機体Colliderに実際に設定されたcollisionGroupsを収集する。 */
+  colliderCollisionGroupsByMachine(): Map<string, number[]> {
+    const byMachine = new Map<string, number[]>();
+    for (const entry of this.colliderRegistry) {
+      const groups = byMachine.get(entry.machineId) ?? [];
+      groups.push(entry.collider.collisionGroups());
+      byMachine.set(entry.machineId, groups);
+    }
+    return byMachine;
+  }
   private colliderEntry(collider: RAPIER.Collider) {
     return this.colliderRegistry.find(
       (entry) => entry.collider.handle === collider.handle,
@@ -2108,5 +2149,6 @@ export class RapierPhysics {
     this.bodyRegistry = [];
     this.colliderRegistry = [];
     this.jointConnectedBodies.clear();
+    this.machineCollisionGroupById.clear();
   }
 }

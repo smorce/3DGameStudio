@@ -13,7 +13,10 @@ import {
   starterCarTemplate,
   SUSPENSION_WHEEL_CLEARANCE_M,
 } from "../../packages/machine-system/src/index";
-import { RapierPhysics } from "../../packages/physics-rapier/src/index";
+import {
+  RapierPhysics,
+  machineCollisionGroups,
+} from "../../packages/physics-rapier/src/index";
 import { CommandBus } from "../../packages/command-system/src/index";
 import { saveProject, loadProject } from "../../packages/storage/src/index";
 import {
@@ -884,4 +887,226 @@ it("RollさせたBoatは浮力の復元Momentで水平へ戻る", async () => {
   physics.dispose();
   expect(endRoll).toBeLessThan(startRoll);
   expect(pose.position.every(Number.isFinite)).toBe(true);
+});
+
+function solidBlockMachine(
+  name: string,
+  position: [number, number, number],
+  opts: { size?: [number, number, number]; mass?: number } = {},
+) {
+  const machine = createMachine(name);
+  const block = createPart("Block", position);
+  block.physics.size = opts.size ?? [1, 1, 1];
+  block.physics.mass = opts.mass ?? 10;
+  block.physics.restitution = 0.2;
+  attachPart(machine, block);
+  return machine;
+}
+
+function machineChassisBody(physics: RapierPhysics, machineId: string) {
+  return physics.vehicles.find((vehicle) => vehicle.id === machineId)?.body;
+}
+
+it("machineCollisionGroupsは自機同士を除外し他機同士は衝突許可する", () => {
+  const a = machineCollisionGroups(0);
+  const b = machineCollisionGroups(1);
+  const membership = (groups: number) => groups >>> 16;
+  const filter = (groups: number) => groups & 0xffff;
+  expect(membership(a) & filter(a)).toBe(0);
+  expect(membership(b) & filter(b)).toBe(0);
+  expect(membership(a) & filter(b)).not.toBe(0);
+  expect(membership(b) & filter(a)).not.toBe(0);
+  expect(a).not.toBe(b);
+  expect(machineCollisionGroups(15)).toBe(machineCollisionGroups(0));
+});
+
+it("Starter Planeは高速垂直落下中にCCD air-stopしない", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  const startY = 200;
+  physics.world.bodies.forEach((body) => {
+    const translation = body.translation();
+    body.setTranslation(
+      { x: translation.x, y: startY, z: translation.z },
+      true,
+    );
+    body.setLinvel({ x: 0, y: -60, z: 0 }, true);
+    body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  });
+  const heights: number[] = [];
+  for (let i = 0; i < 120; i++) {
+    physics.step({ throttle: 0 });
+    heights.push(physics.vehicles[0].body.translation().y);
+  }
+  const heightDrop = heights[0] - heights[heights.length - 1];
+  // air-stop時は約5mしか落ちない。正常なら数秒で数十m落下する。
+  expect(heightDrop).toBeGreaterThan(30);
+  expect(heights[heights.length - 1]).toBeLessThan(170);
+  physics.dispose();
+});
+
+it("機体内自己衝突除外をOFFにすると高速落下でair-stopする", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project, { excludeMachineSelfCollision: false });
+  const startY = 200;
+  physics.world.bodies.forEach((body) => {
+    const translation = body.translation();
+    body.setTranslation(
+      { x: translation.x, y: startY, z: translation.z },
+      true,
+    );
+    body.setLinvel({ x: 0, y: -60, z: 0 }, true);
+    body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  });
+  const heights: number[] = [];
+  for (let i = 0; i < 120; i++) {
+    physics.step({ throttle: 0 });
+    heights.push(physics.vehicles[0].body.translation().y);
+  }
+  const heightDrop = heights[0] - heights[heights.length - 1];
+  expect(heightDrop).toBeLessThan(20);
+  physics.dispose();
+});
+
+it("高速水平衝突でもCCDで相手Machineをすり抜けない", async () => {
+  const project = emptyProject();
+  applyFiniteFlatWorld(project);
+  project.settings.gravity = [0, 0, 0];
+  // Part局所座標は原点付近にし、Body translationで配置する。
+  const wall = solidBlockMachine("wall", [0, 0, 0], {
+    size: [2, 2, 2],
+    mass: 2000,
+  });
+  const bullet = solidBlockMachine("bullet", [0, 0, 0], {
+    size: [0.5, 0.5, 0.5],
+    mass: 2,
+  });
+  project.machines.push(wall, bullet);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  const wallBody = machineChassisBody(physics, wall.id)!;
+  const bulletBody = machineChassisBody(physics, bullet.id)!;
+  wallBody.setTranslation({ x: 10, y: 2, z: 0 }, true);
+  wallBody.setLinvel({ x: 0, y: 0, z: 0 }, true);
+  wallBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  bulletBody.setTranslation({ x: 0, y: 2, z: 0 }, true);
+  bulletBody.setLinvel({ x: 80, y: 0, z: 0 }, true);
+  bulletBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  let maxBulletX = bulletBody.translation().x;
+  for (let i = 0; i < 60; i++) {
+    physics.step({ throttle: 0 });
+    maxBulletX = Math.max(maxBulletX, bulletBody.translation().x);
+  }
+  const wallX = wallBody.translation().x;
+  // すり抜けなら bullet は壁中心を大きく超える。CCD衝突なら壁手前で跳ね返る。
+  expect(maxBulletX).toBeLessThan(wallX);
+  expect(maxBulletX).toBeGreaterThan(5);
+  expect(bulletBody.translation().x).toBeLessThan(wallX);
+  physics.dispose();
+});
+
+it("別Machine同士はcollisionGroupsでも衝突する", async () => {
+  const project = emptyProject();
+  applyFiniteFlatWorld(project);
+  project.settings.gravity = [0, 0, 0];
+  const left = solidBlockMachine("left", [0, 0, 0], { mass: 20 });
+  const right = solidBlockMachine("right", [0, 0, 0], { mass: 20 });
+  project.machines.push(left, right);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  const groups = physics.machineCollisionGroupsById();
+  expect(groups.get(left.id)).toBeDefined();
+  expect(groups.get(right.id)).toBeDefined();
+  expect(groups.get(left.id)).not.toBe(groups.get(right.id));
+
+  const leftBody = machineChassisBody(physics, left.id)!;
+  const rightBody = machineChassisBody(physics, right.id)!;
+  leftBody.setTranslation({ x: -3, y: 2, z: 0 }, true);
+  rightBody.setTranslation({ x: 3, y: 2, z: 0 }, true);
+  leftBody.setLinvel({ x: 25, y: 0, z: 0 }, true);
+  rightBody.setLinvel({ x: -25, y: 0, z: 0 }, true);
+  for (let i = 0; i < 90; i++) physics.step({ throttle: 0 });
+  const leftX = leftBody.translation().x;
+  const rightX = rightBody.translation().x;
+  // 衝突しなければ交差して leftX > rightX になる。
+  expect(leftX).toBeLessThan(rightX);
+  expect(leftBody.linvel().x).toBeLessThan(20);
+  expect(rightBody.linvel().x).toBeGreaterThan(-20);
+  physics.dispose();
+});
+
+it("固定グループ方式だと別Machine同士が衝突しない（回帰防止）", async () => {
+  const project = emptyProject();
+  applyFiniteFlatWorld(project);
+  project.settings.gravity = [0, 0, 0];
+  const left = solidBlockMachine("left", [0, 0, 0], { mass: 20 });
+  const right = solidBlockMachine("right", [0, 0, 0], { mass: 20 });
+  project.machines.push(left, right);
+  const physics = new RapierPhysics();
+  await physics.load(project, { excludeMachineSelfCollision: false });
+  // 旧バグ再現: 全機に同じ「自己除外」グループを後から塗る。
+  const shared = machineCollisionGroups(0);
+  physics.world.bodies.forEach((body) => {
+    for (let i = 0; i < body.numColliders(); i++)
+      body.collider(i).setCollisionGroups(shared);
+  });
+  const leftBody = machineChassisBody(physics, left.id)!;
+  const rightBody = machineChassisBody(physics, right.id)!;
+  leftBody.setTranslation({ x: -3, y: 2, z: 0 }, true);
+  rightBody.setTranslation({ x: 3, y: 2, z: 0 }, true);
+  leftBody.setLinvel({ x: 25, y: 0, z: 0 }, true);
+  rightBody.setLinvel({ x: -25, y: 0, z: 0 }, true);
+  for (let i = 0; i < 90; i++) physics.step({ throttle: 0 });
+  expect(leftBody.translation().x).toBeGreaterThan(
+    rightBody.translation().x,
+  );
+  physics.dispose();
+});
+
+it("Origin Rebase後もMachine collisionGroupsは変化しない", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  const beforeMap = physics.machineCollisionGroupsById();
+  const beforeColliders = physics.colliderCollisionGroupsByMachine();
+  physics.shiftOrigin([128, 0, -64]);
+  expect([...physics.machineCollisionGroupsById()]).toEqual([
+    ...beforeMap,
+  ]);
+  expect([...physics.colliderCollisionGroupsByMachine()]).toEqual([
+    ...beforeColliders,
+  ]);
+  physics.dispose();
+});
+
+it("機体内自己衝突除外後もPlaneのHinge角度が制御できる", async () => {
+  const project = emptyProject(),
+    machine = planeTemplate();
+  applyFiniteFlatWorld(project);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  for (let i = 0; i < 30; i++) physics.step({ throttle: 0 });
+  for (let i = 0; i < 60; i++) physics.step({ throttle: 0, pitch: 1 });
+  const errors = physics.jointAnchorErrors();
+  const elevators = errors.filter((item) => item.id.includes("elevator"));
+  expect(elevators.length).toBeGreaterThan(0);
+  expect(
+    elevators.some((item) => Math.abs(item.relativeAngleRad) > 0.05),
+  ).toBe(true);
+  for (const item of errors)
+    expect(item.separationM).toBeLessThan(0.05);
+  physics.dispose();
 });

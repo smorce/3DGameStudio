@@ -5,7 +5,7 @@
 - Motorは明示的にHinge側へ固定接続された場合だけRevolute Jointを駆動します。未接続Motorの自動Wheel強化はありません。`motorTorque`（最大Torque）と`targetAngularVelocity`（目標角速度）は独立していますが、Rapier 0.19.3の公開Joint APIに最大Impulse設定がないため、速度誤差比例制御とBody A／Bへの等大反対向きTorqueで制限します。
 - `pnpm format:check` は作業指示・過去報告の原本を `.prettierignore` に除外したうえで、実装・テスト・現行文書を検査します。
 - 高速落下時の地形めり込みは、終端速度クランプ（80 m/s）とステップ後のめり込み復帰（車輪下端・Partコライダ最下点を地形高さと比較し、機体全体を持ち上げて下向き速度を消す）で防いでいます。地形の高さ場に基づく復帰のため、建物など地形以外の静的Colliderへの貫通は対象外です。
-- 翼を持つ機体が非常に高速（約50 m/s超）で垂直落下すると、既存のCCD（全Bodyで有効）が空中で降下を強くクランプする「air-stop」が発生することを確認済みです（CCD無効時は再現しない）。埋まりは発生しないため実害は限定的ですが、根本原因（巨大な空力とCCDの相互作用が疑い）は未特定です。
+- 翼付き機体の高速落下で起きていたCCD「air-stop」は、同一機体の別RigidBody Collider同士をCCDが衝突候補にしていたことが原因です。本番ではMachineごとに異なる`collisionGroups`を割り当て、自機内部だけ衝突（とCCD予測）を除外します。地形・他Machineとの衝突とCCDは維持します。membership/filterは各16bitのため同時ユニーク割当は最大15機で、超過時はbitを周回再利用します（将来はPhysics Hookへ移行予定）。
 
 # 現在の制約
 

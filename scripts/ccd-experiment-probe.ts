@@ -81,13 +81,13 @@ const modeMap: Record<ExperimentMode, ExperimentConfig> = {
     ccdMode: "all",
     jointContactsEnabled: false,
     excludeMachineSelfCollision: true,
-    note: "H: 全CCD ON + Joint Contact OFF + Machine-wide self collision OFF",
+    note: "H: 全CCD ON + Joint Contact OFF + Machine別collisionGroups（本番候補）",
   },
   i: {
     ccdMode: "chassis-only",
     jointContactsEnabled: false,
     excludeMachineSelfCollision: true,
-    note: "I: 胴体CCDのみ + Joint Contact OFF + Machine-wide self collision OFF",
+    note: "I: 胴体CCDのみ + Joint Contact OFF + Machine別collisionGroups",
   },
 };
 
