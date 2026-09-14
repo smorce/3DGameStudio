@@ -1,18 +1,18 @@
 {
   "label": "turn",
-  "gitHead": "e5946f4f28795324a4cef09306b4374833087537",
+  "gitHead": "e4a9c98196d3db5b8c95505c0820e47ce25eac76",
   "branch": "perf/async-world-streaming-frame-budget",
-  "workingTreeDirty": true,
-  "capturedAt": "2026-09-14T01:09:17.759Z",
+  "workingTreeDirty": false,
+  "capturedAt": "2026-09-14T01:20:05.573Z",
   "probeNotes": {
     "forceSyncWorkers": true,
     "reason": "Node has no Dedicated Worker for Vite worker-entry URL"
   },
   "frame": {
-    "p50Ms": 1.886869000000047,
-    "p95Ms": 2.5305140000000392,
-    "p99Ms": 3.1736849999999777,
-    "maxMs": 26.21009399999997,
+    "p50Ms": 1.847541000000092,
+    "p95Ms": 2.511825999999985,
+    "p99Ms": 3.196613999999954,
+    "maxMs": 25.717636999999996,
     "over16_7": 1,
     "over33_3": 0,
     "over50": 0,
@@ -36,8 +36,8 @@
     "worldRuntimeSyncFallbackCount": 0,
     "maxQueueLength": 38,
     "maxReadyQueueLength": 32,
-    "maxWorkerGenerationMs": 0.8442129999999679,
-    "maxCommitMs": 0.09336800000005496,
+    "maxWorkerGenerationMs": 1.0481450000000052,
+    "maxCommitMs": 0.08890100000007806,
     "preparedVertexCount": 1089,
     "preparedHasNormals": true
   },
