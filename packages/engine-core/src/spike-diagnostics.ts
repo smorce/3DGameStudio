@@ -113,10 +113,10 @@ export interface SpikeEnvironmentSnapshot {
   gpuFrameMaxSample?: { gpuMs: number; frame: number; timeMs: number };
   /** 直近の時刻付き GPU サンプル（新しい順・最大48）。 */
   recentGpuSamples: { gpuMs: number; frame: number; timeMs: number }[];
-  /** PLAY 前 Shader Prewarm を実行したか（A/B）。 */
-  shaderPrewarmEnabled: boolean;
-  shaderPrewarmMs: number;
-  shaderPrewarmDeferredCount: number;
+  /** PLAY 開始前の描画準備を実行したか（A/B・回帰用）。 */
+  playRenderPrewarmEnabled: boolean;
+  playRenderPrewarmMs: number;
+  playRenderPrewarmDeferredCount: number;
 }
 
 export interface SpikeDiagnosticsDump {

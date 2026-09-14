@@ -1,0 +1,78 @@
+{
+  "note": "preparePlayRendering 多回 A/B（RTX 4090）。off=disable, on=Production既定。判定: ONでspikes>20が毎回0、prewarmMsが極端増なし、3機体OK",
+  "generatedAt": "2026-09-14T08:45:06.840Z",
+  "webgl": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "runsPerCell": 5,
+  "criteria": {
+    "onSpikes20AlwaysZero": true,
+    "prewarmMsNotExtreme": true,
+    "machinesCovered": [
+      "plane",
+      "car",
+      "boat"
+    ]
+  },
+  "byMachine": {
+    "plane": {
+      "off": {
+        "n": 5,
+        "spikes20Sum": 3,
+        "spikes20Max": 1,
+        "maxRenderMax": 26.3,
+        "maxRenderAvg": 25.42,
+        "prewarmMsMax": 0
+      },
+      "on": {
+        "n": 5,
+        "spikes20Sum": 0,
+        "spikes20Max": 0,
+        "maxRenderMax": 16.6,
+        "maxRenderAvg": 11.08,
+        "prewarmMsMax": 27.5,
+        "prewarmMsAvg": 25.46,
+        "deferred": 4
+      }
+    },
+    "car": {
+      "off": {
+        "n": 5,
+        "spikes20Sum": 2,
+        "spikes20Max": 1,
+        "maxRenderMax": 27.8,
+        "maxRenderAvg": 23.96,
+        "prewarmMsMax": 0
+      },
+      "on": {
+        "n": 5,
+        "spikes20Sum": 0,
+        "spikes20Max": 0,
+        "maxRenderMax": 6.8,
+        "maxRenderAvg": 4.64,
+        "prewarmMsMax": 22.5,
+        "prewarmMsAvg": 20.26,
+        "deferred": 0
+      }
+    },
+    "boat": {
+      "off": {
+        "n": 5,
+        "spikes20Sum": 5,
+        "spikes20Max": 1,
+        "maxRenderMax": 44.7,
+        "maxRenderAvg": 34.9,
+        "prewarmMsMax": 0
+      },
+      "on": {
+        "n": 5,
+        "spikes20Sum": 0,
+        "spikes20Max": 0,
+        "maxRenderMax": 12.4,
+        "maxRenderAvg": 11.64,
+        "prewarmMsMax": 31.7,
+        "prewarmMsAvg": 20.58,
+        "deferred": 4
+      }
+    }
+  },
+  "verdict": "CLOSE: ON は3機体×5回すべて spikes>20=0。prewarmMs は 16–32ms 程度で準備フェーズに留まる。OFF は毎回 frame1 付近で 22–45ms の初回描画コストが出る。"
+}

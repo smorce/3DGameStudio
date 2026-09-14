@@ -177,10 +177,10 @@ export class Engine {
    */
   originRebaseEnabled = true;
   /**
-   * 診断用 A/B。true で PLAY 直前に Thruster炎等を compileAsync + 1描画で Prewarm する。
-   * Production 既定は false。
+   * 診断用 A/B。false にすると PLAY 前の preparePlayRendering をスキップする。
+   * Production 既定は true（標準動作）。
    */
-  shaderPrewarmEnabled = false;
+  playRenderPrewarmEnabled = true;
   /** PLAY 診断用の連番フレーム（GPU Query 紐付け用）。 */
   private playFrameIndex = 0;
   /** 直前フレームで推力表示がアクティブだったか（初スロットル検出）。 */
@@ -294,22 +294,18 @@ export class Engine {
     });
     this.renderer.setEditMachineLift(false);
     if (this.course) this.physics.respawn(this.course.course.start);
-    if (this.shaderPrewarmEnabled) {
-      await this.renderer.prewarmDeferredVisuals();
+    const playState = this.physics.renderState();
+    if (this.playRenderPrewarmEnabled) {
+      await this.renderer.preparePlayRendering({ state: playState });
       if (this.disposed || ticket !== this.ticket) return;
     } else {
-      this.renderer.lastShaderPrewarm = {
+      this.renderer.lastPlayRenderPrewarm = {
         enabled: false,
         ms: 0,
         deferredCount: 0,
       };
     }
-    world.setPlayHotPath(true);
-    this.mode = "PLAY";
-    this.accumulator = 0;
-    this.previousRenderState = undefined;
-    this.currentRenderState = undefined;
-    this.interpolationAlpha = 1;
+    // Prewarm 後に計測をリセットし、Gameplay の最初の RAF から測る。
     this.frameProfiler.reset();
     this.resetSpikeDiagnostics();
     this.turnMotionDiagnostics.reset();
@@ -318,6 +314,16 @@ export class Engine {
       !this.renderer.useDampedCameraFollow,
     );
     this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
+    const lead =
+      playState.poses.values().next().value?.position ??
+      this.physics.poses().values().next().value?.position;
+    if (lead) this.renderer.snapCameraFollow(lead);
+    world.setPlayHotPath(true);
+    this.mode = "PLAY";
+    this.accumulator = 0;
+    this.previousRenderState = undefined;
+    this.currentRenderState = undefined;
+    this.interpolationAlpha = 1;
   }
   /** 診断カウンタとリングを PLAY 開始時にリセットする。 */
   resetSpikeDiagnostics() {
@@ -721,10 +727,11 @@ export class Engine {
       recentLongAnimationFrames: longFrames,
       ...renderEnv,
       recentGpuSamples: renderEnv.recentGpuSamples ?? [],
-      shaderPrewarmEnabled:
-        renderEnv.shaderPrewarmEnabled ?? this.shaderPrewarmEnabled,
-      shaderPrewarmMs: renderEnv.shaderPrewarmMs ?? 0,
-      shaderPrewarmDeferredCount: renderEnv.shaderPrewarmDeferredCount ?? 0,
+      playRenderPrewarmEnabled:
+        renderEnv.playRenderPrewarmEnabled ?? this.playRenderPrewarmEnabled,
+      playRenderPrewarmMs: renderEnv.playRenderPrewarmMs ?? 0,
+      playRenderPrewarmDeferredCount:
+        renderEnv.playRenderPrewarmDeferredCount ?? 0,
     };
   }
   get position(): Vec3 {

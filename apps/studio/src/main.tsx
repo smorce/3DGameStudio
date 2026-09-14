@@ -58,7 +58,8 @@ function spikeEvidenceLabelFromQuery(search = location.search) {
   if (params.get("disableShadow") === "1") parts.push("shadow-off");
   if (params.get("pixelRatio") === "1") parts.push("dpr1");
   if (params.get("disableRebase") === "1") parts.push("disable-rebase");
-  if (params.get("prewarmShaders") === "1") parts.push("prewarm-shaders");
+  if (params.get("disablePlayRenderPrewarm") === "1")
+    parts.push("no-play-prewarm");
   return parts.length ? parts.join("-") : "baseline";
 }
 
@@ -287,8 +288,9 @@ function App() {
       shadows: params.get("disableShadow") !== "1",
       maxPixelRatio: params.get("pixelRatio") === "1" ? 1 : 2,
     });
-    // Thruster炎初回表示の Shader Compile Stall 切り分け A/B。恒久設定ではない。
-    e.shaderPrewarmEnabled = params.get("prewarmShaders") === "1";
+    // PLAY 前描画準備は標準 ON。?disablePlayRenderPrewarm=1 で A/B 比較用に無効化。
+    e.playRenderPrewarmEnabled =
+      params.get("disablePlayRenderPrewarm") !== "1";
     // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
     e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
     // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。回帰比較用。既定OFF、?cameraToggle=1 で有効。
@@ -299,6 +301,7 @@ function App() {
         __exportSpikeDiagnostics?: (label?: string) => ReturnType<
           Engine["exportSpikeDiagnostics"]
         >;
+        __setPlayRenderPrewarmEnabled?: (enabled: boolean) => boolean;
         __saveSpikeEvidence?: (label?: string) => Promise<{
           path: string;
           summaryUpdated: boolean;
@@ -314,6 +317,21 @@ function App() {
       console.info("[spike-diagnostics]", dump);
       void saveSpikeEvidenceToServer(e, label);
       return dump;
+    };
+    (
+      window as unknown as {
+        __peekSpikeDiagnostics?: () => ReturnType<
+          Engine["exportSpikeDiagnostics"]
+        >;
+      }
+    ).__peekSpikeDiagnostics = () => e.exportSpikeDiagnostics();
+    (
+      window as unknown as {
+        __setPlayRenderPrewarmEnabled?: (enabled: boolean) => boolean;
+      }
+    ).__setPlayRenderPrewarmEnabled = (enabled: boolean) => {
+      e.playRenderPrewarmEnabled = enabled;
+      return e.playRenderPrewarmEnabled;
     };
     (
       window as unknown as {
@@ -644,7 +662,7 @@ function App() {
             const spikeQuery =
               params.get("disableShadow") === "1" ||
               params.get("pixelRatio") === "1" ||
-              params.get("prewarmShaders") === "1" ||
+              params.get("disablePlayRenderPrewarm") === "1" ||
               params.get("spikeEvidence") === "1";
             const cameraToggle = params.get("cameraToggle") === "1";
             const lines: string[] = [];

@@ -172,8 +172,8 @@ export class ThreeRenderer implements RendererAdapter {
   /** 診断 A/B 用。既定は min(DPR, 2)。 */
   private maxPixelRatio = 2;
   private antialiasEnabled = true;
-  /** PLAY 前 Shader Prewarm の結果（診断 dump 用）。 */
-  lastShaderPrewarm = { enabled: false, ms: 0, deferredCount: 0 };
+  /** PLAY 開始前の描画準備結果（診断 dump 用）。 */
+  lastPlayRenderPrewarm = { enabled: false, ms: 0, deferredCount: 0 };
   /** Motion 診断 A/B（Production 既定は両方 false）。 */
   disableRotationInterpolation = false;
   /**
@@ -531,9 +531,9 @@ export class ThreeRenderer implements RendererAdapter {
       gpuFrameLastMs: gpu.lastMs,
       gpuFrameMaxSample: gpu.maxSample,
       recentGpuSamples: gpu.recentSamples.slice(0, 48),
-      shaderPrewarmEnabled: this.lastShaderPrewarm.enabled,
-      shaderPrewarmMs: this.lastShaderPrewarm.ms,
-      shaderPrewarmDeferredCount: this.lastShaderPrewarm.deferredCount,
+      playRenderPrewarmEnabled: this.lastPlayRenderPrewarm.enabled,
+      playRenderPrewarmMs: this.lastPlayRenderPrewarm.ms,
+      playRenderPrewarmDeferredCount: this.lastPlayRenderPrewarm.deferredCount,
     };
   }
 
@@ -547,14 +547,13 @@ export class ThreeRenderer implements RendererAdapter {
   }
 
   /**
-   * PLAY 直前の Shader / 遅延表示物 Prewarm。
-   * Thruster 炎・Motor indicator など通常は visible=false の物を一時表示し、
-   * compileAsync + 1回 render で初回コンパイル／バッファ転送を済ませる。
+   * PLAY 直前の描画準備。Shader Compile だけでなく、遅延表示物を一時表示して
+   * 1回描画し、Geometry/Buffer 等の初回 GPU 準備も済ませる。
+   * Gameplay の最初の RAF から ~20–30ms Stall を避けるための準備フェーズ。
    */
-  async prewarmDeferredVisuals(): Promise<{
-    ms: number;
-    deferredCount: number;
-  }> {
+  async preparePlayRendering(options: {
+    state?: PhysicsRenderState;
+  } = {}): Promise<{ ms: number; deferredCount: number }> {
     const started = performance.now();
     const deferred: THREE.Object3D[] = [];
     this.root.traverse((object) => {
@@ -567,15 +566,33 @@ export class ThreeRenderer implements RendererAdapter {
     });
     const previous = deferred.map((object) => object.visible);
     for (const object of deferred) object.visible = true;
+    // 推力表示スケールも本番初回に近い状態へ。
+    this.parts.forEach((visual) => {
+      updateThrusterFlame(visual, 1);
+      updateMotorActivity(visual, 1);
+    });
     try {
+      const poses = options.state?.poses;
+      if (poses) {
+        if (this.editWorkspace) {
+          this.editWorkspace = false;
+          this.applyEditWorkspaceVisuals();
+        }
+        for (const [id, pose] of poses) {
+          const mesh = this.parts.get(id);
+          if (!mesh) continue;
+          mesh.position.fromArray(pose.position);
+          mesh.quaternion.fromArray(pose.rotation);
+        }
+        const first = poses.values().next().value;
+        if (first) this.snapCameraFollow(first.position);
+      }
       await this.renderer.compileAsync(this.scene, this.camera);
-      // compileAsync は Shader まで。Geometry/Buffer 初回転送も温めるため1回描画する。
       this.renderer.render(this.scene, this.camera);
     } finally {
       deferred.forEach((object, index) => {
         object.visible = previous[index] ?? false;
       });
-      // 炎スケール等を推力0の見た目へ戻す。
       this.parts.forEach((visual) => {
         updateThrusterFlame(visual, 0);
         updateMotorActivity(visual, 0);
@@ -585,7 +602,7 @@ export class ThreeRenderer implements RendererAdapter {
       ms: performance.now() - started,
       deferredCount: deferred.length,
     };
-    this.lastShaderPrewarm = { enabled: true, ...result };
+    this.lastPlayRenderPrewarm = { enabled: true, ...result };
     return result;
   }
   private mesh(geometry: THREE.BufferGeometry, color: string) {

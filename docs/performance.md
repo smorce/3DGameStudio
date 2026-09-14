@@ -44,10 +44,42 @@ StatsにはFPS、Draw Calls、Triangles、Loaded Chunks、Physics Chunks、Colli
 
 Textureメモリは共有Textureを一度だけ数え、画像寸法×RGBA8×Mip係数で見積もります。圧縮GLBのbytesとは区別し、GPU実測値ではありません。quality／balanced／performanceの予算は`asset-core/src/profiles.ts`で設定します。超過時はStatsに項目数を表示し、保存ライブラリーの容量だけを理由にRuntime予算を超過扱いにしません。
 
+## PLAY 描画準備（preparePlayRendering）
+
+PLAY 開始直後の単発 Frame Spike（約20–30ms）の主因は、特定 Part ではなく **PLAY 用 Scene の最初の本格的な WebGL 描画に伴う GPU/Driver 側の準備コスト**です。Shader Compile 単体でも Buffer 転送単体でもなく、初回描画にまとまって現れます。
+
+対策として `ThreeRenderer.preparePlayRendering()` を PLAY 開始処理の標準動作にしています。
+
+順序の要点:
+
+1. Physics / Renderer の PLAY 状態を構築する
+2. 遅延表示物（Thruster 炎・Motor indicator など）を一時的に描画対象へ含める
+3. `compileAsync` と 1 回の実描画で GPU 側を温める
+4. Profiler / GPU Timer をリセットし、Camera snap のあと Physics を開始する
+
+これにより約27ms級のコストは Gameplay の最初の RAF から消え、PLAY ボタン後の準備フェーズへ移ります。無効化して回帰比較するときだけ `?disablePlayRenderPrewarm=1` を使います。多回 A/B は [evidence/play-render-prewarm-bench.json](evidence/play-render-prewarm-bench.json) を参照してください。
+
+### 今後の注意（動的追加 Material）
+
+`WebGLRenderer.compileAsync(scene, camera)` は **呼び出した時点で Scene に含まれる Material** だけを事前コンパイルします。したがって次のようなケースでは、PLAY 開始時の `preparePlayRendering()` だけでは足りません。
+
+- PLAY 中に GLTF / GLB を後からロードして Scene へ追加する
+- 新しい Material・透明 Material・特殊 Shader を実行時に生成して初めて描画する
+- LOD 切替や Streaming Commit で、準備時点に存在しなかった Geometry / Material が初めて描かれる
+
+これらは **追加したタイミングで別途温める**必要があります。例:
+
+1. 新規 Object を Scene に載せ、初回表示前に必要な Mesh を一時的に描画対象へ含める
+2. `await renderer.compileAsync(scene, camera)`（または追加分だけを対象にした compile）
+3. 必要なら 1 回描画して Buffer 等も温める
+4. 見た目の visible 状態を戻してから通常の Gameplay 描画へ戻す
+
+温めていないまま初めて描くと、PLAY 開始時と同じ種類の単発 Stall が再発し得ます。
+
 ## 残る性能上の制約
 
 InstancingのCullingとLODはチャンク内の素材Batch単位です。EntityごとのCullingより三角形数が増える画角があります。今回の主な効果はDraw Call削減と遠方Collider解放であり、すべてのGPU指標が改善したという結果ではありません。
 
-Project格子、CPU索引、配置済み素材のCollider SourceはCPUメモリに保持します。スキン／Morph等は通常描画へ戻ります。実GPU、モバイル、長時間走行、大量の異なる素材、Origin Rebasingは今回の検証範囲外です。
+Project格子、CPU索引、配置済み素材のCollider SourceはCPUメモリに保持します。スキン／Morph等は通常描画へ戻ります。実GPU、モバイル、長時間走行、大量の異なる素材、Origin Rebasingは今回の検証範囲外です。動的に追加する Material / GLTF の初回描画コストは上記「PLAY 描画準備」節を参照してください。
 
 `pnpm build && node scripts/world-benchmark.mjs after`で描画比較のAfterを再測定できます。元の5個の外部岩の参考測定は`evidence/performance.json`に履歴として残しています。

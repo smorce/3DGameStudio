@@ -113,8 +113,8 @@ async function main() {
   console.log(`browser: ${chromePath ?? "playwright-chromium"}`);
   try {
     for (const [label, query] of [
-      ["prewarm-a", ""],
-      ["prewarm-b", "?prewarmShaders=1"],
+      ["prewarm-a", "?disablePlayRenderPrewarm=1"],
+      ["prewarm-b", ""],
     ] as const) {
       const page = await browser.newPage();
       page.on("dialog", async (dialog) => {

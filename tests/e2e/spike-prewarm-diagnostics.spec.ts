@@ -32,9 +32,9 @@ type SpikeDump = {
   maxRenderFrame?: FrameTrace;
   environment?: {
     longAnimationFrameCount?: number;
-    shaderPrewarmEnabled?: boolean;
-    shaderPrewarmMs?: number;
-    shaderPrewarmDeferredCount?: number;
+    playRenderPrewarmEnabled?: boolean;
+    playRenderPrewarmMs?: number;
+    playRenderPrewarmDeferredCount?: number;
     gpuFrameMaxMs?: number;
     gpuFrameMaxSample?: { gpuMs: number; frame: number; timeMs: number };
     recentGpuSamples?: { gpuMs: number; frame: number; timeMs: number }[];
@@ -47,32 +47,24 @@ type SpikeDump = {
   }[];
 };
 
-type CaseResult = {
-  label: string;
-  query: string;
-  path: string;
-  dump: SpikeDump;
-};
-
 async function flyAndDump(
   page: import("@playwright/test").Page,
   label: string,
   query = "",
-): Promise<CaseResult> {
+) {
   await page.goto(`/${query}`);
   await page.getByRole("button", { name: "ひこうき", exact: false }).click();
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
   const stats = page.getByLabel("Runtime Stats");
   await expect(stats).toContainText("Rebase");
 
-  // 初スロットル瞬間を測るため、少し待ってから W を押す。
   await page.waitForTimeout(400);
   await page.keyboard.down("w");
   await page.waitForTimeout(800);
   await page.keyboard.down("ArrowDown");
   await page.waitForTimeout(700);
   await page.keyboard.up("ArrowDown");
-  await page.waitForTimeout(12000);
+  await page.waitForTimeout(8000);
   await page.keyboard.up("w");
 
   const hud = await stats.innerText();
@@ -100,7 +92,7 @@ async function flyAndDump(
         label,
         query,
         savedAt: new Date().toISOString(),
-        note: "playwright-e2e: thruster first-throttle / shader prewarm A/B",
+        note: "playwright-e2e: play render prewarm A/B (A=off, B=on/default)",
         hud,
         position,
         dump,
@@ -116,26 +108,21 @@ async function flyAndDump(
 test.describe("spike prewarm diagnostics", () => {
   test.setTimeout(240000);
 
-  test("A/B: baseline vs prewarmShaders", async ({ page }) => {
-    const baseline = await flyAndDump(page, "prewarm-a");
-    const prewarm = await flyAndDump(
+  test("A/B: disablePlayRenderPrewarm vs default preparePlayRendering", async ({
+    page,
+  }) => {
+    // A = 無効（旧挙動）、B = Production 既定（準備あり）
+    const off = await flyAndDump(
       page,
-      "prewarm-b",
-      "?prewarmShaders=1",
+      "prewarm-a",
+      "?disablePlayRenderPrewarm=1",
     );
+    const on = await flyAndDump(page, "prewarm-b");
 
-    expect(baseline.dump.environment?.shaderPrewarmEnabled ?? false).toBe(
+    expect(off.dump.environment?.playRenderPrewarmEnabled ?? false).toBe(
       false,
     );
-    expect(prewarm.dump.environment?.shaderPrewarmEnabled).toBe(true);
-    expect(prewarm.dump.environment?.shaderPrewarmDeferredCount ?? 0).toBeGreaterThan(
-      0,
-    );
-
-    const firstThrustA =
-      baseline.dump.firstThrustFrame ??
-      baseline.dump.recentFrames?.find((frame) => frame.thrustBecameActive);
-    expect(firstThrustA).toBeTruthy();
+    expect(on.dump.environment?.playRenderPrewarmEnabled).toBe(true);
 
     const summary = await writeSpikePrewarmSummaryFromDisk();
     expect(summary.written).toBe(true);

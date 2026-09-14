@@ -1,5 +1,6 @@
 /**
  * spike-flight-prewarm-a/b.json を読み、初スロットルと Render Stall の対応を要約する。
+ * A = disablePlayRenderPrewarm、B = Production 既定（preparePlayRendering ON）
  */
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -48,9 +49,9 @@ type SpikeDump = {
   environment?: {
     longAnimationFrameCount?: number;
     recentLongAnimationFrames?: { durationMs: number; startTime: number }[];
-    shaderPrewarmEnabled?: boolean;
-    shaderPrewarmMs?: number;
-    shaderPrewarmDeferredCount?: number;
+    playRenderPrewarmEnabled?: boolean;
+    playRenderPrewarmMs?: number;
+    playRenderPrewarmDeferredCount?: number;
     gpuFrameMaxMs?: number;
     gpuFrameMaxSample?: GpuSample;
     recentGpuSamples?: GpuSample[];
@@ -111,7 +112,6 @@ function analyzeCase(relativePath: string, file: EvidenceFile) {
       ? [dump.maxRenderFrame]
       : []),
   ]
-    // 同一 frame の重複を除く
     .filter(
       (frame, index, all) =>
         all.findIndex(
@@ -165,10 +165,17 @@ function analyzeCase(relativePath: string, file: EvidenceFile) {
     p95: dump.frameP95Ms ?? 0,
     maxMs: dump.frameMaxMs ?? 0,
     longAnimationFrameCount: dump.environment?.longAnimationFrameCount ?? 0,
-    shaderPrewarmEnabled: Boolean(dump.environment?.shaderPrewarmEnabled),
-    shaderPrewarmMs: dump.environment?.shaderPrewarmMs ?? 0,
+    playRenderPrewarmEnabled: Boolean(
+      dump.environment?.playRenderPrewarmEnabled,
+    ),
+    playRenderPrewarmMs: dump.environment?.playRenderPrewarmMs ?? 0,
+    playRenderPrewarmDeferredCount:
+      dump.environment?.playRenderPrewarmDeferredCount ?? 0,
+    // 旧フィールド名互換
+    shaderPrewarmEnabled: Boolean(dump.environment?.playRenderPrewarmEnabled),
+    shaderPrewarmMs: dump.environment?.playRenderPrewarmMs ?? 0,
     shaderPrewarmDeferredCount:
-      dump.environment?.shaderPrewarmDeferredCount ?? 0,
+      dump.environment?.playRenderPrewarmDeferredCount ?? 0,
     webglRenderer: dump.environment?.webglRenderer,
     gpuMax: dump.environment?.gpuFrameMaxMs ?? 0,
     gpuMaxSample: dump.environment?.gpuFrameMaxSample,
@@ -272,20 +279,20 @@ export async function writeSpikePrewarmSummaryFromDisk(
     const aFirstRender = a.firstThrust?.renderMs ?? Infinity;
     const bFirstRender = b.firstThrust?.renderMs ?? Infinity;
     if (a.spikes[0] > 0 && b.spikes.every((n) => n === 0) && bMaxRender < 15)
-      return "prewarm removed early RAF spikes and kept PLAY render under 15ms — first-use WebGL init is likely";
+      return "preparePlayRendering removed early RAF spikes — first-use WebGL init moved before PLAY";
     if (aHeavy > 0 && bHeavy === 0)
-      return "prewarm eliminated >20ms render stalls — first-use WebGL init is likely";
+      return "preparePlayRendering eliminated >20ms render stalls — first-use WebGL init is likely";
     if (aFirstRender > 15 && bFirstRender < 5)
-      return "first-throttle render cost dropped after prewarm — shader/buffer first-use likely";
-    if (aMaxRender > 20 && bMaxRender < 15 && b.shaderPrewarmEnabled)
-      return "max PLAY render dropped after prewarm — cost moved to prewarmMs";
+      return "first-throttle render cost dropped after prepare — shader/buffer first-use likely";
+    if (aMaxRender > 20 && bMaxRender < 15 && b.playRenderPrewarmEnabled)
+      return "max PLAY render dropped after prepare — cost moved to playRenderPrewarmMs";
     if (aHeavy > 0 && bHeavy > 0)
-      return "prewarm did not remove render stalls — investigate buffer upload / driver sync beyond compileAsync";
+      return "prepare did not remove render stalls — investigate further GPU sync";
     return "inconclusive — compare firstThrust and heavyRenders manually";
   })();
 
   const summary = {
-    note: "Thruster初スロットル / Shader Prewarm A/B。ディスク上の prewarm-a/b からのみ生成。",
+    note: "PLAY描画準備 A/B。A=disablePlayRenderPrewarm、B=Production既定。ディスク上の prewarm-a/b からのみ生成。",
     generatedAt: new Date().toISOString(),
     verdict,
     a,
