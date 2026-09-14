@@ -7,6 +7,9 @@ import { planeTemplate } from "../../packages/machine-system/src/index";
 import { createStarterWorld } from "../../packages/world-system/src/index";
 import {
   buildRunSummary,
+  createObservationManifest,
+  createRunId,
+  hashScenarioDefinition,
   requireObservationScenario,
   type MachineTelemetrySample,
   type ObservationRunManifest,
@@ -85,8 +88,11 @@ function keysForControls(controls: Record<string, number>) {
   return keys;
 }
 
+type AgentPage = import("@playwright/test").Page;
+
+/** Wall clock ではなく Physics Step 境界で入力を切り替える。 */
 async function playTimeline(
-  page: import("@playwright/test").Page,
+  page: AgentPage,
   scenario: ReturnType<typeof requireObservationScenario>,
 ) {
   const pressed = new Set<string>();
@@ -102,11 +108,83 @@ async function playTimeline(
         await page.keyboard.down(key);
         pressed.add(key);
       }
-    await page.waitForTimeout(
-      Math.max(1, ((segment.toStep - segment.fromStep) / 60) * 1000),
+    const stepBudgetMs = Math.max(
+      60_000,
+      ((segment.toStep - segment.fromStep) / 60) * 1000 * 4,
+    );
+    await page.waitForFunction(
+      (toStep) => {
+        const agent = (
+          window as unknown as {
+            __MACHINE_STUDIO_AGENT__?: {
+              getPhysicsStep?: () => number;
+              getState?: () => { machine?: { physicsStep?: number | null } };
+            };
+          }
+        ).__MACHINE_STUDIO_AGENT__;
+        const step =
+          agent?.getPhysicsStep?.() ??
+          agent?.getState?.()?.machine?.physicsStep ??
+          0;
+        return step >= toStep;
+      },
+      segment.toStep,
+      { timeout: stepBudgetMs },
     );
   }
   for (const key of pressed) await page.keyboard.up(key);
+}
+
+function attachBrowserErrorListeners(page: AgentPage) {
+  page.on("pageerror", (error) => {
+    void page
+      .evaluate(
+        (payload) => {
+          const agent = (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__?: {
+                recordBrowserError?: (
+                  name: string,
+                  message: string,
+                  detail?: Record<string, unknown>,
+                ) => unknown;
+              };
+            }
+          ).__MACHINE_STUDIO_AGENT__;
+          agent?.recordBrowserError?.("browser.pageerror", payload.message, {
+            stack: payload.stack,
+          });
+        },
+        { message: error.message, stack: error.stack ?? null },
+      )
+      .catch(() => undefined);
+  });
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    void page
+      .evaluate(
+        (payload) => {
+          const agent = (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__?: {
+                recordBrowserError?: (
+                  name: string,
+                  message: string,
+                  detail?: Record<string, unknown>,
+                ) => unknown;
+              };
+            }
+          ).__MACHINE_STUDIO_AGENT__;
+          agent?.recordBrowserError?.(
+            "browser.console_error",
+            payload.text,
+            { type: payload.type },
+          );
+        },
+        { text: message.text(), type: message.type() },
+      )
+      .catch(() => undefined);
+  });
 }
 
 function browserAssertionContext(
@@ -200,6 +278,91 @@ function browserAssertionContext(
   };
 }
 
+async function saveErrorRun(input: {
+  scenarioId: string;
+  seed: number;
+  scenarioDefinitionHash: string;
+  app: BrowserApp;
+  viewport: [number, number];
+  devicePixelRatio: number;
+  runId: string;
+  started: number;
+  events: readonly TelemetryEvent[];
+  screenshot?: Buffer;
+  trace?: Buffer;
+  error: unknown;
+}): Promise<ObservationRunResult> {
+  const durationMs = performance.now() - input.started;
+  const message =
+    input.error instanceof Error ? input.error.message : String(input.error);
+  const events = [...input.events];
+  if (
+    !events.some(
+      (event) =>
+        event.name === "browser.uncaught_error" ||
+        event.name === "browser.pageerror",
+    )
+  ) {
+    events.push({
+      schemaVersion: 1,
+      runId: input.runId,
+      scenarioId: input.scenarioId,
+      timestampMs: performance.now(),
+      source: "browser",
+      type: "event",
+      name: "browser.uncaught_error",
+      data: {
+        message,
+        fingerprint: message,
+        duplicateIndex: 0,
+      },
+    });
+  }
+  const manifest: ObservationRunManifest = {
+    ...createObservationManifest({
+      scenarioId: input.scenarioId,
+      seed: input.seed,
+      scenarioDefinitionHash: input.scenarioDefinitionHash,
+      mode: "browser",
+      app: input.app,
+      viewport: input.viewport,
+      devicePixelRatio: input.devicePixelRatio,
+      runId: input.runId,
+    }),
+    gitCommit: git("git rev-parse HEAD"),
+    gitBranch: git("git branch --show-current"),
+    workingTreeDirty: git("git status --porcelain") !== "",
+    completedAt: new Date().toISOString(),
+    result: "error",
+    durationMs,
+  };
+  const summary = buildRunSummary({
+    runId: input.runId,
+    scenarioId: input.scenarioId,
+    result: "error",
+    durationMs,
+    events,
+  });
+  const artifacts: Record<string, Uint8Array | string> = {};
+  if (input.screenshot) artifacts["screenshots/error.png"] = input.screenshot;
+  if (input.trace) artifacts["playwright/trace.zip"] = input.trace;
+  const dir = await writeObservationRun({
+    manifest,
+    events,
+    summary,
+    artifacts,
+  });
+  return {
+    runId: input.runId,
+    scenario: input.scenarioId,
+    result: "error",
+    durationMs,
+    summaryPath: `${dir}/summary.json`,
+    artifactPath: `${dir}/artifacts`,
+    summary,
+  };
+}
+
 export async function runBrowserObservationScenario(
   scenarioId: string,
   options: BrowserObservationOptions = {},
@@ -218,27 +381,32 @@ export async function runBrowserObservationScenario(
     createStarterWorld({ preset: scenario.worldPreset, seed: scenario.seed }),
   );
   project.machines.push(planeTemplate());
-  const browser = await chromium.launch({
-    args: [
-      "--use-gl=angle",
-      "--use-angle=swiftshader",
-      "--enable-unsafe-swiftshader",
-    ],
-  });
-  const context = await browser.newContext({
-    viewport: { width: viewport[0], height: viewport[1] },
-    deviceScaleFactor: devicePixelRatio,
-  });
   const tracePath = join(".observability", `observe-${Date.now()}.trace.zip`);
   await mkdir(".observability", { recursive: true });
-  await context.tracing.start({
-    screenshots: true,
-    snapshots: true,
-    sources: true,
-  });
-  const page = await context.newPage();
-  let runId = `${scenario.id}-browser`;
+  let runId = createRunId(scenario.id);
+  let observationStarted = false;
+  let browser: import("@playwright/test").Browser | undefined;
+  let context: import("@playwright/test").BrowserContext | undefined;
+  let page: AgentPage | undefined;
   try {
+    browser = await chromium.launch({
+      args: [
+        "--use-gl=angle",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+      ],
+    });
+    context = await browser.newContext({
+      viewport: { width: viewport[0], height: viewport[1] },
+      deviceScaleFactor: devicePixelRatio,
+    });
+    await context.tracing.start({
+      screenshots: true,
+      snapshots: true,
+      sources: true,
+    });
+    page = await context.newPage();
+    attachBrowserErrorListeners(page);
     await page.addInitScript((value) => {
       localStorage.setItem("machine-studio.project", JSON.stringify(value));
     }, project);
@@ -266,6 +434,7 @@ export async function runBrowserObservationScenario(
       return agent.beginObservation(id);
     }, scenario.id)) as ObservationRunManifest;
     runId = manifest.runId;
+    observationStarted = true;
     const playButton = page.getByRole("button", {
       name: "▶ あそぶ",
       exact: true,
@@ -341,7 +510,9 @@ export async function runBrowserObservationScenario(
     await context.tracing.stop({ path: tracePath });
     const trace = await readFile(tracePath);
     await context.close();
+    context = undefined;
     await browser.close();
+    browser = undefined;
     await rm(tracePath, { force: true });
     const durationMs = performance.now() - started;
     const finalManifest = {
@@ -383,7 +554,6 @@ export async function runBrowserObservationScenario(
         "playwright/trace.zip": trace,
       },
     });
-    stopServer();
     return {
       runId,
       scenario: scenario.id,
@@ -394,11 +564,86 @@ export async function runBrowserObservationScenario(
       summary,
     };
   } catch (error) {
-    await context.tracing.stop({ path: tracePath }).catch(() => undefined);
-    await context.close().catch(() => undefined);
-    await browser.close().catch(() => undefined);
+    let events: TelemetryEvent[] = [];
+    let screenshot: Buffer | undefined;
+    if (page) {
+      try {
+        events = (await page.evaluate(
+          ({ message, started: observationWasStarted, scenarioId }) => {
+            const agent = (
+              window as unknown as {
+                __MACHINE_STUDIO_AGENT__?: {
+                  recordBrowserError?: (
+                    name: string,
+                    message: string,
+                    detail?: Record<string, unknown>,
+                  ) => unknown;
+                  endObservation?: (result: "error") => unknown;
+                  getEvents?: () => TelemetryEvent[];
+                  beginObservation?: (scenarioId: string) => unknown;
+                };
+              }
+            ).__MACHINE_STUDIO_AGENT__;
+            if (!agent) return [] as TelemetryEvent[];
+            if (!observationWasStarted) {
+              try {
+                agent.beginObservation?.(scenarioId);
+              } catch {
+                /* ignore */
+              }
+            }
+            try {
+              agent.recordBrowserError?.("browser.uncaught_error", message, {
+                phase: "browser-runner",
+              });
+              agent.endObservation?.("error");
+            } catch {
+              /* ignore */
+            }
+            return agent.getEvents?.() ?? [];
+          },
+          {
+            message: error instanceof Error ? error.message : String(error),
+            started: observationStarted,
+            scenarioId: scenario.id,
+          },
+        )) as TelemetryEvent[];
+      } catch {
+        events = [];
+      }
+      try {
+        screenshot = await page.screenshot({ fullPage: true });
+      } catch {
+        screenshot = undefined;
+      }
+    }
+    let trace: Buffer | undefined;
+    if (context) {
+      await context.tracing.stop({ path: tracePath }).catch(() => undefined);
+      try {
+        trace = await readFile(tracePath);
+      } catch {
+        trace = undefined;
+      }
+      await context.close().catch(() => undefined);
+    }
+    if (browser) await browser.close().catch(() => undefined);
     await rm(tracePath, { force: true });
+    return saveErrorRun({
+      scenarioId: scenario.id,
+      seed: scenario.seed,
+      scenarioDefinitionHash: hashScenarioDefinition(scenario),
+      app,
+      viewport,
+      devicePixelRatio,
+      runId,
+      started,
+      events,
+      screenshot,
+      trace,
+      error,
+    });
+  } finally {
     stopServer();
-    throw error;
   }
 }

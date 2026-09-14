@@ -27,6 +27,7 @@ export interface AgentGameState {
   };
   machine: {
     id: string | null;
+    physicsStep: number | null;
     position: [number, number, number] | null;
     simulationPosition: [number, number, number] | null;
     worldOrigin: [number, number, number] | null;
@@ -72,6 +73,7 @@ export interface AgentGameState {
 export interface MachineStudioAgentApi {
   version: 1;
   getState(): AgentGameState;
+  getPhysicsStep(): number;
   getTelemetrySummary(): unknown;
   queryRecent(filter?: AgentEventFilter): unknown[];
   getEvents(): TelemetryEvent[];
@@ -80,6 +82,11 @@ export interface MachineStudioAgentApi {
     expected: unknown,
     actual: unknown,
     passed: boolean,
+  ): unknown;
+  recordBrowserError(
+    name: string,
+    message: string,
+    detail?: Record<string, unknown>,
   ): unknown;
   getRunInfo(): unknown;
   listScenarios(): unknown[];
@@ -125,7 +132,7 @@ export interface EngineObservationHost {
       target: [number, number, number];
     };
     diagnosticsEnvironment?: {
-      recentGpuSamples?: Array<{ timeMs?: number }>;
+      recentGpuSamples?: Array<{ gpuMs?: number; timeMs?: number }>;
     };
   };
   observationApp?: ObservationApplication;
@@ -164,8 +171,9 @@ export function createAgentObservationApi(
       const world = engine.worldRuntime?.stats(engine.position);
       const render = engine.renderer.fastStats;
       const probe = engine.renderer.getMotionProbe?.();
+      // recentGpuSamples は新しい順。先頭が最新。
       const gpu = engine.renderer.diagnosticsEnvironment?.recentGpuSamples;
-      const lastGpu = gpu?.at(-1);
+      const lastGpu = gpu?.[0];
       return {
         engine: {
           mode: engine.mode,
@@ -173,6 +181,7 @@ export function createAgentObservationApi(
         },
         machine: {
           id: sample?.machineId ?? null,
+          physicsStep: sample?.step ?? null,
           position: sample?.position ?? null,
           simulationPosition: sample?.simulationPosition ?? null,
           worldOrigin: sample?.worldOrigin ?? null,
@@ -216,7 +225,7 @@ export function createAgentObservationApi(
           triangles: render.triangles ?? null,
           geometries: render.geometries ?? null,
           textures: render.textures ?? null,
-          gpuTimingMs: lastGpu?.timeMs ?? null,
+          gpuTimingMs: lastGpu?.gpuMs ?? null,
         },
         frame: {
           rafMs: engine.recentSpikes.at(-1)?.rafIntervalMs ?? null,
@@ -227,6 +236,9 @@ export function createAgentObservationApi(
           streamingCommitMs: world?.streamingCommitMs ?? null,
         },
       };
+    },
+    getPhysicsStep() {
+      return engine.currentTelemetry?.step ?? 0;
     },
     getTelemetrySummary() {
       const events = hub.allEvents();
@@ -260,6 +272,9 @@ export function createAgentObservationApi(
     },
     recordAssertion(assertion, expected, actual, passed) {
       return hub.emitAssertion(assertion, expected, actual, passed);
+    },
+    recordBrowserError(name, message, detail = {}) {
+      return hub.emitError(name, message, { message, ...detail });
     },
     getRunInfo() {
       return hub.runManifest ?? null;

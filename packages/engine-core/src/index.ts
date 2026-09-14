@@ -19,7 +19,10 @@ import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
 } from "../../runtime-telemetry/src/index";
-import { ObservationHub } from "../../runtime-telemetry/src/index";
+import {
+  ObservationHub,
+  getObservationScenario,
+} from "../../runtime-telemetry/src/index";
 import { FrameProfiler } from "./frame-profiler";
 import { shiftPhysicsRenderState } from "./interpolation";
 import { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
@@ -132,6 +135,17 @@ const telemetryData = (sample: MachineTelemetrySample) => ({
     : null,
   worldOrigin: sample.worldOrigin ? [...sample.worldOrigin] : null,
 });
+/** JSON.stringify を避けた Control 変化判定。 */
+const controlsChanged = (
+  previous: ControlValues | undefined,
+  next: ControlValues,
+) => {
+  if (!previous) return true;
+  const keys = new Set([...Object.keys(previous), ...Object.keys(next)]);
+  for (const key of keys)
+    if ((previous[key] ?? 0) !== (next[key] ?? 0)) return true;
+  return false;
+};
 export function aggregateControlChannels(
   bindings: readonly ControlBinding[],
   activeKeys: ReadonlySet<string>,
@@ -732,17 +746,26 @@ export class Engine {
       });
       if (this.spikeRing.length > SPIKE_RING) this.spikeRing.shift();
     }
+    const latestGpuMs =
+      this.renderer.diagnosticsEnvironment?.recentGpuSamples?.[0]?.gpuMs;
     this.observation?.recordFrameTiming({
       frame: this.playFrameIndex,
       rafMs: this.rafIntervalMs,
       physicsMs: this.physicsStepMs,
       renderMs: this.renderMs,
+      gpuMs: latestGpuMs,
       streamingCommitMs: world?.streamingCommitMs ?? 0,
       timestampMs: now,
     });
     if (this.observation) {
+      const scenarioId = this.observation.runManifest?.scenarioId;
+      const scenario = scenarioId
+        ? getObservationScenario(scenarioId)
+        : undefined;
+      const sampleEverySteps = scenario?.sampleEverySteps ?? 5;
+      const denseCamera = scenario?.tags.includes("camera") ?? false;
       const sample = this.currentTelemetry;
-      if (sample)
+      if (sample && sample.step % sampleEverySteps === 0)
         this.observation.emitState(
           "physics.machine.sample",
           "physics",
@@ -754,11 +777,7 @@ export class Engine {
             timestampMs: now,
           },
         );
-      if (
-        !this.lastObservedControls ||
-        JSON.stringify(this.lastObservedControls) !==
-          JSON.stringify(this.observedControls)
-      ) {
+      if (controlsChanged(this.lastObservedControls, this.observedControls)) {
         this.lastObservedControls = { ...this.observedControls };
         this.observation.emit({
           name: "input.changed",
@@ -769,7 +788,8 @@ export class Engine {
           data: { ...this.observedControls },
         });
       }
-      if (world)
+      // World full stats は 8 Frame ごとに間引く。
+      if (world && this.playFrameIndex % 8 === 0)
         this.observation.emitMetric(
           "world.streaming.stats",
           "world",
@@ -780,18 +800,21 @@ export class Engine {
             chunkKey: world.currentChunk,
           },
         );
-      const probe = this.renderer.getMotionProbe();
-      this.observation.emitState(
-        "camera.follow.sample",
-        "camera",
-        {
-          ...probe,
-          followMode: this.renderer.useDampedCameraFollow
-            ? "damped"
-            : "instant",
-        },
-        { frame: this.playFrameIndex, timestampMs: now },
-      );
+      // Camera は camera Scenario のみ毎 Frame、それ以外は 5 Frame ごと。
+      if (denseCamera || this.playFrameIndex % 5 === 0) {
+        const probe = this.renderer.getMotionProbe();
+        this.observation.emitState(
+          "camera.follow.sample",
+          "camera",
+          {
+            ...probe,
+            followMode: this.renderer.useDampedCameraFollow
+              ? "damped"
+              : "instant",
+          },
+          { frame: this.playFrameIndex, timestampMs: now },
+        );
+      }
       if (this.playFrameIndex % 30 === 0)
         this.observation.emitMetric(
           "renderer.resource.changed",

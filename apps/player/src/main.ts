@@ -31,7 +31,10 @@ engine.onFrame = () => {
   }
 };
 installAgentObservationApi(engine, { app: "player" });
-await engine.load(loadProject(localStorage) ?? p);
+const observeMode =
+  new URLSearchParams(location.search).get("agent") === "1" ||
+  new URLSearchParams(location.search).get("observe") === "1";
+await engine.load((observeMode ? loadProject(localStorage) : undefined) ?? p);
 document.getElementById("play")!.onclick = () => {
   engine.play().catch((e) => {
     document.getElementById("status")!.textContent = String(e);
