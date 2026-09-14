@@ -1,0 +1,9 @@
+{
+  "label": "test-pipeline",
+  "family": "spike-flight",
+  "query": "",
+  "savedAt": "2026-09-14T07:37:54.168Z",
+  "dump": {
+    "frameP95Ms": 16.7
+  }
+}

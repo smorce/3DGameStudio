@@ -1,17 +1,17 @@
 {
   "note": "Motion Smoothness A/B。Thruster/Aero/Steering は未変更。ディスク上の turn-motion-diagnostics-{a,b,c}.json からのみ生成。",
-  "generatedAt": "2026-09-14T05:28:29.245Z",
+  "generatedAt": "2026-09-14T07:18:17.864Z",
   "suspicionOrder": [
     "① Physicsの旋回角速度そのもの",
     "② Fixed Step / 補間",
     "③ Camera follow"
   ],
   "readingGuide": {
-    "a": "現行（補間あり + damped camera follow）",
+    "a": "現行（補間あり + instant camera follow）",
     "b": "Rotation interpolation だけ OFF → 改善なら補間由来",
-    "c": "Instant camera follow / damping OFF → 改善なら Camera follow 由来",
+    "c": "Legacy damped camera follow → 悪化なら旧 Camera damping 由来の再確認",
     "physics stair in steps": "Physics Step 角速度そのものが階段 → ①",
-    "screen delta stair": "機体の画面座標が止まる→飛ぶ → Camera follow damping",
+    "screen delta stair": "機体の画面座標が止まる→飛ぶ → 旧 Camera follow damping",
     "raf/gpu normal": "Frame Performance 正常でも Motion 問題は別判定"
   },
   "present": [
@@ -23,40 +23,35 @@
   "complete": true,
   "a": {
     "path": "docs/evidence/turn-motion-diagnostics-a.json",
-    "savedAt": "2026-09-14T05:27:05.598Z",
+    "savedAt": "2026-09-14T07:18:17.570Z",
     "mode": "a",
-    "modeLabel": "A: Current (physics interpolation + damped camera follow)",
-    "turnStartTimeMs": 12821.4,
-    "rafCount": 361,
-    "physicsStepCount": 361,
-    "steeringPeak": 1,
-    "physicsDeltaP95": 0.24302638476260954,
-    "renderDeltaP95": 0.2434239781814432,
-    "vehicleToTargetDistanceP95": 6.190056468733881,
-    "cameraPositionDeltaP95": 0.5381660590071894,
-    "cameraTargetDeltaP95": 0.5381660590071894,
-    "vehicleScreenDeltaP95": 12.746691538674947,
-    "alphaLowHighTransitions": 100,
-    "physicsStepsHistogram": {
-      "0": 50,
-      "1": 261,
-      "2": 50
-    },
+    "modeLabel": "A: Current (physics interpolation + instant camera follow)",
+    "turnStartTimeMs": null,
+    "rafCount": 0,
+    "physicsStepCount": 0,
+    "steeringPeak": 0,
+    "physicsDeltaP95": 0,
+    "renderDeltaP95": 0,
+    "vehicleToTargetDistanceP95": 0,
+    "cameraPositionDeltaP95": 0,
+    "cameraTargetDeltaP95": 0,
+    "vehicleScreenDeltaP95": 0,
+    "alphaLowHighTransitions": 0,
+    "physicsStepsHistogram": {},
     "verdict": {
       "physicsStairStepLikely": false,
       "renderStairStepLikely": false,
-      "cameraFollowLagLikely": true,
-      "alphaOscillationLikely": true,
+      "cameraFollowLagLikely": false,
+      "alphaOscillationLikely": false,
       "physicsStepsAlternatingLikely": false,
       "separation": {
         "physics": "unlikely",
-        "interpolation": "likely",
-        "camera": "likely",
+        "interpolation": "unlikely",
+        "camera": "unlikely",
         "recording": "not_assessed_here"
       },
       "notes": [
-        "Camera 位置/Target/画面投影の移動が不均一。③ Camera follow damping を疑う（C=Instant follow と比較）。",
-        "interpolationAlpha が 0付近と1付近を不規則に往復している可能性。"
+        "自動判定は弱い。A/B目視を優先すること。cameraAngularDelta は主判定に使わない。単発の引っかかりは Camera 以外の可能性が高い。"
       ]
     }
   },

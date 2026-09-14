@@ -84,6 +84,15 @@ export interface PhysicsRenderState {
   wheels: Map<string, WheelRenderState>;
 }
 const PHYSICS_FIXED_DT = 1 / 60;
+// 高速落下対策。レイキャスト車輪はCCDの対象外のため、
+// 終端速度クランプ + ステップ後のめり込み復帰で地形貫通を防ぐ。
+const MAX_FALL_SPEED_MPS = 80;
+// 落下中(車輪非接地)に復帰を発動するめり込み量。地形メッシュと解析高さの誤差より大きくする。
+const PENETRATION_RECOVERY_SOFT_M = 0.1;
+// 接地中・静止中でも復帰する明確な埋まり量。通常走行のサス沈み込みでは到達しない値。
+const PENETRATION_RECOVERY_HARD_M = 0.2;
+const PENETRATION_RECOVERY_FALL_SPEED_MPS = 2;
+const PENETRATION_RECOVERY_LIFT_MARGIN_M = 0.01;
 // 速度誤差1 rad/sあたりに要求するトルク。最終出力はmaxTorqueで制限する。
 const MOTOR_VELOCITY_CONTROLLER_GAIN = 40;
 interface RevoluteRuntime {
@@ -149,6 +158,33 @@ function colliderDescFromPose(
     z: pose.rotation[2],
     w: pose.rotation[3],
   });
+}
+/**
+ * コライダ中心から真下方向の最下点までの距離(サポート写像)。
+ * Box は3軸の投影和、Cylinder は軸投影 + 半径の側面投影で厳密に求める。
+ */
+function colliderSupportBelowM(
+  sizeScaled: Vec3,
+  colliderType: string,
+  worldRotation: Quat,
+): number {
+  if (colliderType === "cylinder") {
+    // cylinder(halfHeight = s0/2, radius = s1) を Z+90° 回転で生成するため、円柱軸はPartローカルX。
+    const axis = rotate([1, 0, 0], worldRotation);
+    const axialY = Math.abs(axis[1]);
+    return (
+      (sizeScaled[0] / 2) * axialY +
+      sizeScaled[1] * Math.sqrt(Math.max(0, 1 - axialY * axialY))
+    );
+  }
+  const ax = rotate([1, 0, 0], worldRotation),
+    ay = rotate([0, 1, 0], worldRotation),
+    az = rotate([0, 0, 1], worldRotation);
+  return (
+    (sizeScaled[0] / 2) * Math.abs(ax[1]) +
+    (sizeScaled[1] / 2) * Math.abs(ay[1]) +
+    (sizeScaled[2] / 2) * Math.abs(az[1])
+  );
 }
 function worldAxis(runtime: RevoluteRuntime): Vec3 {
   const q = runtime.bodyA.rotation();
@@ -354,6 +390,8 @@ export class RapierPhysics {
     if (generation !== this.generation) return;
     this.world = new rapier.World(vector(project.settings.gravity));
     this.world.timestep = PHYSICS_FIXED_DT;
+    // 高速落下時の車体コライダの薄いTrimesh貫通を抑えるためCCD解決回数を増やす。
+    this.world.maxCcdSubsteps = 4;
     this.ownsRuntime = !options.world;
     this.worldRuntime =
       options.world ??
@@ -952,6 +990,14 @@ export class RapierPhysics {
       if (resetBodies.has(body)) continue;
       resetBodies.add(body);
       resetExternalForces(body);
+      // 終端速度クランプ: 1ステップの移動量がサスペンションレイ長を超えて
+      // 接地判定を素通りしないよう、落下速度に上限を設ける(空気抵抗の近似)。
+      const linear = body.linvel();
+      if (linear.y < -MAX_FALL_SPEED_MPS)
+        body.setLinvel(
+          { x: linear.x, y: -MAX_FALL_SPEED_MPS, z: linear.z },
+          true,
+        );
     }
     for (const v of this.vehicles) {
       v.wheels.forEach((w, i) => {
@@ -1215,9 +1261,105 @@ export class RapierPhysics {
       }
     }
     this.world.step();
+    this.recoverGroundPenetration();
     this.physicsStep++;
     this.simulationTimeSeconds += PHYSICS_FIXED_DT;
     this.captureTelemetry(throttle, steeringValue, brakeValue, controls);
+  }
+  /** Simulation座標の(x, z)に対応する地形高さをSimulation座標Yで返す。 */
+  private terrainHeightAtSimulation(x: number, z: number): number | undefined {
+    const global = this.worldRuntime?.toGlobal([x, 0, z]) ?? [x, 0, z];
+    const height = this.worldRuntime
+      ? this.worldRuntime.sampleHeight(global[0], global[2])
+      : this.terrain
+        ? heightAtIfInside(this.terrain, global[0], global[2])
+        : undefined;
+    return height === undefined
+      ? undefined
+      : height - (this.worldRuntime?.worldOrigin[1] ?? 0);
+  }
+  /**
+   * ステップ後のめり込み復帰。レイキャスト車輪はCCDが効かず、高速落下時に
+   * 懸架レイが1ステップで地形を素通りして機体が埋まることがある。
+   * 車輪下端と各Partコライダの最下点を地形高さと比較し、埋まっていたら
+   * 機体全体(関節で繋がるBody含む)を持ち上げて下向き速度を消す。
+   */
+  private recoverGroundPenetration() {
+    for (const vehicle of this.vehicles) {
+      const machineBodies = new Set<RAPIER.RigidBody>([vehicle.body]);
+      for (const entry of this.parts)
+        if (entry.machineId === vehicle.id) machineBodies.add(entry.body);
+      let penetrationM = 0;
+      const consider = (x: number, lowestY: number, z: number) => {
+        const groundY = this.terrainHeightAtSimulation(x, z);
+        if (groundY !== undefined)
+          penetrationM = Math.max(penetrationM, groundY - lowestY);
+      };
+      let groundedWheels = 0;
+      vehicle.wheelRuntime.forEach((runtime, index) => {
+        if (vehicle.controller.wheelIsInContact(index)) groundedWheels++;
+        const length =
+          vehicle.controller.wheelSuspensionLength(index) ??
+          runtime.restLengthM;
+        const center = this.pose(
+          vehicle.body,
+          wheelCenterFromSuspension(
+            runtime.hardPoint,
+            runtime.suspensionDirection,
+            length,
+          ),
+        ).position;
+        consider(center[0], center[1] - runtime.radiusM, center[2]);
+      });
+      for (const { part, body, machineId } of this.parts) {
+        if (machineId !== vehicle.id || part.physics.collider === "none")
+          continue;
+        if (!machineBodies.has(body)) continue;
+        const pose = this.pose(
+          body,
+          part.transform.position,
+          quaternion(part.transform.rotation),
+        );
+        const sizeScaled = part.physics.size.map(
+          (value, index) => value * part.transform.scale[index],
+        ) as Vec3;
+        consider(
+          pose.position[0],
+          pose.position[1] -
+            colliderSupportBelowM(
+              sizeScaled,
+              part.physics.collider,
+              pose.rotation,
+            ),
+          pose.position[2],
+        );
+      }
+      // 通常走行のサス沈み・地形メッシュ誤差で誤発動しないよう、
+      // 「落下中かつ全輪非接地」は小さいめり込みで、それ以外は明確な埋まりのみ復帰する。
+      const verticalSpeed = vehicle.body.linvel().y;
+      const falling =
+        verticalSpeed < -PENETRATION_RECOVERY_FALL_SPEED_MPS &&
+        groundedWheels === 0;
+      const threshold = falling
+        ? PENETRATION_RECOVERY_SOFT_M
+        : PENETRATION_RECOVERY_HARD_M;
+      if (penetrationM <= threshold) continue;
+      const liftM = penetrationM + PENETRATION_RECOVERY_LIFT_MARGIN_M;
+      for (const body of machineBodies) {
+        const translation = body.translation();
+        body.setTranslation(
+          {
+            x: translation.x,
+            y: translation.y + liftM,
+            z: translation.z,
+          },
+          true,
+        );
+        const linear = body.linvel();
+        if (linear.y < 0)
+          body.setLinvel({ x: linear.x, y: 0, z: linear.z }, true);
+      }
+    }
   }
   focusSimulation(): Vec3 | undefined {
     const position = this.vehicles[0]?.body.translation();
@@ -1291,8 +1433,7 @@ export class RapierPhysics {
     this.world.forEachRigidBody((body) => {
       if (ccd.get(body.handle)) body.enableCcd(true);
     });
-    const ccdToggleMs =
-      ccdDisableMs + (performance.now() - ccdRestoreStarted);
+    const ccdToggleMs = ccdDisableMs + (performance.now() - ccdRestoreStarted);
     this.lastRebaseBreakdown = {
       moveRigidBodiesMs,
       moveStandaloneCollidersMs,

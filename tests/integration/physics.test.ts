@@ -540,6 +540,35 @@ it("Rapier hardPointとPlay時Wheel中心・接地が一致しSuspensionはWheel
   physics.dispose();
 });
 
+it("高速落下しても機体が地形へ埋まらず地表へ復帰する", async () => {
+  const project = emptyProject(),
+    machine = starterCarTemplate();
+  applyFiniteFlatWorld(project);
+  project.machines.push(machine);
+  const physics = new RapierPhysics();
+  await physics.load(project);
+  physics.telemetry.start();
+  for (let i = 0; i < 120; i++) physics.step({ throttle: 0 });
+  // 少し上空へテレポートさせ、懸架レイを1ステップで飛び越える速度で叩きつける。
+  physics.world.bodies.forEach((body) => {
+    const t = body.translation();
+    body.setTranslation({ x: t.x, y: t.y + 8, z: t.z }, true);
+    body.setLinvel({ x: 0, y: -70, z: 0 }, true);
+    body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  });
+  for (let i = 0; i < 300; i++) physics.step({ throttle: 0 });
+  const sample = physics.telemetry.current(machine.id)!;
+  // 平坦地形(高さ0)より上に留まり、全輪が再接地していること。
+  expect(sample.position[1]).toBeGreaterThan(0);
+  expect(sample.heightAboveTerrainM ?? 0).toBeGreaterThan(0);
+  expect(sample.groundedWheelCount).toBe(4);
+  for (const wheel of physics.wheelStates().values())
+    expect(wheel.pose.position[1] - (wheel.wheelRadiusM ?? 0)).toBeGreaterThan(
+      -0.05,
+    );
+  physics.dispose();
+});
+
 async function simulatePlane(
   configure?: (machine: ReturnType<typeof planeTemplate>) => void,
   steps = 600,
