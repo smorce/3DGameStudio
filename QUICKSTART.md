@@ -146,9 +146,9 @@ RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero 
 
 1. `pnpm dev`
 2. URL（録画しない）:
-   - A 現行（damped camera follow）: `http://localhost:5183/?motionDiag=a`
+   - A 現行（instant camera follow）: `http://localhost:5183/?motionDiag=a`
    - B Rotation補間だけOFF: `http://localhost:5183/?motionDiag=b`
-   - C Instant camera follow / damping OFF: `http://localhost:5183/?motionDiag=c`
+   - C 旧 Damped camera follow（回帰比較）: `http://localhost:5183/?motionDiag=c`
 3. **ひこうき** → **あそぶ** → 直進してから **A/D で約5秒旋回** → **やめる**
 4. ダイアログで保存確認。ファイル:
    - `docs/evidence/turn-motion-diagnostics-a.json`（など b/c）
@@ -162,22 +162,22 @@ RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero 
 
 ### 読み方（疑い順）
 
-① Physics 旋回角速度 → ② Fixed Step/補間 → ③ Camera follow damping  
-Bで改善→補間、**C（Instant follow）で改善→Camera damping**、Aでも Physics Step が階段→Physics 自体。  
-`cameraAngularDelta≈0` は「Camera問題なし」ではない（平行追従では向きが変わらない）。
+① Physics 旋回角速度 → ② Fixed Step/補間 → ③ 旧 Camera follow damping  
+Bで改善→補間、**C（Legacy Damped）で悪化→Camera damping 由来の再確認**、Aでも Physics Step が階段→Physics 自体。  
+`cameraAngularDelta≈0` は「Camera問題なし」ではない（平行追従では向きが変わらない）。Production の平行移動追従は Instant。
 
-## 7c. 同一PLAY中 Camera Damped ↔ Instant 切替（最短決着）
+## 7c. 同一PLAY中 Camera Damped ↔ Instant 切替（回帰比較）
 
-大きな診断を増やさず、**同じ飛行・同じPhysics**のまま Camera follow だけ切り替える。
+Production は Instant follow。旧 Damped との差を同じ飛行で再確認するときだけ使う。
 
-1. `pnpm dev` → `http://localhost:5183/?cameraToggle=1`（省略時も既定ON。無効は `?cameraToggle=0`）
+1. `pnpm dev` → `http://localhost:5183/?cameraToggle=1`（既定はOFF）
 2. ひこうき → あそぶ → 旋回しながら飛行
 3. **V** で手動切替、または **約3秒ごと自動**で Damped ↔ Instant
 4. HUD の `CamFollow DAMPED|INSTANT` を見ながらカクつきが連動するか確認
 5. やめる → `docs/evidence/camera-follow-toggle.json` に軽量ログ保存  
    （`vehicleToTargetDistance` / `vehicleScreenDelta` / `physicsStepsThisFrame` / `interpolationAlpha` + mode）
 
-Instant 区間だけ滑らかなら Camera follow damping が主因でほぼ決着。
+Damped 区間だけ画面上の機体が動くなら、旧 follow damping 由来の再確認になる。
 
 ## 8. うまくいかないとき
 

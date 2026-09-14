@@ -65,8 +65,11 @@ export interface RenderFrameOptions {
   velocity?: Vec3;
   /** 診断用: Rotation 補間だけOFF（位置は補間継続）。Production 既定は false。 */
   disableRotationInterpolation?: boolean;
-  /** 診断用: Camera follow だけOFF（即時追従）。Production 既定は false。 */
-  disableCameraFollow?: boolean;
+  /**
+   * 診断用: 旧 Damped Camera Follow を強制する。
+   * Production 既定は false（機体平行移動へ Instant 追従）。
+   */
+  useDampedCameraFollow?: boolean;
 }
 export interface RendererAdapter {
   load(project: Project): void;
@@ -169,7 +172,11 @@ export class ThreeRenderer implements RendererAdapter {
   private antialiasEnabled = true;
   /** Motion 診断 A/B（Production 既定は両方 false）。 */
   disableRotationInterpolation = false;
-  disableCameraFollow = false;
+  /**
+   * 旧 Damped Camera Follow（診断・回帰用）。
+   * Production は false = Instant（補間済み機体位置へ即時追従）。
+   */
+  useDampedCameraFollow = false;
   /** 直近 render の先頭機体 Quaternion（補間後）。 */
   lastLeadRenderQuaternion: [number, number, number, number] = [0, 0, 0, 1];
   /** 直近 render の先頭機体位置（補間後）。 */
@@ -419,12 +426,27 @@ export class ThreeRenderer implements RendererAdapter {
 
   applyMotionDiagnostics(options: {
     disableRotationInterpolation?: boolean;
-    disableCameraFollow?: boolean;
+    useDampedCameraFollow?: boolean;
   }) {
     if (options.disableRotationInterpolation !== undefined)
       this.disableRotationInterpolation = options.disableRotationInterpolation;
-    if (options.disableCameraFollow !== undefined)
-      this.disableCameraFollow = options.disableCameraFollow;
+    if (options.useDampedCameraFollow !== undefined)
+      this.useDampedCameraFollow = options.useDampedCameraFollow;
+  }
+
+  /**
+   * Camera 位置と OrbitControls.target を同じフレームで整合させる。
+   * PLAY開始・Respawn・Origin Rebase・編集復帰・モード切替で使う。
+   */
+  snapCameraFollow(target: THREE.Vector3 | Vec3) {
+    const next =
+      target instanceof THREE.Vector3
+        ? target
+        : new THREE.Vector3(target[0], target[1], target[2]);
+    const delta = next.clone().sub(this.controls.target);
+    this.camera.position.add(delta);
+    this.controls.target.copy(next);
+    this.controls.update();
   }
 
   /** Motion 診断用: 描画直後の機体位置・Camera・画面投影。 */
@@ -967,10 +989,7 @@ export class ThreeRenderer implements RendererAdapter {
           new THREE.Vector3(),
         )
         .divideScalar(parts.length);
-      const delta = center.clone().sub(this.controls.target);
-      this.camera.position.add(delta);
-      this.controls.target.copy(center);
-      this.controls.update();
+      this.snapCameraFollow(center);
       this.streamer?.update(this.controls.target.toArray() as Vec3);
     }
     this.select(this.selected);
@@ -1107,14 +1126,21 @@ export class ThreeRenderer implements RendererAdapter {
           first.position[2],
         ];
         const target = new THREE.Vector3(...first.position);
-        const cameraFollowOff =
-          options.disableCameraFollow ?? this.disableCameraFollow;
-        const follow = cameraFollowOff
-          ? 1
-          : cameraFollowAlpha(options.dt ?? 1 / 60);
-        const delta = target.clone().sub(this.controls.target);
-        this.camera.position.add(delta.multiplyScalar(follow));
-        this.controls.target.lerp(target, follow);
+        // Production: 補間済み機体位置へ Instant 追従（平行移動の遅れを残さない）。
+        // OrbitControls.enableDamping はマウス周回の慣性用で、こことは独立。
+        // 診断用に旧 Damped を強制できる（useDampedCameraFollow）。
+        const useDamping =
+          options.useDampedCameraFollow ?? this.useDampedCameraFollow;
+        if (useDamping) {
+          const follow = cameraFollowAlpha(options.dt ?? 1 / 60);
+          const delta = target.clone().sub(this.controls.target);
+          this.camera.position.add(delta.multiplyScalar(follow));
+          this.controls.target.lerp(target, follow);
+        } else {
+          const delta = target.clone().sub(this.controls.target);
+          this.camera.position.add(delta);
+          this.controls.target.copy(target);
+        }
       }
     } else if (this.project) {
       if (!this.editWorkspace) {

@@ -113,7 +113,7 @@ entity.transform の position / rotation / scale を両方へ適用する。
 
 Physicsは 1/60 秒固定。描画は previous/current pose を `alpha = accumulator / fixedDt` でlerp/slerpする。Rebase時はprevious/currentの両方を同じdeltaで変換する。
 
-Camera Followは `1 - exp(-lambda * dt)` で時間基準にする。Shadow CameraはPlayer周辺（約48m）だけを覆い、光の方向はtimeOfDayから決める。
+Camera Followは機体の補間済み位置へ **Instant** 追従する（平行移動の遅れを残さない）。マウス周回の慣性は OrbitControls の `enableDamping` に任せ、旧 `1 - exp(-lambda * dt)` の Damped follow は診断・回帰比較用に残す。Shadow CameraはPlayer周辺（約48m）だけを覆い、光の方向はtimeOfDayから決める。
 
 ## Chunk Generation
 

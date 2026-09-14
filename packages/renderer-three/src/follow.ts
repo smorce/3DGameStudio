@@ -1,11 +1,16 @@
 import type { Vec3 } from "../../project-schema/src/index";
 
-/** 60fpsで旧lerp(0.08)に近い時定数。1-exp(-5/60) ≈ 0.08。 */
+/**
+ * 旧 Damped Camera Follow の時定数（診断・回帰比較用）。
+ * Production の機体平行移動追従は Instant（follow=1）が標準。
+ * 60fpsで旧lerp(0.08)に近い: 1-exp(-5/60) ≈ 0.08。
+ */
 export const CAMERA_FOLLOW_LAMBDA = 5;
 /** Player周辺のShadow Frustum半幅。巨大化して誤魔化さない。 */
 export const SHADOW_EXTENT_M = 48;
 export const SHADOW_LIGHT_DISTANCE_M = 40;
 
+/** 診断用: 旧 Damped follow の 1フレーム分の係数。Production では使わない。 */
 export function cameraFollowAlpha(dt: number, lambda = CAMERA_FOLLOW_LAMBDA) {
   return 1 - Math.exp(-lambda * Math.max(0, dt));
 }

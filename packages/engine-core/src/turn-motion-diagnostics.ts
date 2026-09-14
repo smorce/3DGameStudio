@@ -136,8 +136,8 @@ const PRE_STEP_CAP = 400;
 export function motionDiagModeLabel(mode: MotionDiagMode): string {
   if (mode === "b") return "B: Rotation interpolation OFF";
   if (mode === "c")
-    return "C: Instant camera follow / Camera follow damping OFF";
-  return "A: Current (physics interpolation + damped camera follow)";
+    return "C: Legacy damped camera follow（回帰比較用）";
+  return "A: Current (physics interpolation + instant camera follow)";
 }
 
 export function motionDiagQueryHint(mode: MotionDiagMode): string {
@@ -153,12 +153,15 @@ export function parseMotionDiagMode(
   if (v === "b" || v === "rotnointerp" || v === "rotation-off") return "b";
   if (
     v === "c" ||
+    v === "dampedfollow" ||
+    v === "legacy-damped" ||
+    v === "legacydamped" ||
+    // 旧 alias（Instant は Production 既定になったため A へ）
     v === "camerafollowoff" ||
-    v === "camera-off" ||
-    v === "instantfollow" ||
-    v === "nodamping"
+    v === "camera-off"
   )
     return "c";
+  // instantFollow / nodamping は現行 Production（A）
   return "a";
 }
 
@@ -299,7 +302,7 @@ function analyze(
     );
   if (cameraOnly || cameraFollowLag)
     notes.push(
-      "Camera 位置/Target/画面投影の移動が不均一。③ Camera follow damping を疑う（C=Instant follow と比較）。",
+      "Camera 位置/Target/画面投影の移動が不均一。③ 旧 Damped follow 残存や切替ジャンプを疑う（A=Instant / C=Legacy Damped と比較）。",
     );
   if (alphaOsc)
     notes.push(
@@ -311,7 +314,7 @@ function analyze(
     );
   if (!notes.length)
     notes.push(
-      "自動判定は弱い。A/B目視（特に C: Instant camera follow）を優先すること。cameraAngularDelta は主判定に使わない。",
+      "自動判定は弱い。A/B目視を優先すること。cameraAngularDelta は主判定に使わない。単発の引っかかりは Camera 以外の可能性が高い。",
     );
 
   const separation = {
@@ -338,7 +341,7 @@ function analyze(
     suspicionOrder: [
       "① Physicsの旋回角速度そのもの",
       "② Fixed Step / 補間",
-      "③ Camera follow damping（Instant follow と比較）",
+      "③ 旧 Camera follow damping（A=Instant / C=Legacy Damped）",
     ],
     physicsStairStepLikely: physicsStair,
     renderStairStepLikely: renderOnlyStair || (renderStair && !physicsStair),

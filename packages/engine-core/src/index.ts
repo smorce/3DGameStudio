@@ -182,10 +182,11 @@ export class Engine {
     this.turnMotionDiagnostics.mode = parsed;
     this.renderer.applyMotionDiagnostics({
       disableRotationInterpolation: parsed === "b",
-      disableCameraFollow: parsed === "c",
+      // C = 旧 Damped（回帰比較用）。A/B は Production Instant。
+      useDampedCameraFollow: parsed === "c",
     });
     this.cameraFollowToggleLog.syncFromRenderer(
-      this.renderer.disableCameraFollow,
+      !this.renderer.useDampedCameraFollow,
     );
   }
 
@@ -196,7 +197,7 @@ export class Engine {
 
   toggleCameraFollowDamping(nowMs = performance.now()) {
     const mode = this.cameraFollowToggleLog.toggleManual(nowMs);
-    this.renderer.disableCameraFollow = mode === "instant";
+    this.renderer.useDampedCameraFollow = mode === "damped";
     return mode;
   }
   private rebaseThisFrame = false;
@@ -213,7 +214,11 @@ export class Engine {
       e.preventDefault();
     this.keys.add(e.code);
     if (e.code === "KeyR") void this.respawnWithPhysicsReady();
-    if (e.code === "KeyV" && this.mode === "PLAY") {
+    if (
+      e.code === "KeyV" &&
+      this.mode === "PLAY" &&
+      this.cameraFollowToggleLog.enabled
+    ) {
       const mode = this.toggleCameraFollowDamping();
       this.cameraFollowToggleAnnounce = mode;
     }
@@ -288,7 +293,7 @@ export class Engine {
     this.turnMotionDiagnostics.reset();
     this.cameraFollowToggleLog.reset();
     this.cameraFollowToggleLog.syncFromRenderer(
-      this.renderer.disableCameraFollow,
+      !this.renderer.useDampedCameraFollow,
     );
     this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
   }
@@ -450,7 +455,7 @@ export class Engine {
           velocity,
           disableRotationInterpolation:
             this.renderer.disableRotationInterpolation,
-          disableCameraFollow: this.renderer.disableCameraFollow,
+          useDampedCameraFollow: this.renderer.useDampedCameraFollow,
         },
       );
       this.renderMs = performance.now() - renderStarted;
@@ -464,8 +469,8 @@ export class Engine {
       const probe = this.renderer.getMotionProbe();
       if (this.cameraFollowToggleLog.enabled) {
         if (this.cameraFollowToggleLog.maybeAutoToggle(now)) {
-          this.renderer.disableCameraFollow =
-            this.cameraFollowToggleLog.mode === "instant";
+          this.renderer.useDampedCameraFollow =
+            this.cameraFollowToggleLog.mode === "damped";
           this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
         }
         this.cameraFollowToggleLog.record({
@@ -777,7 +782,7 @@ export class Engine {
       worldSpeedMps: sample?.worldSpeedMps ?? 0,
       maxJointAnchorErrorM: this.physics.maxJointAnchorErrorM,
       interpolationAlpha: this.interpolationAlpha,
-      cameraFollowInstant: this.renderer.disableCameraFollow ? 1 : 0,
+      cameraFollowInstant: this.renderer.useDampedCameraFollow ? 0 : 1,
       cameraFollowToggleDiag: this.cameraFollowToggleLog.enabled ? 1 : 0,
       shadowTargetX: this.renderer.shadowState.target[0],
       shadowTargetY: this.renderer.shadowState.target[1],

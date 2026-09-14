@@ -84,9 +84,9 @@ export class CameraFollowToggleLog {
     return this._instant ? "instant" : "damped";
   }
 
-  private _instant = false;
+  private _instant = true;
 
-  /** renderer.disableCameraFollow と同期する。 */
+  /** renderer の Instant follow 状態と同期する（!useDampedCameraFollow）。 */
   syncFromRenderer(instant: boolean) {
     this._instant = instant;
   }
@@ -157,7 +157,7 @@ export class CameraFollowToggleLog {
       exportedAtMs: performance.now(),
       autoToggleMs: this.autoToggleMs,
       toggleCount: this.toggleCount,
-      note: "同一PLAY中の Damped↔Instant Camera follow。Physics未変更。Vで手動切替、約3秒で自動切替。",
+      note: "同一PLAY中の Damped↔Instant Camera follow（回帰比較）。Production既定はInstant。Physics未変更。Vで手動切替、約3秒で自動切替。",
       samples: [...this.samples],
       byMode: {
         damped: modeStats(this.samples, "damped"),

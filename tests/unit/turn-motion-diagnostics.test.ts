@@ -10,7 +10,8 @@ describe("turn-motion-diagnostics", () => {
   it("parseMotionDiagMode が a/b/c を解釈する", () => {
     expect(parseMotionDiagMode(null)).toBe("a");
     expect(parseMotionDiagMode("b")).toBe("b");
-    expect(parseMotionDiagMode("instantFollow")).toBe("c");
+    expect(parseMotionDiagMode("dampedFollow")).toBe("c");
+    expect(parseMotionDiagMode("instantFollow")).toBe("a");
   });
 
   it("normalizeQuat + quatAngularDeltaDeg が非正規化でも正しい角を返す", () => {
@@ -24,7 +25,7 @@ describe("turn-motion-diagnostics", () => {
 
   it("旋回検出後は専用配列へ固定し、リング廃棄で欠落しない", () => {
     const diag = new TurnMotionDiagnostics();
-    diag.mode = "c";
+    diag.mode = "a";
     const identity: [number, number, number, number] = [0, 0, 0, 1];
     let yaw = 0;
     // 長時間記録しても窓が固定されること（旧Cの55フレーム問題の回帰防止）。
@@ -65,7 +66,7 @@ describe("turn-motion-diagnostics", () => {
       });
     }
     const dump = diag.dump();
-    expect(dump.modeLabel).toContain("Instant camera follow");
+    expect(dump.modeLabel).toContain("instant camera follow");
     expect(dump.turnStartTimeMs).not.toBeNull();
     expect(dump.windowLocked).toBe(true);
     // 約6秒 @16.7ms ≈ 360。リング廃棄されても十分残る。

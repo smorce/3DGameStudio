@@ -288,10 +288,8 @@ function App() {
     });
     // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
     e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
-    // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。既定ON、?cameraToggle=0 で無効。
-    const cameraToggle =
-      params.get("cameraToggle") === null ||
-      params.get("cameraToggle") === "1";
+    // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。回帰比較用。既定OFF、?cameraToggle=1 で有効。
+    const cameraToggle = params.get("cameraToggle") === "1";
     e.enableCameraFollowToggleDiag(cameraToggle);
     (
       window as unknown as {
@@ -644,9 +642,7 @@ function App() {
               params.get("disableShadow") === "1" ||
               params.get("pixelRatio") === "1" ||
               params.get("spikeEvidence") === "1";
-            const cameraToggle =
-              params.get("cameraToggle") === null ||
-              params.get("cameraToggle") === "1";
+            const cameraToggle = params.get("cameraToggle") === "1";
             const lines: string[] = [];
             if (cameraToggle && current.cameraFollowToggleLog.enabled) {
               const toggle =
@@ -695,7 +691,9 @@ function App() {
         await engine.current?.play();
         setPlaying(engine.current?.mode === "PLAY");
         setMessage(
-          "W / ↑ 進む · A D 曲がる · V で Camera Damped/Instant · 約3秒で自動切替 · Space ブレーキ · R もどる",
+          engine.current?.cameraFollowToggleLog.enabled
+            ? "W / ↑ 進む · A D 曲がる · V で Camera Damped/Instant · 約3秒で自動切替 · Space ブレーキ · R もどる"
+            : "W / ↑ 進む · A D 曲がる · Space ブレーキ · R もどる",
         );
       }
     } catch (e) {

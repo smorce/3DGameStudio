@@ -36,7 +36,7 @@ it("finite worldではRebaseしない", () => {
   expect(runtime.planRebase([400, 0, 0])).toBeUndefined();
 });
 
-it("Camera Followはdt基準で30/60/120fpsでも同じ時定数になる", () => {
+it("Camera Follow Alpha（旧Damped・診断用）はdt基準で30/60/120fpsでも同じ時定数になる", () => {
   const a30 = cameraFollowAlpha(1 / 30);
   const a60 = cameraFollowAlpha(1 / 60);
   const a120 = cameraFollowAlpha(1 / 120);
