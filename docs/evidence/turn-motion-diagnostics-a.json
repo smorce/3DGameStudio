@@ -2,14 +2,14 @@
   "label": "a",
   "family": "turn-motion-diagnostics",
   "query": "",
-  "savedAt": "2026-09-14T08:44:41.622Z",
+  "savedAt": "2026-09-14T23:31:58.589Z",
   "position": [
-    9.176215343131844e-10,
-    0.04235813766717911,
-    0.01050490140914917
+    -0.002572126453742385,
+    0.9088268280029297,
+    1.5254924297332764
   ],
   "dump": {
-    "exportedAtMs": 278079.09999999404,
+    "exportedAtMs": 3813.600000023842,
     "mode": "a",
     "modeLabel": "A: Current (physics interpolation + instant camera follow)",
     "queryHint": "?motionDiag=a（または無し）",

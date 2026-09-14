@@ -1,6 +1,6 @@
 {
   "note": "Motion Smoothness A/B。Thruster/Aero/Steering は未変更。ディスク上の turn-motion-diagnostics-{a,b,c}.json からのみ生成。",
-  "generatedAt": "2026-09-14T08:44:41.635Z",
+  "generatedAt": "2026-09-14T23:31:58.605Z",
   "suspicionOrder": [
     "① Physicsの旋回角速度そのもの",
     "② Fixed Step / 補間",
@@ -23,7 +23,7 @@
   "complete": true,
   "a": {
     "path": "docs/evidence/turn-motion-diagnostics-a.json",
-    "savedAt": "2026-09-14T08:44:41.622Z",
+    "savedAt": "2026-09-14T23:31:58.589Z",
     "mode": "a",
     "modeLabel": "A: Current (physics interpolation + instant camera follow)",
     "turnStartTimeMs": null,
