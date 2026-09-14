@@ -138,6 +138,33 @@ pnpm test:e2e tests/e2e/spike-flight-diagnostics.spec.ts
 
 **注意:** E2E は SwiftShader のため定常 RAF が 50〜67ms になりやすく、絶対値の Spike は環境ノイズです。相対比較と、実機 GPU（録画なし）での確認を優先してください。
 
+## 7b. 旋回 Motion Smoothness 診断（Physics Step 必須）
+
+RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero / Steering 量は変更しない。**
+
+### 手順（コンソール不要）
+
+1. `pnpm dev`
+2. URL（録画しない）:
+   - A 現行: `http://localhost:5183/?motionDiag=a`
+   - B Rotation補間だけOFF: `http://localhost:5183/?motionDiag=b`
+   - C Camera followだけOFF: `http://localhost:5183/?motionDiag=c`
+3. **ひこうき** → **あそぶ** → 直進してから **A/D で約5秒旋回** → **やめる**
+4. ダイアログで保存確認。ファイル:
+   - `docs/evidence/turn-motion-diagnostics-a.json`（など b/c）
+   - 3つ揃うと `docs/evidence/turn-motion-diagnostics.json`（summary）をディスクから再生成
+
+### 記録内容
+
+- Physics Step 単位: `physicsQuaternion` / `physicsAngularVelocity` / step角差
+- RAF 単位: `rafMs` / `physicsStepsThisFrame` / `interpolationAlpha` / `steering` / render・camera Quaternion
+- 旋回開始前1秒＋旋回中5秒の `turnWindowFrames` / `turnWindowPhysicsSteps`
+
+### 読み方（疑い順）
+
+① Physics 旋回角速度 → ② Fixed Step/補間 → ③ Camera follow  
+Bで改善→補間、Cで改善→Camera、Aでも Physics Step が階段→Physics 自体。
+
 ## 8. うまくいかないとき
 
 | 症状                       | 確認                                                            |

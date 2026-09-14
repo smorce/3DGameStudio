@@ -358,7 +358,7 @@ export class Engine {
           const q = leadBody.rotation();
           const w = leadBody.angvel();
           this.turnMotionDiagnostics.recordPhysicsStep({
-            timeMs: now,
+            timeMs: now + physicsStepsThisFrame * (1000 / 60),
             stepIndexInFrame: physicsStepsThisFrame,
             frameTimeMs: this.rafIntervalMs,
             steering: controls.steering ?? 0,

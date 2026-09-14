@@ -151,17 +151,6 @@ function percentile(sorted: number[], p: number) {
   return sorted[index] ?? 0;
 }
 
-function mean(values: number[]) {
-  if (!values.length) return 0;
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-
-function variance(values: number[]) {
-  if (values.length < 2) return 0;
-  const m = mean(values);
-  return mean(values.map((v) => (v - m) ** 2));
-}
-
 function isStairLike(deltas: number[]) {
   if (deltas.length < 12) return false;
   const sorted = [...deltas].sort((a, b) => a - b);
@@ -174,12 +163,12 @@ function isStairLike(deltas: number[]) {
 
 function countAlphaOscillations(alphas: number[]) {
   let transitions = 0;
-  let zone: "low" | "mid" | "high" | null = null;
+  let lastExtreme: "low" | "high" | null = null;
   for (const a of alphas) {
-    const next: "low" | "mid" | "high" =
-      a < 0.2 ? "low" : a > 0.8 ? "high" : "mid";
-    if (zone && zone !== "mid" && next !== "mid" && next !== zone) transitions++;
-    if (next !== "mid") zone = next;
+    const extreme: "low" | "high" | null =
+      a < 0.2 ? "low" : a > 0.8 ? "high" : null;
+    if (extreme && lastExtreme && extreme !== lastExtreme) transitions++;
+    if (extreme) lastExtreme = extreme;
   }
   return transitions;
 }
