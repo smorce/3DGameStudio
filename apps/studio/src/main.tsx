@@ -162,6 +162,11 @@ function App() {
     const fullPlayStats = params.get("fullPlayStats") === "1";
     // 診断用 A/B: ?disableRebase=1 で Origin Rebase を一時スキップ（恒久無効化ではない）。
     e.originRebaseEnabled = params.get("disableRebase") !== "1";
+    // GPU / Fill-rate A/B（録画・Compositor切り分けの次段）。恒久設定ではない。
+    e.renderer.applyDiagnosticsQuality({
+      shadows: params.get("disableShadow") !== "1",
+      maxPixelRatio: params.get("pixelRatio") === "1" ? 1 : 2,
+    });
     (
       window as unknown as {
         __exportSpikeDiagnostics?: () => ReturnType<

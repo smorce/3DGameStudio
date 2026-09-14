@@ -39,6 +39,7 @@ import {
 } from "./part-visuals";
 import { SHADOW_EXTENT_M, cameraFollowAlpha, sunFollowPose } from "./follow";
 import { interpolatePhysicsRenderState } from "./interpolation";
+import { DisjointGpuTimer } from "./gpu-timer";
 export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
 export {
@@ -158,6 +159,10 @@ export class ThreeRenderer implements RendererAdapter {
   private editWorkspace = true;
   private moved = false;
   private pointers = new Set<number>();
+  private gpuTimer!: DisjointGpuTimer;
+  /** 診断 A/B 用。既定は min(DPR, 2)。 */
+  private maxPixelRatio = 2;
+  private antialiasEnabled = true;
   onAttachmentPick?: (id: string) => void;
   onAttachmentHover?: (id?: string) => void;
   onCandidateScreens?: (points: { id: string; x: number; y: number }[]) => void;
@@ -319,10 +324,13 @@ export class ThreeRenderer implements RendererAdapter {
   };
   constructor(readonly canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    this.renderer.setPixelRatio(Math.min(devicePixelRatio, this.maxPixelRatio));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.gpuTimer = new DisjointGpuTimer(
+      this.renderer.getContext() as WebGL2RenderingContext | null,
+    );
     this.camera.position.set(7, 5.5, 8);
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.target.set(0, 0.6, 0);
@@ -374,6 +382,72 @@ export class ThreeRenderer implements RendererAdapter {
     this.renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
     this.camera.aspect = r.width / Math.max(1, r.height);
     this.camera.updateProjectionMatrix();
+  }
+
+  /**
+   * Spike 診断 A/B 用の描画品質切替。恒久設定ではなく query 経由の一時変更向け。
+   * - shadows: false で ShadowMap / sun.castShadow を OFF
+   * - maxPixelRatio: 1 で描画解像度を CSS ピクセル相当に落とす
+   */
+  applyDiagnosticsQuality(options: {
+    shadows?: boolean;
+    maxPixelRatio?: number;
+  }) {
+    if (options.shadows !== undefined) {
+      this.renderer.shadowMap.enabled = options.shadows;
+      this.sun.castShadow = options.shadows;
+    }
+    if (options.maxPixelRatio !== undefined) {
+      this.maxPixelRatio = Math.max(0.5, options.maxPixelRatio);
+      this.renderer.setPixelRatio(
+        Math.min(devicePixelRatio, this.maxPixelRatio),
+      );
+      this.resize();
+    }
+  }
+
+  get diagnosticsEnvironment() {
+    const rect = this.canvas.getBoundingClientRect();
+    const gl = this.renderer.getContext() as WebGL2RenderingContext | null;
+    let webglVendor = "unknown";
+    let webglRenderer = "unknown";
+    if (gl) {
+      const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+      if (debugInfo) {
+        webglVendor = String(
+          gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) ?? "unknown",
+        );
+        webglRenderer = String(
+          gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) ?? "unknown",
+        );
+      } else {
+        webglVendor = String(gl.getParameter(gl.VENDOR) ?? "unknown");
+        webglRenderer = String(gl.getParameter(gl.RENDERER) ?? "unknown");
+      }
+    }
+    const gpu = this.gpuTimer.snapshot();
+    return {
+      canvasCssWidth: Math.round(rect.width),
+      canvasCssHeight: Math.round(rect.height),
+      drawingBufferWidth: this.renderer.domElement.width,
+      drawingBufferHeight: this.renderer.domElement.height,
+      webglVendor,
+      webglRenderer,
+      shadowMapEnabled: this.renderer.shadowMap.enabled,
+      effectivePixelRatio: this.renderer.getPixelRatio(),
+      antialias: this.antialiasEnabled,
+      shadowMapSize: this.sun.shadow.mapSize.x,
+      gpuTimerSupported: gpu.supported,
+      gpuFrameSampleCount: gpu.sampleCount,
+      gpuFrameP50Ms: gpu.p50Ms,
+      gpuFrameP95Ms: gpu.p95Ms,
+      gpuFrameMaxMs: gpu.maxMs,
+      gpuFrameLastMs: gpu.lastMs,
+    };
+  }
+
+  resetGpuTimer() {
+    this.gpuTimer.reset();
   }
   private mesh(geometry: THREE.BufferGeometry, color: string) {
     const m = new THREE.Mesh(
@@ -1039,7 +1113,9 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.update();
     this.updateShadowFollow(this.controls.target.toArray() as Vec3);
     this.updateLodBatches();
+    this.gpuTimer.begin();
     this.renderer.render(this.scene, this.camera);
+    this.gpuTimer.end();
     if (this.onCandidateScreens) {
       const rect = this.canvas.getBoundingClientRect();
       this.onCandidateScreens(
@@ -1154,6 +1230,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.canvas.removeEventListener("pointercancel", this.pointerCancel);
     this.controls.dispose();
     this.streamer?.dispose();
+    this.gpuTimer.dispose();
     this.chunkBuilders.clear();
     this.clearSharedBuiltinTemplates();
     if (this.ownsRuntime) this.worldRuntime?.dispose();

@@ -125,6 +125,8 @@ describe("async streaming foundations", () => {
       true,
     );
     expect(dump.spikeWindows[0]?.frames.length).toBeGreaterThanOrEqual(4);
+    // environment は Engine.exportSpikeDiagnostics 側で付与する。
+    expect(dump.environment).toBeUndefined();
   });
 
   it("prepareChunk は sync generateChunk と heights/entities が一致する", () => {

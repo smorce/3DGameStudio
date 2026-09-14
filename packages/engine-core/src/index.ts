@@ -27,6 +27,7 @@ import {
   type FrameTraceSample,
   type RebaseTimingBreakdown,
   type SpikeDiagnosticsDump,
+  type SpikeEnvironmentSnapshot,
 } from "./spike-diagnostics";
 export type ControlValues = Record<string, number>;
 export { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
@@ -40,6 +41,7 @@ export {
   type RebaseTimingBreakdown,
   type RendererRebaseBreakdown,
   type SpikeDiagnosticsDump,
+  type SpikeEnvironmentSnapshot,
   type SpikeWindow,
 } from "./spike-diagnostics";
 
@@ -239,6 +241,7 @@ export class Engine {
     this.spikeRing.length = 0;
     this.lastSyncGen = 0;
     this.spikeDiagnostics.reset();
+    this.renderer.resetGpuTimer();
     this.rebaseThisFrame = false;
     this.frameRebaseTiming = undefined;
   }
@@ -495,7 +498,7 @@ export class Engine {
   /** Spike / Rebase 診断 JSON（コンソールやファイル保存用）。 */
   exportSpikeDiagnostics(): SpikeDiagnosticsDump {
     const frameTiming = this.frameProfiler.snapshot(this.rafIntervalMs);
-    return this.spikeDiagnostics.dump({
+    const dump = this.spikeDiagnostics.dump({
       originRebaseEnabled: this.originRebaseEnabled,
       spikeCount20ms: this.spikeCount20ms,
       spikeCount33ms: this.spikeCount33ms,
@@ -508,6 +511,31 @@ export class Engine {
       frameP99Ms: frameTiming.p99Ms,
       frameMaxMs: frameTiming.maxMs,
     });
+    return {
+      ...dump,
+      environment: this.collectSpikeEnvironment(),
+    };
+  }
+
+  /** 表示タイミング / GPU / Canvas 解像度の切り分け用メタデータ。 */
+  private collectSpikeEnvironment(): SpikeEnvironmentSnapshot {
+    const renderEnv = this.renderer.diagnosticsEnvironment;
+    const longFrames = [...this.frameProfiler.recentLongFrames];
+    const visibilityState =
+      typeof document !== "undefined"
+        ? String(document.visibilityState)
+        : "unknown";
+    const hasFocus =
+      typeof document !== "undefined" ? Boolean(document.hasFocus()) : false;
+    return {
+      visibilityState,
+      hasFocus,
+      devicePixelRatio:
+        typeof devicePixelRatio === "number" ? devicePixelRatio : 1,
+      longAnimationFrameCount: longFrames.length,
+      recentLongAnimationFrames: longFrames,
+      ...renderEnv,
+    };
   }
   get position(): Vec3 {
     const sim = this.physics.poses().values().next().value?.position ?? [

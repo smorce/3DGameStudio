@@ -75,6 +75,31 @@ export interface SpikeWindow {
   frames: FrameTraceSample[];
 }
 
+/** ブラウザ / GPU / Canvas 側の環境スナップショット（JS 外要因切り分け用）。 */
+export interface SpikeEnvironmentSnapshot {
+  visibilityState: string;
+  hasFocus: boolean;
+  devicePixelRatio: number;
+  canvasCssWidth: number;
+  canvasCssHeight: number;
+  drawingBufferWidth: number;
+  drawingBufferHeight: number;
+  webglVendor: string;
+  webglRenderer: string;
+  longAnimationFrameCount: number;
+  recentLongAnimationFrames: { durationMs: number; startTime: number }[];
+  shadowMapEnabled: boolean;
+  effectivePixelRatio: number;
+  antialias: boolean;
+  shadowMapSize: number;
+  gpuTimerSupported: boolean;
+  gpuFrameSampleCount: number;
+  gpuFrameP50Ms: number;
+  gpuFrameP95Ms: number;
+  gpuFrameMaxMs: number;
+  gpuFrameLastMs: number;
+}
+
 export interface SpikeDiagnosticsDump {
   exportedAtMs: number;
   originRebaseEnabled: boolean;
@@ -92,6 +117,8 @@ export interface SpikeDiagnosticsDump {
   recentRebases: RebaseTimingBreakdown[];
   recentFrames: FrameTraceSample[];
   spikeWindows: SpikeWindow[];
+  /** export 時点の表示・GPU 環境。Engine 側で付与する。 */
+  environment?: SpikeEnvironmentSnapshot;
 }
 
 const FRAME_HISTORY = 96;

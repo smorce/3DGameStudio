@@ -91,7 +91,48 @@ pnpm start:server
 
 → http://localhost:8787 （Studio） / http://localhost:8787/player/ （Player）
 
-## 7. うまくいかないとき
+## 7. Frame Spike 診断（自動フライト / GPU A/B）
+
+Starter Plane を約20秒飛ばし、Spike / 環境メタ / GPU Timer の JSON を採取します。  
+**画面録画はしません**（録画なし baseline）。Origin Rebase 最適化は打ち切り済みで、次の切り分けは GPU / Compositor / 解像度です。
+
+```sh
+pnpm test:e2e tests/e2e/spike-flight-diagnostics.spec.ts
+```
+
+### 採取ケース
+
+| label | query | 目的 |
+| ----- | ----- | ---- |
+| baseline | （なし） | 録画なし・既定描画（AA / Shadow / DPR≤2） |
+| shadow-off | `?disableShadow=1` | Shadow Map OFF |
+| dpr1 | `?pixelRatio=1` | 描画解像度を CSS 相当に落とす |
+| shadow-off-dpr1 | `?disableShadow=1&pixelRatio=1` | 両方 OFF |
+
+### 保存先
+
+| ファイル | 内容 |
+| -------- | ---- |
+| [docs/evidence/spike-flight-summary.json](docs/evidence/spike-flight-summary.json) | A/B 要約（p50/p95/p99・Spike・environment・GPU） |
+| [docs/evidence/spike-flight-baseline.json](docs/evidence/spike-flight-baseline.json) | 録画なし baseline 詳細 |
+| [docs/evidence/spike-flight-shadow-off.json](docs/evidence/spike-flight-shadow-off.json) | Shadow OFF |
+| [docs/evidence/spike-flight-dpr1.json](docs/evidence/spike-flight-dpr1.json) | pixelRatio=1 |
+| [docs/evidence/spike-flight-shadow-off-dpr1.json](docs/evidence/spike-flight-shadow-off-dpr1.json) | 両方 |
+
+### 手動（実機ブラウザ）でも可
+
+1. `pnpm dev` → Studio で **✈️ ひこうき** → **▶ あそぶ** → 約20秒飛行（**録画しない**のが最重要）
+2. コンソールで `__exportSpikeDiagnostics()`（JSON を console 出力＋可能ならクリップボードへ）
+3. A/B: `?disableShadow=1` / `?pixelRatio=1` / 併用。参考比較のみ `?disableRebase=1`
+4. 録画ありで同じ飛行を撮った場合は、録画なし JSON と p95 を比較する
+
+診断 JSON の `environment` には `visibilityState` / `hasFocus` / `devicePixelRatio` / Canvas CSS・DrawingBuffer サイズ / WebGL GPU 名 / Long Animation Frame 件数 / `EXT_disjoint_timer_query_webgl2` 由来の GPU 時間が入ります。
+
+**読み方:** 録画なしだけ正常 → 画面キャプチャ/Compositor主因。Shadow OFF で改善 → Shadow GPU。DPR1 で改善 → Fill Rate。両方でのみ改善 → GPU 総負荷限界。全部変わらない → Chrome/OS/ディスプレイ側。
+
+**注意:** E2E は SwiftShader のため定常 RAF が 50〜67ms になりやすく、絶対値の Spike は環境ノイズです。相対比較と、実機 GPU（録画なし）での確認を優先してください。
+
+## 8. うまくいかないとき
 
 | 症状                       | 確認                                                            |
 | -------------------------- | --------------------------------------------------------------- |
@@ -107,3 +148,4 @@ pnpm start:server
 - [README.md](README.md) … 機能・構成・テスト
 - [docs/progress.md](docs/progress.md) … 完成条件と証拠
 - [KNOWN_ISSUES.md](KNOWN_ISSUES.md) … 既知の制約
+- [docs/evidence/spike-flight-summary.json](docs/evidence/spike-flight-summary.json) … 直近の Spike 診断要約
