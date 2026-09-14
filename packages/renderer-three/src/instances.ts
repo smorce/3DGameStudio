@@ -2,7 +2,11 @@ import * as THREE from "three";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { clone } from "three/addons/utils/SkeletonUtils.js";
-import type { AssetRecord, Project } from "../../project-schema/src/index";
+import type {
+  AssetRecord,
+  Project,
+  Vec3,
+} from "../../project-schema/src/index";
 import {
   builtinEntityDefinition,
   isBuiltinEntityKind,
@@ -243,6 +247,16 @@ export class WorldAssetBatch {
     this.group.userData.updateLod = (camera: THREE.Vector3) =>
       this.update(camera);
     this.load(0);
+  }
+  /** LOD 判定用の Simulation 座標中心。Origin Rebase ではこれも shift する。 */
+  get lodCenter(): Vec3 {
+    return [this.center.x, this.center.y, this.center.z];
+  }
+  /** Origin Rebase 時にカメラ・Chunk と同じ delta で中心をずらす。 */
+  shiftOrigin(delta: Vec3) {
+    this.center.x -= delta[0];
+    this.center.y -= delta[1];
+    this.center.z -= delta[2];
   }
   update(camera: THREE.Vector3) {
     if (this.disposed) return;

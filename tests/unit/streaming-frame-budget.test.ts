@@ -115,4 +115,28 @@ describe("streaming frame budget", () => {
     expect(run(50, 80)).toBeLessThanOrEqual(2);
     expect(run(305, 335)).toBeLessThanOrEqual(2);
   });
+
+  it("create が undefined のとき予算を消費せず Ready 済みを優先する", () => {
+    const ready = new Set(["0,0"]);
+    const created: string[] = [];
+    const streamer = new ChunkStreamer(
+      (key) => {
+        if (!ready.has(key)) return undefined;
+        created.push(key);
+        return key;
+      },
+      () => {},
+      32,
+      1,
+      2,
+      { maxCreatesPerUpdate: 2, budgetMs: 50, urgentRadius: 0 },
+    );
+    // 半径1で 9 Chunk が active。先頭が未準備でも Ready 済みを作れる。
+    const stats = streamer.update([0, 0, 0]);
+    expect(created).toEqual(["0,0"]);
+    expect(stats.created).toBe(1);
+    expect(streamer.pending.has("1,0") || streamer.pending.size > 0).toBe(true);
+    expect(streamer.loaded.has("0,0")).toBe(true);
+    streamer.dispose();
+  });
 });

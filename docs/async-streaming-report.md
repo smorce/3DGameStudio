@@ -67,10 +67,11 @@ Fixed Step 1/60・補間・Engine Rebase Transaction は維持。
 
 - `pnpm typecheck` PASS
 - `pnpm test` 213 PASS（Ready Queue 分離・terrainEdit・既存 Streaming 含む）
+- 追従修正後: `pnpm test` 217 PASS（詳細は [async-streaming-followup-report.md](async-streaming-followup-report.md)）
 
 ## 7. 残 Known Issues
 
-- Physics Terrain Collider の chunk-local + translation 化は未完了（simulation 座標 trimesh を維持）
+- Physics Terrain Collider の真の chunk-local + translation 化は未完了。当面は PreparedChunk を Simulation 座標へ TypedArray 直焼きした Standalone Trimesh（車両コントローラ互換）
 - headless probe の frame time は WebGL を含まない
 - Browser 実 Worker の p95/p99 は CI 絶対 Fail 条件にしていない
 - 空力簡易モデル、Rapier deprecated 警告は従来どおり

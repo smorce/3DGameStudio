@@ -139,20 +139,26 @@ export class ChunkStreamer<T> {
     let urgentCreated = 0;
     let syncFallback = 0;
 
-    const tryCreate = (key: string, force: boolean) => {
+    /** created=成功, skip=未準備など, budget=予算切れで打ち切り */
+    const tryCreate = (
+      key: string,
+      force: boolean,
+    ): "created" | "skip" | "budget" => {
       if (this.loaded.has(key)) {
         this.pending.delete(key);
-        return false;
+        return "skip";
       }
       if (
         !force &&
         (created >= this.maxCreates ||
           performance.now() - started >= this.budgetMs)
       )
-        return false;
+        return "budget";
       const value = this.create(key);
+      // 未準備なら pending を残し、予算も消費しない（Ready 済みを優先）。
+      if (value === undefined) return "skip";
       this.pending.delete(key);
-      if (value !== undefined) this.loaded.set(key, value);
+      this.loaded.set(key, value);
       created++;
       if (force && this.urgentRadius < unlimited) {
         urgentCreated++;
@@ -161,7 +167,7 @@ export class ChunkStreamer<T> {
           this.syncFallbackTotal++;
         }
       }
-      return true;
+      return "created";
     };
 
     for (const key of urgent) tryCreate(key, true);
@@ -172,7 +178,7 @@ export class ChunkStreamer<T> {
       return pa - pb;
     });
     for (const key of ranked) {
-      if (!tryCreate(key, false)) break;
+      if (tryCreate(key, false) === "budget") break;
     }
 
     const retained = visibleChunks(position, this.size, this.unloadRadius);
@@ -197,10 +203,7 @@ export class ChunkStreamer<T> {
    * Physics Critical 用: urgent 半径内の不足 Chunk だけ Collider を作る。
    * Prefetch / 予算付き一般 Create は行わない。
    */
-  commitUrgent(
-    position: Vec3,
-    velocity?: Vec3,
-  ): ChunkStreamerUpdateStats {
+  commitUrgent(position: Vec3, velocity?: Vec3): ChunkStreamerUpdateStats {
     const urgent =
       this.urgentRadius < unlimited
         ? visibleChunks(position, this.size, this.urgentRadius)
@@ -216,8 +219,9 @@ export class ChunkStreamer<T> {
     for (const key of urgent) {
       if (this.loaded.has(key)) continue;
       const value = this.create(key);
+      if (value === undefined) continue;
       this.pending.delete(key);
-      if (value !== undefined) this.loaded.set(key, value);
+      this.loaded.set(key, value);
       created++;
     }
     this.lastStats = {

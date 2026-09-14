@@ -27,6 +27,7 @@ import {
 import {
   PrefetchRetentionState,
   visibleChunks,
+  visibleChunksWithPrefetch,
 } from "../../world-system/src/chunks";
 import { preparedChunkLocalOrigin } from "../../world-system/src/runtime";
 import { type AttachmentCandidate } from "../../machine-system/src/index";
@@ -686,6 +687,8 @@ export class ThreeRenderer implements RendererAdapter {
         }
         for (const build of this.chunkBuilders.get(key) ?? []) build(group);
         if (!group.children.length) return;
+        // 編集ワークスペースでは新規 Chunk も最初から非表示。
+        group.visible = !this.editWorkspace;
         this.root.add(group);
         this.chunks.set(key, group);
         return group;
@@ -731,18 +734,20 @@ export class ThreeRenderer implements RendererAdapter {
     this.scene.fog = showWorld ? new THREE.FogExp2(sky, fogDensity) : null;
     if (this.gridHelper) this.gridHelper.visible = showWorld;
     if (this.waterMesh) this.waterMesh.visible = showWorld;
-    for (const chunk of this.chunks.values()) chunk.visible = showWorld;
+    const chunkGroups = new Set(this.chunks.values());
+    for (const chunk of chunkGroups) chunk.visible = showWorld;
     const machines = new Set(this.machines.values());
     for (const child of this.root.children) {
       if (machines.has(child as THREE.Group)) continue;
       if (child === this.gridHelper || child === this.waterMesh) continue;
-      if ([...this.chunks.values()].includes(child as THREE.Group)) continue;
+      if (chunkGroups.has(child as THREE.Group)) continue;
       // 道路・ゲートなど地形まわりも編集中は出さない。
       child.visible = showWorld;
     }
   }
   setEditMachineLift(enabled: boolean) {
     // 互換API名。実体は編集ワークスペース（地面非表示＋カメラ制限）の切替。
+    if (this.editWorkspace === enabled) return;
     this.editWorkspace = enabled;
     this.applyEditWorkspaceVisuals();
   }
@@ -758,6 +763,7 @@ export class ThreeRenderer implements RendererAdapter {
       group.position.x -= delta[0];
       group.position.z -= delta[2];
     }
+    for (const batch of this.lodBatches) batch.shiftOrigin(delta);
     const machines = new Set(this.machines.values());
     for (const child of this.root.children) {
       if (machines.has(child as THREE.Group)) continue;
@@ -899,8 +905,10 @@ export class ThreeRenderer implements RendererAdapter {
     const poses = interpolated?.poses;
     const wheels = interpolated?.wheels;
     if (poses) {
-      this.editWorkspace = false;
-      this.applyEditWorkspaceVisuals();
+      if (this.editWorkspace) {
+        this.editWorkspace = false;
+        this.applyEditWorkspaceVisuals();
+      }
       for (const [id, p] of poses) {
         const m = this.parts.get(id);
         if (m) {
@@ -946,9 +954,11 @@ export class ThreeRenderer implements RendererAdapter {
         this.controls.target.lerp(target, follow);
       }
     } else if (this.project) {
-      this.editWorkspace = true;
+      if (!this.editWorkspace) {
+        this.editWorkspace = true;
+        this.applyEditWorkspaceVisuals();
+      }
       this.syncProjectPartTransforms(this.project);
-      this.applyEditWorkspaceVisuals();
     }
     this.highlighted.visible = !poses;
     this.selectionOutline.visible = !poses;
@@ -957,23 +967,40 @@ export class ThreeRenderer implements RendererAdapter {
     const velocity = options?.velocity ?? this.lastVelocity;
     if (velocity) this.lastVelocity = velocity;
     if (this.worldRuntime) {
-      const keys = new Set<string>();
       const size = this.worldRuntime.chunkSize;
       const radius = this.worldRuntime.procedural
         ? poses
           ? RENDER_CHUNK_RADIUS
           : EDITOR_CHUNK_RADIUS
         : 2;
-      for (const key of visibleChunks(global, size, radius)) keys.add(key);
+      const visible = visibleChunks(global, size, radius);
+      const keys =
+        poses && this.worldRuntime.procedural
+          ? visibleChunksWithPrefetch(global, size, radius, velocity, {
+              aheadMax: renderStreaming.prefetchAheadMax,
+              futureHorizonsSec: renderStreaming.futureHorizonsSec,
+              retention: this.prefetchRetention,
+              retentionSec: renderStreaming.retentionSec,
+              direction: this.streamer?.direction,
+            })
+          : visible;
       this.worldRuntime.acquire(poses ? "renderer" : "editor", keys);
-      this.worldRuntime.requestChunks(
-        [...keys].map((key) => ({
+      this.worldRuntime.requestChunks([
+        ...[...visible].map((key) => ({
           key,
           priority: poses
             ? ("P2_VISIBLE_RENDER" as const)
             : ("P4_EDITOR" as const),
         })),
-      );
+        ...(poses
+          ? [...keys]
+              .filter((key) => !visible.has(key))
+              .map((key) => ({
+                key,
+                priority: "P3_RENDER_PREFETCH" as const,
+              }))
+          : []),
+      ]);
       this.worldRuntime.enqueuePrefetch(keys);
       // Frame 遅延時は Render Commit を skip 可能。
       const skipCommit = (options.dt ?? 0) > 0.033;
@@ -988,8 +1015,6 @@ export class ThreeRenderer implements RendererAdapter {
         normalsMs: this.drainNormalsMs(),
       };
     }
-    // ストリーミングで新規chunkが入っても編集中は地面を出さない。
-    if (this.editWorkspace) this.applyEditWorkspaceVisuals();
     if (this.waterMesh) {
       this.waterMesh.position.x = this.camera.position.x;
       this.waterMesh.position.z = this.camera.position.z;

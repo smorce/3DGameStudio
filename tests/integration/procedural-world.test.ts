@@ -93,6 +93,64 @@ it("Origin Rebase後もglobal位置と速度が連続する", async () => {
   physics.dispose();
 });
 
+it("Physics TerrainはPreparedからTypedArrayへ直接焼き、Rebase後も地面を維持する", async () => {
+  const rapier = await import("@dimforge/rapier3d-compat");
+  const project = emptyProject();
+  Object.assign(project.world, createStarterWorld({ preset: "airfield" }));
+  project.machines = [planeTemplate()];
+  const runtime = new WorldRuntime(project.world);
+  const physics = new RapierPhysics();
+  await physics.load(project, { world: runtime });
+  const chunkX = 3;
+  const size = runtime.chunkSize;
+  const focusX = chunkX * size + size / 2;
+  const focusZ = size / 2;
+  physics.respawn([focusX, 2, focusZ]);
+  for (let i = 0; i < 30; i++) physics.step({ throttle: 0 });
+
+  expect(physics.stats.terrainChunkColliders).toBeGreaterThan(0);
+  const prepared = runtime.peekPreparedChunk(`${chunkX},0`);
+  expect(prepared).toBeTruthy();
+  // meshFor と同じ Simulation 座標になっている（number[] 経由ではないが結果は一致）。
+  const mesh = runtime.meshFor(`${chunkX},0`)!;
+  expect(mesh.vertices.length).toBe(prepared!.positions.length);
+
+  const probeX = focusX + 10;
+  const probeZ = focusZ + 10;
+  const hitBefore = physics.world!.castRay(
+    new rapier.Ray({ x: probeX, y: 10, z: probeZ }, { x: 0, y: -1, z: 0 }),
+    20,
+    true,
+  );
+  expect(hitBefore).toBeTruthy();
+  expect(10 - hitBefore!.timeOfImpact!).toBeCloseTo(
+    runtime.sampleHeight(probeX, probeZ) ?? 0,
+    0,
+  );
+
+  const plan = runtime.planRebase([focusX, 0, focusZ]);
+  expect(plan).toBeDefined();
+  physics.shiftOrigin(plan!.delta);
+  runtime.commitRebase(plan!);
+  physics.step({ throttle: 0 });
+
+  const hitAfter = physics.world!.castRay(
+    new rapier.Ray(
+      { x: probeX - plan!.delta[0], y: 10, z: probeZ - plan!.delta[2] },
+      { x: 0, y: -1, z: 0 },
+    ),
+    20,
+    true,
+  );
+  expect(hitAfter).toBeTruthy();
+  expect(10 - hitAfter!.timeOfImpact!).toBeCloseTo(
+    runtime.sampleHeight(probeX, probeZ) ?? 0,
+    0,
+  );
+  physics.dispose();
+  runtime.dispose();
+});
+
 it("100km相当のChunk遷移でもCacheはBounded", () => {
   const runtime = new WorldRuntime(
     createStarterWorld({ preset: "grassland" }),

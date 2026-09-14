@@ -10,6 +10,7 @@ import {
   generatedEntityColliders,
   isBuiltinEntityKind,
   PrefetchRetentionState,
+  preparedChunkLocalOrigin,
   visibleChunks,
   visibleChunksWithPrefetch,
   worldCollidersForEntity,
@@ -410,13 +411,27 @@ export class RapierPhysics {
         }
     };
     const createTerrainCollider = (key: string) => {
-      // 衝突精度を優先し、当面は simulation 座標 trimesh を使う。
-      // Chunk-local + translation 化は別タスクで進める。
-      const chunk = this.worldRuntime?.meshFor(key);
-      if (!chunk || chunk.vertices.length < 9) return;
+      // PreparedChunk の local 頂点を Simulation 座標へ焼き込んで Standalone Trimesh にする。
+      // ColliderDesc.setTranslation / Fixed Body 親付けは Rapier の
+      // DynamicRayCastVehicleController と組み合わせると接地が壊れるため使わない。
+      // meshFor() の number[] 経由は避け、TypedArray へ直接焼く。
+      if (this.worldRuntime && !this.worldRuntime.isPlayHotPath)
+        this.worldRuntime.getChunk(key);
+      const prepared = this.worldRuntime?.peekPreparedChunk(key);
+      if (!prepared || prepared.positions.length < 9) return;
+      const origin = preparedChunkLocalOrigin(
+        prepared,
+        this.worldRuntime!.worldOrigin,
+      );
+      const vertices = new Float32Array(prepared.positions.length);
+      for (let i = 0; i < prepared.positions.length; i += 3) {
+        vertices[i] = prepared.positions[i] + origin[0];
+        vertices[i + 1] = prepared.positions[i + 1];
+        vertices[i + 2] = prepared.positions[i + 2] + origin[2];
+      }
       return rapier.ColliderDesc.trimesh(
-        new Float32Array(chunk.vertices),
-        new Uint32Array(chunk.indices),
+        vertices,
+        new Uint32Array(prepared.indices),
       ).setFriction(1.4);
     };
     if (!this.worldRuntime?.procedural) {
