@@ -152,6 +152,18 @@ it("サーバーの検索→取込→キャッシュ→GLB配信と永続化", a
     });
     expect(res.status).toBe(200);
     expect(await (await fetch(`${base}/api/project`)).json()).toEqual(p);
+    const evidence = await fetch(`${base}/api/evidence`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        label: "test-pipeline",
+        query: "",
+        dump: { frameP95Ms: 16.7 },
+      }),
+    });
+    expect(evidence.status).toBe(200);
+    const evidenceBody = (await evidence.json()) as { path: string };
+    expect(evidenceBody.path).toBe("docs/evidence/spike-flight-test-pipeline.json");
     const forbidden = await fetch(`${base}/api/jobs`, {
       method: "POST",
       headers: {

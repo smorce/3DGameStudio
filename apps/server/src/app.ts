@@ -291,6 +291,29 @@ export async function createApp(
     );
     res.json({ saved: true });
   });
+  /** Spike 診断 JSON を docs/evidence/ へ保存（Studio の「やめる」から自動投稿）。 */
+  app.post("/api/evidence", async (req, res) => {
+    const rawLabel = String(req.body?.label ?? "baseline");
+    const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
+    if (!label) {
+      res.status(400).json({ error: "Invalid evidence label" });
+      return;
+    }
+    const evidenceDir = path.resolve("docs/evidence");
+    await mkdir(evidenceDir, { recursive: true });
+    const relativePath = `docs/evidence/spike-flight-${label}.json`;
+    const absolutePath = path.join(evidenceDir, `spike-flight-${label}.json`);
+    const payload = {
+      label,
+      query: typeof req.body?.query === "string" ? req.body.query : "",
+      savedAt: new Date().toISOString(),
+      hud: typeof req.body?.hud === "string" ? req.body.hud : undefined,
+      position: req.body?.position,
+      dump: req.body?.dump ?? req.body,
+    };
+    await writeFile(absolutePath, JSON.stringify(payload, null, 2));
+    res.json({ saved: true, path: relativePath });
+  });
   app.get("/api/project", async (_req, res) =>
     res.json(
       parseProject(

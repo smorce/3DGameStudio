@@ -47,6 +47,45 @@ type PlacementSession = {
   movingPartId?: string;
   sourcePartId?: string;
 };
+
+/** URL クエリから evidence ファイル名用ラベルを作る。 */
+function spikeEvidenceLabelFromQuery(search = location.search) {
+  const params = new URLSearchParams(search);
+  const parts: string[] = [];
+  if (params.get("disableShadow") === "1") parts.push("shadow-off");
+  if (params.get("pixelRatio") === "1") parts.push("dpr1");
+  if (params.get("disableRebase") === "1") parts.push("disable-rebase");
+  return parts.length ? parts.join("-") : "baseline";
+}
+
+/** Spike 診断を Server 経由で docs/evidence/ に保存する。 */
+async function saveSpikeEvidenceToServer(
+  engine: Engine,
+  label = spikeEvidenceLabelFromQuery(),
+  hud?: string,
+) {
+  const dump = engine.exportSpikeDiagnostics();
+  const res = await fetch("/api/evidence", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      label,
+      query: location.search,
+      hud,
+      position: engine.position,
+      dump,
+    }),
+  });
+  const data = (await res.json().catch(() => ({}))) as {
+    path?: string;
+    error?: string;
+  };
+  if (!res.ok) {
+    throw new Error(data.error ?? `Evidence save failed (${res.status})`);
+  }
+  return data.path ?? `docs/evidence/spike-flight-${label}.json`;
+}
+
 const bus = new CommandBus(emptyProject());
 function App() {
   const [project, setProject] = useState(bus.project),
@@ -169,18 +208,22 @@ function App() {
     });
     (
       window as unknown as {
-        __exportSpikeDiagnostics?: () => ReturnType<
+        __exportSpikeDiagnostics?: (label?: string) => ReturnType<
           Engine["exportSpikeDiagnostics"]
         >;
+        __saveSpikeEvidence?: (label?: string) => Promise<string>;
       }
-    ).__exportSpikeDiagnostics = () => {
+    ).__exportSpikeDiagnostics = (label = "manual") => {
       const dump = e.exportSpikeDiagnostics();
       console.info("[spike-diagnostics]", dump);
-      void navigator.clipboard
-        ?.writeText(JSON.stringify(dump, null, 2))
-        .catch(() => undefined);
+      void saveSpikeEvidenceToServer(e, label);
       return dump;
     };
+    (
+      window as unknown as {
+        __saveSpikeEvidence?: (label?: string) => Promise<string>;
+      }
+    ).__saveSpikeEvidence = (label) => saveSpikeEvidenceToServer(e, label);
     e.onFrame = () => {
       if (performance.now() - lastStats > 250) {
         lastStats = performance.now();
@@ -481,6 +524,23 @@ function App() {
     setBusy(true);
     try {
       if (playing) {
+        const current = engine.current;
+        if (current) {
+          try {
+            const path = await saveSpikeEvidenceToServer(
+              current,
+              spikeEvidenceLabelFromQuery(),
+            );
+            const text = `診断JSONを保存した:\n${path}`;
+            setMessage(text.replace("\n", " "));
+            // 画面メッセージは見逃しやすいのでダイアログでも知らせる。
+            window.alert(text);
+          } catch (e) {
+            const text = `Evidence save failed. Is pnpm dev (server :8787) running?\n${String(e)}`;
+            setMessage(text.replace("\n", " "));
+            window.alert(text);
+          }
+        }
         await engine.current?.stop();
         setPlaying(false);
       } else {

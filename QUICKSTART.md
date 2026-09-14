@@ -119,12 +119,19 @@ pnpm test:e2e tests/e2e/spike-flight-diagnostics.spec.ts
 | [docs/evidence/spike-flight-dpr1.json](docs/evidence/spike-flight-dpr1.json) | pixelRatio=1 |
 | [docs/evidence/spike-flight-shadow-off-dpr1.json](docs/evidence/spike-flight-shadow-off-dpr1.json) | 両方 |
 
-### 手動（実機ブラウザ）でも可
+### 手動（実機ブラウザ・コンソール不要）
 
-1. `pnpm dev` → Studio で **✈️ ひこうき** → **▶ あそぶ** → 約20秒飛行（**録画しない**のが最重要）
-2. コンソールで `__exportSpikeDiagnostics()`（JSON を console 出力＋可能ならクリップボードへ）
-3. A/B: `?disableShadow=1` / `?pixelRatio=1` / 併用。参考比較のみ `?disableRebase=1`
-4. 録画ありで同じ飛行を撮った場合は、録画なし JSON と p95 を比較する
+1. `pnpm dev`（Studio + Server が必要。`/api/evidence` が `docs/evidence/` に書く）
+2. URL を選ぶ（録画しない）:
+   - baseline: `http://localhost:5183/`
+   - Shadow OFF: `http://localhost:5183/?disableShadow=1`
+   - DPR1: `http://localhost:5183/?pixelRatio=1`
+   - 両方: `http://localhost:5183/?disableShadow=1&pixelRatio=1`
+3. **✈️ ひこうき** → **▶ あそぶ** → 約20秒飛行 → **■ やめる**
+4. 画面メッセージに `診断JSONを保存した: docs/evidence/spike-flight-….json` と出る  
+   → ファイルはリポジトリの `docs/evidence/` に上書き保存される
+
+コンソール操作は不要です。
 
 診断 JSON の `environment` には `visibilityState` / `hasFocus` / `devicePixelRatio` / Canvas CSS・DrawingBuffer サイズ / WebGL GPU 名 / Long Animation Frame 件数 / `EXT_disjoint_timer_query_webgl2` 由来の GPU 時間が入ります。
 
