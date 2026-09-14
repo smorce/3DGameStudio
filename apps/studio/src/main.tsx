@@ -137,6 +137,35 @@ async function saveTurnMotionEvidenceToServer(engine: Engine) {
   };
 }
 
+/** 同一PLAY中 Camera follow 切替ログを保存。 */
+async function saveCameraFollowToggleEvidenceToServer(engine: Engine) {
+  const dump = engine.exportCameraFollowToggleDiagnostics();
+  const res = await fetch("/api/evidence", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      family: "camera-follow-toggle",
+      label: "toggle",
+      query: location.search,
+      position: engine.position,
+      dump,
+    }),
+  });
+  const data = (await res.json().catch(() => ({}))) as {
+    path?: string;
+    error?: string;
+  };
+  if (!res.ok) {
+    throw new Error(data.error ?? `Camera toggle save failed (${res.status})`);
+  }
+  return {
+    path: data.path ?? "docs/evidence/camera-follow-toggle.json",
+    byMode: dump.byMode,
+    toggleCount: dump.toggleCount,
+    sampleCount: dump.samples.length,
+  };
+}
+
 const bus = new CommandBus(emptyProject());
 function App() {
   const [project, setProject] = useState(bus.project),
@@ -259,6 +288,11 @@ function App() {
     });
     // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
     e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
+    // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。既定ON、?cameraToggle=0 で無効。
+    const cameraToggle =
+      params.get("cameraToggle") === null ||
+      params.get("cameraToggle") === "1";
+    e.enableCameraFollowToggleDiag(cameraToggle);
     (
       window as unknown as {
         __exportSpikeDiagnostics?: (label?: string) => ReturnType<
@@ -610,21 +644,35 @@ function App() {
               params.get("disableShadow") === "1" ||
               params.get("pixelRatio") === "1" ||
               params.get("spikeEvidence") === "1";
-            // 既定は Motion 診断を保存。Spike A/B クエリ時のみ Spike も保存。
-            const turn = await saveTurnMotionEvidenceToServer(current);
-            const sep = turn.separation;
-            const lines = [
-              `Motion診断を保存: ${turn.path}`,
-              turn.modeLabel,
-              turn.turnStartTimeMs == null
-                ? "警告: 旋回入力が検出されなかった（A/Dで約5秒旋回して再試行）"
-                : "turnStart検出 OK",
-              `判定 physics=${sep.physics} interp=${sep.interpolation} camera=${sep.camera}`,
-              turn.summaryComplete
-                ? `summary更新: ${turn.summaryPath}`
-                : `summary未完了（不足: ${turn.summaryMissing.join(", ") || "—"}）`,
-              ...turn.notes.slice(0, 2),
-            ];
+            const cameraToggle =
+              params.get("cameraToggle") === null ||
+              params.get("cameraToggle") === "1";
+            const lines: string[] = [];
+            if (cameraToggle && current.cameraFollowToggleLog.enabled) {
+              const toggle =
+                await saveCameraFollowToggleEvidenceToServer(current);
+              lines.push(
+                `Camera切替ログ: ${toggle.path}`,
+                `toggles=${toggle.toggleCount} samples=${toggle.sampleCount}`,
+                `damped screenP95=${toggle.byMode.damped.vehicleScreenDeltaP95.toFixed(2)} lagP95=${toggle.byMode.damped.vehicleToTargetDistanceP95.toFixed(2)}`,
+                `instant screenP95=${toggle.byMode.instant.vehicleScreenDeltaP95.toFixed(2)} lagP95=${toggle.byMode.instant.vehicleToTargetDistanceP95.toFixed(2)}`,
+              );
+            } else {
+              const turn = await saveTurnMotionEvidenceToServer(current);
+              const sep = turn.separation;
+              lines.push(
+                `Motion診断を保存: ${turn.path}`,
+                turn.modeLabel,
+                turn.turnStartTimeMs == null
+                  ? "警告: 旋回入力が検出されなかった（A/Dで約5秒旋回して再試行）"
+                  : "turnStart検出 OK",
+                `判定 physics=${sep.physics} interp=${sep.interpolation} camera=${sep.camera}`,
+                turn.summaryComplete
+                  ? `summary更新: ${turn.summaryPath}`
+                  : `summary未完了（不足: ${turn.summaryMissing.join(", ") || "—"}）`,
+                ...turn.notes.slice(0, 2),
+              );
+            }
             if (spikeQuery) {
               const saved = await saveSpikeEvidenceToServer(
                 current,
@@ -646,7 +694,9 @@ function App() {
       } else {
         await engine.current?.play();
         setPlaying(engine.current?.mode === "PLAY");
-        setMessage("W / ↑ で進む · A D で曲がる · Space ブレーキ · R でもどる");
+        setMessage(
+          "W / ↑ 進む · A D 曲がる · V で Camera Damped/Instant · 約3秒で自動切替 · Space ブレーキ · R もどる",
+        );
       }
     } catch (e) {
       setMessage(String(e));
@@ -970,6 +1020,17 @@ function App() {
                   {(stats.originRebaseEnabled ?? 1) === 0
                     ? " · rebaseOFF"
                     : ""}
+                </span>
+                <br />
+                <span>
+                  CamFollow{" "}
+                  {(stats.cameraFollowInstant ?? 0) === 1
+                    ? "INSTANT"
+                    : "DAMPED"}
+                  {(stats.cameraFollowToggleDiag ?? 0) === 1
+                    ? " · V切替/3s自動"
+                    : ""}{" "}
+                  · α {(stats.interpolationAlpha ?? 0).toFixed(2)}
                 </span>
                 <br />
                 <span>

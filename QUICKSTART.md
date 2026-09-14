@@ -166,6 +166,19 @@ RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero 
 Bで改善→補間、**C（Instant follow）で改善→Camera damping**、Aでも Physics Step が階段→Physics 自体。  
 `cameraAngularDelta≈0` は「Camera問題なし」ではない（平行追従では向きが変わらない）。
 
+## 7c. 同一PLAY中 Camera Damped ↔ Instant 切替（最短決着）
+
+大きな診断を増やさず、**同じ飛行・同じPhysics**のまま Camera follow だけ切り替える。
+
+1. `pnpm dev` → `http://localhost:5183/?cameraToggle=1`（省略時も既定ON。無効は `?cameraToggle=0`）
+2. ひこうき → あそぶ → 旋回しながら飛行
+3. **V** で手動切替、または **約3秒ごと自動**で Damped ↔ Instant
+4. HUD の `CamFollow DAMPED|INSTANT` を見ながらカクつきが連動するか確認
+5. やめる → `docs/evidence/camera-follow-toggle.json` に軽量ログ保存  
+   （`vehicleToTargetDistance` / `vehicleScreenDelta` / `physicsStepsThisFrame` / `interpolationAlpha` + mode）
+
+Instant 区間だけ滑らかなら Camera follow damping が主因でほぼ決着。
+
 ## 8. うまくいかないとき
 
 | 症状                       | 確認                                                            |

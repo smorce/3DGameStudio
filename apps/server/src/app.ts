@@ -293,7 +293,7 @@ export async function createApp(
     );
     res.json({ saved: true });
   });
-  /** Spike / Turn-Motion 診断 JSON を docs/evidence/ へ保存。 */
+  /** Spike / Turn-Motion / Camera-toggle 診断 JSON を docs/evidence/ へ保存。 */
   app.post("/api/evidence", async (req, res) => {
     const dump = req.body?.dump ?? req.body;
     const looksLikeTurnMotion =
@@ -302,21 +302,34 @@ export async function createApp(
       ("turnWindowFrames" in dump ||
         "turnWindowPhysicsSteps" in dump ||
         dump.modeLabel);
+    const looksLikeCameraToggle =
+      dump &&
+      typeof dump === "object" &&
+      Array.isArray((dump as { samples?: unknown }).samples) &&
+      "byMode" in dump;
     const familyRaw = String(
       req.body?.family ??
-        (looksLikeTurnMotion ? "turn-motion" : "spike-flight"),
+        (looksLikeCameraToggle
+          ? "camera-follow-toggle"
+          : looksLikeTurnMotion
+            ? "turn-motion"
+            : "spike-flight"),
     );
     const family =
-      familyRaw === "turn-motion" ||
-      familyRaw === "turn-motion-diagnostics" ||
-      looksLikeTurnMotion
-        ? "turn-motion-diagnostics"
-        : "spike-flight";
+      familyRaw === "camera-follow-toggle"
+        ? "camera-follow-toggle"
+        : familyRaw === "turn-motion" ||
+            familyRaw === "turn-motion-diagnostics" ||
+            (looksLikeTurnMotion && !looksLikeCameraToggle)
+          ? "turn-motion-diagnostics"
+          : "spike-flight";
     const rawLabel = String(
       req.body?.label ??
         (family === "spike-flight"
           ? "baseline"
-          : String((dump as { mode?: string })?.mode ?? "a")),
+          : family === "camera-follow-toggle"
+            ? "toggle"
+            : String((dump as { mode?: string })?.mode ?? "a")),
     );
     const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
     if (!label) {
@@ -326,9 +339,11 @@ export async function createApp(
     const evidenceDir = path.resolve("docs/evidence");
     await mkdir(evidenceDir, { recursive: true });
     const fileName =
-      family === "turn-motion-diagnostics"
-        ? `turn-motion-diagnostics-${label}.json`
-        : `spike-flight-${label}.json`;
+      family === "camera-follow-toggle"
+        ? "camera-follow-toggle.json"
+        : family === "turn-motion-diagnostics"
+          ? `turn-motion-diagnostics-${label}.json`
+          : `spike-flight-${label}.json`;
     const relativePath = `docs/evidence/${fileName}`;
     const absolutePath = path.join(evidenceDir, fileName);
     const payload = {
@@ -341,6 +356,16 @@ export async function createApp(
       dump,
     };
     await writeFile(absolutePath, JSON.stringify(payload, null, 2));
+    if (family === "camera-follow-toggle") {
+      res.json({
+        saved: true,
+        path: relativePath,
+        summaryUpdated: false,
+        summaryPath: undefined,
+        summaryMissing: [],
+      });
+      return;
+    }
     const summaryResult =
       family === "turn-motion-diagnostics"
         ? await writeTurnMotionSummaryFromDisk(evidenceDir)

@@ -35,6 +35,7 @@ import {
   type MotionDiagMode,
   type TurnMotionDump,
 } from "./turn-motion-diagnostics";
+import { CameraFollowToggleLog } from "./camera-follow-toggle-log";
 export type ControlValues = Record<string, number>;
 export { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
 export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
@@ -50,6 +51,12 @@ export {
   type SpikeEnvironmentSnapshot,
   type SpikeWindow,
 } from "./spike-diagnostics";
+export {
+  CameraFollowToggleLog,
+  type CameraFollowMode,
+  type CameraFollowToggleDump,
+  type CameraFollowToggleSample,
+} from "./camera-follow-toggle-log";
 export {
   TurnMotionDiagnostics,
   parseMotionDiagMode,
@@ -163,6 +170,7 @@ export class Engine {
   readonly frameProfiler = new FrameProfiler(900);
   readonly spikeDiagnostics = new SpikeDiagnostics();
   readonly turnMotionDiagnostics = new TurnMotionDiagnostics();
+  readonly cameraFollowToggleLog = new CameraFollowToggleLog();
   /**
    * 診断用 A/B。false にすると Origin Rebase Transaction をスキップする。
    * Production 設定として恒久無効化してはならない。
@@ -176,9 +184,25 @@ export class Engine {
       disableRotationInterpolation: parsed === "b",
       disableCameraFollow: parsed === "c",
     });
+    this.cameraFollowToggleLog.syncFromRenderer(
+      this.renderer.disableCameraFollow,
+    );
+  }
+
+  /** 同一PLAY中の Damped↔Instant 切替ログを有効化。 */
+  enableCameraFollowToggleDiag(enabled = true) {
+    this.cameraFollowToggleLog.enabled = enabled;
+  }
+
+  toggleCameraFollowDamping(nowMs = performance.now()) {
+    const mode = this.cameraFollowToggleLog.toggleManual(nowMs);
+    this.renderer.disableCameraFollow = mode === "instant";
+    return mode;
   }
   private rebaseThisFrame = false;
   private frameRebaseTiming?: RebaseTimingBreakdown;
+  /** HUD 用: 直近の Camera follow 切替結果。 */
+  cameraFollowToggleAnnounce?: "damped" | "instant";
   private keyDown = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.matches("input,textarea,select")) return;
     if (
@@ -189,6 +213,10 @@ export class Engine {
       e.preventDefault();
     this.keys.add(e.code);
     if (e.code === "KeyR") void this.respawnWithPhysicsReady();
+    if (e.code === "KeyV" && this.mode === "PLAY") {
+      const mode = this.toggleCameraFollowDamping();
+      this.cameraFollowToggleAnnounce = mode;
+    }
   };
   private keyUp = (e: KeyboardEvent) => {
     this.keys.delete(e.code);
@@ -258,6 +286,11 @@ export class Engine {
     this.frameProfiler.reset();
     this.resetSpikeDiagnostics();
     this.turnMotionDiagnostics.reset();
+    this.cameraFollowToggleLog.reset();
+    this.cameraFollowToggleLog.syncFromRenderer(
+      this.renderer.disableCameraFollow,
+    );
+    this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
   }
   /** 診断カウンタとリングを PLAY 開始時にリセットする。 */
   resetSpikeDiagnostics() {
@@ -429,6 +462,22 @@ export class Engine {
         leadCurrent;
       const ang = body?.angvel();
       const probe = this.renderer.getMotionProbe();
+      if (this.cameraFollowToggleLog.enabled) {
+        if (this.cameraFollowToggleLog.maybeAutoToggle(now)) {
+          this.renderer.disableCameraFollow =
+            this.cameraFollowToggleLog.mode === "instant";
+          this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
+        }
+        this.cameraFollowToggleLog.record({
+          timeMs: now,
+          rafMs: this.rafIntervalMs,
+          physicsStepsThisFrame,
+          interpolationAlpha: this.interpolationAlpha,
+          vehicleRenderPosition: probe.vehicleRenderPosition,
+          cameraTarget: probe.target,
+          vehicleScreenXY: probe.vehicleScreenXY,
+        });
+      }
       this.turnMotionDiagnostics.recordRaf({
         timeMs: now,
         rafMs: this.rafIntervalMs,
@@ -593,6 +642,11 @@ export class Engine {
     return this.turnMotionDiagnostics.dump();
   }
 
+  /** 同一PLAY中 Camera follow 切替ログ。 */
+  exportCameraFollowToggleDiagnostics() {
+    return this.cameraFollowToggleLog.dump();
+  }
+
   /** 表示タイミング / GPU / Canvas 解像度の切り分け用メタデータ。 */
   private collectSpikeEnvironment(): SpikeEnvironmentSnapshot {
     const renderEnv = this.renderer.diagnosticsEnvironment;
@@ -723,6 +777,8 @@ export class Engine {
       worldSpeedMps: sample?.worldSpeedMps ?? 0,
       maxJointAnchorErrorM: this.physics.maxJointAnchorErrorM,
       interpolationAlpha: this.interpolationAlpha,
+      cameraFollowInstant: this.renderer.disableCameraFollow ? 1 : 0,
+      cameraFollowToggleDiag: this.cameraFollowToggleLog.enabled ? 1 : 0,
       shadowTargetX: this.renderer.shadowState.target[0],
       shadowTargetY: this.renderer.shadowState.target[1],
       shadowTargetZ: this.renderer.shadowState.target[2],
