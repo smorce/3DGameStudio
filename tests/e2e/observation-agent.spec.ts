@@ -43,8 +43,9 @@ async function loadScenarioProject(
     }),
   );
   project.machines.push(planeTemplate());
-  await page.goto("about:blank");
-  await page.evaluate((value) => {
+  // about:blank では Chromium が localStorage を拒否するため、
+  // browser-runner と同様に HTTP オリジンへ投入してから遷移する。
+  await page.addInitScript((value) => {
     localStorage.setItem("machine-studio.project", JSON.stringify(value));
   }, project);
   await page.goto("/?agent=1&observe=1");
