@@ -1,6 +1,6 @@
 {
   "note": "Motion Smoothness A/B。Thruster/Aero/Steering は未変更。ディスク上の turn-motion-diagnostics-{a,b,c}.json からのみ生成。",
-  "generatedAt": "2026-09-14T05:09:51.333Z",
+  "generatedAt": "2026-09-14T05:12:31.900Z",
   "suspicionOrder": [
     "① Physicsの旋回角速度そのもの",
     "② Fixed Step / 補間",
@@ -22,19 +22,19 @@
   "complete": true,
   "a": {
     "path": "docs/evidence/turn-motion-diagnostics-a.json",
-    "savedAt": "2026-09-14T05:06:04.013Z",
+    "savedAt": "2026-09-14T05:12:31.882Z",
     "mode": "a",
     "modeLabel": "A: Current (physics interpolation + camera follow)",
-    "turnStartTimeMs": 18532.2,
-    "rafCount": 361,
-    "physicsStepCount": 361,
+    "turnStartTimeMs": 22310.4,
+    "rafCount": 360,
+    "physicsStepCount": 360,
     "steeringPeak": 1,
-    "physicsDeltaP95": 0.3296085844279477,
-    "renderDeltaP95": 0.32774714544699957,
-    "cameraDeltaP95": 0.0000029575586669421963,
+    "physicsDeltaP95": 0.2545041745670024,
+    "renderDeltaP95": 0.24962053558871858,
+    "cameraDeltaP95": 0.0000024148365394514667,
     "alphaLowHighTransitions": 0,
     "physicsStepsHistogram": {
-      "1": 361
+      "1": 360
     },
     "verdict": {
       "physicsStairStepLikely": false,
@@ -88,34 +88,36 @@
   },
   "c": {
     "path": "docs/evidence/turn-motion-diagnostics-c.json",
-    "savedAt": "2026-09-14T05:07:15.981Z",
+    "savedAt": "2026-09-14T05:11:56.332Z",
     "mode": "c",
     "modeLabel": "C: Camera follow OFF",
-    "turnStartTimeMs": 11959.2,
-    "rafCount": 55,
-    "physicsStepCount": 361,
+    "turnStartTimeMs": 64794.5,
+    "rafCount": 361,
+    "physicsStepCount": 360,
     "steeringPeak": 1,
-    "physicsDeltaP95": 0.3165879675545611,
-    "renderDeltaP95": 0.31573890813045485,
+    "physicsDeltaP95": 0.3490965562414234,
+    "renderDeltaP95": 0.35280730467659843,
     "cameraDeltaP95": 0.0000024148365394514667,
-    "alphaLowHighTransitions": 0,
+    "alphaLowHighTransitions": 159,
     "physicsStepsHistogram": {
-      "1": 55
+      "0": 80,
+      "1": 202,
+      "2": 79
     },
     "verdict": {
       "physicsStairStepLikely": false,
       "renderStairStepLikely": false,
       "cameraOnlyJumpLikely": false,
-      "alphaOscillationLikely": false,
+      "alphaOscillationLikely": true,
       "physicsStepsAlternatingLikely": false,
       "separation": {
         "physics": "unlikely",
-        "interpolation": "unlikely",
+        "interpolation": "likely",
         "camera": "unlikely",
         "recording": "not_assessed_here"
       },
       "notes": [
-        "自動判定では明確な階段・カメラ単独ジャンプは弱い。A/B（b=rot補間OFF / c=camera follow OFF）と目視を突き合わせること。"
+        "interpolationAlpha が 0付近と1付近を不規則に往復している可能性。"
       ]
     }
   }

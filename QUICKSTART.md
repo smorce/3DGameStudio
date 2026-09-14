@@ -146,9 +146,9 @@ RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero 
 
 1. `pnpm dev`
 2. URL（録画しない）:
-   - A 現行: `http://localhost:5183/?motionDiag=a`
+   - A 現行（damped camera follow）: `http://localhost:5183/?motionDiag=a`
    - B Rotation補間だけOFF: `http://localhost:5183/?motionDiag=b`
-   - C Camera followだけOFF: `http://localhost:5183/?motionDiag=c`
+   - C Instant camera follow / damping OFF: `http://localhost:5183/?motionDiag=c`
 3. **ひこうき** → **あそぶ** → 直進してから **A/D で約5秒旋回** → **やめる**
 4. ダイアログで保存確認。ファイル:
    - `docs/evidence/turn-motion-diagnostics-a.json`（など b/c）
@@ -156,14 +156,15 @@ RAF/GPU が正常でも旋回カクつきが残る場合用。**Thruster / Aero 
 
 ### 記録内容
 
-- Physics Step 単位: `physicsQuaternion` / `physicsAngularVelocity` / step角差
-- RAF 単位: `rafMs` / `physicsStepsThisFrame` / `interpolationAlpha` / `steering` / render・camera Quaternion
-- 旋回開始前1秒＋旋回中5秒の `turnWindowFrames` / `turnWindowPhysicsSteps`
+- Physics Step 単位: `physicsQuaternion`（正規化） / `physicsAngularVelocity` / step角差
+- RAF 単位: 機体描画位置 / `controls.target` / `camera.position` / Target距離 / Camera・Target移動量 / **画面投影XYとその移動量**
+- 旋回検出時点で前1秒＋後5秒を**専用配列へ固定**（リング廃棄で欠落しない）
 
 ### 読み方（疑い順）
 
-① Physics 旋回角速度 → ② Fixed Step/補間 → ③ Camera follow  
-Bで改善→補間、Cで改善→Camera、Aでも Physics Step が階段→Physics 自体。
+① Physics 旋回角速度 → ② Fixed Step/補間 → ③ Camera follow damping  
+Bで改善→補間、**C（Instant follow）で改善→Camera damping**、Aでも Physics Step が階段→Physics 自体。  
+`cameraAngularDelta≈0` は「Camera問題なし」ではない（平行追従では向きが変わらない）。
 
 ## 8. うまくいかないとき
 

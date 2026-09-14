@@ -55,6 +55,7 @@ export {
   parseMotionDiagMode,
   motionDiagModeLabel,
   quatAngularDeltaDeg,
+  normalizeQuat,
   type MotionDiagMode,
   type TurnMotionDump,
   type TurnPhysicsStepSample,
@@ -427,7 +428,7 @@ export class Engine {
         this.previousRenderState?.poses.values().next().value?.rotation ??
         leadCurrent;
       const ang = body?.angvel();
-      const cam = this.renderer.getMotionCameraState();
+      const probe = this.renderer.getMotionProbe();
       this.turnMotionDiagnostics.recordRaf({
         timeMs: now,
         rafMs: this.rafIntervalMs,
@@ -438,9 +439,11 @@ export class Engine {
         physicsPreviousQuaternion: leadPrevious,
         renderQuaternion: this.renderer.lastLeadRenderQuaternion,
         physicsAngularVelocity: ang ? [ang.x, ang.y, ang.z] : [0, 0, 0],
-        cameraPosition: cam.position,
-        cameraTarget: cam.target,
-        cameraQuaternion: cam.quaternion,
+        vehicleRenderPosition: probe.vehicleRenderPosition,
+        cameraPosition: probe.position,
+        cameraTarget: probe.target,
+        cameraQuaternion: probe.quaternion,
+        vehicleScreenXY: probe.vehicleScreenXY,
       });
       if (dropping && now >= this.dropUntil) {
         this.physics.dispose();

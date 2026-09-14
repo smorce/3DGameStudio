@@ -172,6 +172,8 @@ export class ThreeRenderer implements RendererAdapter {
   disableCameraFollow = false;
   /** 直近 render の先頭機体 Quaternion（補間後）。 */
   lastLeadRenderQuaternion: [number, number, number, number] = [0, 0, 0, 1];
+  /** 直近 render の先頭機体位置（補間後）。 */
+  lastLeadRenderPosition: [number, number, number] = [0, 0, 0];
   onAttachmentPick?: (id: string) => void;
   onAttachmentHover?: (id?: string) => void;
   onCandidateScreens?: (points: { id: string; x: number; y: number }[]) => void;
@@ -425,9 +427,22 @@ export class ThreeRenderer implements RendererAdapter {
       this.disableCameraFollow = options.disableCameraFollow;
   }
 
-  /** Motion 診断用: 描画直後の Camera 状態。 */
-  getMotionCameraState() {
+  /** Motion 診断用: 描画直後の機体位置・Camera・画面投影。 */
+  getMotionProbe() {
+    const rect = this.canvas.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
+    const projected = new THREE.Vector3(
+      ...this.lastLeadRenderPosition,
+    ).project(this.camera);
+    const screenX = ((projected.x + 1) / 2) * width;
+    const screenY = ((1 - projected.y) / 2) * height;
     return {
+      vehicleRenderPosition: [
+        this.lastLeadRenderPosition[0],
+        this.lastLeadRenderPosition[1],
+        this.lastLeadRenderPosition[2],
+      ] as [number, number, number],
       position: this.camera.position.toArray() as [number, number, number],
       target: this.controls.target.toArray() as [number, number, number],
       quaternion: this.camera.quaternion.toArray() as [
@@ -436,6 +451,18 @@ export class ThreeRenderer implements RendererAdapter {
         number,
         number,
       ],
+      vehicleScreenXY: [screenX, screenY] as [number, number],
+      canvasSize: [width, height] as [number, number],
+    };
+  }
+
+  /** @deprecated getMotionProbe を使う。 */
+  getMotionCameraState() {
+    const probe = this.getMotionProbe();
+    return {
+      position: probe.position,
+      target: probe.target,
+      quaternion: probe.quaternion,
     };
   }
 
@@ -1073,6 +1100,11 @@ export class ThreeRenderer implements RendererAdapter {
           first.rotation[1],
           first.rotation[2],
           first.rotation[3],
+        ];
+        this.lastLeadRenderPosition = [
+          first.position[0],
+          first.position[1],
+          first.position[2],
         ];
         const target = new THREE.Vector3(...first.position);
         const cameraFollowOff =
