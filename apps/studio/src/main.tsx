@@ -158,8 +158,24 @@ function App() {
     let lastStats = 0;
     // A/B: PLAY 中は既定で fastStats（root.traverse なし）。
     // 比較時のみ ?fullPlayStats=1 で従来のフル stats に戻す。
-    const fullPlayStats =
-      new URLSearchParams(location.search).get("fullPlayStats") === "1";
+    const params = new URLSearchParams(location.search);
+    const fullPlayStats = params.get("fullPlayStats") === "1";
+    // 診断用 A/B: ?disableRebase=1 で Origin Rebase を一時スキップ（恒久無効化ではない）。
+    e.originRebaseEnabled = params.get("disableRebase") !== "1";
+    (
+      window as unknown as {
+        __exportSpikeDiagnostics?: () => ReturnType<
+          Engine["exportSpikeDiagnostics"]
+        >;
+      }
+    ).__exportSpikeDiagnostics = () => {
+      const dump = e.exportSpikeDiagnostics();
+      console.info("[spike-diagnostics]", dump);
+      void navigator.clipboard
+        ?.writeText(JSON.stringify(dump, null, 2))
+        .catch(() => undefined);
+      return dump;
+    };
     e.onFrame = () => {
       if (performance.now() - lastStats > 250) {
         lastStats = performance.now();
@@ -243,7 +259,12 @@ function App() {
       }
       if (!placementRef.current) setSelected(id);
     };
-    return () => e.dispose();
+    return () => {
+      delete (
+        window as unknown as { __exportSpikeDiagnostics?: unknown }
+      ).__exportSpikeDiagnostics;
+      e.dispose();
+    };
   }, []);
   useEffect(() => {
     void engine.current?.load(project);
@@ -759,19 +780,43 @@ function App() {
                 </span>
                 <br />
                 <span>
-                  RAF {(stats.rafIntervalMs ?? 0).toFixed(1)}ms · p95{" "}
-                  {(stats.frameP95Ms ?? 0).toFixed(1)} · CPU{" "}
+                  RAF {(stats.rafIntervalMs ?? 0).toFixed(1)}ms · max{" "}
+                  {(stats.frameMaxMs ?? 0).toFixed(1)} · p95{" "}
+                  {(stats.frameP95Ms ?? 0).toFixed(1)} · p99{" "}
+                  {(stats.frameP99Ms ?? 0).toFixed(1)} · CPU{" "}
                   {(stats.cpuWorkMs ?? 0).toFixed(1)} · UI{" "}
                   {(stats.uiUpdateMs ?? 0).toFixed(1)} · Commit{" "}
                   {(
                     (stats.renderCommitMs ?? 0) + (stats.physicsCommitMs ?? 0)
                   ).toFixed(1)}
                   ms · Queue {stats.pendingQueueCount ?? 0} · W{" "}
-                  {stats.workerInFlight ?? 0}/{stats.workerCount ?? 0} · Spike{" "}
+                  {stats.workerInFlight ?? 0}/{stats.workerCount ?? 0}
+                </span>
+                <br />
+                <span>
+                  Spike {">"}20/{">"}33/{">"}50{" "}
                   {stats.spikeCount20ms ?? 0}/{stats.spikeCount33ms ?? 0}/
-                  {stats.spikeCount50ms ?? 0} · SyncFb{" "}
+                  {stats.spikeCount50ms ?? 0} · early{" "}
+                  {stats.earlySpikeCount20ms ?? 0}/
+                  {stats.earlySpikeCount33ms ?? 0}/
+                  {stats.earlySpikeCount50ms ?? 0} · SyncFb{" "}
                   {stats.syncGenerationFallbackCount ?? 0}
                   {(stats.playStatsFast ?? 0) === 1 ? " · fastStats" : ""}
+                  {(stats.originRebaseEnabled ?? 1) === 0
+                    ? " · rebaseOFF"
+                    : ""}
+                </span>
+                <br />
+                <span>
+                  RebaseMs {(stats.rebaseTotalMs ?? 0).toFixed(2)} (P{" "}
+                  {(stats.physicsRebaseMs ?? 0).toFixed(2)} / R{" "}
+                  {(stats.rendererRebaseMs ?? 0).toFixed(2)} / C{" "}
+                  {(stats.runtimeCommitRebaseMs ?? 0).toFixed(2)} / T{" "}
+                  {(stats.telemetrySyncMs ?? 0).toFixed(2)}) · RB{" "}
+                  {stats.rebaseRigidBodyCount ?? 0} · SC{" "}
+                  {stats.rebaseStandaloneColliderCount ?? 0} · Ch{" "}
+                  {stats.rebaseChunkCount ?? 0} · LOD{" "}
+                  {stats.rebaseLodBatchCount ?? 0}
                 </span>
                 <br />
                 <span

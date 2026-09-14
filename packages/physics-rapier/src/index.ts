@@ -1229,15 +1229,32 @@ export class RapierPhysics {
       ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
       : undefined;
   }
+  /** 直近 Origin Rebase の Physics 内訳（診断用）。 */
+  lastRebaseBreakdown = {
+    moveRigidBodiesMs: 0,
+    moveStandaloneCollidersMs: 0,
+    propagateCollidersMs: 0,
+    ccdToggleMs: 0,
+    rigidBodyCount: 0,
+    colliderCount: 0,
+    standaloneColliderCount: 0,
+  };
+
   shiftOrigin(delta: Vec3) {
     if (!this.world) return;
     if (delta[0] === 0 && delta[1] === 0 && delta[2] === 0) return;
     const ccd = new Map<number, boolean>();
+    let rigidBodyCount = 0;
+    let standaloneColliderCount = 0;
+    const ccdStarted = performance.now();
     this.world.forEachRigidBody((body) => {
       ccd.set(body.handle, body.isCcdEnabled());
       if (body.isCcdEnabled()) body.enableCcd(false);
     });
+    const ccdDisableMs = performance.now() - ccdStarted;
+    const bodiesStarted = performance.now();
     this.world.forEachRigidBody((body) => {
+      rigidBodyCount++;
       const translation = body.translation(),
         linear = body.linvel(),
         angular = body.angvel(),
@@ -1254,8 +1271,11 @@ export class RapierPhysics {
       body.setLinvel(linear, false);
       body.setAngvel(angular, false);
     });
+    const moveRigidBodiesMs = performance.now() - bodiesStarted;
+    const collidersStarted = performance.now();
     this.world.forEachCollider((collider) => {
       if (collider.parent()) return;
+      standaloneColliderCount++;
       const translation = collider.translation();
       collider.setTranslation({
         x: translation.x - delta[0],
@@ -1263,10 +1283,25 @@ export class RapierPhysics {
         z: translation.z - delta[2],
       });
     });
+    const moveStandaloneCollidersMs = performance.now() - collidersStarted;
+    const propagateStarted = performance.now();
     this.world.propagateModifiedBodyPositionsToColliders();
+    const propagateCollidersMs = performance.now() - propagateStarted;
+    const ccdRestoreStarted = performance.now();
     this.world.forEachRigidBody((body) => {
       if (ccd.get(body.handle)) body.enableCcd(true);
     });
+    const ccdToggleMs =
+      ccdDisableMs + (performance.now() - ccdRestoreStarted);
+    this.lastRebaseBreakdown = {
+      moveRigidBodiesMs,
+      moveStandaloneCollidersMs,
+      propagateCollidersMs,
+      ccdToggleMs,
+      rigidBodyCount,
+      colliderCount: this.world.colliders.len(),
+      standaloneColliderCount,
+    };
   }
   /** Rebase後に最新Telemetryのsimulation/originを現在座標系へ揃える。 */
   syncOriginTelemetry() {

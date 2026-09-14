@@ -751,6 +751,12 @@ export class ThreeRenderer implements RendererAdapter {
     this.editWorkspace = enabled;
     this.applyEditWorkspaceVisuals();
   }
+  /** 直近 Origin Rebase の Renderer 件数（診断用）。 */
+  lastRebaseBreakdown = {
+    chunkCount: 0,
+    lodBatchCount: 0,
+  };
+
   shiftOrigin(delta: Vec3) {
     this.camera.position.x -= delta[0];
     this.camera.position.y -= delta[1];
@@ -779,6 +785,10 @@ export class ThreeRenderer implements RendererAdapter {
     this.sun.target.position.y -= delta[1];
     this.sun.target.position.z -= delta[2];
     this.controls.update();
+    this.lastRebaseBreakdown = {
+      chunkCount: chunkGroups.size,
+      lodBatchCount: this.lodBatches.size,
+    };
   }
   applyOriginShift(delta: Vec3) {
     this.shiftOrigin(delta);

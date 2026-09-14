@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { FrameProfiler } from "../../packages/engine-core/src/frame-profiler";
+import {
+  FrameProfiler,
+  SpikeDiagnostics,
+} from "../../packages/engine-core/src/index";
 import {
   prepareChunk,
   preparedChunkTransferList,
@@ -38,6 +41,90 @@ describe("async streaming foundations", () => {
     expect(snap.p50Ms).toBeGreaterThan(0);
     expect(snap.over33_3).toBeGreaterThanOrEqual(1);
     expect(snap.maxMs).toBeGreaterThanOrEqual(40);
+  });
+
+  it("SpikeDiagnostics がスパイク前後フレームを JSON dump に残す", () => {
+    const diagnostics = new SpikeDiagnostics();
+    const base = {
+      cpuWorkMs: 1,
+      uiUpdateMs: 0,
+      physicsStepMs: 1,
+      renderMs: 1,
+      renderCommitMs: 0,
+      physicsCommitMs: 0,
+      streamingRequestMs: 0,
+      streamingCommitMs: 0,
+      chunksCreated: 0,
+      syncGenDelta: 0,
+      rebaseCount: 0,
+      rebaseThisFrame: false,
+      rebaseTotalMs: 0,
+      physicsRebaseMs: 0,
+      rendererRebaseMs: 0,
+      runtimeCommitRebaseMs: 0,
+      telemetrySyncMs: 0,
+      moveRigidBodiesMs: 0,
+      moveStandaloneCollidersMs: 0,
+      propagateCollidersMs: 0,
+      ccdToggleMs: 0,
+      rigidBodyCount: 2,
+      colliderCount: 4,
+      standaloneColliderCount: 1,
+      chunkCount: 8,
+      lodBatchCount: 3,
+      workerQueued: 0,
+      workerInFlight: 0,
+      drawCalls: 10,
+      triangles: 100,
+      positionZ: 10,
+    };
+    for (let i = 0; i < 5; i++) {
+      diagnostics.recordFrame({
+        ...base,
+        timeMs: i * 16.7,
+        rafIntervalMs: 16.7,
+        positionZ: i,
+      });
+    }
+    diagnostics.recordFrame({
+      ...base,
+      timeMs: 100,
+      rafIntervalMs: 48,
+      rebaseThisFrame: true,
+      rebaseTotalMs: 12,
+      physicsRebaseMs: 10,
+      rebaseCount: 1,
+      positionZ: 185,
+    });
+    diagnostics.noteSpike(48);
+    for (let i = 0; i < 3; i++) {
+      diagnostics.recordFrame({
+        ...base,
+        timeMs: 116 + i * 16.7,
+        rafIntervalMs: 16.7,
+        rebaseCount: 1,
+        positionZ: 190 + i,
+      });
+    }
+    const dump = diagnostics.dump({
+      originRebaseEnabled: true,
+      spikeCount20ms: 1,
+      spikeCount33ms: 1,
+      spikeCount50ms: 0,
+      earlySpikeCount20ms: 0,
+      earlySpikeCount33ms: 0,
+      earlySpikeCount50ms: 0,
+      frameP50Ms: 16.7,
+      frameP95Ms: 16.8,
+      frameP99Ms: 48,
+      frameMaxMs: 48,
+    });
+    expect(dump.spikeWindows.length).toBe(1);
+    expect(dump.spikeWindows[0]?.spikeRafIntervalMs).toBe(48);
+    expect(dump.spikeWindows[0]?.frames.some((f) => f.rebaseThisFrame)).toBe(
+      true,
+    );
+    expect(dump.spikeWindows[0]?.frames.length).toBeGreaterThanOrEqual(4);
   });
 
   it("prepareChunk は sync generateChunk と heights/entities が一致する", () => {

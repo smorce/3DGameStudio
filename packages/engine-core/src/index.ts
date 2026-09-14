@@ -18,12 +18,30 @@ import type {
 } from "../../runtime-telemetry/src/index";
 import { FrameProfiler } from "./frame-profiler";
 import { shiftPhysicsRenderState } from "./interpolation";
-import { commitWorldOriginShift } from "./rebase";
+import {
+  commitWorldOriginShift,
+  takeLastOriginShiftTiming,
+} from "./rebase";
+import {
+  SpikeDiagnostics,
+  type FrameTraceSample,
+  type RebaseTimingBreakdown,
+  type SpikeDiagnosticsDump,
+} from "./spike-diagnostics";
 export type ControlValues = Record<string, number>;
-export { commitWorldOriginShift } from "./rebase";
+export { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
 export { shiftPhysicsRenderState, shiftPose } from "./interpolation";
 export { FrameProfiler } from "./frame-profiler";
 export type { FrameTimingSnapshot } from "./frame-profiler";
+export {
+  SpikeDiagnostics,
+  type FrameTraceSample,
+  type PhysicsRebaseBreakdown,
+  type RebaseTimingBreakdown,
+  type RendererRebaseBreakdown,
+  type SpikeDiagnosticsDump,
+  type SpikeWindow,
+} from "./spike-diagnostics";
 
 export interface FrameSpikeSample {
   timeMs: number;
@@ -46,9 +64,28 @@ export interface FrameSpikeSample {
   workerInFlight: number;
   /** @deprecated cpuWorkMs と同値。互換用。 */
   frameTimeMs: number;
+  rebaseThisFrame?: boolean;
+  rebaseTotalMs?: number;
+  physicsRebaseMs?: number;
+  rendererRebaseMs?: number;
+  runtimeCommitRebaseMs?: number;
+  telemetrySyncMs?: number;
 }
 
 const SPIKE_RING = 32;
+const emptyPhysicsBreakdown = () => ({
+  moveRigidBodiesMs: 0,
+  moveStandaloneCollidersMs: 0,
+  propagateCollidersMs: 0,
+  ccdToggleMs: 0,
+  rigidBodyCount: 0,
+  colliderCount: 0,
+  standaloneColliderCount: 0,
+});
+const emptyRendererBreakdown = () => ({
+  chunkCount: 0,
+  lodBatchCount: 0,
+});
 const clampControl = (value: number) =>
   Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
 export function aggregateControlChannels(
@@ -97,9 +134,21 @@ export class Engine {
   private spikeCount20ms = 0;
   private spikeCount33ms = 0;
   private spikeCount50ms = 0;
+  /** Rebase 前（rebaseCount===0）に出たスパイク。別原因の切り分け用。 */
+  private earlySpikeCount20ms = 0;
+  private earlySpikeCount33ms = 0;
+  private earlySpikeCount50ms = 0;
   private readonly spikeRing: FrameSpikeSample[] = [];
   private lastSyncGen = 0;
   readonly frameProfiler = new FrameProfiler(900);
+  readonly spikeDiagnostics = new SpikeDiagnostics();
+  /**
+   * 診断用 A/B。false にすると Origin Rebase Transaction をスキップする。
+   * Production 設定として恒久無効化してはならない。
+   */
+  originRebaseEnabled = true;
+  private rebaseThisFrame = false;
+  private frameRebaseTiming?: RebaseTimingBreakdown;
   private keyDown = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.matches("input,textarea,select")) return;
     if (
@@ -177,6 +226,21 @@ export class Engine {
     this.currentRenderState = undefined;
     this.interpolationAlpha = 1;
     this.frameProfiler.reset();
+    this.resetSpikeDiagnostics();
+  }
+  /** 診断カウンタとリングを PLAY 開始時にリセットする。 */
+  resetSpikeDiagnostics() {
+    this.spikeCount20ms = 0;
+    this.spikeCount33ms = 0;
+    this.spikeCount50ms = 0;
+    this.earlySpikeCount20ms = 0;
+    this.earlySpikeCount33ms = 0;
+    this.earlySpikeCount50ms = 0;
+    this.spikeRing.length = 0;
+    this.lastSyncGen = 0;
+    this.spikeDiagnostics.reset();
+    this.rebaseThisFrame = false;
+    this.frameRebaseTiming = undefined;
   }
   private async respawnWithPhysicsReady() {
     const point = this.course?.respawn;
@@ -228,6 +292,8 @@ export class Engine {
     this.fps = dt ? Math.round(1 / dt) : 60;
     if (this.mode !== "EDIT" && !this.physics.world) this.mode = "EDIT";
     let velocity: Vec3 | undefined;
+    this.rebaseThisFrame = false;
+    this.frameRebaseTiming = undefined;
     if (this.mode === "PLAY" || this.mode === "DROP") {
       const dropping = this.mode === "DROP";
       this.accumulator += dt;
@@ -259,7 +325,7 @@ export class Engine {
         const global = simulation
           ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
           : undefined;
-        if (global && this.worldRuntime) {
+        if (global && this.worldRuntime && this.originRebaseEnabled) {
           const plan = commitWorldOriginShift(
             this.worldRuntime,
             this.physics,
@@ -267,6 +333,12 @@ export class Engine {
             global,
           );
           if (plan) {
+            this.rebaseThisFrame = true;
+            const timing = takeLastOriginShiftTiming();
+            if (timing) {
+              this.frameRebaseTiming = timing;
+              this.spikeDiagnostics.recordRebase(timing);
+            }
             this.currentRenderState = this.physics.renderState();
             if (this.previousRenderState)
               this.previousRenderState = shiftPhysicsRenderState(
@@ -334,10 +406,62 @@ export class Engine {
     const chunksCreated =
       (renderStats.renderChunksCreated ?? 0) +
       (physicsStats.physicsChunksCreated ?? 0);
+    const rebaseTiming = this.frameRebaseTiming;
+    const physicsBreakdown =
+      rebaseTiming?.physics ?? emptyPhysicsBreakdown();
+    const rendererBreakdown =
+      rebaseTiming?.renderer ?? emptyRendererBreakdown();
+    const rebaseCount = world?.rebaseCount ?? 0;
+    const trace: FrameTraceSample = {
+      timeMs: now,
+      rafIntervalMs: this.rafIntervalMs,
+      cpuWorkMs: this.cpuWorkMs,
+      uiUpdateMs: this.uiUpdateMs,
+      physicsStepMs: this.physicsStepMs,
+      renderMs: this.renderMs,
+      renderCommitMs: renderStats.renderCommitMs ?? 0,
+      physicsCommitMs: physicsStats.physicsCommitMs ?? 0,
+      streamingRequestMs: world?.streamingRequestMs ?? 0,
+      streamingCommitMs: world?.streamingCommitMs ?? 0,
+      chunksCreated,
+      syncGenDelta,
+      rebaseCount,
+      rebaseThisFrame: this.rebaseThisFrame,
+      rebaseTotalMs: rebaseTiming?.rebaseTotalMs ?? 0,
+      physicsRebaseMs: rebaseTiming?.physicsRebaseMs ?? 0,
+      rendererRebaseMs: rebaseTiming?.rendererRebaseMs ?? 0,
+      runtimeCommitRebaseMs: rebaseTiming?.runtimeCommitRebaseMs ?? 0,
+      telemetrySyncMs: rebaseTiming?.telemetrySyncMs ?? 0,
+      moveRigidBodiesMs: physicsBreakdown.moveRigidBodiesMs,
+      moveStandaloneCollidersMs: physicsBreakdown.moveStandaloneCollidersMs,
+      propagateCollidersMs: physicsBreakdown.propagateCollidersMs,
+      ccdToggleMs: physicsBreakdown.ccdToggleMs,
+      rigidBodyCount:
+        physicsBreakdown.rigidBodyCount || physicsStats.rigidBodies || 0,
+      colliderCount:
+        physicsBreakdown.colliderCount || physicsStats.colliders || 0,
+      standaloneColliderCount: physicsBreakdown.standaloneColliderCount,
+      chunkCount:
+        rendererBreakdown.chunkCount || renderStats.loadedChunks || 0,
+      lodBatchCount:
+        rendererBreakdown.lodBatchCount || renderStats.lodBatchCount || 0,
+      workerQueued: world?.workerQueued ?? 0,
+      workerInFlight: world?.workerInFlight ?? 0,
+      drawCalls: renderStats.drawCalls ?? 0,
+      triangles: renderStats.triangles ?? 0,
+      positionZ: this.position[2],
+    };
+    this.spikeDiagnostics.recordFrame(trace);
     if (this.rafIntervalMs > 20) this.spikeCount20ms++;
     if (this.rafIntervalMs > 33.3) this.spikeCount33ms++;
     if (this.rafIntervalMs > 50) this.spikeCount50ms++;
+    if (rebaseCount === 0) {
+      if (this.rafIntervalMs > 20) this.earlySpikeCount20ms++;
+      if (this.rafIntervalMs > 33.3) this.earlySpikeCount33ms++;
+      if (this.rafIntervalMs > 50) this.earlySpikeCount50ms++;
+    }
     if (this.rafIntervalMs > 20) {
+      this.spikeDiagnostics.noteSpike(this.rafIntervalMs);
       this.spikeRing.push({
         timeMs: now,
         positionZ: this.position[2],
@@ -352,15 +476,38 @@ export class Engine {
         physicsCommitMs: physicsStats.physicsCommitMs ?? 0,
         normalsMs: renderStats.normalsMs ?? 0,
         syncGenDelta,
-        rebaseCount: world?.rebaseCount ?? 0,
+        rebaseCount,
         workerQueued: world?.workerQueued ?? 0,
         workerInFlight: world?.workerInFlight ?? 0,
+        rebaseThisFrame: this.rebaseThisFrame,
+        rebaseTotalMs: rebaseTiming?.rebaseTotalMs ?? 0,
+        physicsRebaseMs: rebaseTiming?.physicsRebaseMs ?? 0,
+        rendererRebaseMs: rebaseTiming?.rendererRebaseMs ?? 0,
+        runtimeCommitRebaseMs: rebaseTiming?.runtimeCommitRebaseMs ?? 0,
+        telemetrySyncMs: rebaseTiming?.telemetrySyncMs ?? 0,
       });
       if (this.spikeRing.length > SPIKE_RING) this.spikeRing.shift();
     }
   }
   get recentSpikes(): readonly FrameSpikeSample[] {
     return this.spikeRing;
+  }
+  /** Spike / Rebase 診断 JSON（コンソールやファイル保存用）。 */
+  exportSpikeDiagnostics(): SpikeDiagnosticsDump {
+    const frameTiming = this.frameProfiler.snapshot(this.rafIntervalMs);
+    return this.spikeDiagnostics.dump({
+      originRebaseEnabled: this.originRebaseEnabled,
+      spikeCount20ms: this.spikeCount20ms,
+      spikeCount33ms: this.spikeCount33ms,
+      spikeCount50ms: this.spikeCount50ms,
+      earlySpikeCount20ms: this.earlySpikeCount20ms,
+      earlySpikeCount33ms: this.earlySpikeCount33ms,
+      earlySpikeCount50ms: this.earlySpikeCount50ms,
+      frameP50Ms: frameTiming.p50Ms,
+      frameP95Ms: frameTiming.p95Ms,
+      frameP99Ms: frameTiming.p99Ms,
+      frameMaxMs: frameTiming.maxMs,
+    });
   }
   get position(): Vec3 {
     const sim = this.physics.poses().values().next().value?.position ?? [
@@ -392,6 +539,7 @@ export class Engine {
     const sample = this.currentTelemetry;
     const chunk = world?.currentChunk?.split(",").map(Number) ?? [0, 0];
     const frameTiming = this.frameProfiler.snapshot(this.rafIntervalMs);
+    const lastRebase = this.spikeDiagnostics.lastRebase;
     return {
       fps: this.fps,
       ...renderStats,
@@ -432,6 +580,9 @@ export class Engine {
       spikeCount20ms: this.spikeCount20ms,
       spikeCount33ms: this.spikeCount33ms,
       spikeCount50ms: this.spikeCount50ms,
+      earlySpikeCount20ms: this.earlySpikeCount20ms,
+      earlySpikeCount33ms: this.earlySpikeCount33ms,
+      earlySpikeCount50ms: this.earlySpikeCount50ms,
       frameP50Ms: frameTiming.p50Ms,
       frameP95Ms: frameTiming.p95Ms,
       frameP99Ms: frameTiming.p99Ms,
@@ -440,6 +591,23 @@ export class Engine {
       frameOver33_3: frameTiming.over33_3,
       frameOver50: frameTiming.over50,
       playStatsFast: playFastPath ? 1 : 0,
+      originRebaseEnabled: this.originRebaseEnabled ? 1 : 0,
+      rebaseTotalMs: lastRebase?.rebaseTotalMs ?? 0,
+      physicsRebaseMs: lastRebase?.physicsRebaseMs ?? 0,
+      rendererRebaseMs: lastRebase?.rendererRebaseMs ?? 0,
+      runtimeCommitRebaseMs: lastRebase?.runtimeCommitRebaseMs ?? 0,
+      telemetrySyncMs: lastRebase?.telemetrySyncMs ?? 0,
+      moveRigidBodiesMs: lastRebase?.physics.moveRigidBodiesMs ?? 0,
+      moveStandaloneCollidersMs:
+        lastRebase?.physics.moveStandaloneCollidersMs ?? 0,
+      propagateCollidersMs: lastRebase?.physics.propagateCollidersMs ?? 0,
+      ccdToggleMs: lastRebase?.physics.ccdToggleMs ?? 0,
+      rebaseRigidBodyCount: lastRebase?.physics.rigidBodyCount ?? 0,
+      rebaseColliderCount: lastRebase?.physics.colliderCount ?? 0,
+      rebaseStandaloneColliderCount:
+        lastRebase?.physics.standaloneColliderCount ?? 0,
+      rebaseChunkCount: lastRebase?.renderer.chunkCount ?? 0,
+      rebaseLodBatchCount: lastRebase?.renderer.lodBatchCount ?? 0,
       worldOriginX: world?.worldOrigin[0] ?? 0,
       worldOriginY: world?.worldOrigin[1] ?? 0,
       worldOriginZ: world?.worldOrigin[2] ?? 0,
