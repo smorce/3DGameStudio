@@ -74,6 +74,8 @@ function canUseWorkers(forceSync?: boolean) {
 export class ChunkWorkerPool {
   private readonly workers: Worker[] = [];
   private readonly busy = new Set<Worker>();
+  /** Worker が処理中の Job。onerror 時の回収に使う。 */
+  private readonly jobByWorker = new Map<Worker, QueuedJob>();
   private readonly queue: QueuedJob[] = [];
   private readonly pendingByKey = new Map<string, QueuedJob>();
   private readonly inFlightByKey = new Map<string, QueuedJob>();
@@ -182,6 +184,7 @@ export class ChunkWorkerPool {
       this.cancelled++;
       job.resolve(undefined);
     }
+    this.jobByWorker.clear();
   }
 
   dispose() {
@@ -190,27 +193,50 @@ export class ChunkWorkerPool {
     for (const worker of this.workers) worker.terminate();
     this.workers.length = 0;
     this.busy.clear();
+    this.jobByWorker.clear();
   }
 
   private spawnWorkers(count: number) {
-    for (let i = 0; i < count; i++) {
-      try {
-        const worker = new Worker(
-          new URL("../../world-generator/src/worker-entry.ts", import.meta.url),
-          { type: "module" },
-        );
-        worker.onmessage = (event: MessageEvent<WorkerOutbound>) =>
-          this.onWorkerMessage(worker, event.data);
-        worker.onerror = () => {
-          this.busy.delete(worker);
-          this.pump();
-        };
-        this.workers.push(worker);
-      } catch {
-        // Worker 生成に失敗したら同スレッドへフォールバックする。
-        break;
-      }
+    for (let i = 0; i < count; i++) this.spawnOneWorker();
+  }
+
+  private spawnOneWorker(): Worker | undefined {
+    try {
+      const worker = new Worker(
+        new URL("../../world-generator/src/worker-entry.ts", import.meta.url),
+        { type: "module" },
+      );
+      worker.onmessage = (event: MessageEvent<WorkerOutbound>) =>
+        this.onWorkerMessage(worker, event.data);
+      worker.onerror = () => this.onWorkerError(worker);
+      this.workers.push(worker);
+      return worker;
+    } catch {
+      // Worker 生成に失敗したら同スレッドへフォールバックする。
+      return undefined;
     }
+  }
+
+  private onWorkerError(worker: Worker) {
+    const job = this.jobByWorker.get(worker);
+    this.jobByWorker.delete(worker);
+    this.busy.delete(worker);
+    const index = this.workers.indexOf(worker);
+    if (index >= 0) this.workers.splice(index, 1);
+    try {
+      worker.terminate();
+    } catch {
+      /* ignore terminate failure */
+    }
+    if (job) {
+      this.inFlightByKey.delete(job.chunkKey);
+      // 再試行のため Queue へ戻す。永久 in-flight を避ける。
+      this.queue.push(job);
+      this.pendingByKey.set(job.chunkKey, job);
+      this.reheap();
+    }
+    if (!this.disposed && this.useWorkers) this.spawnOneWorker();
+    this.pump();
   }
 
   private schedulePump() {
@@ -239,6 +265,7 @@ export class ChunkWorkerPool {
       this.pendingByKey.delete(job.chunkKey);
       this.inFlightByKey.set(job.chunkKey, job);
       this.busy.add(worker);
+      this.jobByWorker.set(worker, job);
       const message: PrepareChunkRequest = {
         type: "prepare-chunk",
         jobId: job.jobId,
@@ -288,6 +315,7 @@ export class ChunkWorkerPool {
 
   private onWorkerMessage(worker: Worker, data: WorkerOutbound) {
     this.busy.delete(worker);
+    this.jobByWorker.delete(worker);
     const job = this.inFlightByKey.get(data.chunkKey);
     if (!job || job.jobId !== data.jobId) {
       this.cancelled++;

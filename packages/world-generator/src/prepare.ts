@@ -1,4 +1,9 @@
-import { chunkKey, generateChunk, type GeneratorInput } from "./index";
+import {
+  chunkKey,
+  generateChunk,
+  type GeneratorInput,
+  type TerrainEditOverlay,
+} from "./index";
 
 export interface PreparedChunk {
   key: string;
@@ -18,6 +23,26 @@ export interface PreparedChunk {
   colorHex: string[];
   biome: ReturnType<typeof generateChunk>["biome"];
   generationTimingMs: number;
+}
+
+/** heights / hex colors へ Edit Overlay を適用する（破壊的）。 */
+export function applyTerrainEditOverlay(
+  heights: Float32Array,
+  colors: string[],
+  edit?: TerrainEditOverlay,
+) {
+  if (!edit) return;
+  if (edit.heightDeltas)
+    for (const [index, delta] of Object.entries(edit.heightDeltas)) {
+      const i = Number(index);
+      if (Number.isInteger(i) && i >= 0 && i < heights.length)
+        heights[i] += delta;
+    }
+  if (edit.colors)
+    for (const [index, color] of Object.entries(edit.colors)) {
+      const i = Number(index);
+      if (Number.isInteger(i) && i >= 0 && i < colors.length) colors[i] = color;
+    }
 }
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -84,12 +109,16 @@ export function computeIndexedNormals(
 /**
  * Worker / Main 双方で使える純関数。
  * Geometry は Chunk-local (x,z ∈ [0, size])。
+ * terrainEdit がある場合は適用後に positions / normals / colors を作る。
  */
 export function prepareChunk(input: GeneratorInput): PreparedChunk {
   const started =
     typeof performance !== "undefined" ? performance.now() : Date.now();
   const generated = generateChunk(input);
-  const { resolution, size, heights, colors, entities, biome } = generated;
+  const { resolution, size, entities, biome } = generated;
+  const heights = new Float32Array(generated.heights);
+  const colors = generated.colors.slice();
+  applyTerrainEditOverlay(heights, colors, input.terrainEdit);
   const cell = size / (resolution - 1);
   const vertexCount = resolution * resolution;
   const positions = new Float32Array(vertexCount * 3);

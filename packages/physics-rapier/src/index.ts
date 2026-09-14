@@ -1559,6 +1559,31 @@ export class RapierPhysics {
     };
     return this.lastStreamStats;
   }
+
+  /**
+   * Physics Critical: Fixed Step 前に urgent 半径の Rapier Collider まで作る。
+   * WorldRuntime の Prepared Cache Commit の直後に呼ぶこと。
+   */
+  commitCriticalColliders() {
+    if (!this.streamer) return this.lastStreamStats;
+    const body = this.vehicles[0]?.body;
+    const translation = body?.translation();
+    if (!translation) return this.lastStreamStats;
+    const sim: Vec3 = [translation.x, translation.y, translation.z];
+    const global = this.worldRuntime?.toGlobal(sim) ?? sim;
+    const linvel = body?.linvel();
+    const vel: Vec3 | undefined = linvel
+      ? [linvel.x, linvel.y, linvel.z]
+      : undefined;
+    const stream = this.streamer.commitUrgent(global, vel);
+    this.lastStreamStats = {
+      created: stream.created,
+      pending: stream.pending,
+      commitMs: stream.commitMs,
+      syncFallback: stream.syncFallback,
+    };
+    return this.lastStreamStats;
+  }
   renderState(): PhysicsRenderState {
     const poses = this.poses(),
       wheels = new Map<string, WheelRenderState>();

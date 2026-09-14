@@ -197,6 +197,9 @@ export class WorldRuntime {
   private readonly readyPhysics: string[] = [];
   private readonly readyRenderSet = new Set<string>();
   private readonly readyPhysicsSet = new Set<string>();
+  /** Request 時点の用途。Ready Queue 振り分けに使う。 */
+  private readonly wantsPhysics = new Set<string>();
+  private readonly wantsRender = new Set<string>();
   private hits = 0;
   private misses = 0;
   private lastLatency = 0;
@@ -374,8 +377,9 @@ export class WorldRuntime {
     if (!this.procedural) return;
     const started = performance.now();
     for (const request of requests) {
+      this.noteRequestNeeds(request.key, request.priority);
       if (this.cache.has(request.key) || this.prepared.has(request.key)) {
-        this.promoteReady(request.key, request.priority);
+        this.promoteReady(request.key);
         continue;
       }
       const state = this.lifecycle.get(request.key);
@@ -752,10 +756,17 @@ export class WorldRuntime {
   }
 
   invalidateEdits() {
-    for (const [key, entry] of this.cache) {
-      const built = this.buildChunk(key);
-      if (built) entry.chunk = applyEditOverlay(built, this.world.edits);
+    const edited = Object.keys(this.world.edits.terrainChunks);
+    for (const key of edited) {
+      this.prepared.delete(key);
+      this.cache.delete(key);
+      this.lifecycle.delete(key);
+      this.removeFromReadyQueues(key);
+      this.wantsPhysics.delete(key);
+      this.wantsRender.delete(key);
     }
+    // 編集キーは再生成し、Prepared に Edit を焼き込む。
+    for (const key of edited) this.requestChunk(key, "P2_VISIBLE_RENDER");
   }
 
   private takeReady(
@@ -775,6 +786,7 @@ export class WorldRuntime {
     ) {
       const key = queue.shift()!;
       set.delete(key);
+      if (this.cache.has(key)) continue;
       const prepared = this.prepared.get(key);
       if (!prepared) continue;
       result.push(prepared);
@@ -784,25 +796,29 @@ export class WorldRuntime {
     return result;
   }
 
-  private promoteReady(key: string, priority: ChunkPriority) {
+  private noteRequestNeeds(key: string, priority: ChunkPriority) {
     if (
       priority === "P0_PHYSICS_CRITICAL" ||
       priority === "P1_PHYSICS_PREFETCH"
-    ) {
-      if (!this.readyPhysicsSet.has(key) && !this.cache.has(key)) {
-        this.readyPhysics.push(key);
-        this.readyPhysicsSet.add(key);
-      }
-    }
+    )
+      this.wantsPhysics.add(key);
     if (
       priority === "P2_VISIBLE_RENDER" ||
       priority === "P3_RENDER_PREFETCH" ||
       priority === "P4_EDITOR"
-    ) {
-      if (!this.readyRenderSet.has(key) && !this.cache.has(key)) {
-        this.readyRender.push(key);
-        this.readyRenderSet.add(key);
-      }
+    )
+      this.wantsRender.add(key);
+  }
+
+  private promoteReady(key: string) {
+    if (this.cache.has(key)) return;
+    if (this.wantsPhysics.has(key) && !this.readyPhysicsSet.has(key)) {
+      this.readyPhysics.push(key);
+      this.readyPhysicsSet.add(key);
+    }
+    if (this.wantsRender.has(key) && !this.readyRenderSet.has(key)) {
+      this.readyRender.push(key);
+      this.readyRenderSet.add(key);
     }
   }
 
@@ -814,15 +830,8 @@ export class WorldRuntime {
     this.prefetchQueued.delete(prepared.key);
     const queuedAt = this.prefetchQueue.indexOf(prepared.key);
     if (queuedAt >= 0) this.prefetchQueue.splice(queuedAt, 1);
-    // Physics / Render 両方の Ready Queue に入れる（優先 commit は呼び出し側）。
-    if (!this.readyPhysicsSet.has(prepared.key)) {
-      this.readyPhysics.push(prepared.key);
-      this.readyPhysicsSet.add(prepared.key);
-    }
-    if (!this.readyRenderSet.has(prepared.key)) {
-      this.readyRender.push(prepared.key);
-      this.readyRenderSet.add(prepared.key);
-    }
+    // Request 時に記録した Physics / Render 用途だけへ振り分ける。
+    this.promoteReady(prepared.key);
     this.log(`ready:${prepared.key}`);
     this.evictPrepared();
   }
@@ -874,20 +883,18 @@ export class WorldRuntime {
       return existing.chunk;
     }
     const tomb = new Set(this.world.edits.generatedEntityTombstones);
-    const chunk: RuntimeChunk = applyEditOverlay(
-      {
-        key: prepared.key,
-        chunkX: prepared.chunkX,
-        chunkZ: prepared.chunkZ,
-        size: prepared.size,
-        resolution: prepared.resolution,
-        heights: prepared.heights,
-        colors: prepared.colorHex,
-        entities: prepared.entities.filter((entity) => !tomb.has(entity.id)),
-        lodLevel: 0,
-      },
-      this.world.edits,
-    );
+    // PreparedChunk 側で terrainEdit 済み。二重適用しない。
+    const chunk: RuntimeChunk = {
+      key: prepared.key,
+      chunkX: prepared.chunkX,
+      chunkZ: prepared.chunkZ,
+      size: prepared.size,
+      resolution: prepared.resolution,
+      heights: prepared.heights,
+      colors: prepared.colorHex,
+      entities: prepared.entities.filter((entity) => !tomb.has(entity.id)),
+      lodLevel: 0,
+    };
     this.cache.set(prepared.key, {
       chunk,
       prepared,
@@ -896,8 +903,9 @@ export class WorldRuntime {
       state: "COMMITTED",
     });
     this.lifecycle.set(prepared.key, "COMMITTED");
-    this.readyRenderSet.delete(prepared.key);
-    this.readyPhysicsSet.delete(prepared.key);
+    this.removeFromReadyQueues(prepared.key);
+    this.wantsPhysics.delete(prepared.key);
+    this.wantsRender.delete(prepared.key);
     if (reason === "render") this.chunksCommittedRender++;
     if (reason === "physics") this.chunksCommittedPhysics++;
     if (reason === "prefetch") this.prefetchGenerations++;
@@ -927,6 +935,7 @@ export class WorldRuntime {
       };
     }
     const source = this.world.source;
+    const edit = this.world.edits.terrainChunks[key];
     return {
       seed: source.seed,
       generatorVersion: source.generatorVersion,
@@ -936,6 +945,12 @@ export class WorldRuntime {
       chunkSize: source.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
+      terrainEdit: edit
+        ? {
+            heightDeltas: edit.heightDeltas,
+            colors: edit.colors,
+          }
+        : undefined,
     };
   }
 
@@ -962,6 +977,17 @@ export class WorldRuntime {
     this.readyPhysics.length = 0;
     this.readyRenderSet.clear();
     this.readyPhysicsSet.clear();
+    this.wantsPhysics.clear();
+    this.wantsRender.clear();
+  }
+
+  private removeFromReadyQueues(key: string) {
+    this.readyRenderSet.delete(key);
+    this.readyPhysicsSet.delete(key);
+    for (let i = this.readyRender.length - 1; i >= 0; i--)
+      if (this.readyRender[i] === key) this.readyRender.splice(i, 1);
+    for (let i = this.readyPhysics.length - 1; i >= 0; i--)
+      if (this.readyPhysics[i] === key) this.readyPhysics.splice(i, 1);
   }
 
   private buildChunk(key: string): RuntimeChunk | undefined {

@@ -222,10 +222,14 @@ export class WorldAssetBatch {
     private entities: Entity[],
     private asset: AssetRecord | undefined,
     private cache: AssetTemplates,
+    options?: { lodCenter?: [number, number, number] },
   ) {
-    for (const e of entities)
-      this.center.add(new THREE.Vector3(...e.transform.position));
-    this.center.divideScalar(entities.length);
+    if (options?.lodCenter) this.center.set(...options.lodCenter);
+    else {
+      for (const e of entities)
+        this.center.add(new THREE.Vector3(...e.transform.position));
+      this.center.divideScalar(Math.max(1, entities.length));
+    }
     this.levels = asset
       ? asset.runtimeInfo?.lods?.length
         ? [...asset.runtimeInfo.lods].sort((a, b) => a.distance - b.distance)
@@ -241,6 +245,7 @@ export class WorldAssetBatch {
     this.load(0);
   }
   update(camera: THREE.Vector3) {
+    if (this.disposed) return;
     const target = chooseLod(
       camera.distanceTo(this.center),
       this.levels.map((l) => l.distance),

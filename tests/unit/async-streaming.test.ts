@@ -196,6 +196,46 @@ describe("async streaming foundations", () => {
     runtime.dispose();
   });
 
+  it("prepareChunk は terrainEdit を heights/positions に反映する", () => {
+    const base = prepareChunk(sampleInput);
+    const edited = prepareChunk({
+      ...sampleInput,
+      terrainEdit: {
+        heightDeltas: { "0": 5 },
+        colors: { "0": "#ff0000" },
+      },
+    });
+    expect(edited.heights[0]).toBeCloseTo(base.heights[0] + 5);
+    expect(edited.positions[1]).toBeCloseTo(base.positions[1] + 5);
+    expect(edited.colorHex[0]).toBe("#ff0000");
+    expect(edited.colors[0]).toBeCloseTo(1);
+  });
+
+  it("Ready Queue は Request Priority に従って Physics/Render を分離する", async () => {
+    const runtime = new WorldRuntime(
+      createStarterWorld({ preset: "airfield" }),
+      { forceSyncWorkers: true },
+    );
+    const physicsKey = chunkKey(3, 0);
+    const renderKey = chunkKey(3, 1);
+    runtime.requestChunk(physicsKey, "P0_PHYSICS_CRITICAL");
+    runtime.requestChunk(renderKey, "P2_VISIBLE_RENDER");
+    await Promise.resolve();
+    const physicsReady = runtime.commitPhysicsCriticalReady({
+      budgetMs: 50,
+      maxChunks: 8,
+    });
+    expect(physicsReady.map((c) => c.key)).toContain(physicsKey);
+    expect(physicsReady.map((c) => c.key)).not.toContain(renderKey);
+    const renderReady = runtime.commitGeneralWithinBudget({
+      budgetMs: 50,
+      maxChunks: 8,
+    });
+    expect(renderReady.map((c) => c.key)).toContain(renderKey);
+    expect(renderReady.map((c) => c.key)).not.toContain(physicsKey);
+    runtime.dispose();
+  });
+
   it("境界往復でも Retention が効いて領域が急減しない", () => {
     const retention = new PrefetchRetentionState();
     const a = visibleChunksWithPrefetch([31.9, 0, 0], 32, 1, [20, 0, 0], {

@@ -1,19 +1,22 @@
 {
   "label": "after",
-  "gitHead": "2109535201e36e298a7f8ebe220f0ae1de950554",
+  "gitHead": "e5946f4f28795324a4cef09306b4374833087537",
   "branch": "perf/async-world-streaming-frame-budget",
   "workingTreeDirty": true,
-  "capturedAt": "2026-09-14T00:33:00.000Z",
+  "capturedAt": "2026-09-14T01:09:11.573Z",
+  "probeNotes": {
+    "forceSyncWorkers": true,
+    "reason": "Node has no Dedicated Worker for Vite worker-entry URL"
+  },
   "frame": {
-    "p50Ms": 1.7829580000002352,
-    "p95Ms": 2.3172890000000734,
-    "p99Ms": 2.8150430000000597,
-    "maxMs": 24.873000000000047,
+    "p50Ms": 1.814698000000135,
+    "p95Ms": 2.3900770000000193,
+    "p99Ms": 2.9597960000000967,
+    "maxMs": 25.26575200000002,
     "over16_7": 0,
     "over33_3": 0,
     "over50": 0,
-    "sampleCount": 1200,
-    "note": "Headless probe frame time excludes WebGL. Browser target remains p95≈16.7–20ms."
+    "sampleCount": 1200
   },
   "physics": {
     "lastMs": 0,
@@ -22,42 +25,26 @@
   "render": {
     "lastMs": 0,
     "maxMs": 0,
-    "normalsOnMainThread": false,
-    "colorConversionOnMainThread": false,
-    "note": "PreparedChunk supplies normals/colors; renderer only wraps BufferAttribute"
+    "note": "headless probe has no WebGL render path"
   },
   "streaming": {
     "workerCount": 0,
-    "workerCountBrowser": "clamp(hardwareConcurrency-2, 1, 4)",
     "generated": 11,
     "cancelled": 0,
-    "syncFallbackCount": 0,
-    "syncFallbackTotal": 0,
+    "syncFallbackCount": 213,
+    "syncFallbackTotal": 213,
+    "worldRuntimeSyncFallbackCount": 0,
     "maxQueueLength": 38,
-    "maxReadyQueueLength": 0,
-    "maxWorkerGenerationMs": 0.7686299999999733,
-    "maxCommitMs": 0.0009799999997994746,
+    "maxReadyQueueLength": 32,
+    "maxWorkerGenerationMs": 0.8853760000000079,
+    "maxCommitMs": 0.11704400000007809,
     "preparedVertexCount": 1089,
-    "preparedHasNormals": true,
-    "commitBudgetMs": 2,
-    "maxRenderChunksPerFrame": 2
+    "preparedHasNormals": true
   },
   "flight": {
     "distanceM": 788.959191278121,
     "rebaseCount": 8,
     "airStopSteps": 0,
     "maxHingeAnchorErrorM": 0.006379602124032742
-  },
-  "tests": {
-    "typecheck": "pass",
-    "lint": "pass",
-    "format:check": "pass",
-    "test": "211 pass",
-    "test:unit": "154 pass",
-    "test:integration": "57 pass",
-    "test:e2e": "29 pass",
-    "smoke": "pass",
-    "telemetry:plane": "pass",
-    "build": "pass"
   }
 }

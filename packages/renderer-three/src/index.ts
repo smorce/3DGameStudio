@@ -467,8 +467,50 @@ export class ThreeRenderer implements RendererAdapter {
       const builders = this.chunkBuilders.get(key) ?? [];
       builders.push((chunk) => {
         const asset = p.assets.find((a) => a.id === entities[0].assetId);
-        const batch = new WorldAssetBatch(entities, asset, this.templates);
+        const ox = chunk.position.x;
+        const oy = chunk.position.y;
+        const oz = chunk.position.z;
+        // Chunk Group が world/sim 原点を持つため、Instance は Chunk-local にする。
+        const localEntities = entities.map((entity) => {
+          const sim = this.worldRuntime!.toSimulation(
+            entity.transform.position,
+          );
+          return {
+            ...entity,
+            transform: {
+              ...entity.transform,
+              position: [
+                sim[0] - ox,
+                sim[1] - oy,
+                sim[2] - oz,
+              ] as (typeof entity.transform)["position"],
+            },
+          };
+        });
+        const lodCenter = entities
+          .reduce(
+            (acc, entity) => {
+              const sim = this.worldRuntime!.toSimulation(
+                entity.transform.position,
+              );
+              return [acc[0] + sim[0], acc[1] + sim[1], acc[2] + sim[2]];
+            },
+            [0, 0, 0],
+          )
+          .map((v) => v / entities.length) as [number, number, number];
+        const batch = new WorldAssetBatch(
+          localEntities,
+          asset,
+          this.templates,
+          {
+            lodCenter,
+          },
+        );
         this.lodBatches.add(batch);
+        batch.group.userData.release = () => {
+          this.lodBatches.delete(batch);
+          batch.dispose();
+        };
         chunk.add(batch.group);
       });
       this.chunkBuilders.set(key, builders);
@@ -979,6 +1021,16 @@ export class ThreeRenderer implements RendererAdapter {
       );
     }
   }
+  get fastStats() {
+    return {
+      renderChunksCreated: this.lastStreamStats.created,
+      renderChunkPending: this.lastStreamStats.pending,
+      renderCommitMs: this.lastStreamStats.commitMs,
+      normalsMs: this.lastStreamStats.normalsMs,
+      loadedChunks: this.chunks.size,
+      lodBatchCount: this.lodBatches.size,
+    };
+  }
   get stats() {
     const assetIds = new Set<string>();
     const files = new Map<string, number>();
@@ -998,6 +1050,7 @@ export class ThreeRenderer implements RendererAdapter {
         assetIds.add(batch.group.userData.assetId);
     }
     // テクスチャ推定のみ必要時に軽量スキャン（LOD traverse はしない）。
+    // Studio UI など低頻度呼び出し向け。毎Frame 経路は fastStats を使う。
     this.root.traverse((o) => {
       if (o instanceof THREE.InstancedMesh) instanceBatches++;
       if (o instanceof THREE.Mesh)

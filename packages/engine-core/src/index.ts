@@ -229,8 +229,11 @@ export class Engine {
       while (this.accumulator >= 1 / 60) {
         // Physics Critical Ready は Fixed Step 境界で Commit する。
         this.worldRuntime?.commitPhysicsCriticalReady();
+        // P0 は Rapier Collider まで Step 前に入れる。
+        this.physics.commitCriticalColliders();
         this.physics.step(controls);
         this.worldRuntime?.commitPhysicsCriticalReady();
+        this.physics.commitCriticalColliders();
         const next = this.physics.renderState();
         this.previousRenderState = this.currentRenderState ?? next;
         this.currentRenderState = next;
@@ -304,7 +307,8 @@ export class Engine {
     const syncGen = world?.syncGenerationCount ?? 0;
     const syncGenDelta = Math.max(0, syncGen - this.lastSyncGen);
     this.lastSyncGen = syncGen;
-    const renderStats = this.renderer.stats;
+    // 毎Frame の root.traverse を避ける（Studio UI はフル stats を 250ms 間隔で取得）。
+    const renderStats = this.renderer.fastStats;
     const physicsStats = this.physics.stats;
     const chunksCreated =
       (renderStats.renderChunksCreated ?? 0) +

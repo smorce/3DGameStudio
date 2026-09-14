@@ -14,6 +14,12 @@ export const PHYSICS_CHUNK_RADIUS = 3;
 export const EDITOR_CHUNK_RADIUS = 5;
 export const REBASE_CHUNK_DISTANCE = 3;
 
+/** Worker / prepare へ渡す Terrain Edit Overlay（serializable）。 */
+export interface TerrainEditOverlay {
+  heightDeltas?: Record<string, number>;
+  colors?: Record<string, string>;
+}
+
 export interface GeneratorInput {
   seed: number;
   generatorVersion: number;
@@ -23,6 +29,8 @@ export interface GeneratorInput {
   chunkSize: number;
   chunkResolution: number;
   parameters?: Record<string, unknown>;
+  /** Chunk に対応する編集差分。指定時は heights/colors に適用してから Mesh を作る。 */
+  terrainEdit?: TerrainEditOverlay;
 }
 
 export interface GeneratedEntity {

@@ -37,31 +37,40 @@ Fixed Step 1/60・補間・Engine Rebase Transaction は維持。
 | LOD | `Set<WorldAssetBatch>` + `frameIndex % 4` |
 | Physics safety | `ensurePhysicsReady` Barrier（Play/Respawn） |
 
-## 4. Evidence（headless probe）
+## 4. レビュー指摘への追従修正
 
-| 指標 | Before | After |
+| 優先度 | 問題 | 対応 |
 |---|---|---|
-| Worker | なし（スタブ） | Pool + prepareChunk（Browser実Worker、Nodeはsync） |
-| syncFallback（Warmup後） | syncと未分離 | **0** |
-| Frame p95（headless） | 未計測 | ~2.3ms（WebGL除外） |
-| over33.3 / over50 | Spike計測のみ | **0 / 0**（probe） |
-| 飛行距離 | ~910m | ~789m |
+| Blocker | `world.entities` が Chunk Group で二重オフセット | Instance を Chunk-local 化、LOD center は simulation 座標を維持 |
+| Blocker | Terrain Edit が PreparedChunk に未反映 | Worker/`prepareChunk` へ `terrainEdit` を渡し、法線・色も編集後から生成 |
+| High | Physics Critical が Cache のみで Collider 未作成 | `commitCriticalColliders()` を Fixed Step 前に実行 |
+| High | 毎Frame `renderer.stats` → `root.traverse` | Spike 計測は `fastStats`、フル stats は Studio 250ms 間隔のみ |
+| High | `lodBatches` が破棄後も残る | `userData.release` で Set から削除、`disposed` ガード |
+| High | Worker `onerror` で Job が永久 in-flight | `jobByWorker` で回収・再queue・Worker 再生成 |
+| Medium | Ready Queue が Physics/Render 未分離 | Request 用途 (`wantsPhysics` / `wantsRender`) で振り分け |
+| Medium | Evidence が実装と未整合 | Probe を再実行。Pool の `syncFallback`・Probe 中 max Ready/Commit を記録 |
+
+## 5. Evidence（headless probe）
+
+| 指標 | After / Flight | Turn |
+|---|---|---|
+| forceSyncWorkers | true（Node 制約。Browser 実 Worker は別経路） | 同左 |
+| Pool syncFallback（Warmup後） | 213（同期 prepare 回数。Node では正常） | 136 |
+| Frame p95（headless / WebGL除外） | ~2.3–2.4 ms | ~2.5 ms |
+| over33.3 / over50 | 0 / 0 | 0 / 0 |
+| 飛行距離 | ~789 m | ~426 m |
 | air-stop | 0 | 0 |
-| max hinge error | 0.0064m | 0.0064m |
 
-Browser 実測の absolute frame time は Evidence 補助。CI の絶対 Fail 条件にはしていない。
+**注意:** headless Probe は Dedicated Worker を使えないため `workerCount=0` / `forceSyncWorkers=true`。Browser 上の実 Worker 性能は E2E / 手動飛行で確認する。`syncFallback` は WorldRuntime ではなく **Worker Pool** のカウンタ。
 
-## 5. テスト
+## 6. テスト
 
-- `pnpm typecheck / lint / format:check` PASS
-- `pnpm test` 211 PASS
-- `pnpm test:e2e` 29 PASS / `pnpm smoke` PASS
-- `pnpm telemetry:plane` PASS / `pnpm build` PASS（worker-entry chunk 出力確認）
+- `pnpm typecheck` PASS
+- `pnpm test` 213 PASS（Ready Queue 分離・terrainEdit・既存 Streaming 含む）
 
-新規: `tests/unit/async-streaming.test.ts`（Profiler / Prepared / Transfer / Budget / Priority / dedupe / sampleHeight / Retention / stale）
-
-## 6. 残Known Issues
+## 7. 残 Known Issues
 
 - Physics Terrain Collider の chunk-local + translation 化は未完了（simulation 座標 trimesh を維持）
 - headless probe の frame time は WebGL を含まない
+- Browser 実 Worker の p95/p99 は CI 絶対 Fail 条件にしていない
 - 空力簡易モデル、Rapier deprecated 警告は従来どおり

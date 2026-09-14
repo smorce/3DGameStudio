@@ -193,6 +193,43 @@ export class ChunkStreamer<T> {
     return this.lastStats;
   }
 
+  /**
+   * Physics Critical 用: urgent 半径内の不足 Chunk だけ Collider を作る。
+   * Prefetch / 予算付き一般 Create は行わない。
+   */
+  commitUrgent(
+    position: Vec3,
+    velocity?: Vec3,
+  ): ChunkStreamerUpdateStats {
+    const urgent =
+      this.urgentRadius < unlimited
+        ? visibleChunks(position, this.size, this.urgentRadius)
+        : visibleChunksWithPrefetch(
+            position,
+            this.size,
+            this.radius,
+            velocity,
+            this.prefetchOptions,
+          );
+    const started = performance.now();
+    let created = 0;
+    for (const key of urgent) {
+      if (this.loaded.has(key)) continue;
+      const value = this.create(key);
+      this.pending.delete(key);
+      if (value !== undefined) this.loaded.set(key, value);
+      created++;
+    }
+    this.lastStats = {
+      created,
+      pending: this.pending.size,
+      commitMs: performance.now() - started,
+      syncFallback: 0,
+      urgentCreated: created,
+    };
+    return this.lastStats;
+  }
+
   dispose() {
     this.loaded.forEach(this.destroy);
     this.loaded.clear();

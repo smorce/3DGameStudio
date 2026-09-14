@@ -1,6 +1,9 @@
 /**
  * Async Streaming の Before/After Evidence を生成する Probe。
  * Node 上で Physics + WorldRuntime を回し Frame 相当の計測を集計する。
+ *
+ * Node では Dedicated Worker が使えないため forceSyncWorkers=true。
+ * syncFallback は Worker Pool の syncFallback を記録する（WorldRuntime とは別）。
  */
 import { writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
@@ -44,20 +47,40 @@ async function runFlight(steps: number, label: string) {
   let airStop = 0;
   let maxHinge = 0;
   let previous = physics.telemetry.current(machineId);
-  const syncAtWarm = runtime.stats().syncGenerationFallbackCount;
+  const syncAtWarm = runtime.workerPool.stats.syncFallback;
+  let maxReadyQueueLength = 0;
+  let maxCommitMs = 0;
+  let maxPoolQueueLength = 0;
 
   for (let step = 0; step < steps; step++) {
     const frameStarted = performance.now();
     const pitch = step >= 240 && step < 320 ? 1 : 0;
     runtime.commitPhysicsCriticalReady({ maxChunks: 4, budgetMs: 2 });
+    physics.commitCriticalColliders();
     physics.step({ throttle: 1, pitch });
     runtime.commitPhysicsCriticalReady({ maxChunks: 4, budgetMs: 2 });
+    physics.commitCriticalColliders();
     physics.flushStreaming();
     const focus = physics.focusGlobal();
     if (focus) commitWorldOriginShift(runtime, physics, undefined, focus);
     runtime.commitGeneralWithinBudget({ maxChunks: 2, budgetMs: 2 });
     const frameMs = performance.now() - frameStarted;
     profiler.record(frameMs);
+    const worldStats = runtime.stats();
+    maxReadyQueueLength = Math.max(
+      maxReadyQueueLength,
+      worldStats.readyRenderCount,
+      worldStats.readyPhysicsCount,
+    );
+    maxCommitMs = Math.max(
+      maxCommitMs,
+      worldStats.renderChunkCommitMs,
+      worldStats.physicsChunkCommitMs,
+    );
+    maxPoolQueueLength = Math.max(
+      maxPoolQueueLength,
+      runtime.workerPool.stats.maxQueueLength,
+    );
     const sample = physics.telemetry.current(machineId);
     if (sample && previous) {
       const jump = hypot3(sample.position, previous.position);
@@ -86,6 +109,7 @@ async function runFlight(steps: number, label: string) {
     chunkSize: 32,
     chunkResolution: 33,
   });
+  const pool = runtime.workerPool.stats;
 
   const result = {
     label,
@@ -93,6 +117,10 @@ async function runFlight(steps: number, label: string) {
     branch: git("git branch --show-current"),
     workingTreeDirty: git("git status --porcelain") !== "",
     capturedAt: new Date().toISOString(),
+    probeNotes: {
+      forceSyncWorkers: true,
+      reason: "Node has no Dedicated Worker for Vite worker-entry URL",
+    },
     frame: {
       p50Ms: frame.p50Ms,
       p95Ms: frame.p95Ms,
@@ -117,21 +145,13 @@ async function runFlight(steps: number, label: string) {
       generated:
         worldStats.prefetchGenerationCount + worldStats.syncGenerationCount,
       cancelled: worldStats.cancelledJobs,
-      syncFallbackCount: Math.max(
-        0,
-        worldStats.syncGenerationFallbackCount - syncAtWarm,
-      ),
-      syncFallbackTotal: worldStats.syncGenerationFallbackCount,
-      maxQueueLength: runtime.workerPool.stats.maxQueueLength,
-      maxReadyQueueLength: Math.max(
-        worldStats.readyRenderCount,
-        worldStats.readyPhysicsCount,
-      ),
-      maxWorkerGenerationMs: runtime.workerPool.stats.maxWorkerGenerationMs,
-      maxCommitMs: Math.max(
-        worldStats.renderChunkCommitMs,
-        worldStats.physicsChunkCommitMs,
-      ),
+      syncFallbackCount: Math.max(0, pool.syncFallback - syncAtWarm),
+      syncFallbackTotal: pool.syncFallback,
+      worldRuntimeSyncFallbackCount: worldStats.syncGenerationFallbackCount,
+      maxQueueLength: Math.max(pool.maxQueueLength, maxPoolQueueLength),
+      maxReadyQueueLength,
+      maxWorkerGenerationMs: pool.maxWorkerGenerationMs,
+      maxCommitMs,
       preparedVertexCount: prepared.positions.length / 3,
       preparedHasNormals: prepared.normals.length === prepared.positions.length,
     },
