@@ -28,7 +28,12 @@ export type { FrameTimingSnapshot } from "./frame-profiler";
 export interface FrameSpikeSample {
   timeMs: number;
   positionZ: number;
-  frameTimeMs: number;
+  /** RAF コールバック間隔（画面フレーム間隔に近い）。 */
+  rafIntervalMs: number;
+  /** tick() 内の JS 処理時間（onFrame 前）。旧 frameTimeMs。 */
+  cpuWorkMs: number;
+  /** onFrame（Studio の stats / React 更新など）の所要時間。 */
+  uiUpdateMs: number;
   physicsStepMs: number;
   renderMs: number;
   chunksCreated: number;
@@ -36,6 +41,11 @@ export interface FrameSpikeSample {
   physicsCommitMs: number;
   normalsMs: number;
   syncGenDelta: number;
+  rebaseCount: number;
+  workerQueued: number;
+  workerInFlight: number;
+  /** @deprecated cpuWorkMs と同値。互換用。 */
+  frameTimeMs: number;
 }
 
 const SPIKE_RING = 32;
@@ -76,11 +86,17 @@ export class Engine {
   course?: CourseProgress;
   input = { throttle: 0, steering: 0 };
   onFrame?: () => void;
-  private frameTimeMs = 0;
+  /** RAF コールバック間隔（画面フレーム間隔に近い）。 */
+  private rafIntervalMs = 0;
+  /** tick() 内 JS 処理時間（onFrame 前）。旧 frameTimeMs。 */
+  private cpuWorkMs = 0;
+  /** onFrame（Studio stats / React 更新など）の所要時間。 */
+  private uiUpdateMs = 0;
   private physicsStepMs = 0;
   private renderMs = 0;
   private spikeCount20ms = 0;
   private spikeCount33ms = 0;
+  private spikeCount50ms = 0;
   private readonly spikeRing: FrameSpikeSample[] = [];
   private lastSyncGen = 0;
   readonly frameProfiler = new FrameProfiler(900);
@@ -205,7 +221,9 @@ export class Engine {
   private tick = (now: number) => {
     if (this.disposed) return;
     const frameStarted = performance.now();
-    const dt = Math.min((now - (this.last || now)) / 1000, 0.1);
+    // RAF タイムスタンプ差分 = 実際の画面フレーム間隔に近い値（MDN 推奨）。
+    this.rafIntervalMs = this.last ? now - this.last : 0;
+    const dt = Math.min((this.rafIntervalMs || 0) / 1000, 0.1);
     this.last = now;
     this.fps = dt ? Math.round(1 / dt) : 60;
     if (this.mode !== "EDIT" && !this.physics.world) this.mode = "EDIT";
@@ -295,10 +313,13 @@ export class Engine {
       this.renderMs = performance.now() - renderStarted;
     }
     this.worldRuntime?.pumpGeneration(2, 2);
-    this.frameTimeMs = performance.now() - frameStarted;
-    this.frameProfiler.record(this.frameTimeMs);
-    this.recordFrameSpike(now);
+    this.cpuWorkMs = performance.now() - frameStarted;
+    // Frame p50/p95/p99 は CPU 作業時間ではなく RAF 間隔を集計する。
+    if (this.rafIntervalMs > 0) this.frameProfiler.record(this.rafIntervalMs);
+    const uiStarted = performance.now();
     this.onFrame?.();
+    this.uiUpdateMs = performance.now() - uiStarted;
+    this.recordFrameSpike(now);
     this.frame = requestAnimationFrame(this.tick);
   };
 
@@ -307,19 +328,23 @@ export class Engine {
     const syncGen = world?.syncGenerationCount ?? 0;
     const syncGenDelta = Math.max(0, syncGen - this.lastSyncGen);
     this.lastSyncGen = syncGen;
-    // 毎Frame の root.traverse を避ける（Studio UI はフル stats を 250ms 間隔で取得）。
+    // 毎Frame の root.traverse を避ける（Studio UI はフル stats を EDIT / A/B のみ）。
     const renderStats = this.renderer.fastStats;
     const physicsStats = this.physics.stats;
     const chunksCreated =
       (renderStats.renderChunksCreated ?? 0) +
       (physicsStats.physicsChunksCreated ?? 0);
-    if (this.frameTimeMs > 20) this.spikeCount20ms++;
-    if (this.frameTimeMs > 33) this.spikeCount33ms++;
-    if (this.frameTimeMs > 20) {
+    if (this.rafIntervalMs > 20) this.spikeCount20ms++;
+    if (this.rafIntervalMs > 33.3) this.spikeCount33ms++;
+    if (this.rafIntervalMs > 50) this.spikeCount50ms++;
+    if (this.rafIntervalMs > 20) {
       this.spikeRing.push({
         timeMs: now,
         positionZ: this.position[2],
-        frameTimeMs: this.frameTimeMs,
+        rafIntervalMs: this.rafIntervalMs,
+        cpuWorkMs: this.cpuWorkMs,
+        uiUpdateMs: this.uiUpdateMs,
+        frameTimeMs: this.cpuWorkMs,
         physicsStepMs: this.physicsStepMs,
         renderMs: this.renderMs,
         chunksCreated,
@@ -327,6 +352,9 @@ export class Engine {
         physicsCommitMs: physicsStats.physicsCommitMs ?? 0,
         normalsMs: renderStats.normalsMs ?? 0,
         syncGenDelta,
+        rebaseCount: world?.rebaseCount ?? 0,
+        workerQueued: world?.workerQueued ?? 0,
+        workerInFlight: world?.workerInFlight ?? 0,
       });
       if (this.spikeRing.length > SPIKE_RING) this.spikeRing.shift();
     }
@@ -346,14 +374,27 @@ export class Engine {
   get currentTelemetry(): MachineTelemetrySample | undefined {
     return this.telemetry.current(this.project?.machines[0]?.id);
   }
+  /** PLAY HUD / A/B 用。renderer.root.traverse を行わない。 */
+  get fastStats() {
+    return this.buildStats(this.renderer.fastStats, true);
+  }
+
+  /** EDIT / 詳細調査用。renderer.stats（traverse 含む）を使う。 */
   get stats() {
+    return this.buildStats(this.renderer.stats, false);
+  }
+
+  private buildStats(
+    renderStats: Record<string, number>,
+    playFastPath: boolean,
+  ) {
     const world = this.worldRuntime?.stats(this.position);
     const sample = this.currentTelemetry;
     const chunk = world?.currentChunk?.split(",").map(Number) ?? [0, 0];
-    const frameTiming = this.frameProfiler.snapshot(this.frameTimeMs);
+    const frameTiming = this.frameProfiler.snapshot(this.rafIntervalMs);
     return {
       fps: this.fps,
-      ...this.renderer.stats,
+      ...renderStats,
       ...this.physics.stats,
       cachedChunks: world?.cachedChunks ?? 0,
       preparedChunks: world?.preparedChunks ?? 0,
@@ -381,11 +422,16 @@ export class Engine {
       syncGenerationFallbackCount: world?.syncGenerationFallbackCount ?? 0,
       prefetchGenerationCount: world?.prefetchGenerationCount ?? 0,
       cancelledJobs: world?.cancelledJobs ?? 0,
-      frameTimeMs: this.frameTimeMs,
+      rafIntervalMs: this.rafIntervalMs,
+      cpuWorkMs: this.cpuWorkMs,
+      uiUpdateMs: this.uiUpdateMs,
+      /** @deprecated cpuWorkMs と同値。互換用。 */
+      frameTimeMs: this.cpuWorkMs,
       physicsStepMs: this.physicsStepMs,
       renderMs: this.renderMs,
       spikeCount20ms: this.spikeCount20ms,
       spikeCount33ms: this.spikeCount33ms,
+      spikeCount50ms: this.spikeCount50ms,
       frameP50Ms: frameTiming.p50Ms,
       frameP95Ms: frameTiming.p95Ms,
       frameP99Ms: frameTiming.p99Ms,
@@ -393,6 +439,7 @@ export class Engine {
       frameOver16_7: frameTiming.over16_7,
       frameOver33_3: frameTiming.over33_3,
       frameOver50: frameTiming.over50,
+      playStatsFast: playFastPath ? 1 : 0,
       worldOriginX: world?.worldOrigin[0] ?? 0,
       worldOriginY: world?.worldOrigin[1] ?? 0,
       worldOriginZ: world?.worldOrigin[2] ?? 0,

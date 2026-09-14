@@ -1054,6 +1054,18 @@ export class ThreeRenderer implements RendererAdapter {
       normalsMs: this.lastStreamStats.normalsMs,
       loadedChunks: this.chunks.size,
       lodBatchCount: this.lodBatches.size,
+      // renderer.info は安価。PLAY HUD / Spike 向けに traverse なしで提供する。
+      drawCalls: this.renderer.info.render.calls,
+      triangles: this.renderer.info.render.triangles,
+      instanceBatches: this.instanceBatchCount,
+      // 以下は full stats 専用（root.traverse）。fast 経路では 0。
+      loadedAssets: 0,
+      runtimeAssetBytes: 0,
+      runtimeBudgetExceeded: 0,
+      textureMemoryEstimate: 0,
+      lod0Batches: 0,
+      lod1Batches: 0,
+      lod2Batches: 0,
     };
   }
   get stats() {
