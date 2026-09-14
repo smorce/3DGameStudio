@@ -135,6 +135,57 @@ it("summary / compare / explain が決定的に動く", () => {
   expect(explained.suspects[0]?.name).toBe("world.streaming.commit");
 });
 
+it("Compare はScenarioと実行環境の不一致を拒否する", () => {
+  const summary = buildRunSummary({
+    runId: "before",
+    scenarioId: "starter-plane-straight",
+    result: "pass",
+    durationMs: 100,
+    events: [],
+  });
+  const beforeManifest = createObservationManifest({
+    scenarioId: "starter-plane-straight",
+    seed: 42,
+    scenarioDefinitionHash: hashScenarioDefinition({
+      id: "starter-plane-straight",
+      seed: 42,
+    }),
+    mode: "browser",
+    app: "studio",
+    viewport: [1280, 720],
+    devicePixelRatio: 1,
+  });
+  const afterManifest = {
+    ...beforeManifest,
+    runId: "after",
+    seed: 7,
+    environment: {
+      ...beforeManifest.environment,
+      viewport: [1440, 900] as [number, number],
+    },
+  };
+  const after = { ...summary, runId: "after" };
+  const comparison = compareRunSummaries(summary, after, {
+    beforeManifest,
+    afterManifest,
+  });
+  expect(comparison.sameScenario).toBe(false);
+  expect(comparison.deltas).toEqual({});
+  expect(comparison.warnings).toEqual(
+    expect.arrayContaining([
+      expect.stringContaining("seed"),
+      expect.stringContaining("environment.viewport"),
+    ]),
+  );
+  expect(
+    compareRunSummaries(summary, after, {
+      beforeManifest,
+      afterManifest,
+      force: true,
+    }).deltas["frame.p50Ms"],
+  ).toBeDefined();
+});
+
 it("scenario registry に11件が揃っている", () => {
   const scenarios = listObservationScenarios();
   expect(scenarios).toHaveLength(11);

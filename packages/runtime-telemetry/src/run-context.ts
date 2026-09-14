@@ -1,4 +1,5 @@
 import type {
+  ObservationApplication,
   ObservationEnvironmentMode,
   ObservationRunManifest,
 } from "./schema";
@@ -27,6 +28,7 @@ export function createObservationManifest(input: {
   seed?: number;
   scenarioDefinitionHash?: string;
   mode?: ObservationEnvironmentMode;
+  app?: ObservationApplication;
   browser?: string;
   viewport?: [number, number];
   devicePixelRatio?: number;
@@ -48,6 +50,7 @@ export function createObservationManifest(input: {
     scenarioDefinitionHash: input.scenarioDefinitionHash,
     environment: {
       mode: input.mode ?? "node",
+      app: input.app,
       browser: input.browser,
       viewport: input.viewport,
       devicePixelRatio: input.devicePixelRatio,

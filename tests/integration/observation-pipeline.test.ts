@@ -36,7 +36,11 @@ it("World → ObservationHub へ streaming stats を流せる", async () => {
   const project = emptyProject();
   Object.assign(project.world, createStarterWorld({ preset: "airfield" }));
   project.machines.push(planeTemplate());
-  const runtime = new WorldRuntime(project.world, { forceSyncWorkers: true });
+  const lifecycle: string[] = [];
+  const runtime = new WorldRuntime(project.world, {
+    forceSyncWorkers: true,
+    onLifecycleEvent: (event) => lifecycle.push(event.name),
+  });
   const physics = new RapierPhysics();
   await physics.load(project, { world: runtime });
   const spawn = project.world.spawnPoints[0] ?? [0, 2, 8];
@@ -60,6 +64,12 @@ it("World → ObservationHub へ streaming stats を流せる", async () => {
   expect(
     hub.allEvents().some((event) => event.name === "world.streaming.stats"),
   ).toBe(true);
+  expect(lifecycle).toContain("world.chunk.queued");
+  expect(lifecycle).toContain("world.chunk.ready");
+  expect(lifecycle).toContain("world.chunk.committed");
+  expect(
+    lifecycle.filter((name) => name === "world.chunk.committed").length,
+  ).toBeGreaterThan(0);
   physics.dispose();
   runtime.dispose();
 });

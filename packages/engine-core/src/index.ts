@@ -11,7 +11,10 @@ import {
   type PhysicsRenderState,
 } from "../../physics-rapier/src/index";
 import { CourseProgress } from "../../course-system/src/index";
-import { WorldRuntime } from "../../world-system/src/index";
+import {
+  WorldRuntime,
+  type WorldRuntimeLifecycleEvent,
+} from "../../world-system/src/index";
 import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
@@ -121,6 +124,14 @@ const emptyRendererBreakdown = () => ({
 });
 const clampControl = (value: number) =>
   Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
+const telemetryData = (sample: MachineTelemetrySample) => ({
+  ...sample,
+  position: [...sample.position],
+  simulationPosition: sample.simulationPosition
+    ? [...sample.simulationPosition]
+    : null,
+  worldOrigin: sample.worldOrigin ? [...sample.worldOrigin] : null,
+});
 export function aggregateControlChannels(
   bindings: readonly ControlBinding[],
   activeKeys: ReadonlySet<string>,
@@ -196,6 +207,8 @@ export class Engine {
   /** 直近フレームの推力表示状態（recordFrameSpike 用）。 */
   private lastThrustActive = false;
   private lastThrustBecameActive = false;
+  private observedControls: ControlValues = {};
+  private lastObservedControls?: ControlValues;
   /** Motion 診断モード A/B/C（Production 挙動は a）。 */
   setMotionDiagMode(mode: MotionDiagMode | string) {
     const parsed = parseMotionDiagMode(String(mode));
@@ -218,6 +231,13 @@ export class Engine {
   toggleCameraFollowDamping(nowMs = performance.now()) {
     const mode = this.cameraFollowToggleLog.toggleManual(nowMs);
     this.renderer.useDampedCameraFollow = mode === "damped";
+    this.observation?.emit({
+      name: "camera.follow.mode_changed",
+      source: "camera",
+      type: "event",
+      frame: this.playFrameIndex,
+      data: { mode, reason: "manual" },
+    });
     return mode;
   }
   private rebaseThisFrame = false;
@@ -273,6 +293,7 @@ export class Engine {
     this.worldRuntime?.dispose();
     this.worldRuntime = new WorldRuntime(this.project.world, {
       forceSyncWorkers: typeof Worker === "undefined",
+      onLifecycleEvent: (event) => this.recordWorldLifecycleEvent(event),
     });
     this.worldRuntime.setPlayHotPath(false);
     this.renderer.load(this.project, { world: this.worldRuntime });
@@ -283,7 +304,12 @@ export class Engine {
     const ticket = ++this.ticket;
     const course = activeCourse(this.project, options.courseId);
     this.worldRuntime?.reload(this.project.world);
-    const world = this.worldRuntime ?? new WorldRuntime(this.project.world);
+    const world =
+      this.worldRuntime ??
+      new WorldRuntime(this.project.world, {
+        forceSyncWorkers: typeof Worker === "undefined",
+        onLifecycleEvent: (event) => this.recordWorldLifecycleEvent(event),
+      });
     this.worldRuntime = world;
     world.setPlayHotPath(false);
     const start = course?.start ??
@@ -351,6 +377,8 @@ export class Engine {
     this.previousThrustActive = false;
     this.lastThrustActive = false;
     this.lastThrustBecameActive = false;
+    this.observedControls = {};
+    this.lastObservedControls = undefined;
   }
   async respawnWithPhysicsReady() {
     const point = this.course?.respawn;
@@ -419,6 +447,7 @@ export class Engine {
                 steering: this.input.steering - (pad?.axes[0] ?? 0),
               },
         );
+      this.observedControls = controls;
       const physicsStarted = performance.now();
       let physicsStepsThisFrame = 0;
       while (this.accumulator >= 1 / 60) {
@@ -451,6 +480,21 @@ export class Engine {
           ? (this.worldRuntime?.toGlobal(simulation) ?? simulation)
           : undefined;
         if (global && this.worldRuntime && this.originRebaseEnabled) {
+          const planned = this.worldRuntime.planRebase(global);
+          if (planned) {
+            this.observation?.emit({
+              name: "world.origin.rebase.started",
+              source: "world",
+              type: "event",
+              frame: this.playFrameIndex,
+              timestampMs: now,
+              data: {
+                originBefore: planned.originBefore,
+                originAfter: planned.originAfter,
+                delta: planned.delta,
+              },
+            });
+          }
           const plan = commitWorldOriginShift(
             this.worldRuntime,
             this.physics,
@@ -522,6 +566,17 @@ export class Engine {
           this.renderer.useDampedCameraFollow =
             this.cameraFollowToggleLog.mode === "damped";
           this.cameraFollowToggleAnnounce = this.cameraFollowToggleLog.mode;
+          this.observation?.emit({
+            name: "camera.follow.mode_changed",
+            source: "camera",
+            type: "event",
+            frame: this.playFrameIndex,
+            timestampMs: now,
+            data: {
+              mode: this.cameraFollowToggleLog.mode,
+              reason: "automatic",
+            },
+          });
         }
         this.cameraFollowToggleLog.record({
           timeMs: now,
@@ -685,6 +740,71 @@ export class Engine {
       streamingCommitMs: world?.streamingCommitMs ?? 0,
       timestampMs: now,
     });
+    if (this.observation) {
+      const sample = this.currentTelemetry;
+      if (sample)
+        this.observation.emitState(
+          "physics.machine.sample",
+          "physics",
+          telemetryData(sample),
+          {
+            frame: this.playFrameIndex,
+            physicsStep: sample.step,
+            entityId: sample.machineId,
+            timestampMs: now,
+          },
+        );
+      if (
+        !this.lastObservedControls ||
+        JSON.stringify(this.lastObservedControls) !==
+          JSON.stringify(this.observedControls)
+      ) {
+        this.lastObservedControls = { ...this.observedControls };
+        this.observation.emit({
+          name: "input.changed",
+          source: "input",
+          type: "event",
+          frame: this.playFrameIndex,
+          timestampMs: now,
+          data: { ...this.observedControls },
+        });
+      }
+      if (world)
+        this.observation.emitMetric(
+          "world.streaming.stats",
+          "world",
+          { ...world },
+          {
+            frame: this.playFrameIndex,
+            timestampMs: now,
+            chunkKey: world.currentChunk,
+          },
+        );
+      const probe = this.renderer.getMotionProbe();
+      this.observation.emitState(
+        "camera.follow.sample",
+        "camera",
+        {
+          ...probe,
+          followMode: this.renderer.useDampedCameraFollow
+            ? "damped"
+            : "instant",
+        },
+        { frame: this.playFrameIndex, timestampMs: now },
+      );
+      if (this.playFrameIndex % 30 === 0)
+        this.observation.emitMetric(
+          "renderer.resource.changed",
+          "renderer",
+          {
+            drawCalls: renderStats.drawCalls ?? 0,
+            triangles: renderStats.triangles ?? 0,
+            geometries: renderStats.geometryCount ?? 0,
+            textures: renderStats.textureCount ?? 0,
+          },
+          { frame: this.playFrameIndex, timestampMs: now },
+        );
+    }
     if (this.rebaseThisFrame && this.observation) {
       this.observation.emit({
         name: "world.origin.rebase.completed",
@@ -702,6 +822,40 @@ export class Engine {
         },
       });
     }
+  }
+  private recordWorldLifecycleEvent(event: WorldRuntimeLifecycleEvent) {
+    this.observation?.emit({
+      name: event.name,
+      source: "world",
+      type: "event",
+      chunkKey: event.chunkKey,
+      timestampMs: event.timestampMs,
+      data: {
+        generation: event.generation,
+        fromWorker: event.fromWorker ?? null,
+        generationMs: event.generationMs ?? null,
+        commitReason: event.commitReason ?? null,
+      },
+    });
+  }
+  flushObservationDiagnostics() {
+    if (!this.observation) return;
+    const turn = this.exportTurnMotionDiagnostics();
+    this.observation.emit({
+      name: "diagnostic.turn.verdict",
+      source: "diagnostic",
+      type: "event",
+      frame: this.playFrameIndex,
+      data: { ...turn },
+    });
+    const camera = this.exportCameraFollowToggleDiagnostics();
+    this.observation.emit({
+      name: "camera.follow.verdict",
+      source: "camera",
+      type: "event",
+      frame: this.playFrameIndex,
+      data: { ...camera },
+    });
   }
   get recentSpikes(): readonly FrameSpikeSample[] {
     return this.spikeRing;

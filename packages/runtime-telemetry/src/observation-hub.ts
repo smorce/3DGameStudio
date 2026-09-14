@@ -85,7 +85,7 @@ export class ObservationHub {
       source: "engine",
       type: "event",
       data: { scenarioId: manifest.scenarioId },
-      timestampMs: Date.parse(manifest.startedAt) || performance.now(),
+      timestampMs: performance.now(),
     });
   }
 
@@ -109,7 +109,7 @@ export class ObservationHub {
       source: "engine",
       type: "event",
       data: { result },
-      timestampMs: Date.parse(completedAt) || performance.now(),
+      timestampMs: performance.now(),
     });
     this.sealPendingWindows(Number.POSITIVE_INFINITY);
   }

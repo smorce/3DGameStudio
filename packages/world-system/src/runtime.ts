@@ -32,6 +32,19 @@ export type WorldConsumer = "renderer" | "physics" | "editor";
 export type ChunkLifecycleState =
   "ABSENT" | "QUEUED" | "GENERATING" | "READY" | "COMMITTED" | "EVICTABLE";
 
+export type WorldRuntimeLifecycleEventName =
+  "world.chunk.queued" | "world.chunk.ready" | "world.chunk.committed";
+
+export interface WorldRuntimeLifecycleEvent {
+  name: WorldRuntimeLifecycleEventName;
+  chunkKey: string;
+  generation: number;
+  timestampMs: number;
+  fromWorker?: boolean;
+  generationMs?: number;
+  commitReason?: "render" | "physics" | "prefetch" | "sync";
+}
+
 export interface RuntimeChunk {
   key: string;
   chunkX: number;
@@ -93,6 +106,7 @@ export interface WorldRuntimeOptions {
   streamingCommitBudgetMs?: number;
   maxRenderChunksPerFrame?: number;
   maxPhysicsChunksPerFixedStep?: number;
+  onLifecycleEvent?: (event: WorldRuntimeLifecycleEvent) => void;
 }
 
 export interface ChunkRequest {
@@ -227,6 +241,9 @@ export class WorldRuntime {
   private commitBudgetMs: number;
   private maxRenderPerFrame: number;
   private maxPhysicsPerStep: number;
+  private readonly onLifecycleEvent?: (
+    event: WorldRuntimeLifecycleEvent,
+  ) => void;
 
   constructor(
     public world: World,
@@ -240,13 +257,18 @@ export class WorldRuntime {
       options.maxRenderChunksPerFrame ?? MAX_RENDER_CHUNKS_PER_FRAME;
     this.maxPhysicsPerStep =
       options.maxPhysicsChunksPerFixedStep ?? MAX_PHYSICS_CHUNKS_PER_FIXED_STEP;
+    this.onLifecycleEvent = options.onLifecycleEvent;
     this.pool = new ChunkWorkerPool({
       workerCount: options.workerCount,
       forceSync: options.forceSyncWorkers ?? typeof Worker === "undefined",
       onResult: (result) => {
         this.pending = Math.max(0, this.pending - 1);
         if (result.runtimeGeneration !== this.generation) return;
-        this.acceptPrepared(result.prepared, result.generationMs);
+        this.acceptPrepared(
+          result.prepared,
+          result.generationMs,
+          result.fromWorker,
+        );
       },
     });
     for (const consumer of ["renderer", "physics", "editor"] as WorldConsumer[])
@@ -394,6 +416,10 @@ export class WorldRuntime {
       }
       this.chunksRequested++;
       this.lifecycle.set(request.key, "QUEUED");
+      this.emitLifecycle({
+        name: "world.chunk.queued",
+        chunkKey: request.key,
+      });
       this.pending++;
       const generation = this.generation;
       void this.pool
@@ -822,7 +848,11 @@ export class WorldRuntime {
     }
   }
 
-  private acceptPrepared(prepared: PreparedChunk, generationMs: number) {
+  private acceptPrepared(
+    prepared: PreparedChunk,
+    generationMs: number,
+    fromWorker: boolean,
+  ) {
     this.lastLatency = generationMs;
     this.maxLatency = Math.max(this.maxLatency, generationMs);
     this.prepared.set(prepared.key, prepared);
@@ -833,6 +863,12 @@ export class WorldRuntime {
     // Request 時に記録した Physics / Render 用途だけへ振り分ける。
     this.promoteReady(prepared.key);
     this.log(`ready:${prepared.key}`);
+    this.emitLifecycle({
+      name: "world.chunk.ready",
+      chunkKey: prepared.key,
+      fromWorker,
+      generationMs,
+    });
     this.evictPrepared();
   }
 
@@ -862,10 +898,22 @@ export class WorldRuntime {
         state: "COMMITTED",
       });
       this.lifecycle.set(key, "COMMITTED");
+      this.emitLifecycle({
+        name: "world.chunk.committed",
+        chunkKey: key,
+        commitReason: reason === "sync" ? "sync" : "prefetch",
+      });
       if (reason === "prefetch") this.prefetchGenerations++;
       return chunk;
     }
     this.prepared.set(key, prepared);
+    this.lifecycle.set(key, "READY");
+    this.emitLifecycle({
+      name: "world.chunk.ready",
+      chunkKey: key,
+      fromWorker: false,
+      generationMs: this.lastLatency,
+    });
     return this.commitPreparedToCache(
       prepared,
       reason === "sync" ? "physics" : "prefetch",
@@ -910,6 +958,11 @@ export class WorldRuntime {
     if (reason === "physics") this.chunksCommittedPhysics++;
     if (reason === "prefetch") this.prefetchGenerations++;
     this.log(`commit:${prepared.key}`);
+    this.emitLifecycle({
+      name: "world.chunk.committed",
+      chunkKey: prepared.key,
+      commitReason: reason,
+    });
     this.evict();
     return chunk;
   }
@@ -1060,6 +1113,16 @@ export class WorldRuntime {
     if (!this.debug) return;
     this.debugEvents.push(event);
     if (this.debugEvents.length > 200) this.debugEvents.shift();
+  }
+
+  private emitLifecycle(
+    event: Omit<WorldRuntimeLifecycleEvent, "generation" | "timestampMs">,
+  ) {
+    this.onLifecycleEvent?.({
+      ...event,
+      generation: this.generation,
+      timestampMs: performance.now(),
+    });
   }
 }
 

@@ -37,7 +37,7 @@ const controlsAtStep = (
   return segment?.controls ?? { throttle: 0 };
 };
 
-type AssertionContext = {
+export type AssertionContext = {
   samples: MachineTelemetrySample[];
   start: MachineTelemetrySample | undefined;
   end: MachineTelemetrySample | undefined;
@@ -50,10 +50,11 @@ type AssertionContext = {
   maxCommitMs: number;
   turnYawDeltaRad: number;
   terrainUnavailableSteps: number;
-  hub: ObservationHub;
+  cameraSamples: number;
+  cameraTargetTravelM: number;
 };
 
-const evaluateAssertion = (
+export const evaluateAssertion = (
   id: ScenarioAssertionId,
   ctx: AssertionContext,
 ): { passed: boolean; expected: unknown; actual: unknown } => {
@@ -161,12 +162,13 @@ const evaluateAssertion = (
       };
     }
     case "camera-follow-samples": {
-      // headless では camera 実体がないため、旋回中の姿勢連続サンプルを代理指標にする。
-      const turnSamples = ctx.samples.length;
       return {
-        passed: turnSamples > 20,
-        expected: ">20 pose samples",
-        actual: turnSamples,
+        passed: ctx.cameraSamples > 20 && ctx.cameraTargetTravelM > 0.5,
+        expected: ">20 camera samples and >0.5m target travel",
+        actual: {
+          samples: ctx.cameraSamples,
+          targetTravelM: ctx.cameraTargetTravelM,
+        },
       };
     }
     case "terrain-entry-safe": {
@@ -198,7 +200,7 @@ export interface ObservationRunResult {
   summary: ReturnType<typeof buildRunSummary>;
 }
 
-export async function runObservationScenario(
+export async function runSimulationObservationScenario(
   scenarioId: string,
 ): Promise<ObservationRunResult> {
   const scenario = requireObservationScenario(scenarioId);
@@ -207,12 +209,7 @@ export async function runObservationScenario(
   const manifest = createObservationManifest({
     scenarioId: scenario.id,
     seed: scenario.seed,
-    scenarioDefinitionHash: hashScenarioDefinition({
-      id: scenario.id,
-      durationSteps: scenario.durationSteps,
-      timeline: scenario.timeline,
-      assertions: scenario.assertions,
-    }),
+    scenarioDefinitionHash: hashScenarioDefinition(scenario),
     mode: "node",
     gitCommit: git("git rev-parse HEAD"),
     gitBranch: git("git branch --show-current"),
@@ -223,13 +220,34 @@ export async function runObservationScenario(
   const project = emptyProject();
   Object.assign(
     project.world,
-    createStarterWorld({ preset: scenario.worldPreset }),
+    createStarterWorld({ preset: scenario.worldPreset, seed: scenario.seed }),
   );
   project.machines.push(planeTemplate());
   const machineId = project.machines[0]!.id;
+  let chunkCommitted = 0;
+  let chunkQueued = 0;
 
   const runtime = scenario.enableWorldRuntime
-    ? new WorldRuntime(project.world, { forceSyncWorkers: true })
+    ? new WorldRuntime(project.world, {
+        forceSyncWorkers: true,
+        onLifecycleEvent: (event) => {
+          if (event.name === "world.chunk.queued") chunkQueued++;
+          if (event.name === "world.chunk.committed") chunkCommitted++;
+          hub.emit({
+            name: event.name,
+            source: "world",
+            type: "event",
+            timestampMs: event.timestampMs,
+            chunkKey: event.chunkKey,
+            data: {
+              generation: event.generation,
+              fromWorker: event.fromWorker ?? null,
+              generationMs: event.generationMs ?? null,
+              commitReason: event.commitReason ?? null,
+            },
+          });
+        },
+      })
     : undefined;
   const physics = new RapierPhysics();
   await physics.load(project, runtime ? { world: runtime } : undefined);
@@ -251,15 +269,11 @@ export async function runObservationScenario(
   let previous: MachineTelemetrySample | undefined;
   let maxPositionJumpM = 0;
   let maxAirborneJumpM = 0;
-  let chunkCommitted = 0;
-  let chunkQueued = 0;
   let maxWorkerQueue = 0;
   let maxCommitMs = 0;
   let turnStartYaw: number | undefined;
   let turnEndYaw: number | undefined;
   let terrainUnavailableSteps = 0;
-  const seenChunks = new Set<string>();
-
   try {
     for (let step = 0; step < scenario.durationSteps; step++) {
       const frameStarted = performance.now();
@@ -335,46 +349,6 @@ export async function runObservationScenario(
           worldStats.physicsChunkCommitMs,
           commitMs,
         );
-        if (
-          worldStats.currentChunk &&
-          !seenChunks.has(worldStats.currentChunk)
-        ) {
-          seenChunks.add(worldStats.currentChunk);
-          hub.emit({
-            name: "world.chunk.queued",
-            source: "world",
-            type: "event",
-            physicsStep: step,
-            chunkKey: worldStats.currentChunk,
-            data: { currentChunk: worldStats.currentChunk },
-          });
-          chunkQueued++;
-        }
-        if (
-          worldStats.readyPhysicsCount > 0 ||
-          worldStats.readyRenderCount > 0
-        ) {
-          hub.emit({
-            name: "world.chunk.ready",
-            source: "world",
-            type: "event",
-            physicsStep: step,
-            data: {
-              readyPhysicsCount: worldStats.readyPhysicsCount,
-              readyRenderCount: worldStats.readyRenderCount,
-            },
-          });
-        }
-        if (commitMs > 0.01) {
-          hub.emit({
-            name: "world.chunk.committed",
-            source: "world",
-            type: "event",
-            physicsStep: step,
-            data: { commitMs },
-          });
-          chunkCommitted++;
-        }
         if (step % 30 === 0) {
           hub.emitMetric(
             "world.streaming.stats",
@@ -394,13 +368,19 @@ export async function runObservationScenario(
 
       const frameMs = performance.now() - frameStarted;
       profiler.record(frameMs);
-      hub.recordFrameTiming({
-        frame: step,
-        rafMs: frameMs,
-        physicsMs,
-        streamingCommitMs: commitMs,
-        timestampMs: performance.now(),
-      });
+      hub.emitMetric(
+        "simulation.step",
+        "engine",
+        {
+          simulationStepWallMs: frameMs,
+          physicsMs,
+          streamingCommitMs: commitMs,
+        },
+        {
+          frame: step,
+          timestampMs: performance.now(),
+        },
+      );
 
       const sample = physics.telemetry.current(machineId);
       if (sample) {
@@ -489,16 +469,7 @@ export async function runObservationScenario(
       data: {
         turnYawDeltaRad,
         sampleCount: samples.length,
-        note: "headless proxy for TurnMotionDiagnostics",
-      },
-    });
-    hub.emit({
-      name: "camera.follow.mode_changed",
-      source: "camera",
-      type: "event",
-      data: {
-        mode: "production-default",
-        note: "headless run records proxy camera-follow assertion only",
+        mode: "simulation",
       },
     });
 
@@ -515,7 +486,8 @@ export async function runObservationScenario(
       maxCommitMs,
       turnYawDeltaRad,
       terrainUnavailableSteps,
-      hub,
+      cameraSamples: 0,
+      cameraTargetTravelM: 0,
     };
 
     let failed = 0;

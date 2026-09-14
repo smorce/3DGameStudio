@@ -65,6 +65,8 @@ test.assertion.passed / failed
 ```bash
 pnpm observe scenarios
 pnpm observe run <scenario>
+pnpm observe run <scenario> --mode=simulation
+pnpm observe run <scenario> --app=player
 pnpm observe summary <runId|latest>
 pnpm observe query <runId|latest> --name diagnostic.frame.spike
 pnpm observe frame <runId|latest> <frame>
@@ -95,7 +97,7 @@ pnpm --silent observe compare <RUN1> <RUN2> --json
 window.__MACHINE_STUDIO_AGENT__;
 ```
 
-読み取り中心。許可操作は scenario reset / observation begin・end などに限定。
+読み取り中心。許可操作は scenario reset / observation begin・end / assertion記録などに限定。
 
 ## Scenario
 
@@ -145,6 +147,7 @@ Scenario 開始・重要 Event・Assertion failure・大きな Spike・終了時
 
 ## 残制約
 
-- headless では Camera/GPU は代理指標
+- 通常の `pnpm observe run` はPlaywright上の実Studioを実行し、Camera/Renderer/RAF/Workerを記録する
+- `--mode=simulation` は高速なNode物理診断であり、RAF/Renderer/Cameraの実測値を生成しない
 - Production では Agent API 非公開（明示 flag / 開発時のみ）
 - docs/evidence 既存 probe は互換のため残存（新規は .observability/runs）

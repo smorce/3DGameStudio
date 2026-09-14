@@ -297,7 +297,7 @@ function App() {
     // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。回帰比較用。既定OFF、?cameraToggle=1 で有効。
     const cameraToggle = params.get("cameraToggle") === "1";
     e.enableCameraFollowToggleDiag(cameraToggle);
-    installAgentObservationApi(e);
+    installAgentObservationApi(e, { app: "studio" });
     (
       window as unknown as {
         __exportSpikeDiagnostics?: (

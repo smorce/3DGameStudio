@@ -1,6 +1,7 @@
 /** Observation / Telemetry 共通スキーマ（schemaVersion: 1）。 */
 
 export type ObservationEnvironmentMode = "browser" | "node";
+export type ObservationApplication = "studio" | "player";
 
 export type TelemetryEventSource =
   | "engine"
@@ -28,6 +29,7 @@ export interface ObservationRunManifest {
   scenarioDefinitionHash?: string;
   environment: {
     mode: ObservationEnvironmentMode;
+    app?: ObservationApplication;
     browser?: string;
     viewport?: [number, number];
     devicePixelRatio?: number;

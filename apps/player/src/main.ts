@@ -1,10 +1,14 @@
-import { Engine } from "../../../packages/engine-core/src/index";
+import {
+  Engine,
+  installAgentObservationApi,
+} from "../../../packages/engine-core/src/index";
 import {
   emptyProject,
   parseProject,
 } from "../../../packages/project-schema/src/index";
 import { carTemplate } from "../../../packages/machine-system/src/index";
 import { speedKphFromMps } from "../../../packages/runtime-telemetry/src/index";
+import { loadProject } from "../../../packages/storage/src/index";
 const engine = new Engine(document.querySelector("canvas")!);
 const p = emptyProject();
 p.machines.push(carTemplate());
@@ -26,7 +30,8 @@ engine.onFrame = () => {
     );
   }
 };
-await engine.load(p);
+installAgentObservationApi(engine, { app: "player" });
+await engine.load(loadProject(localStorage) ?? p);
 document.getElementById("play")!.onclick = () => {
   engine.play().catch((e) => {
     document.getElementById("status")!.textContent = String(e);

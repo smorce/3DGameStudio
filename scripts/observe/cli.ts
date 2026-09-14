@@ -10,8 +10,9 @@ import {
   queryEvents,
   type ObservationQueryFilter,
 } from "../../packages/runtime-telemetry/src/index";
-import { runObservationScenario } from "./runner";
-import { loadRunEvents, loadRunSummary } from "./storage";
+import { runBrowserObservationScenario } from "./browser-runner";
+import { runSimulationObservationScenario } from "./runner";
+import { loadRunEvents, loadRunManifest, loadRunSummary } from "./storage";
 
 const args = process.argv.slice(2);
 const jsonMode = args.includes("--json");
@@ -40,7 +41,7 @@ const writeErr = (message: string) => {
 const usage = () => {
   writeErr(`Usage:
   pnpm observe scenarios [--json]
-  pnpm observe run <scenario> [--json]
+  pnpm observe run <scenario> [--mode=browser|simulation] [--app=studio|player] [--json]
   pnpm observe summary <runId|latest> [--json]
   pnpm observe query <runId|latest> [filters...] [--json]
   pnpm observe frame <runId|latest> <frame> [--json]
@@ -79,7 +80,24 @@ async function main() {
         process.exitCode = 1;
         return;
       }
-      const result = await runObservationScenario(scenarioId);
+      const mode = flagValue("mode") ?? "browser";
+      const app = flagValue("app") ?? "studio";
+      if (app !== "studio" && app !== "player") {
+        writeErr(`Unknown observe app: ${app}`);
+        process.exitCode = 1;
+        return;
+      }
+      const result =
+        mode === "simulation"
+          ? await runSimulationObservationScenario(scenarioId)
+          : mode === "browser"
+            ? await runBrowserObservationScenario(scenarioId, {
+                app,
+                baseURL: process.env.OBSERVE_BASE_URL,
+              })
+            : (() => {
+                throw new Error(`Unknown observe mode: ${mode}`);
+              })();
       if (jsonMode) {
         writeOut({
           runId: result.runId,
@@ -157,8 +175,12 @@ async function main() {
       }
       const before = await loadRunSummary(beforeId);
       const after = await loadRunSummary(afterId);
+      const beforeManifest = await loadRunManifest(beforeId);
+      const afterManifest = await loadRunManifest(afterId);
       const comparison = compareRunSummaries(before.summary, after.summary, {
         force,
+        beforeManifest: beforeManifest.manifest,
+        afterManifest: afterManifest.manifest,
       });
       if (!comparison.sameScenario && !force) {
         writeErr(comparison.warnings.join("\n"));

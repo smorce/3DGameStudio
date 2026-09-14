@@ -1,6 +1,7 @@
 import type {
   ObservationCompareResult,
   ObservationExplainResult,
+  ObservationRunManifest,
   ObservationRunSummary,
   TelemetryEvent,
 } from "./schema";
@@ -168,13 +169,58 @@ export function buildRunSummary(input: {
 export function compareRunSummaries(
   before: ObservationRunSummary,
   after: ObservationRunSummary,
-  options: { force?: boolean } = {},
+  options: {
+    force?: boolean;
+    beforeManifest?: ObservationRunManifest;
+    afterManifest?: ObservationRunManifest;
+  } = {},
 ): ObservationCompareResult {
   const warnings: string[] = [];
-  const sameScenario = before.scenario === after.scenario;
+  const metadata = [
+    [
+      "scenarioId",
+      options.beforeManifest?.scenarioId ?? before.scenario,
+      options.afterManifest?.scenarioId ?? after.scenario,
+    ],
+    [
+      "scenarioDefinitionHash",
+      options.beforeManifest?.scenarioDefinitionHash,
+      options.afterManifest?.scenarioDefinitionHash,
+    ],
+    ["seed", options.beforeManifest?.seed, options.afterManifest?.seed],
+    [
+      "environment.mode",
+      options.beforeManifest?.environment.mode,
+      options.afterManifest?.environment.mode,
+    ],
+    [
+      "environment.app",
+      options.beforeManifest?.environment.app,
+      options.afterManifest?.environment.app,
+    ],
+    [
+      "environment.viewport",
+      options.beforeManifest?.environment.viewport,
+      options.afterManifest?.environment.viewport,
+    ],
+    [
+      "environment.devicePixelRatio",
+      options.beforeManifest?.environment.devicePixelRatio,
+      options.afterManifest?.environment.devicePixelRatio,
+    ],
+  ] as const;
+  const sameScenario = metadata.every(
+    ([, beforeValue, afterValue]) =>
+      JSON.stringify(beforeValue) === JSON.stringify(afterValue),
+  );
+  for (const [name, beforeValue, afterValue] of metadata)
+    if (JSON.stringify(beforeValue) !== JSON.stringify(afterValue))
+      warnings.push(
+        `Run condition mismatch (${name}): ${JSON.stringify(beforeValue)} vs ${JSON.stringify(afterValue)}.`,
+      );
   if (!sameScenario && !options.force)
     warnings.push(
-      `Scenario mismatch: ${before.scenario} vs ${after.scenario}. Use --force to compare anyway.`,
+      "Runs were not executed under identical conditions. Use --force to compare anyway.",
     );
   if (!sameScenario && !options.force) {
     return {

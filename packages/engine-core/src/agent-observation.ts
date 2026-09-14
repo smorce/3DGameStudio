@@ -1,9 +1,15 @@
 import {
   ObservationHub,
   createObservationManifest,
+  getObservationScenario,
+  hashScenarioDefinition,
   listObservationScenarios,
 } from "../../runtime-telemetry/src/index";
-import type { MachineTelemetrySample } from "../../runtime-telemetry/src/index";
+import type {
+  MachineTelemetrySample,
+  TelemetryEvent,
+} from "../../runtime-telemetry/src/index";
+import type { ObservationApplication } from "../../runtime-telemetry/src/index";
 import type { Vec3 } from "../../project-schema/src/index";
 
 export interface AgentEventFilter {
@@ -68,6 +74,13 @@ export interface MachineStudioAgentApi {
   getState(): AgentGameState;
   getTelemetrySummary(): unknown;
   queryRecent(filter?: AgentEventFilter): unknown[];
+  getEvents(): TelemetryEvent[];
+  recordAssertion(
+    assertion: string,
+    expected: unknown,
+    actual: unknown,
+    passed: boolean,
+  ): unknown;
   getRunInfo(): unknown;
   listScenarios(): unknown[];
   resetScenario(): Promise<void>;
@@ -115,6 +128,8 @@ export interface EngineObservationHost {
       recentGpuSamples?: Array<{ timeMs?: number }>;
     };
   };
+  observationApp?: ObservationApplication;
+  flushObservationDiagnostics?: () => void;
   respawnWithPhysicsReady(): Promise<void>;
 }
 
@@ -140,6 +155,7 @@ export function shouldInstallAgentApi(
 export function createAgentObservationApi(
   engine: EngineObservationHost,
   hub: ObservationHub,
+  options: { app?: ObservationApplication } = {},
 ): MachineStudioAgentApi {
   return {
     version: 1,
@@ -239,6 +255,12 @@ export function createAgentObservationApi(
       else events = events.slice(-200);
       return events;
     },
+    getEvents() {
+      return hub.allEvents();
+    },
+    recordAssertion(assertion, expected, actual, passed) {
+      return hub.emitAssertion(assertion, expected, actual, passed);
+    },
     getRunInfo() {
       return hub.runManifest ?? null;
     },
@@ -249,9 +271,15 @@ export function createAgentObservationApi(
       await engine.respawnWithPhysicsReady();
     },
     beginObservation(scenarioId = "ad-hoc") {
+      const scenario = getObservationScenario(scenarioId);
       const manifest = createObservationManifest({
         scenarioId,
+        seed: scenario?.seed,
+        scenarioDefinitionHash: scenario
+          ? hashScenarioDefinition(scenario)
+          : undefined,
         mode: "browser",
+        app: options.app ?? engine.observationApp,
         browser:
           typeof navigator !== "undefined" ? navigator.userAgent : undefined,
         viewport:
@@ -265,18 +293,22 @@ export function createAgentObservationApi(
       return manifest;
     },
     endObservation(result: "pass" | "fail" | "error" = "pass") {
+      engine.flushObservationDiagnostics?.();
       hub.endRun(result);
       return hub.runManifest ?? null;
     },
   };
 }
 
-export function installAgentObservationApi(engine: EngineObservationHost) {
+export function installAgentObservationApi(
+  engine: EngineObservationHost,
+  options: { app?: ObservationApplication } = {},
+) {
   if (typeof window === "undefined") return undefined;
   if (!shouldInstallAgentApi()) return undefined;
-  const hub = engine.observation ?? new ObservationHub();
+  const hub = engine.observation ?? new ObservationHub({ capacity: 30000 });
   engine.observation = hub;
-  const api = createAgentObservationApi(engine, hub);
+  const api = createAgentObservationApi(engine, hub, options);
   (
     window as unknown as { __MACHINE_STUDIO_AGENT__?: MachineStudioAgentApi }
   ).__MACHINE_STUDIO_AGENT__ = api;

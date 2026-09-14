@@ -206,8 +206,7 @@ export const OBSERVATION_SCENARIOS: ObservationScenarioDefinition[] = [
   },
   {
     id: "camera-follow-turn",
-    description:
-      "旋回中の Camera Follow 関連メトリクスを記録する（headless では代理指標）",
+    description: "旋回中の実Camera Follow probeと姿勢変化を記録する",
     seed: 42,
     tags: ["camera", "turn"],
     durationSteps: 600,
@@ -242,12 +241,13 @@ export const OBSERVATION_SCENARIOS: ObservationScenarioDefinition[] = [
 
 export function listObservationScenarios() {
   return OBSERVATION_SCENARIOS.map((scenario) => ({
-    id: scenario.id,
-    description: scenario.description,
-    seed: scenario.seed,
-    tags: scenario.tags,
-    durationSteps: scenario.durationSteps,
-    assertions: scenario.assertions,
+    ...scenario,
+    tags: [...scenario.tags],
+    timeline: scenario.timeline.map((segment) => ({
+      ...segment,
+      controls: { ...segment.controls },
+    })),
+    assertions: [...scenario.assertions],
   }));
 }
 
