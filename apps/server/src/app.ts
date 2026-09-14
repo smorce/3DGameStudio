@@ -295,12 +295,29 @@ export async function createApp(
   });
   /** Spike / Turn-Motion 診断 JSON を docs/evidence/ へ保存。 */
   app.post("/api/evidence", async (req, res) => {
-    const familyRaw = String(req.body?.family ?? "spike-flight");
+    const dump = req.body?.dump ?? req.body;
+    const looksLikeTurnMotion =
+      dump &&
+      typeof dump === "object" &&
+      ("turnWindowFrames" in dump ||
+        "turnWindowPhysicsSteps" in dump ||
+        dump.modeLabel);
+    const familyRaw = String(
+      req.body?.family ??
+        (looksLikeTurnMotion ? "turn-motion" : "spike-flight"),
+    );
     const family =
-      familyRaw === "turn-motion" || familyRaw === "turn-motion-diagnostics"
+      familyRaw === "turn-motion" ||
+      familyRaw === "turn-motion-diagnostics" ||
+      looksLikeTurnMotion
         ? "turn-motion-diagnostics"
         : "spike-flight";
-    const rawLabel = String(req.body?.label ?? (family === "spike-flight" ? "baseline" : "a"));
+    const rawLabel = String(
+      req.body?.label ??
+        (family === "spike-flight"
+          ? "baseline"
+          : String((dump as { mode?: string })?.mode ?? "a")),
+    );
     const label = rawLabel.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
     if (!label) {
       res.status(400).json({ error: "Invalid evidence label" });
@@ -321,7 +338,7 @@ export async function createApp(
       savedAt: new Date().toISOString(),
       hud: typeof req.body?.hud === "string" ? req.body.hud : undefined,
       position: req.body?.position,
-      dump: req.body?.dump ?? req.body,
+      dump,
     };
     await writeFile(absolutePath, JSON.stringify(payload, null, 2));
     const summaryResult =
@@ -332,11 +349,8 @@ export async function createApp(
       saved: true,
       path: relativePath,
       summaryUpdated:
-        "written" in summaryResult
-          ? Boolean(summaryResult.written)
-          : true,
-      summaryPath:
-        "path" in summaryResult ? summaryResult.path : undefined,
+        "written" in summaryResult ? Boolean(summaryResult.written) : true,
+      summaryPath: "path" in summaryResult ? summaryResult.path : undefined,
       summaryMissing:
         "missing" in summaryResult ? summaryResult.missing : [],
       summaryComplete:
