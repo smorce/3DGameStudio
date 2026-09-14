@@ -275,42 +275,8 @@ export function findStableForwardTakeoff(
   return undefined;
 }
 
-export class RingBuffer<T> {
-  private readonly values: Array<T | undefined>;
-  private start = 0;
-  private count = 0;
-
-  constructor(readonly capacity: number) {
-    if (!Number.isInteger(capacity) || capacity <= 0)
-      throw new Error("Telemetry buffer capacity must be a positive integer");
-    this.values = new Array<T | undefined>(capacity);
-  }
-
-  get size() {
-    return this.count;
-  }
-
-  push(value: T) {
-    const index = (this.start + this.count) % this.capacity;
-    this.values[index] = value;
-    if (this.count === this.capacity)
-      this.start = (this.start + 1) % this.capacity;
-    else this.count++;
-  }
-
-  clear() {
-    this.values.fill(undefined);
-    this.start = 0;
-    this.count = 0;
-  }
-
-  toArray() {
-    return Array.from(
-      { length: this.count },
-      (_, index) => this.values[(this.start + index) % this.capacity]!,
-    );
-  }
-}
+import { RingBuffer } from "./ring-buffer";
+export { RingBuffer };
 
 export interface TelemetryRecorderOptions {
   capacity?: number;
@@ -373,3 +339,34 @@ export class RuntimeTelemetry {
       .join("\n");
   }
 }
+
+export * from "./schema";
+export {
+  ObservationHub,
+  DEFAULT_OBSERVATION_EVENT_CAPACITY,
+  DEFAULT_ANOMALY_WINDOW_CAPACITY,
+  DEFAULT_PRE_ANOMALY_MS,
+  DEFAULT_POST_ANOMALY_MS,
+  type ObservationHubOptions,
+  type EmitEventInput,
+} from "./observation-hub";
+export {
+  createRunId,
+  createObservationManifest,
+  hashScenarioDefinition,
+} from "./run-context";
+export {
+  queryEvents,
+  parseJsonlEvents,
+  type ObservationQueryFilter,
+} from "./query";
+export { buildRunSummary, compareRunSummaries, explainRun } from "./summary";
+export {
+  OBSERVATION_SCENARIOS,
+  listObservationScenarios,
+  getObservationScenario,
+  requireObservationScenario,
+  type ObservationScenarioDefinition,
+  type ScenarioAssertionId,
+  type ScenarioTimelineSegment,
+} from "./scenarios";

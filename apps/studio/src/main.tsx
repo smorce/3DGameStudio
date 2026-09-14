@@ -23,10 +23,11 @@ import {
   labels,
   type AttachmentCandidate,
 } from "../../../packages/machine-system/src/index";
-import { Engine } from "../../../packages/engine-core/src/index";
 import {
-  parseMotionDiagMode,
-} from "../../../packages/engine-core/src/turn-motion-diagnostics";
+  Engine,
+  installAgentObservationApi,
+} from "../../../packages/engine-core/src/index";
+import { parseMotionDiagMode } from "../../../packages/engine-core/src/turn-motion-diagnostics";
 import { speedKphFromMps } from "../../../packages/runtime-telemetry/src/index";
 import { loadProject, saveProject } from "../../../packages/storage/src/index";
 import { EasyPalette } from "../../../packages/ui-easy/src/index";
@@ -131,7 +132,8 @@ async function saveTurnMotionEvidenceToServer(engine: Engine) {
     modeLabel: dump.modeLabel,
     turnStartTimeMs: dump.turnStartTimeMs,
     summaryUpdated: Boolean(data.summaryUpdated),
-    summaryPath: data.summaryPath ?? "docs/evidence/turn-motion-diagnostics.json",
+    summaryPath:
+      data.summaryPath ?? "docs/evidence/turn-motion-diagnostics.json",
     summaryMissing: data.summaryMissing ?? [],
     summaryComplete: Boolean(data.summaryComplete),
     separation: dump.verdict.separation,
@@ -289,18 +291,18 @@ function App() {
       maxPixelRatio: params.get("pixelRatio") === "1" ? 1 : 2,
     });
     // PLAY 前描画準備は標準 ON。?disablePlayRenderPrewarm=1 で A/B 比較用に無効化。
-    e.playRenderPrewarmEnabled =
-      params.get("disablePlayRenderPrewarm") !== "1";
+    e.playRenderPrewarmEnabled = params.get("disablePlayRenderPrewarm") !== "1";
     // Motion Smoothness A/B（Thruster/Aero/Steering は変更しない）。
     e.setMotionDiagMode(parseMotionDiagMode(params.get("motionDiag")));
     // 同一PLAY中 Damped↔Instant 切替（Vキー / 約3秒自動）。回帰比較用。既定OFF、?cameraToggle=1 で有効。
     const cameraToggle = params.get("cameraToggle") === "1";
     e.enableCameraFollowToggleDiag(cameraToggle);
+    installAgentObservationApi(e);
     (
       window as unknown as {
-        __exportSpikeDiagnostics?: (label?: string) => ReturnType<
-          Engine["exportSpikeDiagnostics"]
-        >;
+        __exportSpikeDiagnostics?: (
+          label?: string,
+        ) => ReturnType<Engine["exportSpikeDiagnostics"]>;
         __setPlayRenderPrewarmEnabled?: (enabled: boolean) => boolean;
         __saveSpikeEvidence?: (label?: string) => Promise<{
           path: string;
@@ -439,9 +441,8 @@ function App() {
       if (!placementRef.current) setSelected(id);
     };
     return () => {
-      delete (
-        window as unknown as { __exportSpikeDiagnostics?: unknown }
-      ).__exportSpikeDiagnostics;
+      delete (window as unknown as { __exportSpikeDiagnostics?: unknown })
+        .__exportSpikeDiagnostics;
       e.dispose();
     };
   }, []);
@@ -1029,17 +1030,14 @@ function App() {
                 </span>
                 <br />
                 <span>
-                  Spike {">"}20/{">"}33/{">"}50{" "}
-                  {stats.spikeCount20ms ?? 0}/{stats.spikeCount33ms ?? 0}/
-                  {stats.spikeCount50ms ?? 0} · early{" "}
-                  {stats.earlySpikeCount20ms ?? 0}/
+                  Spike {">"}20/{">"}33/{">"}50 {stats.spikeCount20ms ?? 0}/
+                  {stats.spikeCount33ms ?? 0}/{stats.spikeCount50ms ?? 0} ·
+                  early {stats.earlySpikeCount20ms ?? 0}/
                   {stats.earlySpikeCount33ms ?? 0}/
                   {stats.earlySpikeCount50ms ?? 0} · SyncFb{" "}
                   {stats.syncGenerationFallbackCount ?? 0}
                   {(stats.playStatsFast ?? 0) === 1 ? " · fastStats" : ""}
-                  {(stats.originRebaseEnabled ?? 1) === 0
-                    ? " · rebaseOFF"
-                    : ""}
+                  {(stats.originRebaseEnabled ?? 1) === 0 ? " · rebaseOFF" : ""}
                 </span>
                 <br />
                 <span>

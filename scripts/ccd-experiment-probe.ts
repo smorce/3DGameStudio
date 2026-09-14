@@ -181,7 +181,6 @@ function detectAirStopEvents(
 function chassisStagnationStep(records: StepRecord[]) {
   for (let index = 2; index < records.length; index++) {
     const a = records[index - 2];
-    const b = records[index - 1];
     const c = records[index];
     if (c.chassisHeightM < 20) continue;
     const drop =

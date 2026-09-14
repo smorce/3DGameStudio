@@ -70,3 +70,7 @@ speedKph = worldSpeedMps * 3.6
 ```
 
 内部APIではWind未実装の現在値を`airspeed`とは呼ばず、`worldSpeedMps`と呼びます。Physics値は平滑化せず、HUDは最新Snapshotを表示し、表示単位だけ整数km/hへ変換します。
+
+## 関連
+
+AIエージェント向けの共通観測基盤（ObservationHub / `pnpm observe` / Browser Agent API）は [observability.md](./observability.md) を参照してください。`RuntimeTelemetry` はその中核として維持されています。

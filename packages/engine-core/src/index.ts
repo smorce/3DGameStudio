@@ -16,12 +16,10 @@ import type {
   MachineTelemetrySample,
   RuntimeTelemetry,
 } from "../../runtime-telemetry/src/index";
+import { ObservationHub } from "../../runtime-telemetry/src/index";
 import { FrameProfiler } from "./frame-profiler";
 import { shiftPhysicsRenderState } from "./interpolation";
-import {
-  commitWorldOriginShift,
-  takeLastOriginShiftTiming,
-} from "./rebase";
+import { commitWorldOriginShift, takeLastOriginShiftTiming } from "./rebase";
 import {
   SpikeDiagnostics,
   type FrameTraceSample,
@@ -69,6 +67,14 @@ export {
   type TurnRafSample,
   type TurnMotionVerdict,
 } from "./turn-motion-diagnostics";
+export {
+  createAgentObservationApi,
+  installAgentObservationApi,
+  shouldInstallAgentApi,
+  type AgentEventFilter,
+  type AgentGameState,
+  type MachineStudioAgentApi,
+} from "./agent-observation";
 
 export interface FrameSpikeSample {
   timeMs: number;
@@ -171,6 +177,8 @@ export class Engine {
   readonly spikeDiagnostics = new SpikeDiagnostics();
   readonly turnMotionDiagnostics = new TurnMotionDiagnostics();
   readonly cameraFollowToggleLog = new CameraFollowToggleLog();
+  /** 共通観測ハブ。未開始時は記録しない。 */
+  observation?: ObservationHub;
   /**
    * 診断用 A/B。false にすると Origin Rebase Transaction をスキップする。
    * Production 設定として恒久無効化してはならない。
@@ -344,7 +352,7 @@ export class Engine {
     this.lastThrustActive = false;
     this.lastThrustBecameActive = false;
   }
-  private async respawnWithPhysicsReady() {
+  async respawnWithPhysicsReady() {
     const point = this.course?.respawn;
     if (point && this.worldRuntime) {
       this.worldRuntime.setPlayHotPath(false);
@@ -478,8 +486,7 @@ export class Engine {
       this.interpolationAlpha = this.accumulator / (1 / 60);
       const throttle = dropping ? 0 : (controls.throttle ?? 0);
       const thrustActive = Math.abs(throttle) > 0.01;
-      this.lastThrustBecameActive =
-        thrustActive && !this.previousThrustActive;
+      this.lastThrustBecameActive = thrustActive && !this.previousThrustActive;
       this.lastThrustActive = thrustActive;
       this.previousThrustActive = thrustActive;
       this.playFrameIndex += 1;
@@ -585,8 +592,7 @@ export class Engine {
       (renderStats.renderChunksCreated ?? 0) +
       (physicsStats.physicsChunksCreated ?? 0);
     const rebaseTiming = this.frameRebaseTiming;
-    const physicsBreakdown =
-      rebaseTiming?.physics ?? emptyPhysicsBreakdown();
+    const physicsBreakdown = rebaseTiming?.physics ?? emptyPhysicsBreakdown();
     const rendererBreakdown =
       rebaseTiming?.renderer ?? emptyRendererBreakdown();
     const rebaseCount = world?.rebaseCount ?? 0;
@@ -620,8 +626,7 @@ export class Engine {
       colliderCount:
         physicsBreakdown.colliderCount || physicsStats.colliders || 0,
       standaloneColliderCount: physicsBreakdown.standaloneColliderCount,
-      chunkCount:
-        rendererBreakdown.chunkCount || renderStats.loadedChunks || 0,
+      chunkCount: rendererBreakdown.chunkCount || renderStats.loadedChunks || 0,
       lodBatchCount:
         rendererBreakdown.lodBatchCount || renderStats.lodBatchCount || 0,
       workerQueued: world?.workerQueued ?? 0,
@@ -672,9 +677,38 @@ export class Engine {
       });
       if (this.spikeRing.length > SPIKE_RING) this.spikeRing.shift();
     }
+    this.observation?.recordFrameTiming({
+      frame: this.playFrameIndex,
+      rafMs: this.rafIntervalMs,
+      physicsMs: this.physicsStepMs,
+      renderMs: this.renderMs,
+      streamingCommitMs: world?.streamingCommitMs ?? 0,
+      timestampMs: now,
+    });
+    if (this.rebaseThisFrame && this.observation) {
+      this.observation.emit({
+        name: "world.origin.rebase.completed",
+        source: "world",
+        type: "event",
+        frame: this.playFrameIndex,
+        timestampMs: now,
+        data: {
+          rebaseCount,
+          rebaseTotalMs: rebaseTiming?.rebaseTotalMs ?? 0,
+          physicsRebaseMs: rebaseTiming?.physicsRebaseMs ?? 0,
+          rendererRebaseMs: rebaseTiming?.rendererRebaseMs ?? 0,
+          runtimeCommitRebaseMs: rebaseTiming?.runtimeCommitRebaseMs ?? 0,
+          telemetrySyncMs: rebaseTiming?.telemetrySyncMs ?? 0,
+        },
+      });
+    }
   }
   get recentSpikes(): readonly FrameSpikeSample[] {
     return this.spikeRing;
+  }
+  /** Agent API 向けの PLAY フレーム番号。 */
+  get playFramePublic() {
+    return this.playFrameIndex;
   }
   /** Spike / Rebase 診断 JSON（コンソールやファイル保存用）。 */
   exportSpikeDiagnostics(): SpikeDiagnosticsDump {
