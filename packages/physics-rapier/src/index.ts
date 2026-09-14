@@ -83,6 +83,66 @@ export interface PhysicsRenderState {
   poses: Map<string, Pose>;
   wheels: Map<string, WheelRenderState>;
 }
+/** CCD A/B 実験用。all=現行、off=全無効、chassis-only=主胴体のみ、hinge-only=Hinge側のみ。 */
+export type CcdExperimentMode = "all" | "off" | "chassis-only" | "hinge-only";
+/** membership=bit1(機体), filter=機体bit以外 → 同一機体Collider同士は衝突しない。 */
+const MACHINE_COLLISION_GROUPS =
+  (0x0002 << 16) | (0xffff & ~0x0002);
+export interface BodyMotionSnapshot {
+  groupId: string;
+  role: "chassis" | "hinge";
+  label: string;
+  ccdEnabled: boolean;
+  position: TelemetryVec3;
+  linvel: TelemetryVec3;
+  angvel: TelemetryVec3;
+  handle: number;
+}
+export interface ContactManifoldPoint {
+  localPoint1: TelemetryVec3 | null;
+  localPoint2: TelemetryVec3 | null;
+  dist: number;
+  impulse: number;
+}
+export interface ContactPairSnapshot {
+  bodyA: string;
+  bodyB: string;
+  roleA: "chassis" | "hinge" | "other";
+  roleB: "chassis" | "hinge" | "other";
+  partA: string;
+  partB: string;
+  machineIdA: string | null;
+  machineIdB: string | null;
+  sameMachine: boolean;
+  jointConnected: boolean;
+  ccdA: boolean;
+  ccdB: boolean;
+  colliderHandleA: number;
+  colliderHandleB: number;
+  hasManifold: boolean;
+  numContacts: number;
+  numSolverContacts: number;
+  normal: TelemetryVec3 | null;
+  points: ContactManifoldPoint[];
+}
+function ccdEnabledForBody(
+  mode: CcdExperimentMode | undefined,
+  isChassis: boolean,
+): boolean {
+  if (!mode || mode === "all") return true;
+  if (mode === "off") return false;
+  if (mode === "chassis-only") return isChassis;
+  return !isChassis;
+}
+function bodyGroupLabel(parts: Part[]): string {
+  const roles = parts
+    .map((part) => part.metadata.aeroRole)
+    .filter((role): role is string => typeof role === "string");
+  if (roles.length) return roles.join("+");
+  const hinge = parts.find((part) => part.definitionId === "Hinge");
+  if (hinge) return `hinge:${hinge.actuator.controlChannel}`;
+  return parts[0]?.definitionId ?? "unknown";
+}
 const PHYSICS_FIXED_DT = 1 / 60;
 // 高速落下対策。レイキャスト車輪はCCDの対象外のため、
 // 終端速度クランプ + ステップ後のめり込み復帰で地形貫通を防ぐ。
@@ -380,9 +440,34 @@ export class RapierPhysics {
   private lastMaxJointAnchorErrorM = 0;
   private hinges: RevoluteRuntime[] = [];
   private motors: MotorRuntime[] = [];
+  private bodyRegistry: {
+    body: RAPIER.RigidBody;
+    groupId: string;
+    role: "chassis" | "hinge";
+    label: string;
+    machineId: string;
+  }[] = [];
+  private colliderRegistry: {
+    collider: RAPIER.Collider;
+    part: Part;
+    body: RAPIER.RigidBody;
+    groupId: string;
+    role: "chassis" | "hinge";
+    label: string;
+    machineId: string;
+  }[] = [];
+  private jointConnectedBodies = new Set<string>();
   async load(
     project: Project,
-    options: { courseId?: string | null; world?: WorldRuntime } = {},
+    options: {
+      courseId?: string | null;
+      world?: WorldRuntime;
+      ccdMode?: CcdExperimentMode;
+      /** 既定false（現行）。実験Eではtrueにして自己衝突を戻す。 */
+      jointContactsEnabled?: boolean;
+      /** trueで同一機体Collider同士のcollisionGroups衝突を無効化（外界とは衝突継続）。 */
+      excludeMachineSelfCollision?: boolean;
+    } = {},
   ) {
     this.dispose();
     const generation = this.generation;
@@ -744,15 +829,29 @@ export class RapierPhysics {
       if (!m.bodies.length) continue;
       this.forceByMachine.set(machine.id, emptyForceAccumulator());
       const bodies = new Map<string, RAPIER.RigidBody>();
+      const chassisGroupId = m.bodyForPart.get(
+        machine.parts.find((part) => part.definitionId === "Panel")?.id ??
+          m.bodies[0].parts[0].id,
+      )!;
       for (const group of m.bodies) {
+        const isChassis = group.id === chassisGroupId;
         const body = this.world.createRigidBody(
           rapier.RigidBodyDesc.dynamic()
             .setTranslation(0, 1, 0)
             .setLinearDamping(0.1)
             .setAngularDamping(3)
-            .setCcdEnabled(true),
+            .setCcdEnabled(
+              ccdEnabledForBody(options.ccdMode, isChassis),
+            ),
         );
         bodies.set(group.id, body);
+        this.bodyRegistry.push({
+          body,
+          groupId: group.id,
+          role: isChassis ? "chassis" : "hinge",
+          label: bodyGroupLabel(group.parts),
+          machineId: machine.id,
+        });
         let additionalMass = 0;
         for (const p of group.parts) {
           const s = p.physics.size.map((v, i) => v * p.transform.scale[i]),
@@ -773,7 +872,9 @@ export class RapierPhysics {
                   quaternion([0, 0, Math.PI / 2]),
                 )
               : quaternion(p.transform.rotation);
-          this.world.createCollider(
+          if (options.excludeMachineSelfCollision)
+            desc.setCollisionGroups(MACHINE_COLLISION_GROUPS);
+          const collider = this.world.createCollider(
             desc
               .setTranslation(...q)
               .setRotation(rotation(rot))
@@ -783,6 +884,15 @@ export class RapierPhysics {
             body,
           );
           this.parts.push({ part: p, body, machineId: machine.id });
+          this.colliderRegistry.push({
+            collider,
+            part: p,
+            body,
+            groupId: group.id,
+            role: isChassis ? "chassis" : "hinge",
+            label: bodyGroupLabel(group.parts),
+            machineId: machine.id,
+          });
         }
         if (additionalMass > 0) body.setAdditionalMass(additionalMass, true);
       }
@@ -798,7 +908,14 @@ export class RapierPhysics {
           b,
           true,
         ) as RAPIER.RevoluteImpulseJoint;
-        joint.setContactsEnabled(false);
+        // 構造Jointでは同一機体の自己衝突を既定で無効化している。
+        // CCD実験Eでは true に戻し、自己衝突の寄与を切り分ける。
+        joint.setContactsEnabled(options.jointContactsEnabled === true);
+        const connectedKey =
+          a.handle < b.handle
+            ? `${a.handle}|${b.handle}`
+            : `${b.handle}|${a.handle}`;
+        this.jointConnectedBodies.add(connectedKey);
         if (c.limits)
           joint.setLimits(c.limits.minAngleRad, c.limits.maxAngleRad);
         const attachedSurface = m.parts.find(
@@ -1465,6 +1582,117 @@ export class RapierPhysics {
       sample.chunkCoordinate = [chunk[0], chunk[1]];
     }
   }
+  bodyMotionSnapshots(): BodyMotionSnapshot[] {
+    return this.bodyRegistry.map((entry) => {
+      const translation = entry.body.translation(),
+        linear = entry.body.linvel(),
+        angular = entry.body.angvel();
+      return {
+        groupId: entry.groupId,
+        role: entry.role,
+        label: entry.label,
+        ccdEnabled: entry.body.isCcdEnabled(),
+        position: [translation.x, translation.y, translation.z],
+        linvel: [linear.x, linear.y, linear.z],
+        angvel: [angular.x, angular.y, angular.z],
+        handle: entry.body.handle,
+      };
+    });
+  }
+  private colliderEntry(collider: RAPIER.Collider) {
+    return this.colliderRegistry.find(
+      (entry) => entry.collider.handle === collider.handle,
+    );
+  }
+  private jointConnected(bodyA: RAPIER.RigidBody, bodyB: RAPIER.RigidBody) {
+    const key =
+      bodyA.handle < bodyB.handle
+        ? `${bodyA.handle}|${bodyB.handle}`
+        : `${bodyB.handle}|${bodyA.handle}`;
+    return this.jointConnectedBodies.has(key);
+  }
+  /**
+   * Narrow-phase の contact pair / manifold を診断用に列挙する。
+   * pair存在だけでは実接触とは限らないため、manifold の接触点も記録する。
+   */
+  contactPairSnapshots(options: { machineOnly?: boolean } = {}): ContactPairSnapshot[] {
+    if (!this.world) return [];
+    const seen = new Set<string>();
+    const snapshots: ContactPairSnapshot[] = [];
+    const sources = options.machineOnly
+      ? this.colliderRegistry
+      : this.colliderRegistry;
+    for (const entry of sources) {
+      this.world.contactPairsWith(entry.collider, (other) => {
+        const handleA = entry.collider.handle;
+        const handleB = other.handle;
+        const pairKey =
+          handleA < handleB
+            ? `${handleA}|${handleB}`
+            : `${handleB}|${handleA}`;
+        if (seen.has(pairKey)) return;
+        seen.add(pairKey);
+        const otherEntry = this.colliderEntry(other);
+        if (options.machineOnly && !otherEntry) return;
+        const bodyA = entry.body;
+        const bodyB = other.parent() ?? otherEntry?.body;
+        if (!bodyB) return;
+        let hasManifold = false;
+        let numContacts = 0;
+        let numSolverContacts = 0;
+        let normal: TelemetryVec3 | null = null;
+        const points: ContactManifoldPoint[] = [];
+        this.world.contactPair(entry.collider, other, (manifold) => {
+          hasManifold = true;
+          numContacts += manifold.numContacts();
+          numSolverContacts += manifold.numSolverContacts();
+          const n = manifold.normal();
+          normal = [n.x, n.y, n.z];
+          for (let i = 0; i < manifold.numContacts(); i++) {
+            const p1 = manifold.localContactPoint1(i);
+            const p2 = manifold.localContactPoint2(i);
+            points.push({
+              localPoint1: p1 ? [p1.x, p1.y, p1.z] : null,
+              localPoint2: p2 ? [p2.x, p2.y, p2.z] : null,
+              dist: manifold.contactDist(i),
+              impulse: manifold.contactImpulse(i),
+            });
+          }
+        });
+        snapshots.push({
+          bodyA: entry.label,
+          bodyB: otherEntry?.label ?? `collider:${other.handle}`,
+          roleA: entry.role,
+          roleB: otherEntry?.role ?? "other",
+          partA:
+            (typeof entry.part.metadata.aeroRole === "string" &&
+              entry.part.metadata.aeroRole) ||
+            entry.part.id,
+          partB:
+            otherEntry
+              ? (typeof otherEntry.part.metadata.aeroRole === "string" &&
+                  otherEntry.part.metadata.aeroRole) ||
+                otherEntry.part.id
+              : `collider:${other.handle}`,
+          machineIdA: entry.machineId,
+          machineIdB: otherEntry?.machineId ?? null,
+          sameMachine:
+            !!otherEntry && otherEntry.machineId === entry.machineId,
+          jointConnected: this.jointConnected(bodyA, bodyB),
+          ccdA: bodyA.isCcdEnabled(),
+          ccdB: bodyB.isCcdEnabled(),
+          colliderHandleA: handleA,
+          colliderHandleB: handleB,
+          hasManifold,
+          numContacts,
+          numSolverContacts,
+          normal,
+          points,
+        });
+      });
+    }
+    return snapshots;
+  }
   jointAnchorErrors() {
     return this.hinges.map((hinge) => {
       const a1 = hinge.joint.anchor1(),
@@ -1877,5 +2105,8 @@ export class RapierPhysics {
     this.telemetry.clear();
     this.hinges = [];
     this.motors = [];
+    this.bodyRegistry = [];
+    this.colliderRegistry = [];
+    this.jointConnectedBodies.clear();
   }
 }
