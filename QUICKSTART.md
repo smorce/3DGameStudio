@@ -2,6 +2,39 @@
 
 最短で Studio を起動し、車を走らせる手順です。詳細な設計・検証は [README.md](README.md) を参照してください。
 
+## AI 向け：観測基盤で自分でデバッグする
+
+このリポジトリには **AI が自分でゲームを再現 → 観測 → 原因調査 → 修正 → 同条件再テスト** するためのログ基盤があります。詳細は [docs/observability.md](docs/observability.md) です。
+
+**不具合修正・性能改善・挙動調査をするときは、推測だけで直さず、まず観測 Run を取ってログを分析してください。** 修正後も同じ Scenario で Before / After を比較し、自分で検証してから報告します。
+
+### 最短フロー
+
+```sh
+# Scenario 一覧
+pnpm observe scenarios
+
+# 実ブラウザで再現・記録（既定）
+pnpm observe run starter-plane-turn-left
+
+# 要約・スパイク・仮説
+pnpm --silent observe summary latest --json
+pnpm --silent observe query latest --name diagnostic.frame.spike --json
+pnpm --silent observe explain latest --json
+
+# 修正後、同条件で再実行して比較
+pnpm observe run starter-plane-turn-left
+pnpm --silent observe compare <beforeRunId> <afterRunId> --json
+```
+
+- Run の成果物は `.observability/runs/<runId>/`（`events.jsonl` / `summary.json` / screenshot / Playwright trace）
+- 失敗時も証拠が残る（`result: error` + error screenshot / trace）
+- 入力切替は Physics Step 基準。同じ seed・同じ Step で同じ入力を再現できる
+- 高速な物理だけの切り分けは `pnpm observe run <scenario> --mode=simulation`
+- Chromium が「無い」と出ても空キャッシュのことが多い → [AGENTS.md](AGENTS.md)
+
+人間向けの旧診断（Spike フライト / 旋回 Motion など）は下記セクション 7 以降も使えますが、**新規の調査・修正ループは `pnpm observe` を優先**してください。
+
 ## 必要なもの
 
 - Node.js 22.12 以降
@@ -193,6 +226,8 @@ Damped 区間だけ画面上の機体が動くなら、旧 follow damping 由来
 ## 次に読むもの
 
 - [README.md](README.md) … 機能・構成・テスト
+- [docs/observability.md](docs/observability.md) … AI 観測・再現・検証基盤（デバッグの本丸）
 - [docs/progress.md](docs/progress.md) … 完成条件と証拠
 - [KNOWN_ISSUES.md](KNOWN_ISSUES.md) … 既知の制約
 - [docs/evidence/spike-flight-summary.json](docs/evidence/spike-flight-summary.json) … 直近の Spike 診断要約
+- [AGENTS.md](AGENTS.md) … Playwright / Chromium キャッシュの注意
