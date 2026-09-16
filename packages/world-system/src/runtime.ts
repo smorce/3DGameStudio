@@ -1,3 +1,6 @@
+import { semanticContext } from "../../world-generator/src/design-generation";
+import { AssetCatalog } from "../../asset-catalog/src/index";
+import type { Project } from "../../project-schema/src/index";
 import {
   isProceduralWorld,
   worldChunkResolution,
@@ -99,6 +102,7 @@ export interface WorldRuntimeStats {
 }
 
 export interface WorldRuntimeOptions {
+  assets?: Project["assets"];
   cacheLimit?: number;
   debug?: boolean;
   workerCount?: number;
@@ -236,6 +240,7 @@ export class WorldRuntime {
   private finiteMeshes?: Map<string, TerrainChunk>;
   private cacheLimit: number;
   private debug: boolean;
+  private catalog: AssetCatalog;
   private readonly pool: ChunkWorkerPool;
   private playHotPath = false;
   private commitBudgetMs: number;
@@ -249,6 +254,7 @@ export class WorldRuntime {
     public world: World,
     options: WorldRuntimeOptions = {},
   ) {
+    this.catalog = new AssetCatalog({ assets: options.assets ?? [] });
     this.cacheLimit = options.cacheLimit ?? DEFAULT_CACHE_LIMIT;
     this.debug = options.debug ?? false;
     this.commitBudgetMs =
@@ -273,6 +279,52 @@ export class WorldRuntime {
     });
     for (const consumer of ["renderer", "physics", "editor"] as WorldConsumer[])
       this.refs.set(consumer, new Set());
+  }
+
+  private resolveGenerated(entities: GeneratedEntity[]) {
+    const seed =
+      this.world.source.kind === "procedural" ? this.world.source.seed : 0;
+    return entities.map((entity) => {
+      if (!entity.assetSlot) return entity;
+      const resolution = this.catalog.resolveAssetSlot(
+        entity.assetSlot,
+        {
+          seed,
+          stablePlacementId: entity.id,
+          biome: entity.biome,
+          style: "stylized-low-poly",
+        },
+        this.world.buildManifest,
+      );
+      return resolution.status === "resolved"
+        ? { ...entity, assetId: resolution.asset.id, missingAsset: false }
+        : { ...entity, missingAsset: true };
+    });
+  }
+
+  debugDesignAt(x: number, z: number) {
+    const source = this.world.source;
+    if (source.kind !== "procedural" || !source.design) return undefined;
+    const c = worldToChunk(x, z, source.chunkSize),
+      key = chunkKey(c.chunkX, c.chunkZ);
+    return {
+      ...semanticContext(source.design, source.seed).debugSample(x, z),
+      chunkKey: key,
+      chunkBounds: [
+        c.chunkX * source.chunkSize,
+        c.chunkZ * source.chunkSize,
+        (c.chunkX + 1) * source.chunkSize,
+        (c.chunkZ + 1) * source.chunkSize,
+      ],
+      props:
+        this.peekChunk(key)?.entities.map((e) => ({
+          id: e.id,
+          position: e.position,
+          assetSlot: e.assetSlot,
+          assetId: e.assetId,
+          missingAsset: e.missingAsset,
+        })) ?? [],
+    };
   }
 
   get ticket() {
@@ -618,6 +670,7 @@ export class WorldRuntime {
     if (!chunk) {
       // Cache miss では Full Chunk 生成せず軽量サンプルを使う。
       return sampleGeneratedHeight({
+        design: source.design,
         seed: source.seed,
         generatorVersion: source.generatorVersion,
         preset: source.preset,
@@ -940,7 +993,9 @@ export class WorldRuntime {
       resolution: prepared.resolution,
       heights: prepared.heights,
       colors: prepared.colorHex,
-      entities: prepared.entities.filter((entity) => !tomb.has(entity.id)),
+      entities: this.resolveGenerated(
+        prepared.entities.filter((entity) => !tomb.has(entity.id)),
+      ),
       lodLevel: 0,
     };
     this.cache.set(prepared.key, {
@@ -998,6 +1053,7 @@ export class WorldRuntime {
       chunkSize: source.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
+      design: source.design,
       terrainEdit: edit
         ? {
             heightDeltas: edit.heightDeltas,
@@ -1060,6 +1116,7 @@ export class WorldRuntime {
       chunkSize: source.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
+      design: source.design,
     });
     const tomb = new Set(this.world.edits.generatedEntityTombstones);
     return {
@@ -1070,7 +1127,9 @@ export class WorldRuntime {
       resolution: generated.resolution,
       heights: generated.heights,
       colors: generated.colors,
-      entities: generated.entities.filter((entity) => !tomb.has(entity.id)),
+      entities: this.resolveGenerated(
+        generated.entities.filter((entity) => !tomb.has(entity.id)),
+      ),
       lodLevel: 0,
     };
   }
@@ -1149,6 +1208,7 @@ function meshToRuntime(
 export function sampleWorldHeight(world: World, x: number, z: number) {
   if (!isProceduralWorld(world)) return heightAt(world.terrain, x, z);
   return sampleGeneratedHeight({
+    design: world.source.design,
     seed: world.source.seed,
     generatorVersion: world.source.generatorVersion,
     preset: world.source.preset,

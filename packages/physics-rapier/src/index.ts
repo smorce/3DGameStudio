@@ -498,7 +498,7 @@ export class RapierPhysics {
     this.worldRuntime =
       options.world ??
       (project.world.source.kind === "procedural"
-        ? new WorldRuntime(project.world)
+        ? new WorldRuntime(project.world, { assets: project.assets })
         : undefined);
     this.terrain = project.world.terrain;
     this.water = structuredClone(
@@ -593,6 +593,13 @@ export class RapierPhysics {
       }
     }
     const usedAssets = new Set(project.world.entities.map((e) => e.assetId));
+    if (
+      project.world.source.kind === "procedural" &&
+      project.world.source.design
+    )
+      for (const a of project.assets)
+        if (a.type === "model" && a.catalog?.status === "ready")
+          usedAssets.add(a.id);
     const templates = new Map(
       await Promise.all(
         project.assets
@@ -776,6 +783,61 @@ export class RapierPhysics {
           ? (this.worldRuntime.peekChunk(key)?.entities ?? [])
           : [];
         for (const entity of generated) {
+          if (entity.assetId) {
+            const asset = project.assets.find((a) => a.id === entity.assetId),
+              template = templates.get(entity.assetId),
+              bounds = asset?.runtimeInfo?.bounds;
+            const s = entity.scale,
+              q = quaternion(entity.rotation);
+            const box = () => {
+              const half = bounds
+                ? bounds.max.map((v, i) =>
+                    Math.max(0.01, ((v - bounds.min[i]) * s[i]) / 2),
+                  )
+                : s;
+              const center = bounds
+                ? (bounds.max.map(
+                    (v, i) => ((v + bounds.min[i]) * s[i]) / 2,
+                  ) as Vec3)
+                : ([0, s[1], 0] as Vec3);
+              const offset = rotate(center, q);
+              const global = entity.position.map(
+                (v, i) => v + offset[i],
+              ) as Vec3;
+              return rapier.ColliderDesc.cuboid(half[0], half[1], half[2])
+                .setTranslation(
+                  ...(this.worldRuntime?.toSimulation(global) ?? global),
+                )
+                .setRotation(rotation(q));
+            };
+            entries.set(`entity:${entity.id}`, {
+              kind: "entity",
+              fallback: box,
+              create: () => {
+                if (!template || asset?.runtimeInfo?.collider === "box")
+                  return box();
+                const vertices = new Float32Array(
+                  template.vertices.map((v, i) => v * s[i % 3]),
+                );
+                const desc =
+                  asset?.runtimeInfo?.collider === "trimesh"
+                    ? rapier.ColliderDesc.trimesh(
+                        vertices,
+                        new Uint32Array(template.indices),
+                      )
+                    : rapier.ColliderDesc.convexHull(vertices);
+                return desc
+                  ? desc
+                      .setTranslation(
+                        ...(this.worldRuntime?.toSimulation(entity.position) ??
+                          entity.position),
+                      )
+                      .setRotation(rotation(q))
+                  : box();
+              },
+            });
+            continue;
+          }
           if (!isBuiltinEntityKind(entity.kind)) continue;
           generatedEntityColliders(entity).forEach((pose, index) => {
             entries.set(`entity:${entity.id}:${index}`, {
@@ -864,12 +926,15 @@ export class RapierPhysics {
         const isChassis = group.id === chassisGroupId;
         const body = this.world.createRigidBody(
           rapier.RigidBodyDesc.dynamic()
-            .setTranslation(0, 1, 0)
+            .setTranslation(
+              ...((project.world.source.kind === "procedural" &&
+              project.world.source.design
+                ? (project.world.spawnPoints[0] ?? [0, 1, 0])
+                : [0, 1, 0]) as Vec3),
+            )
             .setLinearDamping(0.1)
             .setAngularDamping(3)
-            .setCcdEnabled(
-              ccdEnabledForBody(options.ccdMode, isChassis),
-            ),
+            .setCcdEnabled(ccdEnabledForBody(options.ccdMode, isChassis)),
         );
         bodies.set(group.id, body);
         this.bodyRegistry.push({
@@ -1656,7 +1721,9 @@ export class RapierPhysics {
    * Narrow-phase の contact pair / manifold を診断用に列挙する。
    * pair存在だけでは実接触とは限らないため、manifold の接触点も記録する。
    */
-  contactPairSnapshots(options: { machineOnly?: boolean } = {}): ContactPairSnapshot[] {
+  contactPairSnapshots(
+    options: { machineOnly?: boolean } = {},
+  ): ContactPairSnapshot[] {
     if (!this.world) return [];
     const seen = new Set<string>();
     const snapshots: ContactPairSnapshot[] = [];
@@ -1668,9 +1735,7 @@ export class RapierPhysics {
         const handleA = entry.collider.handle;
         const handleB = other.handle;
         const pairKey =
-          handleA < handleB
-            ? `${handleA}|${handleB}`
-            : `${handleB}|${handleA}`;
+          handleA < handleB ? `${handleA}|${handleB}` : `${handleB}|${handleA}`;
         if (seen.has(pairKey)) return;
         seen.add(pairKey);
         const otherEntry = this.colliderEntry(other);
@@ -1709,16 +1774,14 @@ export class RapierPhysics {
             (typeof entry.part.metadata.aeroRole === "string" &&
               entry.part.metadata.aeroRole) ||
             entry.part.id,
-          partB:
-            otherEntry
-              ? (typeof otherEntry.part.metadata.aeroRole === "string" &&
-                  otherEntry.part.metadata.aeroRole) ||
-                otherEntry.part.id
-              : `collider:${other.handle}`,
+          partB: otherEntry
+            ? (typeof otherEntry.part.metadata.aeroRole === "string" &&
+                otherEntry.part.metadata.aeroRole) ||
+              otherEntry.part.id
+            : `collider:${other.handle}`,
           machineIdA: entry.machineId,
           machineIdB: otherEntry?.machineId ?? null,
-          sameMachine:
-            !!otherEntry && otherEntry.machineId === entry.machineId,
+          sameMachine: !!otherEntry && otherEntry.machineId === entry.machineId,
           jointConnected: this.jointConnected(bodyA, bodyB),
           ccdA: bodyA.isCcdEnabled(),
           ccdB: bodyB.isCcdEnabled(),

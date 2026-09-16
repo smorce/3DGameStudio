@@ -1,3 +1,4 @@
+import { FarWorldProxy } from "./far-proxy";
 import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -133,6 +134,7 @@ export class ThreeRenderer implements RendererAdapter {
   private templates = new AssetTemplates();
   private selected?: string;
   private project?: Project;
+  private farProxy?: FarWorldProxy;
   private streamer?: ChunkStreamer<THREE.Group>;
   private chunkBuilders = new Map<string, ((g: THREE.Group) => void)[]>();
   private sharedBuiltinTemplates = new Map<
@@ -458,9 +460,9 @@ export class ThreeRenderer implements RendererAdapter {
     const rect = this.canvas.getBoundingClientRect();
     const width = Math.max(1, rect.width);
     const height = Math.max(1, rect.height);
-    const projected = new THREE.Vector3(
-      ...this.lastLeadRenderPosition,
-    ).project(this.camera);
+    const projected = new THREE.Vector3(...this.lastLeadRenderPosition).project(
+      this.camera,
+    );
     const screenX = ((projected.x + 1) / 2) * width;
     const screenY = ((1 - projected.y) / 2) * height;
     return {
@@ -551,9 +553,11 @@ export class ThreeRenderer implements RendererAdapter {
    * 1回描画し、Geometry/Buffer 等の初回 GPU 準備も済ませる。
    * Gameplay の最初の RAF から ~20–30ms Stall を避けるための準備フェーズ。
    */
-  async preparePlayRendering(options: {
-    state?: PhysicsRenderState;
-  } = {}): Promise<{ ms: number; deferredCount: number }> {
+  async preparePlayRendering(
+    options: {
+      state?: PhysicsRenderState;
+    } = {},
+  ): Promise<{ ms: number; deferredCount: number }> {
     const started = performance.now();
     const deferred: THREE.Object3D[] = [];
     this.root.traverse((object) => {
@@ -640,12 +644,16 @@ export class ThreeRenderer implements RendererAdapter {
     this.editWorkspace = true;
     ++this.generation;
     this.ownsRuntime = !options?.world;
-    this.worldRuntime = options?.world ?? new WorldRuntime(p.world);
+    this.worldRuntime =
+      options?.world ?? new WorldRuntime(p.world, { assets: p.assets });
+    this.farProxy?.dispose();
     this.streamer?.dispose();
     this.chunkBuilders.clear();
     this.waterMesh = undefined;
     this.gridHelper = undefined;
     this.clear(this.root);
+    this.farProxy = new FarWorldProxy(p.world);
+    this.root.add(this.farProxy.group);
     this.showAttachmentCandidates([]);
     this.parts.clear();
     this.machines.clear();
@@ -663,12 +671,17 @@ export class ThreeRenderer implements RendererAdapter {
     this.root.add(grid);
     this.gridHelper = grid;
     if (p.world.water.enabled) {
+      const designWorld =
+        p.world.source.kind === "procedural" && !!p.world.source.design;
       const water = new THREE.Mesh(
-        new THREE.PlaneGeometry(800, 800),
+        new THREE.PlaneGeometry(
+          designWorld ? 5000 : 800,
+          designWorld ? 5000 : 800,
+        ),
         new THREE.MeshStandardMaterial({
           color: "#4db5c6",
-          transparent: true,
-          opacity: 0.65,
+          transparent: !designWorld,
+          opacity: designWorld ? 1 : 0.65,
           roughness: 0.15,
         }),
       );
@@ -880,11 +893,47 @@ export class ThreeRenderer implements RendererAdapter {
             : (this.worldRuntime?.getChunk(key)?.entities ?? []));
         const byKind = new Map<string, typeof generated>();
         for (const entity of generated) {
-          const list = byKind.get(entity.kind) ?? [];
+          const batchKey = entity.assetId ?? entity.kind;
+          const list = byKind.get(batchKey) ?? [];
           list.push(entity);
-          byKind.set(entity.kind, list);
+          byKind.set(batchKey, list);
         }
         for (const [kind, entities] of byKind) {
+          if (entities[0].assetId) {
+            const asset = p.assets.find((a) => a.id === entities[0].assetId);
+            const localEntities = entities.map((entity) => {
+              const sim = this.worldRuntime!.toSimulation(entity.position);
+              const position: Vec3 = [
+                sim[0] - group.position.x,
+                sim[1] - group.position.y,
+                sim[2] - group.position.z,
+              ];
+              return {
+                id: entity.id,
+                name: entity.name,
+                kind: "asset" as const,
+                assetId: entity.assetId,
+                transform: {
+                  position,
+                  rotation: entity.rotation,
+                  scale: entity.scale,
+                },
+              };
+            });
+            const batch = new WorldAssetBatch(
+              localEntities,
+              asset,
+              this.templates,
+              { lodCenter: group.position.toArray() as Vec3 },
+            );
+            this.lodBatches.add(batch);
+            batch.group.userData.release = () => {
+              this.lodBatches.delete(batch);
+              batch.dispose();
+            };
+            group.add(batch.group);
+            continue;
+          }
           const template = this.sharedBuiltinTemplate(
             kind as "tree" | "rock" | "building",
           );
@@ -921,6 +970,7 @@ export class ThreeRenderer implements RendererAdapter {
         group.visible = !this.editWorkspace;
         this.root.add(group);
         this.chunks.set(key, group);
+        this.farProxy?.invalidate();
         return group;
       },
       (group) => {
@@ -928,6 +978,7 @@ export class ThreeRenderer implements RendererAdapter {
         this.clear(group);
         for (const [key, value] of this.chunks)
           if (value === group) this.chunks.delete(key);
+        this.farProxy?.invalidate();
       },
       this.worldRuntime?.chunkSize ?? p.world.chunkSize,
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS : 2,
@@ -1137,11 +1188,16 @@ export class ThreeRenderer implements RendererAdapter {
     });
     const interpolated =
       state && options.previous && options.alpha !== undefined
-        ? interpolatePhysicsRenderState(options.previous, state, options.alpha, {
-            disableRotationInterpolation:
-              options.disableRotationInterpolation ??
-              this.disableRotationInterpolation,
-          })
+        ? interpolatePhysicsRenderState(
+            options.previous,
+            state,
+            options.alpha,
+            {
+              disableRotationInterpolation:
+                options.disableRotationInterpolation ??
+                this.disableRotationInterpolation,
+            },
+          )
         : state;
     const poses = interpolated?.poses;
     const wheels = interpolated?.wheels;
@@ -1270,6 +1326,10 @@ export class ThreeRenderer implements RendererAdapter {
       this.worldRuntime.commitGeneralWithinBudget({ skip: skipCommit });
     }
     const stream = this.streamer?.update(global, velocity);
+    this.farProxy?.update(
+      this.chunks.keys(),
+      this.worldRuntime?.worldOrigin ?? [0, 0, 0],
+    );
     if (stream) {
       this.lastStreamStats = {
         created: stream.created,
@@ -1313,6 +1373,7 @@ export class ThreeRenderer implements RendererAdapter {
   }
   get fastStats() {
     return {
+      farWorldProxyCount: this.farProxy?.group.children.length ?? 0,
       renderChunksCreated: this.lastStreamStats.created,
       renderChunkPending: this.lastStreamStats.pending,
       renderCommitMs: this.lastStreamStats.commitMs,
@@ -1395,6 +1456,7 @@ export class ThreeRenderer implements RendererAdapter {
       triangles: this.renderer.info.render.triangles,
       loadedChunks: [...this.chunks.values()].filter((g) => g.visible).length,
       loadedAssets: assetIds.size,
+      farWorldProxyCount: this.farProxy?.group.children.length ?? 0,
       renderChunksCreated: this.lastStreamStats.created,
       renderChunkPending: this.lastStreamStats.pending,
       renderCommitMs: this.lastStreamStats.commitMs,
@@ -1411,6 +1473,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.canvas.removeEventListener("pointerleave", this.pointerLeave);
     this.canvas.removeEventListener("pointercancel", this.pointerCancel);
     this.controls.dispose();
+    this.farProxy?.dispose();
     this.streamer?.dispose();
     this.gpuTimer.dispose();
     this.chunkBuilders.clear();

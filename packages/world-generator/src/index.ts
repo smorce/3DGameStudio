@@ -1,3 +1,8 @@
+import { semanticContext, generateDesignEntities } from "./design-generation";
+import { toyIslandsDesign } from "./toy-islands";
+export { deriveSeed } from "./seed";
+export { SemanticLayers } from "./semantic";
+export { toyIslandsDesign } from "./toy-islands";
 import {
   GENERATOR_VERSION,
   identity,
@@ -14,44 +19,13 @@ export const PHYSICS_CHUNK_RADIUS = 3;
 export const EDITOR_CHUNK_RADIUS = 5;
 export const REBASE_CHUNK_DISTANCE = 3;
 
-/** Worker / prepare へ渡す Terrain Edit Overlay（serializable）。 */
-export interface TerrainEditOverlay {
-  heightDeltas?: Record<string, number>;
-  colors?: Record<string, string>;
-}
-
-export interface GeneratorInput {
-  seed: number;
-  generatorVersion: number;
-  preset: EnvironmentPreset;
-  chunkX: number;
-  chunkZ: number;
-  chunkSize: number;
-  chunkResolution: number;
-  parameters?: Record<string, unknown>;
-  /** Chunk に対応する編集差分。指定時は heights/colors に適用してから Mesh を作る。 */
-  terrainEdit?: TerrainEditOverlay;
-}
-
-export interface GeneratedEntity {
-  id: string;
-  name: string;
-  kind: "rock" | "tree" | "building";
-  position: Vec3;
-  rotation: Vec3;
-  scale: Vec3;
-}
-
-export interface GeneratedChunk {
-  chunkX: number;
-  chunkZ: number;
-  size: number;
-  resolution: number;
-  heights: Float32Array;
-  colors: string[];
-  entities: GeneratedEntity[];
-  biome: EnvironmentPreset;
-}
+export type {
+  TerrainEditOverlay,
+  GeneratorInput,
+  GeneratedEntity,
+  GeneratedChunk,
+} from "./types";
+import type { GeneratorInput, GeneratedEntity, GeneratedChunk } from "./types";
 
 const GRASS = ["#7cab68", "#759a63", "#6d8f5e", "#8a9a6a"] as const;
 const SAND = "#c7b68b";
@@ -318,6 +292,10 @@ function placeEntities(
 }
 
 export function generateChunk(input: GeneratorInput): GeneratedChunk {
+  const design = input.design;
+  if (input.preset === "toy-islands" && !design)
+    throw new Error("World Design is required for toy-islands");
+  const layers = design ? semanticContext(design, input.seed) : undefined;
   const resolution = input.chunkResolution;
   const heights = new Float32Array(resolution * resolution);
   const colors: string[] = new Array(resolution * resolution);
@@ -331,10 +309,24 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
         resolution,
       );
       const { x, z } = gridWorldPosition(gx, gz, input.chunkSize, resolution);
-      const height = sampleBaseHeight(input.preset, x, z, input.seed);
+      const height = layers
+        ? layers.sampleHeight(x, z)
+        : sampleBaseHeight(input.preset, x, z, input.seed);
       const k = j * resolution + i;
       heights[k] = height;
-      colors[k] = colorFor(input.preset, height, x, z, input.seed);
+      colors[k] = colorFor(
+        design ? "archipelago" : input.preset,
+        height,
+        x,
+        z,
+        input.seed,
+      );
+      if (
+        layers &&
+        (layers.sampleRoadInfluence(x, z, true).distance <= 0 ||
+          layers.sampleRunwayMask(x, z))
+      )
+        colors[k] = "#a6a28e";
     }
   return {
     chunkX: input.chunkX,
@@ -343,7 +335,9 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
     resolution,
     heights,
     colors,
-    entities: placeEntities(input, heights),
+    entities: layers
+      ? generateDesignEntities(input, layers)
+      : placeEntities(input, heights),
     biome: input.preset,
   };
 }
@@ -351,6 +345,13 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
 export function sampleGeneratedHeight(
   input: Omit<GeneratorInput, "chunkX" | "chunkZ"> & { x: number; z: number },
 ) {
+  if (input.design)
+    return semanticContext(input.design, input.seed).sampleHeight(
+      input.x,
+      input.z,
+    );
+  if (input.preset === "toy-islands")
+    throw new Error("World Design is required for toy-islands");
   return sampleBaseHeight(input.preset, input.x, input.z, input.seed);
 }
 
@@ -397,17 +398,20 @@ export function bilinearHeight(
 }
 
 export function starterWorldName(preset: EnvironmentPreset) {
+  if (preset === "toy-islands") return "おもちゃの群島";
   if (preset === "airfield") return "滑走路の平原";
   if (preset === "archipelago") return "群島の海";
   return "はじまりの草原";
 }
 
 export function starterWater(preset: EnvironmentPreset) {
-  if (preset === "archipelago") return { enabled: true, height: 0 };
+  if (preset === "archipelago" || preset === "toy-islands")
+    return { enabled: true, height: 0 };
   return { enabled: false, height: -0.4 };
 }
 
 export function starterSpawn(preset: EnvironmentPreset): Vec3 {
+  if (preset === "toy-islands") return [0, 9, 0];
   if (preset === "archipelago") return [0, 1.2, 0];
   if (preset === "airfield") return [0, 2, 8];
   return [0, 2, 0];
@@ -446,11 +450,14 @@ export function createProceduralWorld(options: {
     source: {
       kind: "procedural",
       seed,
-      generatorVersion: options.generatorVersion ?? GENERATOR_VERSION,
+      generatorVersion:
+        options.generatorVersion ??
+        (preset === "toy-islands" ? 2 : GENERATOR_VERSION),
       preset,
       chunkSize,
       chunkResolution,
       parameters: {},
+      ...(preset === "toy-islands" ? { design: toyIslandsDesign() } : {}),
     },
     edits: { terrainChunks: {}, generatedEntityTombstones: [] },
     terrain: {
@@ -467,7 +474,12 @@ export function createProceduralWorld(options: {
     spawnPoints: [starterSpawn(preset)],
     environment: {
       sky: preset === "archipelago" ? "#9fd4e6" : "#c8e6f5",
-      fog: preset === "airfield" ? 0.0018 : 0.003,
+      fog:
+        preset === "toy-islands"
+          ? 0.00065
+          : preset === "airfield"
+            ? 0.0018
+            : 0.003,
     },
   };
 }
@@ -476,7 +488,8 @@ export function generatedToWorldEntity(entity: GeneratedEntity) {
   return {
     id: entity.id,
     name: entity.name,
-    kind: entity.kind,
+    kind: entity.assetId ? ("asset" as const) : entity.kind,
+    ...(entity.assetId ? { assetId: entity.assetId } : {}),
     transform: {
       ...identity(),
       position: entity.position,

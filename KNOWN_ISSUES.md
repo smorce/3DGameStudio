@@ -26,3 +26,13 @@
 - Chromiumで自動検証しています。Firefox／WebKitの実行構成はありますが、今回の合否対象には含めていません。
 - Rapier初期化で依存ライブラリ由来のdeprecated parameters警告が1回出ます。実行例外ではありません。Rapier WASMを含む遅延チャンクは約2.24MB（gzip約0.83MB）で、低速回線では最初のPlayに読み込み時間がかかります。
 - テクスチャメモリは概算値です。GPU実測値ではありません。Visual Regressionの基準画像比較は未導入で、提出画像は機能テストから撮影しています。
+
+## World Design / Asset Factory（指示17）
+
+- Real AI Planner、Real Astra、Blender自動操作は未実装です。交換用interface、Dummy実装、Processorまでの結合試験を用意しています。
+- Dummy variantはIDを分けた共通placeholder形状で、完成した木・灯台等のモデルではありません。
+- PBR texture ZIPは登録できますが、Rendererでは未対応です。Material推定や偽GLB生成はしません。画像形式はPNG/JPEG/WebP、ZIPは非暗号化store/deflateに限定します。
+- Far Proxyは低解像度terrainのみで、Propと編集差分は近景で反映します。独立したMid専用LODは未追加です。
+- CLIのKenney/KayKitローカルPackは空の境界です。外部Providerのacquireは通常テストで実通信していません。
+- BakeはAsset metadataと保存時SHA-256を固定します。Runtimeで配信ファイル全体のhashを再計算しません。
+- E2Eの既存診断テストに未解決の失敗があります。ベース比較と再実行結果は[今回の検証報告](docs/world-generation-asset-factory-report.md)に記録しています。

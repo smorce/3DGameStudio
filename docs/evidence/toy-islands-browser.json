@@ -1,0 +1,165 @@
+{
+  "state": {
+    "engine": {
+      "mode": "PLAY",
+      "frame": 76
+    },
+    "machine": {
+      "id": "331b6877-a099-4ed9-b6be-3370867af655",
+      "physicsStep": 199,
+      "position": [
+        -0.0027522165328264236,
+        5.408280849456787,
+        1.50929594039917
+      ],
+      "simulationPosition": [
+        -0.0027522165328264236,
+        5.408280849456787,
+        1.50929594039917
+      ],
+      "worldOrigin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        -0.02671276219189167,
+        0.0003153483849018812,
+        0.004551072604954243,
+        0.9996327757835388
+      ],
+      "velocity": [
+        0.0012765524443238974,
+        -0.03546591475605965,
+        0.5794224739074707
+      ],
+      "speed": 0.5805082807029378,
+      "groundedWheelCount": 4,
+      "controls": {
+        "throttle": 0,
+        "steering": 0
+      }
+    },
+    "camera": {
+      "position": [
+        6.9972478609029345,
+        10.308274621009826,
+        9.509156526327144
+      ],
+      "target": [
+        -0.002752139097079635,
+        5.408274621009826,
+        1.5091565263271334
+      ],
+      "followMode": "instant"
+    },
+    "world": {
+      "currentChunk": "-1,0",
+      "loadedRenderChunks": 169,
+      "loadedPhysicsChunks": 49,
+      "readyQueues": {
+        "render": 109,
+        "physics": 0
+      },
+      "generationQueue": 0,
+      "workerQueued": 0,
+      "workerInFlight": 0,
+      "cacheHitRate": 0.6206896551724138,
+      "rebaseCount": 0
+    },
+    "renderer": {
+      "drawCalls": 142,
+      "triangles": 112640,
+      "geometries": null,
+      "textures": null,
+      "gpuTimingMs": 47.950045
+    },
+    "frame": {
+      "rafMs": 50,
+      "cpuWorkMs": 2.899999976158142,
+      "physicsMs": 0.699999988079071,
+      "renderMs": 2.199999988079071,
+      "streamingRequestMs": 0,
+      "streamingCommitMs": 0
+    }
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "temperate",
+      "road": {
+        "distance": 549.7661961514083,
+        "weight": 0,
+        "height": 8,
+        "roadId": "race-road"
+      },
+      "noSpawn": false,
+      "height": 5.8017813965448255,
+      "chunkKey": "2,2",
+      "chunkBounds": [
+        64,
+        64,
+        96,
+        96
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:10:12",
+          "position": [
+            73.44333604024723,
+            5.833159392916762,
+            90.75405202060938
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cd572bed5c49e0d1d2b507d188453f9b",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:11:9",
+          "position": [
+            83.09136301628314,
+            5.583294933843666,
+            68.45103136566468
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-7c1b314e128c6c64657525b6d2d8c85d",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:9:12",
+          "position": [
+            66.71775211347267,
+            6.039310135738672,
+            87.30422703363001
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cd572bed5c49e0d1d2b507d188453f9b",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.tree.temperate:0:7:8",
+          "position": [
+            64.66106835985556,
+            5.870053866436514,
+            73.67737189494073
+          ],
+          "assetSlot": "nature.tree.temperate",
+          "assetId": "factory-700b0e955e28e7032b2863906df947e8",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.tree.temperate:0:9:9",
+          "position": [
+            87.3762898275163,
+            6.378731197712765,
+            83.10891840630211
+          ],
+          "assetSlot": "nature.tree.temperate",
+          "assetId": "factory-76bb9fe10572f453819ac6d06fa4e783",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 5
+  }
+}

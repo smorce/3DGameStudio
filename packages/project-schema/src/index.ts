@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { worldDesignSchema, worldBuildManifestSchema } from "./world-design";
+export * from "./world-design";
 export const vec3 = z.tuple([
   z.number().finite(),
   z.number().finite(),
@@ -167,6 +169,26 @@ export const assetSchema = z.object({
     runtime: assetFile,
     thumbnail: z.string(),
   }),
+  catalog: z
+    .object({
+      slots: z.array(z.string()),
+      tags: z.array(z.string()),
+      biomes: z.array(z.string()),
+      style: z.string(),
+      variantGroup: z.string().optional(),
+      contentHash: z.string(),
+      status: z.enum(["ready", "unsupported"]),
+    })
+    .optional(),
+  textureInfo: z
+    .object({
+      state: z.literal("unsupported"),
+      reason: z.string(),
+      files: z.array(
+        z.object({ name: z.string(), file: assetFile, mime: z.string() }),
+      ),
+    })
+    .optional(),
   processing: z.object({
     importedAt: z.string(),
     optimizedAt: z.string().nullable(),
@@ -240,6 +262,7 @@ export const environmentPresets = [
   "grassland",
   "airfield",
   "archipelago",
+  "toy-islands",
 ] as const;
 export const environmentPresetSchema = z.enum(environmentPresets);
 export type EnvironmentPreset = z.infer<typeof environmentPresetSchema>;
@@ -254,6 +277,7 @@ export const proceduralWorldSourceSchema = z.object({
   chunkSize: z.number().positive(),
   chunkResolution: z.number().int().min(3).max(129),
   parameters: z.record(z.string(), z.unknown()).default({}),
+  design: worldDesignSchema.optional(),
 });
 export const worldSourceSchema = z.discriminatedUnion("kind", [
   finiteWorldSourceSchema,
@@ -277,6 +301,7 @@ export const worldSchema = z.object({
   id: z.string(),
   name: z.string(),
   source: worldSourceSchema,
+  buildManifest: worldBuildManifestSchema.optional(),
   edits: worldEditsSchema,
   terrain: terrainSchema,
   water: z.object({ enabled: z.boolean(), height: z.number().finite() }),
@@ -399,9 +424,19 @@ export const projectSchema = z
           issue("Invalid connection reference");
       }
     }
-    for (const e of p.world.entities)
+    for (const e of p.world.entities) {
       if (e.kind === "asset" && !p.assets.some((a) => a.id === e.assetId))
         issue("Missing asset reference");
+      if (
+        e.kind === "asset" &&
+        p.assets.some(
+          (a) =>
+            a.id === e.assetId &&
+            (a.type !== "model" || a.catalog?.status === "unsupported"),
+        )
+      )
+        issue("Asset is not supported for world placement");
+    }
     if (
       p.settings.activeCourseId &&
       !p.courses.some((c) => c.id === p.settings.activeCourseId)

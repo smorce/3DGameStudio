@@ -228,12 +228,20 @@ export class AmbientCGProvider implements AssetProvider {
     function walk(v: unknown) {
       if (!v || typeof v !== "object") return;
       const o = v as Record<string, unknown>;
-      if (typeof o.downloadLink === "string" && typeof o.fileName === "string")
+      if (
+        typeof o.downloadLink === "string" &&
+        typeof o.fileName === "string" &&
+        /\.(glb|gltf|zip)$/i.test(o.fileName)
+      )
         found.push({
           id: o.fileName,
           url: o.downloadLink,
           size: Number(o.size ?? 0),
-          format: o.fileName.endsWith(".glb") ? "glb" : "zip",
+          format: o.fileName.toLowerCase().endsWith(".glb")
+            ? "glb"
+            : o.fileName.toLowerCase().endsWith(".gltf")
+              ? "gltf"
+              : "zip",
         });
       for (const val of Object.values(o)) walk(val);
     }
@@ -250,6 +258,7 @@ export class LocalLibraryProvider implements AssetProvider {
   constructor(
     protected catalog: AssetCandidate[] = [],
     private binaries = new Map<string, Uint8Array>(),
+    private loadBinary?: (id: string) => Promise<Uint8Array>,
   ) {}
   async search(q: string) {
     return this.catalog.filter((a) =>
@@ -272,7 +281,7 @@ export class LocalLibraryProvider implements AssetProvider {
     ];
   }
   async download(id: string) {
-    const a = this.binaries.get(id);
+    const a = this.binaries.get(id) ?? (await this.loadBinary?.(id));
     if (!a) throw new Error("Local asset file not found");
     return a;
   }
@@ -280,4 +289,10 @@ export class LocalLibraryProvider implements AssetProvider {
 export class KenneyPackProvider extends LocalLibraryProvider {
   override id = "kenney";
   override displayName = "Kenney Pack";
+}
+
+/** 公式APIを仮定せず、利用者が用意したライセンス付きローカルPackを扱う。 */
+export class KayKitLocalPackProvider extends LocalLibraryProvider {
+  override id = "kaykit-local";
+  override displayName = "KayKit Local Pack";
 }

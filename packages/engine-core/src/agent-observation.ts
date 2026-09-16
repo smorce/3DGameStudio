@@ -73,6 +73,7 @@ export interface AgentGameState {
 export interface MachineStudioAgentApi {
   version: 1;
   getState(): AgentGameState;
+  getWorldDesignDebug(x?: number, z?: number): unknown;
   getPhysicsStep(): number;
   getTelemetrySummary(): unknown;
   queryRecent(filter?: AgentEventFilter): unknown[];
@@ -109,6 +110,7 @@ export interface EngineObservationHost {
   }>;
   playFramePublic: number;
   worldRuntime?: {
+    debugDesignAt?(x: number, z: number): unknown;
     stats(current?: Vec3): {
       currentChunk: string;
       loadedRenderChunks: number;
@@ -166,6 +168,12 @@ export function createAgentObservationApi(
 ): MachineStudioAgentApi {
   return {
     version: 1,
+    getWorldDesignDebug(x = engine.position[0], z = engine.position[2]) {
+      return {
+        sample: engine.worldRuntime?.debugDesignAt?.(x, z),
+        farWorldProxyCount: engine.renderer.fastStats.farWorldProxyCount ?? 0,
+      };
+    },
     getState(): AgentGameState {
       const sample = engine.currentTelemetry;
       const world = engine.worldRuntime?.stats(engine.position);

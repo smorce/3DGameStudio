@@ -82,3 +82,19 @@ export async function resolveAssets(providers: AssetProvider[], query: string) {
     })),
   };
 }
+
+export interface AssetGenerationRequest {
+  assetSlot: string;
+  variantIndex: number;
+  seed: number;
+  style: string;
+}
+export interface GeneratedAssetArtifact {
+  candidate: AssetCandidate;
+  bytes: Uint8Array;
+  option: DownloadOption;
+  ai: NonNullable<AssetRecord["ai"]>;
+}
+export interface AssetGenerator {
+  generate(request: AssetGenerationRequest): Promise<GeneratedAssetArtifact>;
+}

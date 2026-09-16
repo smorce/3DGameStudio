@@ -1,3 +1,4 @@
+import { assertBakedProject } from "../../asset-catalog/src/index";
 import {
   parseProject,
   activeCourse,
@@ -294,6 +295,7 @@ export class Engine {
   }
   async load(project: Project) {
     const parsed = parseProject(project);
+    assertBakedProject(parsed);
     this.ticket++;
     this.project = parsed;
     // PLAY/DROP中の再読込はドロップ演出を経由せず即Editへ戻す。
@@ -306,6 +308,7 @@ export class Engine {
     this.physics.dispose();
     this.worldRuntime?.dispose();
     this.worldRuntime = new WorldRuntime(this.project.world, {
+      assets: this.project.assets,
       forceSyncWorkers: typeof Worker === "undefined",
       onLifecycleEvent: (event) => this.recordWorldLifecycleEvent(event),
     });
@@ -321,6 +324,7 @@ export class Engine {
     const world =
       this.worldRuntime ??
       new WorldRuntime(this.project.world, {
+        assets: this.project.assets,
         forceSyncWorkers: typeof Worker === "undefined",
         onLifecycleEvent: (event) => this.recordWorldLifecycleEvent(event),
       });
@@ -395,7 +399,12 @@ export class Engine {
     this.lastObservedControls = undefined;
   }
   async respawnWithPhysicsReady() {
-    const point = this.course?.respawn;
+    const point =
+      this.course?.respawn ??
+      (this.project?.world.source.kind === "procedural" &&
+      this.project.world.source.design
+        ? this.project.world.spawnPoints[0]
+        : undefined);
     if (point && this.worldRuntime) {
       this.worldRuntime.setPlayHotPath(false);
       await this.worldRuntime.ensurePhysicsReady(point, 1);

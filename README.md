@@ -162,3 +162,17 @@ Phase 0–10でモデル・物理・3段階UI・ワールド・コース・素�
 ## License
 
 新規実装コードは[MIT License](LICENSE)。同梱外部素材は各AssetRecordのライセンスに従います。ユーザー提供の仕様書・画面イメージの権利はこのコードライセンスの対象外です。
+
+## World Design / Asset Factory
+
+Designで5島を固定配置した`toy-islands`を、外部APIなしで準備できます。
+
+```bash
+pnpm asset:plan
+pnpm asset:factory -- --mode=offline
+pnpm world:validate
+pnpm world:bake
+pnpm dev
+```
+
+Studioの「おもちゃの群島」から準備済みProjectを開きます。詳細は[World生成](docs/world-generation.md)、[Asset Factory](docs/asset-factory.md)、[実装・検証報告](docs/world-generation-asset-factory-report.md)を参照してください。Dummy素材は動作検証用の共通形状です。ambientCGのPBR ZIPはTexture Assetとして保持し、現Rendererでの未対応状態を明示します。

@@ -1,3 +1,5 @@
+import { extractAssetArchive, safeArchivePath } from "./archive";
+import { createHash } from "node:crypto";
 import { validateDocumentHeader } from "./safety";
 import { assetLimits } from "../../asset-core/src/limits";
 import type { RuntimeProfile } from "../../asset-core/src/profiles";
@@ -16,7 +18,11 @@ import {
 } from "../../asset-core/src/index";
 import { safeFetch } from "../../asset-providers/src/index";
 import type { AssetStorage } from "../../storage/src/index";
-import { uid, type Vec3 } from "../../project-schema/src/index";
+import {
+  uid,
+  type Vec3,
+  type AssetRecord,
+} from "../../project-schema/src/index";
 export function validateGlb(bytes: Uint8Array) {
   if (bytes.length < 20 || bytes.length > assetLimits().aggregateBytes)
     throw new Error("Invalid GLB size");
@@ -69,14 +75,83 @@ async function importAssetData(
   settings: {
     profile?: RuntimeProfile;
     collider?: "box" | "convexHull" | "trimesh";
+    localResources?: Record<string, Uint8Array>;
+    allowNetwork?: boolean;
+    assetId?: string;
   } = {},
-) {
+): Promise<AssetRecord> {
+  if (settings.assetId && !/^[a-zA-Z0-9_-]+$/.test(settings.assetId))
+    throw new Error("Invalid asset ID");
   const limits = assetLimits();
   if (bytes.length > limits.sourceBytes || bytes.length > limits.aggregateBytes)
     throw new Error("Asset exceeds source size limit");
+  if (option?.format === "zip") {
+    const files = await extractAssetArchive(bytes);
+    const models = files.filter((f) => f.mime.startsWith("model/"));
+    if (models.length > 1)
+      throw new Error("Ambiguous archive: multiple models");
+    if (models.length === 1) {
+      const model = models[0],
+        prefix = model.name.slice(0, model.name.lastIndexOf("/") + 1);
+      const localResources: Record<string, Uint8Array> = {};
+      for (const f of files)
+        if (f.name.startsWith(prefix))
+          localResources[f.name.slice(prefix.length)] = f.bytes;
+      const record = await importAssetData(
+        candidate,
+        model.bytes,
+        storage,
+        {
+          ...option,
+          format: model.mime === "model/gltf-binary" ? "glb" : "gltf",
+        },
+        { ...settings, localResources, allowNetwork: false },
+      );
+      await storage.save(`${record.id}/source.zip`, bytes);
+      record.files.original = `/api/files/${record.id}/source.zip`;
+      return record;
+    }
+    const textures = files.filter((f) => f.mime.startsWith("image/"));
+    if (!textures.length)
+      throw new Error("Archive contains no supported asset");
+    const id = settings.assetId ?? uid(),
+      record = makeRecord(candidate, id);
+    await storage.save(`${id}/source.zip`, bytes);
+    const textureFiles = [];
+    for (const [i, texture] of textures.entries()) {
+      const filename = `texture-${i}.${texture.name.split(".").pop()!.toLowerCase()}`;
+      await storage.save(`${id}/${filename}`, texture.bytes);
+      textureFiles.push({
+        name: texture.name,
+        file: `/api/files/${id}/${filename}`,
+        mime: texture.mime,
+      });
+    }
+    record.type = "texture";
+    record.files = {
+      original: `/api/files/${id}/source.zip`,
+      runtime: `/api/files/${id}/source.zip`,
+      thumbnail: textureFiles[0].file,
+    };
+    record.textureInfo = {
+      state: "unsupported",
+      reason: "PBR texture sets are not supported by the current renderer",
+      files: textureFiles,
+    };
+    record.catalog = {
+      slots: [],
+      tags: ["pbr", "texture-set"],
+      biomes: [],
+      style: "",
+      contentHash: createHash("sha256").update(bytes).digest("hex"),
+      status: "unsupported",
+    };
+    record.processing.pipelineVersion = "3";
+    return record;
+  }
   const io = runtimeIO();
   let doc: Document;
-  const id = uid();
+  const id = settings.assetId ?? uid();
   if (option?.format === "gltf") {
     const json = JSON.parse(
       new TextDecoder().decode(bytes),
@@ -89,14 +164,20 @@ async function importAssetData(
     for (const item of [...(json.buffers ?? []), ...(json.images ?? [])]) {
       const uri = item.uri;
       if (!uri) continue;
+      safeArchivePath(uri);
       if (uri.includes("..") || uri.startsWith("/") || uri.includes(":"))
         throw new Error("Unsafe glTF resource path");
       const resource = option.resources?.[uri];
-      if (!resource) throw new Error(`Missing resource: ${uri}`);
-      const data = await safeFetch(
-        resource.url,
-        Math.min(limits.sourceBytes, limits.aggregateBytes - size),
-      );
+      const local = settings.localResources?.[uri];
+      if (!local && settings.allowNetwork === false)
+        throw new Error("Network resources are forbidden in offline mode");
+      if (!local && !resource) throw new Error(`Missing resource: ${uri}`);
+      const data =
+        local ??
+        (await safeFetch(
+          resource!.url,
+          Math.min(limits.sourceBytes, limits.aggregateBytes - size),
+        ));
       size += data.length;
       if (size > limits.aggregateBytes)
         throw new Error("Asset exceeds aggregate size limit");
@@ -363,6 +444,15 @@ export function importAsset(...args: Parameters<typeof importAssetData>) {
       saved: string[] = [];
     const tracked: AssetStorage = {
       save: async (key, bytes) => {
+        if (await storage.exists(key)) {
+          const previous = await storage.load(key);
+          if (
+            previous.length !== bytes.length ||
+            previous.some((value, i) => value !== bytes[i])
+          )
+            throw new Error("Refusing to overwrite an existing asset file");
+          return;
+        }
         await storage.save(key, bytes);
         saved.push(key);
       },

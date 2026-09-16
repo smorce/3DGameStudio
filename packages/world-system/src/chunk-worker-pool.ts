@@ -72,6 +72,7 @@ function canUseWorkers(forceSync?: boolean) {
 }
 
 export class ChunkWorkerPool {
+  private workerDesigns = new WeakMap<Worker, GeneratorInput["design"]>();
   private readonly workers: Worker[] = [];
   private readonly busy = new Set<Worker>();
   /** Worker が処理中の Job。onerror 時の回収に使う。 */
@@ -266,12 +267,19 @@ export class ChunkWorkerPool {
       this.inFlightByKey.set(job.chunkKey, job);
       this.busy.add(worker);
       this.jobByWorker.set(worker, job);
+      if (this.workerDesigns.get(worker) !== job.input.design) {
+        worker.postMessage({
+          type: "generation-context",
+          design: job.input.design,
+        });
+        this.workerDesigns.set(worker, job.input.design);
+      }
       const message: PrepareChunkRequest = {
         type: "prepare-chunk",
         jobId: job.jobId,
         runtimeGeneration: job.runtimeGeneration,
         chunkKey: job.chunkKey,
-        input: job.input,
+        input: { ...job.input, design: undefined },
       };
       worker.postMessage(message);
     }

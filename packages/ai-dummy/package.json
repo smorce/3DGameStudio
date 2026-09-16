@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./asset-generator": "./src/asset-generator.ts"
+  },
   "dependencies": {
     "@machine-studio/ai-core": "workspace:*",
     "@machine-studio/project-schema": "workspace:*",
     "@machine-studio/machine-system": "workspace:*",
-    "@machine-studio/course-system": "workspace:*"
+    "@machine-studio/course-system": "workspace:*",
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/asset-pipeline": "workspace:*"
   }
 }

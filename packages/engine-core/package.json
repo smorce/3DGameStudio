@@ -10,6 +10,7 @@
     "@machine-studio/physics-rapier": "workspace:*",
     "@machine-studio/course-system": "workspace:*",
     "@machine-studio/runtime-telemetry": "workspace:*",
-    "@machine-studio/world-system": "workspace:*"
+    "@machine-studio/world-system": "workspace:*",
+    "@machine-studio/asset-catalog": "workspace:*"
   }
 }

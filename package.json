@@ -24,7 +24,11 @@
     "build": "vite build apps/studio && vite build apps/player && vite build --config apps/server/vite.config.ts",
     "test:providers": "tsx scripts/provider-smoke.ts",
     "start:server": "node apps/server/dist/index.js",
-    "prepare:demos": "tsx scripts/prepare-demos.ts"
+    "prepare:demos": "tsx scripts/prepare-demos.ts",
+    "asset:plan": "tsx scripts/world-tools.ts plan",
+    "asset:factory": "tsx scripts/world-tools.ts factory",
+    "world:validate": "tsx scripts/world-tools.ts validate",
+    "world:bake": "tsx scripts/world-tools.ts bake"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "^0.19.0",

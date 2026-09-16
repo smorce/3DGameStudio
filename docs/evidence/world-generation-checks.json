@@ -1,0 +1,36 @@
+{
+  "baseBranch": "perf/async-world-streaming-frame-budget",
+  "baseCommit": "006e006af6387f736ac134ac2a87604767599d75",
+  "workBranch": "feat/world-generation-asset-factory",
+  "typecheck": "pass",
+  "lintAndCycles": "pass",
+  "unitIntegration": { "files": 37, "passed": 282, "failed": 0 },
+  "build": "pass: studio, player, server",
+  "worldValidation": { "generatedEntities": 1183, "errors": 0, "warnings": 0 },
+  "offlineFactory": {
+    "requirements": 10,
+    "variants": 28,
+    "missing": 0,
+    "repeatRegistered": 0
+  },
+  "e2eFull": { "passed": 30, "failed": 4 },
+  "smoke": { "passed": 18, "failed": 1 },
+  "baseBranchFailureReproduction": {
+    "tested": 5,
+    "passed": 2,
+    "failed": 3,
+    "failures": [
+      "spike-flight-diagnostics: floating point strict equality",
+      "spike-prewarm-diagnostics: detached page/dialog",
+      "world-runtime: goal timeout and undefined isReady"
+    ]
+  },
+  "targetedRerun": { "runtimeStability": "pass", "toyIslands": "pass" },
+  "finalToyIslands": "pass after proxy sea clipping, opaque ocean and dirty-only index updates",
+  "legacyComparison": "100 chunks per legacy preset: heights, colors, entities and hash equal to base",
+  "notes": [
+    "No tests removed or skipped",
+    "External provider acquisition and paid AI services were not called",
+    "Browser uses Chromium software WebGL; Node generation timings exclude rendering"
+  ]
+}

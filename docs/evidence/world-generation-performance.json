@@ -1,0 +1,73 @@
+{
+  "environment": "Node synchronous generation; browser WebGL/frame latency excluded",
+  "node": "v22.21.0",
+  "presets": {
+    "grassland": {
+      "before": {
+        "count": 100,
+        "p50Ms": 0.20264500000001817,
+        "p95Ms": 0.3552320000000009,
+        "maxMs": 0.5131820000000005,
+        "generatedProps": 135
+      },
+      "after": {
+        "count": 100,
+        "p50Ms": 0.20044100000001208,
+        "p95Ms": 0.36856299999999464,
+        "maxMs": 0.5351229999999987,
+        "generatedProps": 135
+      },
+      "baselineMatches": true
+    },
+    "airfield": {
+      "before": {
+        "count": 100,
+        "p50Ms": 0.14150399999999763,
+        "p95Ms": 0.2575919999999883,
+        "maxMs": 0.49102099999998927,
+        "generatedProps": 8
+      },
+      "after": {
+        "count": 100,
+        "p50Ms": 0.1414079999999558,
+        "p95Ms": 0.41806700000000774,
+        "maxMs": 0.5603020000000356,
+        "generatedProps": 8
+      },
+      "baselineMatches": true
+    },
+    "archipelago": {
+      "before": {
+        "count": 100,
+        "p50Ms": 0.16742400000003954,
+        "p95Ms": 0.4050229999999715,
+        "maxMs": 0.5708800000000451,
+        "generatedProps": 33
+      },
+      "after": {
+        "count": 100,
+        "p50Ms": 0.16922299999998813,
+        "p95Ms": 0.29805700000002844,
+        "maxMs": 0.5990130000000136,
+        "generatedProps": 33
+      },
+      "baselineMatches": true
+    },
+    "toy-islands": {
+      "after": {
+        "count": 100,
+        "p50Ms": 2.09226799999999,
+        "p95Ms": 2.9804370000000517,
+        "maxMs": 3.3857000000000426,
+        "generatedProps": 353
+      }
+    }
+  },
+  "streaming": {
+    "cachedChunks": 9,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "commitMs": 0,
+    "maxGenerationMs": 4.480517999999961
+  }
+}

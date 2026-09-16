@@ -134,6 +134,20 @@ export async function createApp(
     next();
   });
   app.use(express.json({ limit: "8mb" }));
+  app.get("/api/worlds/toy-islands", async (_req, res) => {
+    try {
+      const project = parseProject(
+        JSON.parse(
+          await readFile(path.join(dataDir, "worlds/toy-islands.json"), "utf8"),
+        ),
+      );
+      res.json(project);
+    } catch (error) {
+      res
+        .status((error as NodeJS.ErrnoException).code === "ENOENT" ? 404 : 500)
+        .json({ error: "Prepared toy-islands project is unavailable" });
+    }
+  });
   app.get("/api/health", (_req, res) =>
     res.json({ status: "ok", ai: "dummy" }),
   );
@@ -376,8 +390,7 @@ export async function createApp(
       summaryUpdated:
         "written" in summaryResult ? Boolean(summaryResult.written) : true,
       summaryPath: "path" in summaryResult ? summaryResult.path : undefined,
-      summaryMissing:
-        "missing" in summaryResult ? summaryResult.missing : [],
+      summaryMissing: "missing" in summaryResult ? summaryResult.missing : [],
       summaryComplete:
         "complete" in summaryResult ? summaryResult.complete : undefined,
     });

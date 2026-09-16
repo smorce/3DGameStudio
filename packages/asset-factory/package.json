@@ -1,0 +1,17 @@
+{
+  "name": "@machine-studio/asset-factory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./bake": "./src/bake.ts"
+  },
+  "dependencies": {
+    "@machine-studio/asset-core": "workspace:*",
+    "@machine-studio/asset-catalog": "workspace:*",
+    "@machine-studio/asset-pipeline": "workspace:*",
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/storage": "workspace:*"
+  }
+}

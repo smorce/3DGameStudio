@@ -479,6 +479,15 @@ function apply(p: Project, c: Command) {
       if (!p.assets.some((a) => a.id === c.asset.id)) p.assets.push(c.asset);
       break;
     case "asset.place":
+      if (
+        c.entity.assetId &&
+        p.assets.some(
+          (a) =>
+            a.id === c.entity.assetId &&
+            (a.type !== "model" || a.catalog?.status === "unsupported"),
+        )
+      )
+        throw new Error("Asset is not supported for world placement");
       p.world.entities.push(c.entity);
       break;
     case "asset.remove":

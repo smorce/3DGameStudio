@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   emptyProject,
+  parseProject,
   uid,
   activeCourse,
   identity,
@@ -515,6 +516,19 @@ function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [playing, busy]);
+  async function startToyIslands() {
+    try {
+      const response = await fetch("/api/worlds/toy-islands");
+      if (!response.ok)
+        throw new Error("Prepared toy-islands project is unavailable");
+      const prepared = parseProject(await response.json());
+      bus.execute({ type: "project.create", project: prepared });
+      setStarted(true);
+      setMessage("おもちゃの群島を読み込みました");
+    } catch (error) {
+      setMessage(String(error));
+    }
+  }
   function start(template: boolean | "plane" | "boat") {
     run(() => {
       engine.current?.renderer.resetView();
@@ -1283,6 +1297,9 @@ function App() {
               </button>
               <button onClick={() => start("boat")}>
                 <b>🚤</b>ボート<small>水にうかべよう</small>
+              </button>
+              <button onClick={() => void startToyIslands()}>
+                <b>🏝️</b>おもちゃの群島<small>5つの島をたんけんしよう</small>
               </button>
               <button onClick={() => start(false)}>
                 <b>🧱</b>じゆうにつくる<small>ゼロからはじめよう</small>

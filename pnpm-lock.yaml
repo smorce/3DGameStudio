@@ -189,12 +189,24 @@ importers:
       '@machine-studio/ai-core':
         specifier: workspace:*
         version: link:../ai-core
+      '@machine-studio/asset-core':
+        specifier: workspace:*
+        version: link:../asset-core
+      '@machine-studio/asset-pipeline':
+        specifier: workspace:*
+        version: link:../asset-pipeline
       '@machine-studio/course-system':
         specifier: workspace:*
         version: link:../course-system
       '@machine-studio/machine-system':
         specifier: workspace:*
         version: link:../machine-system
+      '@machine-studio/project-schema':
+        specifier: workspace:*
+        version: link:../project-schema
+
+  packages/asset-catalog:
+    dependencies:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../project-schema
@@ -207,6 +219,24 @@ importers:
       zod:
         specifier: ^4.1.0
         version: 4.5.4
+
+  packages/asset-factory:
+    dependencies:
+      '@machine-studio/asset-catalog':
+        specifier: workspace:*
+        version: link:../asset-catalog
+      '@machine-studio/asset-core':
+        specifier: workspace:*
+        version: link:../asset-core
+      '@machine-studio/asset-pipeline':
+        specifier: workspace:*
+        version: link:../asset-pipeline
+      '@machine-studio/project-schema':
+        specifier: workspace:*
+        version: link:../project-schema
+      '@machine-studio/storage':
+        specifier: workspace:*
+        version: link:../storage
 
   packages/asset-pipeline:
     dependencies:
@@ -258,6 +288,9 @@ importers:
       '@machine-studio/terrain-system':
         specifier: workspace:*
         version: link:../terrain-system
+      '@machine-studio/world-system':
+        specifier: workspace:*
+        version: link:../world-system
       zod:
         specifier: ^4.1.0
         version: 4.5.4
@@ -270,6 +303,9 @@ importers:
 
   packages/engine-core:
     dependencies:
+      '@machine-studio/asset-catalog':
+        specifier: workspace:*
+        version: link:../asset-catalog
       '@machine-studio/course-system':
         specifier: workspace:*
         version: link:../course-system
@@ -285,6 +321,9 @@ importers:
       '@machine-studio/runtime-telemetry':
         specifier: workspace:*
         version: link:../runtime-telemetry
+      '@machine-studio/world-system':
+        specifier: workspace:*
+        version: link:../world-system
 
   packages/machine-system:
     dependencies:
@@ -342,6 +381,9 @@ importers:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../project-schema
+      '@machine-studio/world-generator':
+        specifier: workspace:*
+        version: link:../world-generator
       '@machine-studio/world-system':
         specifier: workspace:*
         version: link:../world-system
@@ -410,11 +452,26 @@ importers:
 
   packages/water-system: {}
 
-  packages/world-system:
+  packages/world-generator:
     dependencies:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../project-schema
+
+  packages/world-system:
+    dependencies:
+      '@machine-studio/asset-catalog':
+        specifier: workspace:*
+        version: link:../asset-catalog
+      '@machine-studio/project-schema':
+        specifier: workspace:*
+        version: link:../project-schema
+      '@machine-studio/terrain-system':
+        specifier: workspace:*
+        version: link:../terrain-system
+      '@machine-studio/world-generator':
+        specifier: workspace:*
+        version: link:../world-generator
 
 packages:
 

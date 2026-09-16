@@ -461,6 +461,8 @@ export function AssetBrowser({
           <span>{a.name}</span>
           <button
             onClick={() => {
+              if (a.type !== "model" || a.catalog?.status === "unsupported")
+                return;
               if (!project.assets.some((r) => r.id === a.id))
                 execute({ type: "asset.import", asset: a });
               execute({
@@ -474,8 +476,9 @@ export function AssetBrowser({
                 },
               });
             }}
+            disabled={a.type !== "model" || a.catalog?.status === "unsupported"}
           >
-            配置
+            {a.type === "texture" ? "テクスチャセット（表示未対応）" : "配置"}
           </button>
         </div>
       ))}
