@@ -45,7 +45,7 @@ export function applyTerrainEditOverlay(
     }
 }
 
-function hexToRgb(hex: string): [number, number, number] {
+export function hexToRgb(hex: string): [number, number, number] {
   const normalized = hex.startsWith("#") ? hex.slice(1) : hex;
   const value = Number.parseInt(normalized, 16);
   if (!Number.isFinite(value)) return [0.5, 0.5, 0.5];

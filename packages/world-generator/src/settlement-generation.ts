@@ -54,7 +54,8 @@ export function settlementEntities(
             layers.sampleNoSpawnMask(x, z, settlement.id) ||
             layers.sampleHeight(x, z) <= 0.1 ||
             layers.sampleSlope(x, z) > 10 ||
-            layers.sampleRoadInfluence(x, z).distance < rule.minSpacing / 2 ||
+            layers.sampleRoadInfluence(x, z).distance <
+              (rule.minDistanceFromRoad ?? rule.minSpacing / 2) ||
             layers.landmarkDistance(x, z) < rule.minSpacing
           )
             continue;
@@ -79,6 +80,9 @@ export function settlementEntities(
           )
         )
           continue;
+        const range = rule.scaleRange ?? [1, 1];
+        const scale =
+          range[0] + seedUnit(seed, "scale", p.id) * (range[1] - range[0]);
         placed.push({
           x: p.x,
           z: p.z,
@@ -92,8 +96,14 @@ export function settlementEntities(
             settlementId: settlement.id,
             settlementRuleIndex: ruleIndex,
             position: [p.x, layers.sampleHeight(p.x, p.z), p.z],
-            rotation: [0, seedUnit(seed, "rotation", p.id) * Math.PI * 2, 0],
-            scale: [1, 1, 1],
+            rotation: [
+              0,
+              rule.rotationMode === "none"
+                ? 0
+                : seedUnit(seed, "rotation", p.id) * Math.PI * 2,
+              0,
+            ],
+            scale: [scale, scale, scale],
           },
         });
         count++;

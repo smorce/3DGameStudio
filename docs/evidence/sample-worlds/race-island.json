@@ -1,0 +1,119 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 45
+  },
+  "machine": {
+    "id": "sample-race-island-machine",
+    "physicsStep": 121,
+    "position": [
+      1.4432899320127035e-14,
+      8.186546325683594,
+      0.005553141701966524
+    ],
+    "simulationPosition": [
+      1.4432899320127035e-14,
+      8.186546325683594,
+      0.005553141701966524
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.00020927611330989748,
+      -4.1507964600173697e-13,
+      4.3612987947273037e-16,
+      1
+    ],
+    "velocity": [
+      -1.3889847862917463e-14,
+      -0.061244890093803406,
+      0.006960595492273569
+    ],
+    "speed": 0.061639163299067566,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.000000000000019,
+      13.086546325683592,
+      8.005552213098865
+    ],
+    "target": [
+      1.4432899320127035e-14,
+      8.186546325683594,
+      0.005552213098853829
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 109,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.7307692307692307,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 101,
+    "triangles": 63814,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 46.385808
+  },
+  "frame": {
+    "rafMs": 50.09999999999991,
+    "cpuWorkMs": 3.799999952316284,
+    "physicsMs": 1.0999999642372131,
+    "renderMs": 2.600000023841858,
+    "streamingRequestMs": 0.09999996423721313,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "temperate",
+      "road": {
+        "distance": -4.998864123508715,
+        "weight": 1,
+        "height": 7.999997059002488,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 7.999997059002488,
+      "chunkKey": "0,0",
+      "chunkBounds": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:main:nature.rock.small:1:1:1",
+          "position": [
+            25.958686884026974,
+            8.556899877529306,
+            18.60026198066771
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-8e1bfb06d54354534f98aa7ab1e14184",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 1
+  }
+}

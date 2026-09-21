@@ -30,12 +30,17 @@
 ## World Design / Asset Factory（指示17）
 
 - Real AI Planner、Real Astra、Blender自動操作は未実装です。交換用interface、Dummy実装、Processorまでの結合試験を用意しています。
-- Dummy variantはIDを分けた共通placeholder形状で、完成した木・灯台等のモデルではありません。
+- 引数なしDummyは共通placeholderです。同梱Sample Worldは木・灯台等を区別するPrimitive素材を使いますが、同じSlot内のvariantは共通形状で、完成した美術素材ではありません。
 - PBR texture ZIPは登録できますが、Rendererでは未対応です。Material推定や偽GLB生成はしません。画像形式はPNG/JPEG/WebP、ZIPは非暗号化store/deflateに限定します。
 - Far Proxyは低解像度terrainのみで、Propと編集差分は近景で反映します。独立したMid専用LODは未追加です。
 - CLIのKenney/KayKitローカルPackは空の境界です。外部Providerのacquireは通常テストで実通信していません。
 - BakeはAsset metadataと保存時SHA-256を固定します。Runtimeで配信ファイル全体のhashを再計算しません。
 - 自然Propの近傍判定は候補配列を走査します。高密度化にはSpatial Hash化の余地があります。
-- Biome別地表paletteは未導入で、高度ベースの砂・草・岩色を共有します。
+- 指示18で6種類のBiome Surface Profileを導入しました。Biome別の摩擦・滑り・砂の抵抗は未導入です。
 - 未審査の取得Assetはstyle=unverified／reviewRequiredとして区別します。geometry・texture・materialからの自動画風審査・変換は未実装です。
 - 初期報告のE2E失敗4件への対応は[レビュー対応報告](docs/world-generation-review-fixes.md)に記録しています。
+
+## Sample World（指示18）
+
+- 山岳・雪山でOrbitカメラを地形へ近づけると、地形内部が見える場合があります。カメラの地形衝突回避は未実装です。
+- Biomeの斜面色によりWorld Designの生成CPU負荷が増えています。Worker実行を維持し、[計測結果](docs/sample-worlds-report.md#性能)に前後比較を記録しています。

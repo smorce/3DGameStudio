@@ -100,8 +100,8 @@ pnpm world:bake
 pnpm dev
 ```
 
-Studio起動時の「おもちゃの群島」から`.data/worlds/toy-islands.json`を読み込みます。APIは用意済みProjectを読むだけで、RuntimeからFactoryを呼びません。
+Studio起動時の「おもちゃの5島」から`.data/worlds/toy-islands.json`を読み込み、なければ同梱`demos/worlds/toy-islands.json`を使用します。APIは用意済みProjectを読むだけで、RuntimeからFactoryを呼びません。
 
 ## 今後の改善
 
-自然Propの近傍判定は候補配列の走査です。高密度の森ではSpatial Hash化を検討します。地表色は高度ベースの砂・草・岩を共有しており、Biome別paletteや材質ルールは未導入です。
+自然Propの近傍判定は候補配列の走査です。高密度の森ではSpatial Hash化を検討します。Biome Surface Profileと閉道路、共有Sample World Catalogは[指示18の構造](sample-worlds.md)を参照してください。近景と遠景の色にBiomeを反映します。

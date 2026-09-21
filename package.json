@@ -28,7 +28,9 @@
     "asset:plan": "tsx scripts/world-tools.ts plan",
     "asset:factory": "tsx scripts/world-tools.ts factory",
     "world:validate": "tsx scripts/world-tools.ts validate",
-    "world:bake": "tsx scripts/world-tools.ts bake"
+    "world:bake": "tsx scripts/world-tools.ts bake",
+    "sample-worlds:prepare": "tsx scripts/sample-worlds.ts prepare",
+    "sample-worlds:validate": "tsx scripts/sample-worlds.ts validate"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "^0.19.0",

@@ -1,3 +1,4 @@
+import { hexToRgb } from "../../world-generator/src/prepare";
 import * as THREE from "three";
 import type { World, Vec3 } from "../../project-schema/src/index";
 import type { IslandProxyData } from "../../world-generator/src/far-proxy";
@@ -35,8 +36,12 @@ export class FarWorldProxy {
           new THREE.BufferAttribute(data.normals, 3),
         );
         geometry.setIndex(new THREE.BufferAttribute(data.indices, 1));
+        geometry.setAttribute(
+          "color",
+          new THREE.Float32BufferAttribute(data.colors.flatMap(hexToRgb), 3),
+        );
         const material = new THREE.MeshStandardMaterial({
-          color: "#7cab68",
+          vertexColors: true,
           roughness: 1,
         });
         // 半透明の海を通してProxyの四角い海底領域が見えないようにする。

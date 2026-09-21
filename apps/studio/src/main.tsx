@@ -1,3 +1,7 @@
+import {
+  sampleWorldCatalog,
+  type SampleWorldDescriptor,
+} from "../../../packages/sample-worlds/src/index";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -16,9 +20,6 @@ import {
 import {
   createMachine,
   createPart,
-  starterCarTemplate,
-  planeTemplate,
-  boatTemplate,
   findAttachmentCandidates,
   liftMachineToGround,
   labels,
@@ -40,10 +41,7 @@ import {
   type EditTool,
 } from "../../../packages/ui-studio/src/index";
 import { createCourse } from "../../../packages/course-system/src/index";
-import {
-  createStarterWorld,
-  sampleWorldHeight,
-} from "../../../packages/world-system/src/index";
+import { sampleWorldHeight } from "../../../packages/world-system/src/index";
 import { applyPlan } from "../../../packages/ai-core/src/index";
 import "./style.css";
 type PlacementSession = {
@@ -516,47 +514,23 @@ function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [playing, busy]);
-  async function startToyIslands() {
+  async function startSampleWorld(descriptor: SampleWorldDescriptor) {
     try {
-      const response = await fetch("/api/worlds/toy-islands");
-      if (!response.ok)
-        throw new Error("Prepared toy-islands project is unavailable");
+      const response = await fetch(`/api/worlds/${descriptor.id}`);
+      if (!response.ok) throw new Error("Prepared sample world is unavailable");
       const prepared = parseProject(await response.json());
       bus.execute({ type: "project.create", project: prepared });
       setStarted(true);
-      setMessage("おもちゃの群島を読み込みました");
+      setMessage(`${prepared.world.name}を読み込みました`);
     } catch (error) {
       setMessage(String(error));
     }
   }
-  function start(template: boolean | "plane" | "boat") {
+  function startEmptyProject() {
     run(() => {
       engine.current?.renderer.resetView();
-      const p = emptyProject();
-      bus.execute({ type: "project.create", project: p });
-      if (template === true)
-        bus.execute({
-          type: "world.update",
-          patch: createStarterWorld({ preset: "grassland" }),
-        });
-      if (template === "plane")
-        bus.execute({
-          type: "world.update",
-          patch: createStarterWorld({ preset: "airfield" }),
-        });
-      if (template === "boat")
-        bus.execute({
-          type: "world.update",
-          patch: createStarterWorld({ preset: "archipelago" }),
-        });
-      const machine =
-        template === "plane"
-          ? planeTemplate()
-          : template === "boat"
-            ? boatTemplate()
-            : template
-              ? starterCarTemplate()
-              : createMachine();
+      bus.execute({ type: "project.create", project: emptyProject() });
+      const machine = createMachine();
       liftMachineToGround(machine, (x, z) =>
         sampleWorldHeight(bus.project.world, x, z),
       );
@@ -1289,19 +1263,26 @@ function App() {
             <h2>なにを作る？</h2>
             <p>ひらめきを、動くカタチに。</p>
             <div>
-              <button onClick={() => start(true)}>
-                <b>🚗</b>くるま<small>すぐに走れるよ</small>
-              </button>
-              <button onClick={() => start("plane")}>
-                <b>✈️</b>ひこうき<small>空をめざそう</small>
-              </button>
-              <button onClick={() => start("boat")}>
-                <b>🚤</b>ボート<small>水にうかべよう</small>
-              </button>
-              <button onClick={() => void startToyIslands()}>
-                <b>🏝️</b>おもちゃの群島<small>5つの島をたんけんしよう</small>
-              </button>
-              <button onClick={() => start(false)}>
+              {sampleWorldCatalog.map((world) => (
+                <button
+                  key={world.id}
+                  data-testid={`sample-world-${world.id}`}
+                  onClick={() => void startSampleWorld(world)}
+                >
+                  <b>{world.icon}</b>
+                  {world.name}
+                  <small>{world.shortDescription}</small>
+                  <small>
+                    おすすめ:{" "}
+                    {
+                      { car: "🚗", plane: "✈️", boat: "🚤" }[
+                        world.recommendedMachine
+                      ]
+                    }
+                  </small>
+                </button>
+              ))}
+              <button className="create-empty" onClick={startEmptyProject}>
                 <b>🧱</b>じゆうにつくる<small>ゼロからはじめよう</small>
               </button>
             </div>

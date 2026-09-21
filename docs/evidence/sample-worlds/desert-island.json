@@ -1,0 +1,119 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 47
+  },
+  "machine": {
+    "id": "sample-desert-island-machine",
+    "physicsStep": 116,
+    "position": [
+      -0.00000632822047919035,
+      7.962040424346924,
+      -0.05099838972091675
+    ],
+    "simulationPosition": [
+      -0.00000632822047919035,
+      7.962040424346924,
+      -0.05099838972091675
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -0.002216244814917445,
+      -0.000016254296497208998,
+      -0.0001333297841483727,
+      0.9999975562095642
+    ],
+    "velocity": [
+      0.00002344116182939615,
+      -0.06148524582386017,
+      -0.06386081874370575
+    ],
+    "speed": 0.0886489716473069,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      6.999993668837828,
+      12.862040447235104,
+      7.9490080181658325
+    ],
+    "target": [
+      -0.0000063311621779575885,
+      7.962040447235107,
+      -0.050991981834173215
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "-1,-1",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 120,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.782608695652174,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 96,
+    "triangles": 84110,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 36.988805
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 3.800000011920929,
+    "physicsMs": 1.2000000476837158,
+    "renderMs": 2.5,
+    "streamingRequestMs": 0.10000002384185791,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "desert",
+      "road": {
+        "distance": -4.9490016098864595,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "-1,-1",
+      "chunkBounds": [
+        -32,
+        -32,
+        0,
+        0
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:main:nature.plant.cactus:0:-1:-2",
+          "position": [
+            -4.258511143038049,
+            8.072943916414188,
+            -20.788335183402523
+          ],
+          "assetSlot": "nature.plant.cactus",
+          "assetId": "factory-05a5be3d8526fdf27d8b173cec8731b3",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 1
+  }
+}

@@ -12,6 +12,7 @@
     "@machine-studio/asset-catalog": "workspace:*",
     "@machine-studio/asset-pipeline": "workspace:*",
     "@machine-studio/project-schema": "workspace:*",
-    "@machine-studio/storage": "workspace:*"
+    "@machine-studio/storage": "workspace:*",
+    "@machine-studio/world-generator": "workspace:*"
   }
 }

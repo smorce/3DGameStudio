@@ -1,0 +1,107 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 52
+  },
+  "machine": {
+    "id": "sample-snow-island-machine",
+    "physicsStep": 133,
+    "position": [
+      0.013895532116293907,
+      7.99188232421875,
+      0.36342522501945496
+    ],
+    "simulationPosition": [
+      0.013895532116293907,
+      7.99188232421875,
+      0.36342522501945496
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.00812073890119791,
+      0.000253578502452001,
+      0.013947664760053158,
+      0.999869704246521
+    ],
+    "velocity": [
+      -0.002668864792212844,
+      -0.06815008819103241,
+      0.36483463644981384
+    ],
+    "speed": 0.37115477810906927,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.013895908355713,
+      12.891883255004885,
+      8.363376062631623
+    ],
+    "target": [
+      0.01389590835571289,
+      7.991883255004883,
+      0.3633760626316071
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 92,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.47368421052631576,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 116,
+    "triangles": 70156,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 35.678394
+  },
+  "frame": {
+    "rafMs": 33.29999999999973,
+    "cpuWorkMs": 2.600000023841858,
+    "physicsMs": 0.5999999642372131,
+    "renderMs": 1.9000000357627869,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "snow",
+      "road": {
+        "distance": -4.636309224761974,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "0,0",
+      "chunkBounds": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "props": []
+    },
+    "farWorldProxyCount": 1
+  }
+}

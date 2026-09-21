@@ -32,6 +32,7 @@ export function bakeWorld(
     candidates.forEach((a) => assets.add(a.id));
   }
   const manifest: WorldBuildManifest = {
+    biomeProfileVersion: 1,
     worldDesignVersion: source.design.version,
     worldId: project.world.id,
     seed: source.seed,

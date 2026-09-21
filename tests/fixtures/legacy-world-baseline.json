@@ -1,0 +1,110 @@
+[
+  {
+    "input": {
+      "preset": "grassland",
+      "chunkX": 0,
+      "chunkZ": 0,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "389e13cb941bd31e256d5269cfe5e3eb0eb2e870675dc2fd757ffad8b200b341"
+  },
+  {
+    "input": {
+      "preset": "grassland",
+      "chunkX": -4,
+      "chunkZ": 7,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "4b9b97fbb4d01cece5f59b44f03c8ed9654f02dfb9e958a010dca29d8a1b448c"
+  },
+  {
+    "input": {
+      "preset": "grassland",
+      "chunkX": 21,
+      "chunkZ": -13,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "83d90cad7b8a8d95b720381cdf57eeca0663d1591c17fa9a23d58e5a4ea1caed"
+  },
+  {
+    "input": {
+      "preset": "airfield",
+      "chunkX": 0,
+      "chunkZ": 0,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "8b6273b074ab305052ee893dc141353bb0074acb3a8be54b613e903917a80eca"
+  },
+  {
+    "input": {
+      "preset": "airfield",
+      "chunkX": -4,
+      "chunkZ": 7,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "02aae3e8a5d0964750e777dd277d4de8cafcbacc9377543ca7206554c859d333"
+  },
+  {
+    "input": {
+      "preset": "airfield",
+      "chunkX": 21,
+      "chunkZ": -13,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "a017929948f9026099ee5f0b9fd7b64bd7a9dc7c0d4a32e3646e703f74f610ad"
+  },
+  {
+    "input": {
+      "preset": "archipelago",
+      "chunkX": 0,
+      "chunkZ": 0,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "3de612c939900656bfb2f97088b91714270d9f48582ee11e2a86fed4b623b710"
+  },
+  {
+    "input": {
+      "preset": "archipelago",
+      "chunkX": -4,
+      "chunkZ": 7,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "c27afb3e1b125eaee5b18830f56bfa8c0f986f42e9bc82f7ad26bbbbc2c617d1"
+  },
+  {
+    "input": {
+      "preset": "archipelago",
+      "chunkX": 21,
+      "chunkZ": -13,
+      "seed": 42,
+      "generatorVersion": 1,
+      "chunkSize": 32,
+      "chunkResolution": 33
+    },
+    "hash": "ca8f3db6f4bd95dae4e0d6f372670d353bd1a8eacea13d6f0bcc42a39dd869fc"
+  }
+]

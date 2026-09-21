@@ -1,9 +1,11 @@
+import { biomeSurfaceColor } from "./biome-surface";
 import type { WorldDesign } from "../../project-schema/src/index";
 import { SemanticLayers } from "./semantic";
 import { computeIndexedNormals } from "./prepare";
 export interface IslandProxyData {
   id: string;
   positions: Float32Array;
+  colors: string[];
   normals: Float32Array;
   indices: Uint32Array;
   cellKeys: string[];
@@ -22,15 +24,27 @@ export function buildIslandProxies(
       maxZ = Math.ceil((island.center[2] + island.radius) / chunkSize);
     const width = maxX - minX + 1,
       positions: number[] = [],
+      colors: string[] = [],
       indices: number[] = [],
       cellKeys: string[] = [];
     for (let z = minZ; z <= maxZ; z++)
-      for (let x = minX; x <= maxX; x++)
+      for (let x = minX; x <= maxX; x++) {
+        colors.push(
+          biomeSurfaceColor(
+            layers.sampleBiome(x * chunkSize, z * chunkSize),
+            layers.sampleHeight(x * chunkSize, z * chunkSize),
+            layers.sampleSlope(x * chunkSize, z * chunkSize),
+            x * chunkSize,
+            z * chunkSize,
+            seed,
+          ),
+        );
         positions.push(
           x * chunkSize,
           layers.sampleHeight(x * chunkSize, z * chunkSize) - 0.08,
           z * chunkSize,
         );
+      }
     for (let z = minZ; z < maxZ; z++)
       for (let x = minX; x < maxX; x++) {
         const a = (z - minZ) * width + x - minX,
@@ -43,6 +57,7 @@ export function buildIslandProxies(
     return {
       id: island.id,
       positions: vertices,
+      colors,
       normals: computeIndexedNormals(vertices, triangles),
       indices: triangles,
       cellKeys,

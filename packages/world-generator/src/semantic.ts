@@ -12,7 +12,18 @@ export const smooth = (t: number) => {
 const distance = (x: number, z: number, p: Vec3) =>
   Math.hypot(x - p[0], z - p[2]);
 export function evaluateRoad(road: RoadDefinition, t: number): Vec3 {
-  const points = road.controlPoints;
+  const points = road.closed
+    ? [
+        road.controlPoints.at(-1)!,
+        ...road.controlPoints,
+        road.controlPoints[0],
+        road.controlPoints[1],
+      ]
+    : road.controlPoints;
+  if (road.closed)
+    t =
+      (1 + Math.max(0, Math.min(1, t)) * road.controlPoints.length) /
+      (points.length - 1);
   const u = Math.max(0, Math.min(points.length - 1, t * (points.length - 1)));
   const i = Math.min(points.length - 2, Math.floor(u)),
     f = u - i;
@@ -59,7 +70,14 @@ export class SemanticLayers {
           (sum, p, i) => sum + distance(p[0], p[2], road.controlPoints[i]),
           0,
         );
-      const count = Math.max(16, Math.ceil(length / 3));
+      const closingLength = road.closed
+        ? distance(
+            road.controlPoints[0][0],
+            road.controlPoints[0][2],
+            road.controlPoints.at(-1)!,
+          )
+        : 0;
+      const count = Math.max(16, Math.ceil((length + closingLength) / 3));
       const points = Array.from({ length: count + 1 }, (_, i) =>
         evaluateRoad(road, i / count),
       );

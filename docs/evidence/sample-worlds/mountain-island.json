@@ -1,0 +1,107 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 37
+  },
+  "machine": {
+    "id": "sample-mountain-island-machine",
+    "physicsStep": 96,
+    "position": [
+      -0.014873326756060123,
+      7.989274501800537,
+      0.13777753710746765
+    ],
+    "simulationPosition": [
+      -0.014873326756060123,
+      7.989274501800537,
+      0.13777753710746765
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.007665386889129877,
+      -0.0003895128902513534,
+      -0.009990395978093147,
+      0.999920666217804
+    ],
+    "velocity": [
+      0.0015210555866360664,
+      -0.06430371850728989,
+      0.22726407647132874
+    ],
+    "speed": 0.23619111388519332,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      6.985101680260157,
+      12.889326165199279,
+      8.133977537125354
+    ],
+    "target": [
+      -0.014898319739848374,
+      7.989326165199279,
+      0.13397753712534902
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "-1,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 93,
+      "physics": 0
+    },
+    "generationQueue": 27,
+    "workerQueued": 27,
+    "workerInFlight": 4,
+    "cacheHitRate": 0.782608695652174,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 81,
+    "triangles": 65602,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 32.277723
+  },
+  "frame": {
+    "rafMs": 33.399999999999636,
+    "cpuWorkMs": 3.100000023841858,
+    "physicsMs": 0.800000011920929,
+    "renderMs": 2.199999988079071,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "alpine",
+      "road": {
+        "distance": -4.861421987385472,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "-1,0",
+      "chunkBounds": [
+        -32,
+        0,
+        0,
+        32
+      ],
+      "props": []
+    },
+    "farWorldProxyCount": 1
+  }
+}

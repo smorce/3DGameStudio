@@ -1,3 +1,4 @@
+import { biomeSurfaceColor } from "./biome-surface";
 import { semanticContext, generateDesignEntities } from "./design-generation";
 import { toyIslandsDesign } from "./toy-islands";
 export { deriveSeed } from "./seed";
@@ -293,10 +294,29 @@ function placeEntities(
 
 export function generateChunk(input: GeneratorInput): GeneratedChunk {
   const design = input.design;
-  if (input.preset === "toy-islands" && !design)
-    throw new Error("World Design is required for toy-islands");
+  if (["toy-islands", "designed-world"].includes(input.preset) && !design)
+    throw new Error("World Design is required for this preset");
   const layers = design ? semanticContext(design, input.seed) : undefined;
   const resolution = input.chunkResolution;
+  // 斜面色のための自然地形をhalo付きで共有し、各頂点の4回の再計算を避ける。
+  const stride = resolution + 2;
+  const surfaceHeights = layers ? new Float64Array(stride * stride) : undefined;
+  if (layers && surfaceHeights)
+    for (let j = -1; j <= resolution; j++)
+      for (let i = -1; i <= resolution; i++) {
+        const { gx, gz } = globalGridCoordinate(
+          input.chunkX,
+          input.chunkZ,
+          i,
+          j,
+          resolution,
+        );
+        const { x, z } = gridWorldPosition(gx, gz, input.chunkSize, resolution);
+        surfaceHeights[(j + 1) * stride + i + 1] = layers.sampleHeightMask(
+          x,
+          z,
+        );
+      }
   const heights = new Float32Array(resolution * resolution);
   const colors: string[] = new Array(resolution * resolution);
   for (let j = 0; j < resolution; j++)
@@ -314,13 +334,32 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
         : sampleBaseHeight(input.preset, x, z, input.seed);
       const k = j * resolution + i;
       heights[k] = height;
-      colors[k] = colorFor(
-        design ? "archipelago" : input.preset,
-        height,
-        x,
-        z,
-        input.seed,
-      );
+      const step = input.chunkSize / (resolution - 1);
+      const surfaceIndex = (j + 1) * stride + i + 1;
+      const slope = surfaceHeights
+        ? (Math.atan(
+            Math.hypot(
+              (surfaceHeights[surfaceIndex + 1] -
+                surfaceHeights[surfaceIndex - 1]) /
+                (2 * step),
+              (surfaceHeights[surfaceIndex + stride] -
+                surfaceHeights[surfaceIndex - stride]) /
+                (2 * step),
+            ),
+          ) *
+            180) /
+          Math.PI
+        : 0;
+      colors[k] = layers
+        ? biomeSurfaceColor(
+            layers.sampleBiome(x, z),
+            height,
+            slope,
+            x,
+            z,
+            input.seed,
+          )
+        : colorFor(input.preset, height, x, z, input.seed);
       if (
         layers &&
         (layers.sampleRoadInfluence(x, z, true).distance <= 0 ||
@@ -350,8 +389,8 @@ export function sampleGeneratedHeight(
       input.x,
       input.z,
     );
-  if (input.preset === "toy-islands")
-    throw new Error("World Design is required for toy-islands");
+  if (["toy-islands", "designed-world"].includes(input.preset))
+    throw new Error("World Design is required for this preset");
   return sampleBaseHeight(input.preset, input.x, input.z, input.seed);
 }
 

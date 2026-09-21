@@ -1,0 +1,87 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 54
+  },
+  "machine": {
+    "id": "sample-starter-grassland-machine",
+    "physicsStep": 118,
+    "position": [
+      0,
+      -0.0490267276763916,
+      7.625899911545275e-12
+    ],
+    "simulationPosition": [
+      0,
+      -0.0490267276763916,
+      7.625899911545275e-12
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -3.2771298695555284e-12,
+      0,
+      0,
+      1
+    ],
+    "velocity": [
+      0,
+      -0.0612093061208725,
+      -1.612989700742432e-15
+    ],
+    "speed": 0.0612093061208725,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.000000000000004,
+      4.850973272323609,
+      8.000000000007633
+    ],
+    "target": [
+      0,
+      -0.0490267276763916,
+      7.625899911545275e-12
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 94,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.6206896551724138,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 90,
+    "triangles": 71600,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 39.741082
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 2.199999988079071,
+    "physicsMs": 0.8999999761581421,
+    "renderMs": 1.300000011920929,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "farWorldProxyCount": 0
+  }
+}

@@ -79,3 +79,9 @@ pnpm world:bake
 ```
 
 `--project=/path/project.json`、`--data-dir=/path/data`を指定できます。既定は`.data/worlds/toy-islands.json`と`.data/assets`。開発Serverも同じdata-dirを使用してください。`asset:plan`とdry-runはファイルを作りません。offline完了後の再実行は不足がなければ何も生成しません。
+
+## 共有Sample Worldデモ
+
+`planSampleWorldAssets()`は全SampleのRequirement unionを作ります。LandmarkとSettlementのBiomeも含めて必要Biomeを統合します。`pnpm sample-worlds:prepare`は既存Factoryに`DummyAstraAssetGenerator(true)`を渡し、外部通信なしのPrimitive素材をProcessorへ通します。既定Dummyは従来どおりです。
+
+Original・Runtime・LOD・ColliderはすべてSHA-256名の共通ファイルへ変換し、Projectごとに複製しません。Manifestは`biomeProfileVersion: 1`も固定します。詳細は[Sample World Catalog](sample-worlds.md)を参照してください。

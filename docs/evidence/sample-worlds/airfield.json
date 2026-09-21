@@ -1,0 +1,87 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 50
+  },
+  "machine": {
+    "id": "sample-airfield-machine",
+    "physicsStep": 112,
+    "position": [
+      0.005813530180603266,
+      -0.08696675300598145,
+      0.022662952542304993
+    ],
+    "simulationPosition": [
+      0.005813530180603266,
+      -0.08696675300598145,
+      0.022662952542304993
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -0.011443348601460457,
+      -0.000012719588085019495,
+      0.001377337146550417,
+      0.9999336004257202
+    ],
+    "velocity": [
+      0.005438600666821003,
+      -0.057547684758901596,
+      0.0005677955923601985
+    ],
+    "speed": 0.057806892237498506,
+    "groundedWheelCount": 3,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.005813430867163,
+      4.813032931089402,
+      8.022663162946706
+    ],
+    "target": [
+      0.005813430867157877,
+      -0.08696706891059877,
+      0.022663162946701048
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 112,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.6,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "drawCalls": 112,
+    "triangles": 67200,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 32.842459
+  },
+  "frame": {
+    "rafMs": 49.90000000000009,
+    "cpuWorkMs": 2.899999976158142,
+    "physicsMs": 1.0999999642372131,
+    "renderMs": 1.600000023841858,
+    "streamingRequestMs": 0.09999996423721313,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "farWorldProxyCount": 0
+  }
+}

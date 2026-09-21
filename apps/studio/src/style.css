@@ -197,7 +197,9 @@ input[type="color"] {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -45%);
-  width: 460px;
+  width: min(680px, calc(100vw - 48px));
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
   background: #fffdf4f5;
   box-shadow: 0 20px 80px #29423325;
   border: 1px solid #fff;
@@ -857,4 +859,9 @@ footer {
     flex-wrap: wrap;
     justify-content: center;
   }
+}
+
+.welcome .create-empty {
+  grid-column: 1 / -1;
+  border-top: 1px solid #d8dfd3;
 }

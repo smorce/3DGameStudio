@@ -1,0 +1,13 @@
+{
+  "name": "@machine-studio/sample-worlds",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@machine-studio/project-schema": "workspace:*",
+    "@machine-studio/world-generator": "workspace:*",
+    "@machine-studio/machine-system": "workspace:*",
+    "@machine-studio/asset-factory": "workspace:*"
+  }
+}

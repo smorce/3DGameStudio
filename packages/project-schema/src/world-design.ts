@@ -48,6 +48,7 @@ export const roadDefinitionSchema = z.object({
   id: z.string().min(1),
   controlPoints: z.array(point).min(2),
   curve: z.literal("catmull-rom"),
+  closed: z.boolean().optional(),
   width: positive,
   shoulderWidth: nonnegative,
   terrainFalloff: positive,
@@ -73,6 +74,12 @@ export const settlementBuildingRuleSchema = z.object({
   assetSlot: z.string().min(1),
   count: z.number().int().min(1).max(256),
   minSpacing: positive.min(1),
+  minDistanceFromRoad: nonnegative.optional(),
+  scaleRange: z
+    .tuple([positive, positive])
+    .refine((v) => v[0] <= v[1], "Invalid scale range")
+    .optional(),
+  rotationMode: z.enum(["none", "yaw"]).optional(),
 });
 export const settlementDefinitionSchema = region.extend({
   height: z.number().finite(),
@@ -130,6 +137,7 @@ export type LandmarkDefinition = z.infer<typeof landmarkDefinitionSchema>;
 export type PropRule = z.infer<typeof propRuleSchema>;
 
 export const worldBuildManifestSchema = z.object({
+  biomeProfileVersion: z.literal(1).optional(),
   worldDesignVersion: z.number().int(),
   worldId: z.string(),
   seed: z.number().int(),

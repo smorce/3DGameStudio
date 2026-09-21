@@ -175,4 +175,10 @@ pnpm world:bake
 pnpm dev
 ```
 
-Studioの「おもちゃの群島」から準備済みProjectを開きます。詳細は[World生成](docs/world-generation.md)、[Asset Factory](docs/asset-factory.md)、[実装・検証報告](docs/world-generation-asset-factory-report.md)を参照してください。Dummy素材は動作検証用の共通形状です。ambientCGのPBR ZIPはTexture Assetとして保持し、現Rendererでの未対応状態を明示します。
+Studioの「おもちゃの5島」から準備済みProjectを開きます。以下の8ワールド版では同梱デモへ自動fallbackします。詳細は[World生成](docs/world-generation.md)、[Asset Factory](docs/asset-factory.md)、[実装・検証報告](docs/world-generation-asset-factory-report.md)を参照してください。Dummy素材は動作検証用の共通形状です。ambientCGのPBR ZIPはTexture Assetとして保持し、現Rendererでの未対応状態を明示します。
+
+## 8つのSample World（指示18）
+
+`pnpm install`、`pnpm dev`だけで、はじまりの草原・飛行場・南国の群島・おもちゃの5島・山岳島・砂漠・雪山・レースアイランドを選んで遊べます。準備済みProjectと共有低ポリDemo Assetを同梱しています。Runtimeから素材生成や外部APIは呼びません。
+
+開発時の再生成は`pnpm sample-worlds:prepare`、検証は`pnpm sample-worlds:validate`です。World定義・Biome・9個目の追加方法は[Sample Worlds](docs/sample-worlds.md)、検証結果は[実装報告](docs/sample-worlds-report.md)を参照してください。

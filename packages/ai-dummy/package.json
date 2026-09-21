@@ -13,6 +13,8 @@
     "@machine-studio/machine-system": "workspace:*",
     "@machine-studio/course-system": "workspace:*",
     "@machine-studio/asset-core": "workspace:*",
-    "@machine-studio/asset-pipeline": "workspace:*"
+    "@machine-studio/asset-pipeline": "workspace:*",
+    "three": "^0.180.0",
+    "@gltf-transform/core": "^4.5.0"
   }
 }

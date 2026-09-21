@@ -1,3 +1,4 @@
+import { SemanticLayers } from "../../world-generator/src/semantic";
 import type { WorldDesign } from "../../project-schema/src/index";
 export interface AssetRequirement {
   assetSlot: string;
@@ -25,6 +26,7 @@ export function requiredSlots(design: WorldDesign) {
 }
 export class DummyAssetRequirementPlanner implements AssetRequirementPlanner {
   async plan(design: WorldDesign): Promise<AssetRequirementPlan> {
+    const layers = new SemanticLayers(design, 0);
     return {
       planner: "dummy",
       requirements: requiredSlots(design).map((assetSlot) => ({
@@ -38,13 +40,21 @@ export class DummyAssetRequirementPlanner implements AssetRequirementPlanner {
               ? 3
               : 1,
         biomes: [
-          ...new Set(
-            design.islands.flatMap((i) =>
+          ...new Set([
+            ...design.landmarks
+              .filter((l) => l.assetSlot === assetSlot)
+              .map((l) => layers.sampleBiome(l.position[0], l.position[2])),
+            ...design.settlements
+              .filter((s) =>
+                s.buildingRules.some((r) => r.assetSlot === assetSlot),
+              )
+              .map((s) => layers.sampleBiome(s.center[0], s.center[2])),
+            ...design.islands.flatMap((i) =>
               i.propRules
                 .filter((r) => r.assetSlot === assetSlot)
                 .map((r) => r.biome),
             ),
-          ),
+          ]),
         ].sort(),
         style: "stylized-low-poly",
       })),

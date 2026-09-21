@@ -265,6 +265,7 @@ export const environmentPresets = [
   "airfield",
   "archipelago",
   "toy-islands",
+  "designed-world",
 ] as const;
 export const environmentPresetSchema = z.enum(environmentPresets);
 export type EnvironmentPreset = z.infer<typeof environmentPresetSchema>;

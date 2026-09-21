@@ -1,3 +1,7 @@
+import {
+  sampleWorldCatalog,
+  findSampleWorld,
+} from "../../../packages/sample-worlds/src/index";
 import { assetLimits } from "../../../packages/asset-core/src/limits";
 import express from "express";
 import { mkdir, readFile, writeFile, cp } from "node:fs/promises";
@@ -134,20 +138,44 @@ export async function createApp(
     next();
   });
   app.use(express.json({ limit: "8mb" }));
-  app.get("/api/worlds/toy-islands", async (_req, res) => {
+  app.get("/api/worlds", (_req, res) => {
+    res.json(
+      sampleWorldCatalog.map(
+        ({ buildProject: _build, ...metadata }) => metadata,
+      ),
+    );
+  });
+  app.get("/api/worlds/:id", async (req, res) => {
+    const descriptor = findSampleWorld(req.params.id);
+    if (!descriptor) {
+      res.status(404).json({ error: "Unknown sample world" });
+      return;
+    }
     try {
-      const project = parseProject(
-        JSON.parse(
-          await readFile(path.join(dataDir, "worlds/toy-islands.json"), "utf8"),
-        ),
-      );
-      res.json(project);
-    } catch (error) {
-      res
-        .status((error as NodeJS.ErrnoException).code === "ENOENT" ? 404 : 500)
-        .json({ error: "Prepared toy-islands project is unavailable" });
+      let json: string;
+      try {
+        json = await readFile(
+          path.join(dataDir, "worlds", `${descriptor.id}.json`),
+          "utf8",
+        );
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+        json = await readFile(
+          path.join("demos/worlds", `${descriptor.id}.json`),
+          "utf8",
+        );
+      }
+      res.json(parseProject(JSON.parse(json)));
+    } catch {
+      res.status(500).json({ error: "Prepared sample world is unavailable" });
     }
   });
+  app.use(
+    "/api/files/sample-worlds",
+    express.static(path.resolve("demos/sample-worlds/assets"), {
+      dotfiles: "deny",
+    }),
+  );
   app.get("/api/health", (_req, res) =>
     res.json({ status: "ok", ai: "dummy" }),
   );

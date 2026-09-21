@@ -1,0 +1,4354 @@
+[
+  {
+    "id": "factory-b65462ca001ae668f3dc5d904cae9469",
+    "name": "airport.control_tower (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-9c280ecd027420b9ca78ac3d3f3fde53731db879da18a244899e52868b88de05",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/c20b6249fc552342726b0a4b62e1535ee2e7406d5f2dd81e29d503608808438b.glb",
+      "runtime": "/api/files/sample-worlds/cf76534b43a5b40c1fd2b0f5ba1a39d7c038d3292926a50dd4253a69ee6d3f45.glb",
+      "thumbnail": "/api/files/sample-worlds/52b1b6a1f2a0fe5a31b11c849ad7294fb6c016135adb416b12d6826c4654701b.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "9c280ecd027420b9ca78ac3d3f3fde53731db879da18a244899e52868b88de05",
+      "generationId": "9c280ecd027420b9ca78ac3d3f3fde53731db879da18a244899e52868b88de05"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.5,
+          0,
+          -2.5
+        ],
+        "max": [
+          2.5,
+          10,
+          2.5
+        ]
+      },
+      "triangles": 24,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/a54c05424fe71bf3a18d1bb186a3b2f45a0c242ca6c2d48d37647a28de7fbd89.json",
+      "colliderBytes": 779,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2656,
+        "runtimeBytes": 2896,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/cf76534b43a5b40c1fd2b0f5ba1a39d7c038d3292926a50dd4253a69ee6d3f45.glb",
+          "triangles": 24,
+          "distance": 0,
+          "bytes": 2896
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "airport.control_tower"
+      ],
+      "tags": [
+        "airport",
+        "control_tower"
+      ],
+      "biomes": [
+        "grassland"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "airport.control_tower",
+      "contentHash": "cf76534b43a5b40c1fd2b0f5ba1a39d7c038d3292926a50dd4253a69ee6d3f45",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-0e7dcdfcf7f95dabe7c2f4cb3015085f",
+    "name": "building.desert.outpost (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-e70dddd771628759c43321d0391ca3e99154e456315eb7504c332c019fcc5dc9",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "e70dddd771628759c43321d0391ca3e99154e456315eb7504c332c019fcc5dc9",
+      "generationId": "e70dddd771628759c43321d0391ca3e99154e456315eb7504c332c019fcc5dc9"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.desert.outpost"
+      ],
+      "tags": [
+        "building",
+        "desert",
+        "outpost"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.desert.outpost",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-270f069f3a9a52e60fbc020928b96671",
+    "name": "building.desert.outpost (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-61241ef4e2552b73104875254bed2b1723328add814c2ebd6183e007bfe06e8d",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "61241ef4e2552b73104875254bed2b1723328add814c2ebd6183e007bfe06e8d",
+      "generationId": "61241ef4e2552b73104875254bed2b1723328add814c2ebd6183e007bfe06e8d"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.desert.outpost"
+      ],
+      "tags": [
+        "building",
+        "desert",
+        "outpost"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.desert.outpost",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-898fb604d88cf3da048fc6582a86810e",
+    "name": "building.desert.outpost (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-e36de08042d92d1445a1fb91bc7835b36d08ef1a49b4c64fa742c7696c9a4bbd",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "e36de08042d92d1445a1fb91bc7835b36d08ef1a49b4c64fa742c7696c9a4bbd",
+      "generationId": "e36de08042d92d1445a1fb91bc7835b36d08ef1a49b4c64fa742c7696c9a4bbd"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.desert.outpost"
+      ],
+      "tags": [
+        "building",
+        "desert",
+        "outpost"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.desert.outpost",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-64ece36d6e1bcb789d24a42898da0016",
+    "name": "building.village.house (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-0240cf169a496abdaf8647950e31d773e1e9a3a23dafaadd217fd33c480e4ce4",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "0240cf169a496abdaf8647950e31d773e1e9a3a23dafaadd217fd33c480e4ce4",
+      "generationId": "0240cf169a496abdaf8647950e31d773e1e9a3a23dafaadd217fd33c480e4ce4"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.village.house"
+      ],
+      "tags": [
+        "building",
+        "village",
+        "house"
+      ],
+      "biomes": [
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.village.house",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-adcdbedd682fcdf3a662ce1f5784bf9c",
+    "name": "building.village.house (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-259bbd18b63a7be2bcd33631de9e9b8188359ec0614e175781f45544a63d3bbc",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "259bbd18b63a7be2bcd33631de9e9b8188359ec0614e175781f45544a63d3bbc",
+      "generationId": "259bbd18b63a7be2bcd33631de9e9b8188359ec0614e175781f45544a63d3bbc"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.village.house"
+      ],
+      "tags": [
+        "building",
+        "village",
+        "house"
+      ],
+      "biomes": [
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.village.house",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-ae9c325b04adf640dbbb6724d11bfde9",
+    "name": "building.village.house (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5ccbd028a7638bd18b1788525f5f67c6d487d7fa8f4cc7d383cbb2f7d620d6c5",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/59cb2b09f49c4266ab51492104a380bf6d1eae93e499bb51d8b5e96d4f179cd6.glb",
+      "runtime": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+      "thumbnail": "/api/files/sample-worlds/ad026299619b6665ac3c343856d4cd2432b91c0870e8e245a155d09cde7cff52.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5ccbd028a7638bd18b1788525f5f67c6d487d7fa8f4cc7d383cbb2f7d620d6c5",
+      "generationId": "5ccbd028a7638bd18b1788525f5f67c6d487d7fa8f4cc7d383cbb2f7d620d6c5"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.8284270763397217,
+          0,
+          -2.8284270763397217
+        ],
+        "max": [
+          2.8284270763397217,
+          5.4,
+          2.8284270763397217
+        ]
+      },
+      "triangles": 20,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/4346fd9c0ed3f166391565bbcd2e273555f7f8bbc6b8b9756a0806f7cbba9aef.json",
+      "colliderBytes": 1153,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2580,
+        "runtimeBytes": 3032,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 3032
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f274dfadccc2770989d6c16908d2a433c694a4ccf5fadc791af4b77b667339bc.glb",
+          "triangles": 18,
+          "distance": 60,
+          "bytes": 3016
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.village.house"
+      ],
+      "tags": [
+        "building",
+        "village",
+        "house"
+      ],
+      "biomes": [
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.village.house",
+      "contentHash": "bdb302a3ead7b40b4d9c048774d8a72248d18af221c3d183639c1e9db85367d4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-9768bdc82a5d15c446bfd0cd4e2cdcbc",
+    "name": "course.jump_ramp (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-dc8d79b5062cc64f3ae0962201d8f1aedd2be225d42c499af8c67f6cdbace7f4",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/faf13907bb93027baa62b4f83e5f2f8e305ada8ce24cf7c68818fe0ce87d5af5.glb",
+      "runtime": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+      "thumbnail": "/api/files/sample-worlds/0b65800bd325847cbd8fe6f17f1af8c686222c966a7c951aca8f3d6246ddfbba.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "dc8d79b5062cc64f3ae0962201d8f1aedd2be225d42c499af8c67f6cdbace7f4",
+      "generationId": "dc8d79b5062cc64f3ae0962201d8f1aedd2be225d42c499af8c67f6cdbace7f4"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3,
+          0,
+          -4
+        ],
+        "max": [
+          3,
+          1.5,
+          4
+        ]
+      },
+      "triangles": 12,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/10765428fb2f31593f2dc5f15cb024444cd135433364e3315a30c633c9358b79.json",
+      "colliderBytes": 311,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 1436,
+        "runtimeBytes": 1772,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+          "triangles": 12,
+          "distance": 0,
+          "bytes": 1772
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "course.jump_ramp"
+      ],
+      "tags": [
+        "course",
+        "jump_ramp"
+      ],
+      "biomes": [
+        "desert",
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "course.jump_ramp",
+      "contentHash": "5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-b3fb109c7e7ebe6f43e15cebaf62bb36",
+    "name": "course.jump_ramp (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-1a84f524a09eff4cb5dd06f9c8d8c93f6cad32ffccd7f16baed2b5a6ec1f6dd3",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/faf13907bb93027baa62b4f83e5f2f8e305ada8ce24cf7c68818fe0ce87d5af5.glb",
+      "runtime": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+      "thumbnail": "/api/files/sample-worlds/0b65800bd325847cbd8fe6f17f1af8c686222c966a7c951aca8f3d6246ddfbba.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "1a84f524a09eff4cb5dd06f9c8d8c93f6cad32ffccd7f16baed2b5a6ec1f6dd3",
+      "generationId": "1a84f524a09eff4cb5dd06f9c8d8c93f6cad32ffccd7f16baed2b5a6ec1f6dd3"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3,
+          0,
+          -4
+        ],
+        "max": [
+          3,
+          1.5,
+          4
+        ]
+      },
+      "triangles": 12,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/10765428fb2f31593f2dc5f15cb024444cd135433364e3315a30c633c9358b79.json",
+      "colliderBytes": 311,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 1436,
+        "runtimeBytes": 1772,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+          "triangles": 12,
+          "distance": 0,
+          "bytes": 1772
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "course.jump_ramp"
+      ],
+      "tags": [
+        "course",
+        "jump_ramp"
+      ],
+      "biomes": [
+        "desert",
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "course.jump_ramp",
+      "contentHash": "5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-0f40cee35a3ab3a69e5c42d3afdc9517",
+    "name": "course.jump_ramp (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-d651ef8ef45e37f2e5d5d547256bc8b4cffee9e1e3df7d7fdcbda6c86388101a",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/faf13907bb93027baa62b4f83e5f2f8e305ada8ce24cf7c68818fe0ce87d5af5.glb",
+      "runtime": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+      "thumbnail": "/api/files/sample-worlds/0b65800bd325847cbd8fe6f17f1af8c686222c966a7c951aca8f3d6246ddfbba.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "d651ef8ef45e37f2e5d5d547256bc8b4cffee9e1e3df7d7fdcbda6c86388101a",
+      "generationId": "d651ef8ef45e37f2e5d5d547256bc8b4cffee9e1e3df7d7fdcbda6c86388101a"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3,
+          0,
+          -4
+        ],
+        "max": [
+          3,
+          1.5,
+          4
+        ]
+      },
+      "triangles": 12,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/10765428fb2f31593f2dc5f15cb024444cd135433364e3315a30c633c9358b79.json",
+      "colliderBytes": 311,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 1436,
+        "runtimeBytes": 1772,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8.glb",
+          "triangles": 12,
+          "distance": 0,
+          "bytes": 1772
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "course.jump_ramp"
+      ],
+      "tags": [
+        "course",
+        "jump_ramp"
+      ],
+      "biomes": [
+        "desert",
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "course.jump_ramp",
+      "contentHash": "5cf150a51fe54c18c62475c1527ed90853aff19cdf6d4ca6224e7c61d3a872f8",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-b14fb541a1a745f0e43fa043a05ce079",
+    "name": "landmark.lighthouse (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-a191a5d47a4665834a1124a122a656011298b6f23ac50476ca4d15d4b1e65101",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/08cb2696802e0041fcb5cd0704f18d0cb4ba07c18ecd8991eb4ef3e467296a22.glb",
+      "runtime": "/api/files/sample-worlds/a1443d2caca3fb5ee7d4d16e6777c9d1eddce2be5062c6501b10c57d7763961b.glb",
+      "thumbnail": "/api/files/sample-worlds/ac5f0bb0802adc5a6e8e303067f6be0ea1dd80ae43f98b1d4550438ceace4479.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "a191a5d47a4665834a1124a122a656011298b6f23ac50476ca4d15d4b1e65101",
+      "generationId": "a191a5d47a4665834a1124a122a656011298b6f23ac50476ca4d15d4b1e65101"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2,
+          0,
+          -2
+        ],
+        "max": [
+          2,
+          13,
+          2
+        ]
+      },
+      "triangles": 80,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/d29b40ddecd2008d4694646ac49a92e3969e8ab3fd67e15bc8a8bf8583cc6e20.json",
+      "colliderBytes": 4596,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 5788,
+        "runtimeBytes": 5180,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/a1443d2caca3fb5ee7d4d16e6777c9d1eddce2be5062c6501b10c57d7763961b.glb",
+          "triangles": 80,
+          "distance": 0,
+          "bytes": 5180
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/9fdaaabfb6d9a1574ffc1eb7f6a120fe11c925a5edffc8962e406c7381d712bb.glb",
+          "triangles": 72,
+          "distance": 150,
+          "bytes": 5076
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "landmark.lighthouse"
+      ],
+      "tags": [
+        "landmark",
+        "lighthouse"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "landmark.lighthouse",
+      "contentHash": "a1443d2caca3fb5ee7d4d16e6777c9d1eddce2be5062c6501b10c57d7763961b",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-6da6b2d073113a6266bee68614668882",
+    "name": "landmark.observatory (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-6738a2f30ce3d82e020e00d4f3ba6c1aa9f22af144c4f36b48194bfee1acbf52",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/2df18c4ec7ea258a4bdd301eb8d01555b0243debb1971e0bef4bf9ae05c9e71b.glb",
+      "runtime": "/api/files/sample-worlds/97b08acf605553ba40fe8e327af9f322d3a7e133f29536c12a1481cebe278606.glb",
+      "thumbnail": "/api/files/sample-worlds/f116dfb4c0df5fc0826819a96af604738a956745f66ff663f5a43279cb243f1b.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "6738a2f30ce3d82e020e00d4f3ba6c1aa9f22af144c4f36b48194bfee1acbf52",
+      "generationId": "6738a2f30ce3d82e020e00d4f3ba6c1aa9f22af144c4f36b48194bfee1acbf52"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.5,
+          0,
+          -3.5
+        ],
+        "max": [
+          3.5,
+          7.5,
+          3.5
+        ]
+      },
+      "triangles": 92,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/c9daf129b936868d3d0df6974cc8881d3ff0406be98ce0ab992bdd54d8edcb0e.json",
+      "colliderBytes": 10157,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 7684,
+        "runtimeBytes": 3836,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/97b08acf605553ba40fe8e327af9f322d3a7e133f29536c12a1481cebe278606.glb",
+          "triangles": 92,
+          "distance": 0,
+          "bytes": 3836
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "landmark.observatory"
+      ],
+      "tags": [
+        "landmark",
+        "observatory"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "landmark.observatory",
+      "contentHash": "97b08acf605553ba40fe8e327af9f322d3a7e133f29536c12a1481cebe278606",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-05a5be3d8526fdf27d8b173cec8731b3",
+    "name": "nature.plant.cactus (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-68b50f978848e931593d107db08954ffe3374ebf93ba03eeef7d38b61712da7f",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/fa9940b98e3b55c323cad8b7ee55e190fd411bc53a0869834d41f3c5d8bc1420.glb",
+      "runtime": "/api/files/sample-worlds/952693132ae00d29a808e018dc342527e48bcf46efe048b2992b2d3163c55ea4.glb",
+      "thumbnail": "/api/files/sample-worlds/e29c8062c1f48ea6e536d9d96204455e70a883a1211d9d4095b70a06a3f038f3.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "68b50f978848e931593d107db08954ffe3374ebf93ba03eeef7d38b61712da7f",
+      "generationId": "68b50f978848e931593d107db08954ffe3374ebf93ba03eeef7d38b61712da7f"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -0.3464101552963257,
+          4.768371586472142e-8,
+          -0.4000000059604645
+        ],
+        "max": [
+          1.4500000029802322,
+          3.599999952316284,
+          0.4000000059604645
+        ]
+      },
+      "triangles": 48,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/88261ad4f1b3374b8b7b91703e2c0f84fed51ca13d3347b2c4de4ed542e68bb9.json",
+      "colliderBytes": 4996,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 4584,
+        "runtimeBytes": 4440,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/952693132ae00d29a808e018dc342527e48bcf46efe048b2992b2d3163c55ea4.glb",
+          "triangles": 48,
+          "distance": 0,
+          "bytes": 4440
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/9b3e0ff4b46d7d71dda42607d749054372aff8be8d830aad1f7f0403aebd9271.glb",
+          "triangles": 42,
+          "distance": 150,
+          "bytes": 4408
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.plant.cactus"
+      ],
+      "tags": [
+        "nature",
+        "plant",
+        "cactus"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.plant.cactus",
+      "contentHash": "952693132ae00d29a808e018dc342527e48bcf46efe048b2992b2d3163c55ea4",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-bbe19d09ecf46383d016783d4cf6bef1",
+    "name": "nature.rock.desert (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-3fda2b6b2a9c0c907dbdae7a71aca78760ab4676b0311de003bec86b400e3645",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/8e3933c66aa7b9ac1a2c9c15986881dc83f67730ce28c6c5cfcf7b3ff717b3e4.glb",
+      "runtime": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "3fda2b6b2a9c0c907dbdae7a71aca78760ab4676b0311de003bec86b400e3645",
+      "generationId": "3fda2b6b2a9c0c907dbdae7a71aca78760ab4676b0311de003bec86b400e3645"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.desert"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "desert"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.desert",
+      "contentHash": "10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-80d7c7de860285a9b705f8eabf354e5a",
+    "name": "nature.rock.desert (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-ad7fb3b9c52a03deed9a68d0170336677c0b599a06340f7ac0b6896fc5989d22",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/8e3933c66aa7b9ac1a2c9c15986881dc83f67730ce28c6c5cfcf7b3ff717b3e4.glb",
+      "runtime": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "ad7fb3b9c52a03deed9a68d0170336677c0b599a06340f7ac0b6896fc5989d22",
+      "generationId": "ad7fb3b9c52a03deed9a68d0170336677c0b599a06340f7ac0b6896fc5989d22"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.desert"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "desert"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.desert",
+      "contentHash": "10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-e7385c0d200bf1191870a1d494ab2bc6",
+    "name": "nature.rock.desert (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5c58f7e1fea350dd6bbb4acc5b5702607300674db33e98a1bb42bb434953b16b",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/8e3933c66aa7b9ac1a2c9c15986881dc83f67730ce28c6c5cfcf7b3ff717b3e4.glb",
+      "runtime": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5c58f7e1fea350dd6bbb4acc5b5702607300674db33e98a1bb42bb434953b16b",
+      "generationId": "5c58f7e1fea350dd6bbb4acc5b5702607300674db33e98a1bb42bb434953b16b"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.desert"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "desert"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.desert",
+      "contentHash": "10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-ef23a3b4ea7ef8220f09a4ef5a69434f",
+    "name": "nature.rock.desert (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-07e082386800a83107561dded7f0946424caa66b0ec0f5143002e60d6f24ab92",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/8e3933c66aa7b9ac1a2c9c15986881dc83f67730ce28c6c5cfcf7b3ff717b3e4.glb",
+      "runtime": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "07e082386800a83107561dded7f0946424caa66b0ec0f5143002e60d6f24ab92",
+      "generationId": "07e082386800a83107561dded7f0946424caa66b0ec0f5143002e60d6f24ab92"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.desert"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "desert"
+      ],
+      "biomes": [
+        "desert"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.desert",
+      "contentHash": "10905ba554de0774e7a75707690d6a68d6466f15ba2c3de04b69f1e2f03dd08a",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-980db13072ec1c0f211eb486887887f0",
+    "name": "nature.rock.large (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-ed24b6dcbf8d14892b30ffd399c081b37e88b887d8af4ff0441bf3a70e5f81ab",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/786a0755cbf2aac7bcebd0755969a701ae72c48c94409e1cc8cfd0d602373f20.glb",
+      "runtime": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "ed24b6dcbf8d14892b30ffd399c081b37e88b887d8af4ff0441bf3a70e5f81ab",
+      "generationId": "ed24b6dcbf8d14892b30ffd399c081b37e88b887d8af4ff0441bf3a70e5f81ab"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.6540305614471436,
+          -0.04818451404571533,
+          -1.990522861480713
+        ],
+        "max": [
+          2.6540305614471436,
+          3.0481845140457153,
+          1.990522861480713
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/406f53f9a173fb46fe8cfa11a59a6c4fcf2035fe3dbff775b676f3343e5de0d9.json",
+      "colliderBytes": 2628,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2776,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2776
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.large"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "large"
+      ],
+      "biomes": [
+        "alpine",
+        "desert",
+        "snow",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.large",
+      "contentHash": "5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-c673246e59962ba84fcc929503e85971",
+    "name": "nature.rock.large (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-da3a1cd74e31411b70faecee4ec30c97f55b4fa859030d77be48db9bdc2ed1e5",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/786a0755cbf2aac7bcebd0755969a701ae72c48c94409e1cc8cfd0d602373f20.glb",
+      "runtime": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "da3a1cd74e31411b70faecee4ec30c97f55b4fa859030d77be48db9bdc2ed1e5",
+      "generationId": "da3a1cd74e31411b70faecee4ec30c97f55b4fa859030d77be48db9bdc2ed1e5"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.6540305614471436,
+          -0.04818451404571533,
+          -1.990522861480713
+        ],
+        "max": [
+          2.6540305614471436,
+          3.0481845140457153,
+          1.990522861480713
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/406f53f9a173fb46fe8cfa11a59a6c4fcf2035fe3dbff775b676f3343e5de0d9.json",
+      "colliderBytes": 2628,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2776,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2776
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.large"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "large"
+      ],
+      "biomes": [
+        "alpine",
+        "desert",
+        "snow",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.large",
+      "contentHash": "5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-9ecb9e7d892f21770c998664963a2baa",
+    "name": "nature.rock.large (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-d8221ad36606bc6399ab25bb46004f1d1b0ac856db3621337fa214fcfc8a559b",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/786a0755cbf2aac7bcebd0755969a701ae72c48c94409e1cc8cfd0d602373f20.glb",
+      "runtime": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "d8221ad36606bc6399ab25bb46004f1d1b0ac856db3621337fa214fcfc8a559b",
+      "generationId": "d8221ad36606bc6399ab25bb46004f1d1b0ac856db3621337fa214fcfc8a559b"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.6540305614471436,
+          -0.04818451404571533,
+          -1.990522861480713
+        ],
+        "max": [
+          2.6540305614471436,
+          3.0481845140457153,
+          1.990522861480713
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/406f53f9a173fb46fe8cfa11a59a6c4fcf2035fe3dbff775b676f3343e5de0d9.json",
+      "colliderBytes": 2628,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2776,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2776
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.large"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "large"
+      ],
+      "biomes": [
+        "alpine",
+        "desert",
+        "snow",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.large",
+      "contentHash": "5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-c2c4c8be5c8c63d4bc17ed15449ffe54",
+    "name": "nature.rock.large (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5b2ac8df1194eee76fcefb6b3eed8786b78c8f2b0a81715c145a61b0244c3d7e",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/786a0755cbf2aac7bcebd0755969a701ae72c48c94409e1cc8cfd0d602373f20.glb",
+      "runtime": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5b2ac8df1194eee76fcefb6b3eed8786b78c8f2b0a81715c145a61b0244c3d7e",
+      "generationId": "5b2ac8df1194eee76fcefb6b3eed8786b78c8f2b0a81715c145a61b0244c3d7e"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.6540305614471436,
+          -0.04818451404571533,
+          -1.990522861480713
+        ],
+        "max": [
+          2.6540305614471436,
+          3.0481845140457153,
+          1.990522861480713
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/406f53f9a173fb46fe8cfa11a59a6c4fcf2035fe3dbff775b676f3343e5de0d9.json",
+      "colliderBytes": 2628,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2776,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2776
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.large"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "large"
+      ],
+      "biomes": [
+        "alpine",
+        "desert",
+        "snow",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.large",
+      "contentHash": "5841d9af5d1b4a545ba0858632cc2173632445ab23a0b548ae8f006ed8c87797",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-a705f69be156a2001fefdc63e7930cf9",
+    "name": "nature.rock.small (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-d156bc3f2dffe7e1d391c88318a506aa5818a8ed48f32558a8a7a1727c2a9a35",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/d14322713baf0cafc68c20a3e4d6d0e721eac108cf5b5a02d75912639342a4b3.glb",
+      "runtime": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "d156bc3f2dffe7e1d391c88318a506aa5818a8ed48f32558a8a7a1727c2a9a35",
+      "generationId": "d156bc3f2dffe7e1d391c88318a506aa5818a8ed48f32558a8a7a1727c2a9a35"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.small"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "small"
+      ],
+      "biomes": [
+        "alpine",
+        "grassland",
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.small",
+      "contentHash": "8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-8e1bfb06d54354534f98aa7ab1e14184",
+    "name": "nature.rock.small (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-c6d535401cddc4dbfd32d010e5a0a2bf6854aecdd20d8daeafc03ab96cd79d39",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/d14322713baf0cafc68c20a3e4d6d0e721eac108cf5b5a02d75912639342a4b3.glb",
+      "runtime": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "c6d535401cddc4dbfd32d010e5a0a2bf6854aecdd20d8daeafc03ab96cd79d39",
+      "generationId": "c6d535401cddc4dbfd32d010e5a0a2bf6854aecdd20d8daeafc03ab96cd79d39"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.small"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "small"
+      ],
+      "biomes": [
+        "alpine",
+        "grassland",
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.small",
+      "contentHash": "8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-1257129cf49a709b2fdb26d6a6828e42",
+    "name": "nature.rock.small (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-9a21871f865ff9d3decbf7f4109338648d146ccf8aa165d47741840960133a03",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/d14322713baf0cafc68c20a3e4d6d0e721eac108cf5b5a02d75912639342a4b3.glb",
+      "runtime": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "9a21871f865ff9d3decbf7f4109338648d146ccf8aa165d47741840960133a03",
+      "generationId": "9a21871f865ff9d3decbf7f4109338648d146ccf8aa165d47741840960133a03"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.small"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "small"
+      ],
+      "biomes": [
+        "alpine",
+        "grassland",
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.small",
+      "contentHash": "8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-7385239e8ee1b246d5ef1b09915c0bed",
+    "name": "nature.rock.small (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-40d701fa1dbcbaa0c278989a42eccc10589f1fec53b3a7e4a8cff764ac8ae71b",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/d14322713baf0cafc68c20a3e4d6d0e721eac108cf5b5a02d75912639342a4b3.glb",
+      "runtime": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "40d701fa1dbcbaa0c278989a42eccc10589f1fec53b3a7e4a8cff764ac8ae71b",
+      "generationId": "40d701fa1dbcbaa0c278989a42eccc10589f1fec53b3a7e4a8cff764ac8ae71b"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2196,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.small"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "small"
+      ],
+      "biomes": [
+        "alpine",
+        "grassland",
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.small",
+      "contentHash": "8a67240082884c91f32dd0199ef2b85b7e50cc75533936903a2491224535b1d0",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-61dfbee3c9687c298c809e6b88a61e58",
+    "name": "nature.rock.snow (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-02050680e974c3484d301135b10f16a58bfb1c9d857011eaa83a9add71c8b642",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b4308eaeff85897bf3a9139ca33759b1e648c8f48e2cfaf57aca9811132b29ce.glb",
+      "runtime": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "02050680e974c3484d301135b10f16a58bfb1c9d857011eaa83a9add71c8b642",
+      "generationId": "02050680e974c3484d301135b10f16a58bfb1c9d857011eaa83a9add71c8b642"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.snow"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "snow"
+      ],
+      "biomes": [
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.snow",
+      "contentHash": "d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-188e9c4634ae328a6f9c8783bcaa3526",
+    "name": "nature.rock.snow (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-3708eedeeed55cab138820d16f6e785ed1c249adab8219eb97c065aeea2b3bb9",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b4308eaeff85897bf3a9139ca33759b1e648c8f48e2cfaf57aca9811132b29ce.glb",
+      "runtime": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "3708eedeeed55cab138820d16f6e785ed1c249adab8219eb97c065aeea2b3bb9",
+      "generationId": "3708eedeeed55cab138820d16f6e785ed1c249adab8219eb97c065aeea2b3bb9"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.snow"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "snow"
+      ],
+      "biomes": [
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.snow",
+      "contentHash": "d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-2bc0c06b056d69fc8d07b29d8d55125a",
+    "name": "nature.rock.snow (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-0e91c03ff15daa90fe30ab8d21ffef39f57f3009232bbcfd5d367dc0174a06f5",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b4308eaeff85897bf3a9139ca33759b1e648c8f48e2cfaf57aca9811132b29ce.glb",
+      "runtime": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "0e91c03ff15daa90fe30ab8d21ffef39f57f3009232bbcfd5d367dc0174a06f5",
+      "generationId": "0e91c03ff15daa90fe30ab8d21ffef39f57f3009232bbcfd5d367dc0174a06f5"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.snow"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "snow"
+      ],
+      "biomes": [
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.snow",
+      "contentHash": "d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-379cf34dfc37a189671ae20454a9a510",
+    "name": "nature.rock.snow (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-b00b1433eaaa20feae4d1122841d54e32b69ca777dbe8d6681c37313e5094328",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b4308eaeff85897bf3a9139ca33759b1e648c8f48e2cfaf57aca9811132b29ce.glb",
+      "runtime": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+      "thumbnail": "/api/files/sample-worlds/e59ecb5b01e5fe53bee5f8f13a5aa94f8fdd18b4130907dd8e4de34c791edb5e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "b00b1433eaaa20feae4d1122841d54e32b69ca777dbe8d6681c37313e5094328",
+      "generationId": "b00b1433eaaa20feae4d1122841d54e32b69ca777dbe8d6681c37313e5094328"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.1228591203689575,
+          -0.05500116348266604,
+          -0.8421443104743958
+        ],
+        "max": [
+          1.1228591203689575,
+          1.255001163482666,
+          0.8421443104743958
+        ]
+      },
+      "triangles": 20,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/fc8897cf52db3abb5a386a77b7a444f5d4b69e6e0ca676dff74c26b852104bed.json",
+      "colliderBytes": 2688,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2200,
+        "runtimeBytes": 2768,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3.glb",
+          "triangles": 20,
+          "distance": 0,
+          "bytes": 2768
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.rock.snow"
+      ],
+      "tags": [
+        "nature",
+        "rock",
+        "snow"
+      ],
+      "biomes": [
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.rock.snow",
+      "contentHash": "d05c8b36635b8dfd91c738c00abbee12deb2bb449edf18fbdbed8f82882963b3",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-92ddf161841c853f385147c18d1e6137",
+    "name": "nature.tree.alpine (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-2fc0ada8ec48ec9c0814c3d80483b36cface0673c335746d6ff39c540d4477aa",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/6cd3b210d57307d1d65e53bbe5f95246d2ae0ab286acf4a7591c9d2325189089.glb",
+      "runtime": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+      "thumbnail": "/api/files/sample-worlds/4bf711e3aae2a45d76ebe64bf6ffc77a0af576ad0a44b5dd1a8de4d41b631571.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "2fc0ada8ec48ec9c0814c3d80483b36cface0673c335746d6ff39c540d4477aa",
+      "generationId": "2fc0ada8ec48ec9c0814c3d80483b36cface0673c335746d6ff39c540d4477aa"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.6573774814605713,
+          0,
+          -1.5316470861434937
+        ],
+        "max": [
+          1.6573774814605713,
+          6.399999976158142,
+          1.7000000476837158
+        ]
+      },
+      "triangles": 66,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8935aab34d9f6ac3e748913b90cf9889a3aa64c1cfcc2181d89397539344cb5f.json",
+      "colliderBytes": 5454,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 6376,
+        "runtimeBytes": 6356,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+          "triangles": 66,
+          "distance": 0,
+          "bytes": 6356
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a0865cb635f0bfb8d2f72273d1460b5c9ecc52758f8c3c2b8042134f2a1dfc5b.glb",
+          "triangles": 54,
+          "distance": 150,
+          "bytes": 6280
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine",
+      "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-9da26e50d17ab2be6b1da1bf5833891a",
+    "name": "nature.tree.alpine (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-a6881a6f08d01a4e08513ac58fb246f83ee9a88f9159368cdbc437e3ca3e633b",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/6cd3b210d57307d1d65e53bbe5f95246d2ae0ab286acf4a7591c9d2325189089.glb",
+      "runtime": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+      "thumbnail": "/api/files/sample-worlds/4bf711e3aae2a45d76ebe64bf6ffc77a0af576ad0a44b5dd1a8de4d41b631571.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "a6881a6f08d01a4e08513ac58fb246f83ee9a88f9159368cdbc437e3ca3e633b",
+      "generationId": "a6881a6f08d01a4e08513ac58fb246f83ee9a88f9159368cdbc437e3ca3e633b"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.6573774814605713,
+          0,
+          -1.5316470861434937
+        ],
+        "max": [
+          1.6573774814605713,
+          6.399999976158142,
+          1.7000000476837158
+        ]
+      },
+      "triangles": 66,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8935aab34d9f6ac3e748913b90cf9889a3aa64c1cfcc2181d89397539344cb5f.json",
+      "colliderBytes": 5454,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 6376,
+        "runtimeBytes": 6356,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+          "triangles": 66,
+          "distance": 0,
+          "bytes": 6356
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a0865cb635f0bfb8d2f72273d1460b5c9ecc52758f8c3c2b8042134f2a1dfc5b.glb",
+          "triangles": 54,
+          "distance": 150,
+          "bytes": 6280
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine",
+      "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-99dcaa230066b331acfae6e935db14ae",
+    "name": "nature.tree.alpine (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-651325569feb6ac5b653352de8598992b1cf55c13bb288914415bf61f265de3f",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/6cd3b210d57307d1d65e53bbe5f95246d2ae0ab286acf4a7591c9d2325189089.glb",
+      "runtime": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+      "thumbnail": "/api/files/sample-worlds/4bf711e3aae2a45d76ebe64bf6ffc77a0af576ad0a44b5dd1a8de4d41b631571.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "651325569feb6ac5b653352de8598992b1cf55c13bb288914415bf61f265de3f",
+      "generationId": "651325569feb6ac5b653352de8598992b1cf55c13bb288914415bf61f265de3f"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.6573774814605713,
+          0,
+          -1.5316470861434937
+        ],
+        "max": [
+          1.6573774814605713,
+          6.399999976158142,
+          1.7000000476837158
+        ]
+      },
+      "triangles": 66,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8935aab34d9f6ac3e748913b90cf9889a3aa64c1cfcc2181d89397539344cb5f.json",
+      "colliderBytes": 5454,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 6376,
+        "runtimeBytes": 6356,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+          "triangles": 66,
+          "distance": 0,
+          "bytes": 6356
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a0865cb635f0bfb8d2f72273d1460b5c9ecc52758f8c3c2b8042134f2a1dfc5b.glb",
+          "triangles": 54,
+          "distance": 150,
+          "bytes": 6280
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine",
+      "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-ceaaf5b6b35c1c893610fc8f2baf940c",
+    "name": "nature.tree.alpine (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-c98ae0e55413c73a1164f5be3f2d0bda651fc27db5e5d7bca5a3ca220dd4081d",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/6cd3b210d57307d1d65e53bbe5f95246d2ae0ab286acf4a7591c9d2325189089.glb",
+      "runtime": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+      "thumbnail": "/api/files/sample-worlds/4bf711e3aae2a45d76ebe64bf6ffc77a0af576ad0a44b5dd1a8de4d41b631571.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "c98ae0e55413c73a1164f5be3f2d0bda651fc27db5e5d7bca5a3ca220dd4081d",
+      "generationId": "c98ae0e55413c73a1164f5be3f2d0bda651fc27db5e5d7bca5a3ca220dd4081d"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.6573774814605713,
+          0,
+          -1.5316470861434937
+        ],
+        "max": [
+          1.6573774814605713,
+          6.399999976158142,
+          1.7000000476837158
+        ]
+      },
+      "triangles": 66,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8935aab34d9f6ac3e748913b90cf9889a3aa64c1cfcc2181d89397539344cb5f.json",
+      "colliderBytes": 5454,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 6376,
+        "runtimeBytes": 6356,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+          "triangles": 66,
+          "distance": 0,
+          "bytes": 6356
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a0865cb635f0bfb8d2f72273d1460b5c9ecc52758f8c3c2b8042134f2a1dfc5b.glb",
+          "triangles": 54,
+          "distance": 150,
+          "bytes": 6280
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine",
+      "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-4ed4bff0eebbe248203edb90f5372169",
+    "name": "nature.tree.alpine (Dummy 4)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-ade7fc5a2501f3d2e34212447988b3e5cdb43e880c0f0dfc9c9c655231b644c3",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/6cd3b210d57307d1d65e53bbe5f95246d2ae0ab286acf4a7591c9d2325189089.glb",
+      "runtime": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+      "thumbnail": "/api/files/sample-worlds/4bf711e3aae2a45d76ebe64bf6ffc77a0af576ad0a44b5dd1a8de4d41b631571.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "ade7fc5a2501f3d2e34212447988b3e5cdb43e880c0f0dfc9c9c655231b644c3",
+      "generationId": "ade7fc5a2501f3d2e34212447988b3e5cdb43e880c0f0dfc9c9c655231b644c3"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.6573774814605713,
+          0,
+          -1.5316470861434937
+        ],
+        "max": [
+          1.6573774814605713,
+          6.399999976158142,
+          1.7000000476837158
+        ]
+      },
+      "triangles": 66,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8935aab34d9f6ac3e748913b90cf9889a3aa64c1cfcc2181d89397539344cb5f.json",
+      "colliderBytes": 5454,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 6376,
+        "runtimeBytes": 6356,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c.glb",
+          "triangles": 66,
+          "distance": 0,
+          "bytes": 6356
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a0865cb635f0bfb8d2f72273d1460b5c9ecc52758f8c3c2b8042134f2a1dfc5b.glb",
+          "triangles": 54,
+          "distance": 150,
+          "bytes": 6280
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine"
+      ],
+      "biomes": [
+        "alpine",
+        "snow"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine",
+      "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-db9465539567822ded42bdc77f42bdf3",
+    "name": "nature.tree.temperate (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-510fc518e206724aaea8087a28c6cc8dbe7e170be12b532abca270ea11883c1f",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/39d34758b9450a1d9d78409b9e1da1bcff165d40597c1940a99c19dc549b1ea4.glb",
+      "runtime": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+      "thumbnail": "/api/files/sample-worlds/e384d582df1bfb564d612ab5d82a844c54ffd10a61de81f5ad1302ee08ac240d.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "510fc518e206724aaea8087a28c6cc8dbe7e170be12b532abca270ea11883c1f",
+      "generationId": "510fc518e206724aaea8087a28c6cc8dbe7e170be12b532abca270ea11883c1f"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.7013015747070312,
+          0,
+          -1.7013015747070312
+        ],
+        "max": [
+          1.7013015747070312,
+          5.701301574707031,
+          1.7013015747070312
+        ]
+      },
+      "triangles": 44,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/cccea9364a93d12c948d52773bc83eed96f4657ec94672addc8ef9d3ab0597f3.json",
+      "colliderBytes": 3980,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 3972,
+        "runtimeBytes": 4244,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+          "triangles": 44,
+          "distance": 0,
+          "bytes": 4244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a9679ec09ff177ea14ea35d2f281d912bd29e6cee29970b5b9786a8446540922.glb",
+          "triangles": 32,
+          "distance": 150,
+          "bytes": 4172
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.temperate"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "temperate"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.temperate",
+      "contentHash": "35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-923894695f6e24a9c2ed5e6dc6322587",
+    "name": "nature.tree.temperate (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-77510417779f3e6c22e32edd0e5371376910728a837cb913cbecd7ca128f03b0",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/39d34758b9450a1d9d78409b9e1da1bcff165d40597c1940a99c19dc549b1ea4.glb",
+      "runtime": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+      "thumbnail": "/api/files/sample-worlds/e384d582df1bfb564d612ab5d82a844c54ffd10a61de81f5ad1302ee08ac240d.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "77510417779f3e6c22e32edd0e5371376910728a837cb913cbecd7ca128f03b0",
+      "generationId": "77510417779f3e6c22e32edd0e5371376910728a837cb913cbecd7ca128f03b0"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.7013015747070312,
+          0,
+          -1.7013015747070312
+        ],
+        "max": [
+          1.7013015747070312,
+          5.701301574707031,
+          1.7013015747070312
+        ]
+      },
+      "triangles": 44,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/cccea9364a93d12c948d52773bc83eed96f4657ec94672addc8ef9d3ab0597f3.json",
+      "colliderBytes": 3980,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 3972,
+        "runtimeBytes": 4244,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+          "triangles": 44,
+          "distance": 0,
+          "bytes": 4244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a9679ec09ff177ea14ea35d2f281d912bd29e6cee29970b5b9786a8446540922.glb",
+          "triangles": 32,
+          "distance": 150,
+          "bytes": 4172
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.temperate"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "temperate"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.temperate",
+      "contentHash": "35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-79e2c578cc8b48a58fc6429730e9b98e",
+    "name": "nature.tree.temperate (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5108a6800b159912cb3f9fddcbe23d6bb534dc1a3cd1365672c33c85dbb51cb2",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/39d34758b9450a1d9d78409b9e1da1bcff165d40597c1940a99c19dc549b1ea4.glb",
+      "runtime": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+      "thumbnail": "/api/files/sample-worlds/e384d582df1bfb564d612ab5d82a844c54ffd10a61de81f5ad1302ee08ac240d.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5108a6800b159912cb3f9fddcbe23d6bb534dc1a3cd1365672c33c85dbb51cb2",
+      "generationId": "5108a6800b159912cb3f9fddcbe23d6bb534dc1a3cd1365672c33c85dbb51cb2"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.7013015747070312,
+          0,
+          -1.7013015747070312
+        ],
+        "max": [
+          1.7013015747070312,
+          5.701301574707031,
+          1.7013015747070312
+        ]
+      },
+      "triangles": 44,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/cccea9364a93d12c948d52773bc83eed96f4657ec94672addc8ef9d3ab0597f3.json",
+      "colliderBytes": 3980,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 3972,
+        "runtimeBytes": 4244,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+          "triangles": 44,
+          "distance": 0,
+          "bytes": 4244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a9679ec09ff177ea14ea35d2f281d912bd29e6cee29970b5b9786a8446540922.glb",
+          "triangles": 32,
+          "distance": 150,
+          "bytes": 4172
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.temperate"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "temperate"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.temperate",
+      "contentHash": "35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-97c5edd90ea5fd0c403cd47c76285b03",
+    "name": "nature.tree.temperate (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-c615557a0265224eccffb6e7ffbed8e55fce37fb26f71762e00f0c5cfa8d3512",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/39d34758b9450a1d9d78409b9e1da1bcff165d40597c1940a99c19dc549b1ea4.glb",
+      "runtime": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+      "thumbnail": "/api/files/sample-worlds/e384d582df1bfb564d612ab5d82a844c54ffd10a61de81f5ad1302ee08ac240d.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "c615557a0265224eccffb6e7ffbed8e55fce37fb26f71762e00f0c5cfa8d3512",
+      "generationId": "c615557a0265224eccffb6e7ffbed8e55fce37fb26f71762e00f0c5cfa8d3512"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.7013015747070312,
+          0,
+          -1.7013015747070312
+        ],
+        "max": [
+          1.7013015747070312,
+          5.701301574707031,
+          1.7013015747070312
+        ]
+      },
+      "triangles": 44,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/cccea9364a93d12c948d52773bc83eed96f4657ec94672addc8ef9d3ab0597f3.json",
+      "colliderBytes": 3980,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 3972,
+        "runtimeBytes": 4244,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+          "triangles": 44,
+          "distance": 0,
+          "bytes": 4244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a9679ec09ff177ea14ea35d2f281d912bd29e6cee29970b5b9786a8446540922.glb",
+          "triangles": 32,
+          "distance": 150,
+          "bytes": 4172
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.temperate"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "temperate"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.temperate",
+      "contentHash": "35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-1daf263e11ba782a57d974ceb6877d5b",
+    "name": "nature.tree.temperate (Dummy 4)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-45d9339ed241f66cf41f9d15ec24b6e4889854ead558c2cc53820b23988dd394",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/39d34758b9450a1d9d78409b9e1da1bcff165d40597c1940a99c19dc549b1ea4.glb",
+      "runtime": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+      "thumbnail": "/api/files/sample-worlds/e384d582df1bfb564d612ab5d82a844c54ffd10a61de81f5ad1302ee08ac240d.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "45d9339ed241f66cf41f9d15ec24b6e4889854ead558c2cc53820b23988dd394",
+      "generationId": "45d9339ed241f66cf41f9d15ec24b6e4889854ead558c2cc53820b23988dd394"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.7013015747070312,
+          0,
+          -1.7013015747070312
+        ],
+        "max": [
+          1.7013015747070312,
+          5.701301574707031,
+          1.7013015747070312
+        ]
+      },
+      "triangles": 44,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/cccea9364a93d12c948d52773bc83eed96f4657ec94672addc8ef9d3ab0597f3.json",
+      "colliderBytes": 3980,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 3972,
+        "runtimeBytes": 4244,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715.glb",
+          "triangles": 44,
+          "distance": 0,
+          "bytes": 4244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/a9679ec09ff177ea14ea35d2f281d912bd29e6cee29970b5b9786a8446540922.glb",
+          "triangles": 32,
+          "distance": 150,
+          "bytes": 4172
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.temperate"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "temperate"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.temperate",
+      "contentHash": "35c775766dbd36f09818cff0e0416ab55ae69761fd6ad30eb9881c1b02c10715",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-fa0af5bfd621333e139320dd058d9e1c",
+    "name": "nature.tree.tropical (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-8b5329784fe0c1ce147f302612c9921c5bf3382d9751a93679e393af103d15fa",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b09f3d5169e4c1da5956a348108668f03259d6534d1b0eb49ab5d6c16c744c38.glb",
+      "runtime": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+      "thumbnail": "/api/files/sample-worlds/40090b88448178d3020821ba3f14543e66e5e5fe65727b108d3dfb269c22a50e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "8b5329784fe0c1ce147f302612c9921c5bf3382d9751a93679e393af103d15fa",
+      "generationId": "8b5329784fe0c1ce147f302612c9921c5bf3382d9751a93679e393af103d15fa"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.089456796646118,
+          0,
+          -2.8089852333068848
+        ],
+        "max": [
+          3.089456796646118,
+          4.912943553924561,
+          2.8089852333068848
+        ]
+      },
+      "triangles": 72,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/273eda9cc764e47a92288fbf29d49cc9c3497fe8ba5c7e45e932a6739d3ee1e9.json",
+      "colliderBytes": 8331,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 8880,
+        "runtimeBytes": 10228,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+          "triangles": 72,
+          "distance": 0,
+          "bytes": 10228
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/9edb7d1e392550f994a58d5ac3c592e73338f347ba2ad7e7bee0d29e9d1891f7.glb",
+          "triangles": 60,
+          "distance": 60,
+          "bytes": 10216
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/10ebd25e05eb30c4382b9d8725cd68e012f9d002963bbcbd42d835f3e76486b3.glb",
+          "triangles": 48,
+          "distance": 150,
+          "bytes": 10140
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.tropical"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "tropical"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.tropical",
+      "contentHash": "1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-ee4ec9b22d8d6ed84b558974b8dbbcd2",
+    "name": "nature.tree.tropical (Dummy 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-b435a6d4872ef5155b984150f74009f47c5533233d2372048215f87f451a2c8d",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b09f3d5169e4c1da5956a348108668f03259d6534d1b0eb49ab5d6c16c744c38.glb",
+      "runtime": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+      "thumbnail": "/api/files/sample-worlds/40090b88448178d3020821ba3f14543e66e5e5fe65727b108d3dfb269c22a50e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "b435a6d4872ef5155b984150f74009f47c5533233d2372048215f87f451a2c8d",
+      "generationId": "b435a6d4872ef5155b984150f74009f47c5533233d2372048215f87f451a2c8d"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.089456796646118,
+          0,
+          -2.8089852333068848
+        ],
+        "max": [
+          3.089456796646118,
+          4.912943553924561,
+          2.8089852333068848
+        ]
+      },
+      "triangles": 72,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/273eda9cc764e47a92288fbf29d49cc9c3497fe8ba5c7e45e932a6739d3ee1e9.json",
+      "colliderBytes": 8331,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 8880,
+        "runtimeBytes": 10228,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+          "triangles": 72,
+          "distance": 0,
+          "bytes": 10228
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/9edb7d1e392550f994a58d5ac3c592e73338f347ba2ad7e7bee0d29e9d1891f7.glb",
+          "triangles": 60,
+          "distance": 60,
+          "bytes": 10216
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/10ebd25e05eb30c4382b9d8725cd68e012f9d002963bbcbd42d835f3e76486b3.glb",
+          "triangles": 48,
+          "distance": 150,
+          "bytes": 10140
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.tropical"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "tropical"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.tropical",
+      "contentHash": "1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-88a9420f7a72673db6d95752aad3bb3b",
+    "name": "nature.tree.tropical (Dummy 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-7b2d2851b5c707dc14ba3be3dddf1221a5eb78af5858bec3a89c82eda2c10518",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b09f3d5169e4c1da5956a348108668f03259d6534d1b0eb49ab5d6c16c744c38.glb",
+      "runtime": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+      "thumbnail": "/api/files/sample-worlds/40090b88448178d3020821ba3f14543e66e5e5fe65727b108d3dfb269c22a50e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "7b2d2851b5c707dc14ba3be3dddf1221a5eb78af5858bec3a89c82eda2c10518",
+      "generationId": "7b2d2851b5c707dc14ba3be3dddf1221a5eb78af5858bec3a89c82eda2c10518"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.089456796646118,
+          0,
+          -2.8089852333068848
+        ],
+        "max": [
+          3.089456796646118,
+          4.912943553924561,
+          2.8089852333068848
+        ]
+      },
+      "triangles": 72,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/273eda9cc764e47a92288fbf29d49cc9c3497fe8ba5c7e45e932a6739d3ee1e9.json",
+      "colliderBytes": 8331,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 8880,
+        "runtimeBytes": 10228,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+          "triangles": 72,
+          "distance": 0,
+          "bytes": 10228
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/9edb7d1e392550f994a58d5ac3c592e73338f347ba2ad7e7bee0d29e9d1891f7.glb",
+          "triangles": 60,
+          "distance": 60,
+          "bytes": 10216
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/10ebd25e05eb30c4382b9d8725cd68e012f9d002963bbcbd42d835f3e76486b3.glb",
+          "triangles": 48,
+          "distance": 150,
+          "bytes": 10140
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.tropical"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "tropical"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.tropical",
+      "contentHash": "1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-6e78c35cd0e4968a543b0f6d4941b4fc",
+    "name": "nature.tree.tropical (Dummy 3)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-50e85b29b03d2b6b487db1f71050d1c38f3c4870d858d60c82049d8c8a55eecc",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b09f3d5169e4c1da5956a348108668f03259d6534d1b0eb49ab5d6c16c744c38.glb",
+      "runtime": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+      "thumbnail": "/api/files/sample-worlds/40090b88448178d3020821ba3f14543e66e5e5fe65727b108d3dfb269c22a50e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "50e85b29b03d2b6b487db1f71050d1c38f3c4870d858d60c82049d8c8a55eecc",
+      "generationId": "50e85b29b03d2b6b487db1f71050d1c38f3c4870d858d60c82049d8c8a55eecc"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.089456796646118,
+          0,
+          -2.8089852333068848
+        ],
+        "max": [
+          3.089456796646118,
+          4.912943553924561,
+          2.8089852333068848
+        ]
+      },
+      "triangles": 72,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/273eda9cc764e47a92288fbf29d49cc9c3497fe8ba5c7e45e932a6739d3ee1e9.json",
+      "colliderBytes": 8331,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 8880,
+        "runtimeBytes": 10228,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+          "triangles": 72,
+          "distance": 0,
+          "bytes": 10228
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/9edb7d1e392550f994a58d5ac3c592e73338f347ba2ad7e7bee0d29e9d1891f7.glb",
+          "triangles": 60,
+          "distance": 60,
+          "bytes": 10216
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/10ebd25e05eb30c4382b9d8725cd68e012f9d002963bbcbd42d835f3e76486b3.glb",
+          "triangles": 48,
+          "distance": 150,
+          "bytes": 10140
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.tropical"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "tropical"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.tropical",
+      "contentHash": "1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-ced991de3e1df54160fe633a7058a3ae",
+    "name": "nature.tree.tropical (Dummy 4)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-f3197a1081c57226e14c80760e05e04e1f38f2b607000c252ccb4e2935636e46",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/b09f3d5169e4c1da5956a348108668f03259d6534d1b0eb49ab5d6c16c744c38.glb",
+      "runtime": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+      "thumbnail": "/api/files/sample-worlds/40090b88448178d3020821ba3f14543e66e5e5fe65727b108d3dfb269c22a50e.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "f3197a1081c57226e14c80760e05e04e1f38f2b607000c252ccb4e2935636e46",
+      "generationId": "f3197a1081c57226e14c80760e05e04e1f38f2b607000c252ccb4e2935636e46"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.089456796646118,
+          0,
+          -2.8089852333068848
+        ],
+        "max": [
+          3.089456796646118,
+          4.912943553924561,
+          2.8089852333068848
+        ]
+      },
+      "triangles": 72,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/273eda9cc764e47a92288fbf29d49cc9c3497fe8ba5c7e45e932a6739d3ee1e9.json",
+      "colliderBytes": 8331,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 8880,
+        "runtimeBytes": 10228,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437.glb",
+          "triangles": 72,
+          "distance": 0,
+          "bytes": 10228
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/9edb7d1e392550f994a58d5ac3c592e73338f347ba2ad7e7bee0d29e9d1891f7.glb",
+          "triangles": 60,
+          "distance": 60,
+          "bytes": 10216
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/10ebd25e05eb30c4382b9d8725cd68e012f9d002963bbcbd42d835f3e76486b3.glb",
+          "triangles": 48,
+          "distance": 150,
+          "bytes": 10140
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.tropical"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "tropical"
+      ],
+      "biomes": [
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.tropical",
+      "contentHash": "1f6bdc3f864596eb82fe5dd298313b54ee8f2be96acc6ac60a50f059e17e3437",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-714729050a8751f39d386ddf45067b48",
+    "name": "road.sign (Dummy 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-170376e0a4b7be4a15eb5a15c542a135fa1432694c3652a0025e68e5e2a8433b",
+      "sourceUrl": "local:dummy-astra",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "License verification required: local:dummy-astra"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/12922a66e8cf7713c288f4695106dadea4d685881d456798a8ce1f33f57f1f97.glb",
+      "runtime": "/api/files/sample-worlds/07d656ca902a023172323a30fb09a8567191393cad4127312969afed1fe74206.glb",
+      "thumbnail": "/api/files/sample-worlds/9a4d1c91d106b02c0f88f7aa5b192212cc87b1e7e34b4c23c2e750a0fdd9efae.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "170376e0a4b7be4a15eb5a15c542a135fa1432694c3652a0025e68e5e2a8433b",
+      "generationId": "170376e0a4b7be4a15eb5a15c542a135fa1432694c3652a0025e68e5e2a8433b"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -0.800000011920929,
+          0,
+          -0.10000000149011612
+        ],
+        "max": [
+          0.800000011920929,
+          2.8000000059604644,
+          0.10000000149011612
+        ]
+      },
+      "triangles": 24,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/7b998c56063b1887f29bf8bc93d79c8232bf2ca26c256a13feda01aca55b797b.json",
+      "colliderBytes": 2687,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 2828,
+        "runtimeBytes": 3068,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/07d656ca902a023172323a30fb09a8567191393cad4127312969afed1fe74206.glb",
+          "triangles": 24,
+          "distance": 0,
+          "bytes": 3068
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "road.sign"
+      ],
+      "tags": [
+        "road",
+        "sign"
+      ],
+      "biomes": [
+        "alpine",
+        "desert",
+        "snow",
+        "temperate",
+        "tropical"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "road.sign",
+      "contentHash": "07d656ca902a023172323a30fb09a8567191393cad4127312969afed1fe74206",
+      "status": "ready"
+    }
+  }
+]

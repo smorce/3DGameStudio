@@ -114,6 +114,9 @@ importers:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../../packages/project-schema
+      '@machine-studio/sample-worlds':
+        specifier: workspace:*
+        version: link:../../packages/sample-worlds
       '@machine-studio/storage':
         specifier: workspace:*
         version: link:../../packages/storage
@@ -144,6 +147,9 @@ importers:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../../packages/project-schema
+      '@machine-studio/sample-worlds':
+        specifier: workspace:*
+        version: link:../../packages/sample-worlds
       '@machine-studio/storage':
         specifier: workspace:*
         version: link:../../packages/storage
@@ -186,6 +192,9 @@ importers:
 
   packages/ai-dummy:
     dependencies:
+      '@gltf-transform/core':
+        specifier: ^4.5.0
+        version: 4.5.0
       '@machine-studio/ai-core':
         specifier: workspace:*
         version: link:../ai-core
@@ -204,6 +213,9 @@ importers:
       '@machine-studio/project-schema':
         specifier: workspace:*
         version: link:../project-schema
+      three:
+        specifier: ^0.180.0
+        version: 0.180.0
 
   packages/asset-catalog:
     dependencies:
@@ -237,6 +249,9 @@ importers:
       '@machine-studio/storage':
         specifier: workspace:*
         version: link:../storage
+      '@machine-studio/world-generator':
+        specifier: workspace:*
+        version: link:../world-generator
 
   packages/asset-pipeline:
     dependencies:
@@ -392,6 +407,21 @@ importers:
         version: 0.180.0
 
   packages/runtime-telemetry: {}
+
+  packages/sample-worlds:
+    dependencies:
+      '@machine-studio/asset-factory':
+        specifier: workspace:*
+        version: link:../asset-factory
+      '@machine-studio/machine-system':
+        specifier: workspace:*
+        version: link:../machine-system
+      '@machine-studio/project-schema':
+        specifier: workspace:*
+        version: link:../project-schema
+      '@machine-studio/world-generator':
+        specifier: workspace:*
+        version: link:../world-generator
 
   packages/storage:
     dependencies:

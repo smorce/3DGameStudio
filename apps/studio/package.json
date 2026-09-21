@@ -16,6 +16,7 @@
     "@machine-studio/ui-studio": "workspace:*",
     "@machine-studio/course-system": "workspace:*",
     "@machine-studio/terrain-system": "workspace:*",
-    "@machine-studio/ai-core": "workspace:*"
+    "@machine-studio/ai-core": "workspace:*",
+    "@machine-studio/sample-worlds": "workspace:*"
   }
 }

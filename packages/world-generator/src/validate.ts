@@ -9,6 +9,7 @@ export interface WorldValidationIssue {
   subject?: string;
 }
 export interface WorldValidationOptions {
+  spawnSurface?: "land" | "water";
   entities?: GeneratedEntity[];
   courses?: Project["courses"];
   canResolve?: (slot: string, biome?: string) => boolean;
@@ -36,7 +37,11 @@ export function validateWorld(
   ) => issues.push({ severity, code, message, subject });
   const sea = world.water.enabled ? world.water.height : -Infinity;
   world.spawnPoints.forEach((p, i) => {
-    if (p[1] <= sea || layers.sampleHeight(p[0], p[2]) <= sea)
+    if (
+      p[1] <= sea ||
+      (options.spawnSurface !== "water" &&
+        layers.sampleHeight(p[0], p[2]) <= sea)
+    )
       add("error", "spawn-water", "Spawn point is underwater", String(i));
     if (p[1] < layers.sampleHeight(p[0], p[2]))
       add(
@@ -82,9 +87,19 @@ export function validateWorld(
     if (y <= sea)
       add("error", "landmark-water", "Landmark is underwater", l.id);
   }
-  for (const e of options.entities ?? [])
+  for (const e of options.entities ?? []) {
+    if (!e.position.every(Number.isFinite))
+      add("error", "prop-position", "Prop position is not finite", e.id);
+    if (
+      world.spawnPoints.some(
+        (p) => Math.hypot(p[0] - e.position[0], p[2] - e.position[2]) < 3,
+      )
+    )
+      add("error", "spawn-prop", "Prop overlaps spawn clearance", e.id);
     if (!e.landmark) {
       const [x, y, z] = e.position;
+      if (layers.sampleRoadInfluence(x, z, true).distance < 0)
+        add("error", "prop-road", "Prop intersects road", e.id);
       if (layers.sampleRunwayMask(x, z))
         add("error", "prop-runway", "Prop intersects runway", e.id);
       if (layers.sampleNoSpawnMask(x, z, e.settlementId))
@@ -92,6 +107,7 @@ export function validateWorld(
       if (y <= sea && e.assetSlot?.includes("tree"))
         add("error", "tree-water", "Tree is underwater", e.id);
     }
+  }
   // 部分Chunkの観測だけでも、町全体の配置可能数を同じ生成器で検査する。
   const buildings = settlementEntities(
     { ...world.source, chunkX: 0, chunkZ: 0 },
@@ -140,7 +156,15 @@ export function validateWorld(
       );
   }
   for (const course of options.courses ?? [])
-    for (const checkpoint of course.checkpoints) {
+    for (const checkpoint of [
+      ...course.checkpoints,
+      { id: `${course.id}:start`, position: course.start },
+      { id: `${course.id}:goal`, position: course.goal },
+      ...course.respawnPoints.map((position, index) => ({
+        id: `${course.id}:respawn:${index}`,
+        position,
+      })),
+    ]) {
       const [x, y, z] = checkpoint.position;
       if (
         !checkpoint.position.every(Number.isFinite) ||
