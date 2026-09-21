@@ -11,6 +11,8 @@ export interface BiomeSurfaceProfile {
   shoreMaxHeight: number;
   highlandMinHeight: number;
 }
+/** Bake・生成・Runtime・鮮度検査が共有する現行Biome表面プロファイル版。 */
+export const CURRENT_BIOME_PROFILE_VERSION = 1;
 // v1は保存済みBakeの外観を固定するため変更せず、新版を追加する。
 const profile = (
   id: string,
@@ -79,9 +81,11 @@ export const biomeSurfaceProfilesV1: Record<string, BiomeSurfaceProfile> = {
 export const biomeSurfaceCatalog: Readonly<
   Record<number, Readonly<Record<string, BiomeSurfaceProfile>>>
 > = {
-  1: biomeSurfaceProfilesV1,
+  [CURRENT_BIOME_PROFILE_VERSION]: biomeSurfaceProfilesV1,
 };
-export function biomeSurfaceProfiles(version = 1) {
+export function biomeSurfaceProfiles(
+  version = CURRENT_BIOME_PROFILE_VERSION,
+) {
   const profiles = biomeSurfaceCatalog[version];
   if (!profiles)
     throw new Error(`Unsupported biome profile version: ${version}`);
@@ -94,7 +98,7 @@ export function biomeSurfaceColor(
   x: number,
   z: number,
   seed: number,
-  biomeProfileVersion = 1,
+  biomeProfileVersion = CURRENT_BIOME_PROFILE_VERSION,
 ) {
   const profiles = biomeSurfaceProfiles(biomeProfileVersion);
   const p = profiles[biome] ?? profiles.temperate;

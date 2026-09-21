@@ -1,4 +1,5 @@
 import { hexToRgb } from "../../world-generator/src/prepare";
+import { CURRENT_BIOME_PROFILE_VERSION } from "../../world-generator/src/index";
 import * as THREE from "three";
 import type { World, Vec3 } from "../../project-schema/src/index";
 import type { IslandProxyData } from "../../world-generator/src/far-proxy";
@@ -74,7 +75,9 @@ export class FarWorldProxy {
       design: world.source.design,
       seed: world.source.seed,
       chunkSize: world.source.chunkSize,
-      biomeProfileVersion: world.buildManifest?.biomeProfileVersion ?? 1,
+      biomeProfileVersion:
+        world.buildManifest?.biomeProfileVersion ??
+        CURRENT_BIOME_PROFILE_VERSION,
     });
   }
   invalidate() {

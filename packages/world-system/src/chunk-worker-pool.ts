@@ -1,5 +1,8 @@
 import { fingerprint } from "../../asset-catalog/src/index";
-import type { GeneratorInput } from "../../world-generator/src/index";
+import {
+  CURRENT_BIOME_PROFILE_VERSION,
+  type GeneratorInput,
+} from "../../world-generator/src/index";
 import {
   CHUNK_PRIORITY_ORDER,
   handlePrepareRequest,
@@ -124,7 +127,8 @@ export class ChunkWorkerPool {
       request.generationContextHash ??
       fingerprint({
         generatorVersion: request.input.generatorVersion,
-        biomeProfileVersion: request.input.biomeProfileVersion ?? 1,
+        biomeProfileVersion:
+          request.input.biomeProfileVersion ?? CURRENT_BIOME_PROFILE_VERSION,
         worldDesign: request.input.design,
       })
     );

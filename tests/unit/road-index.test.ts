@@ -100,3 +100,76 @@ it("道路を10倍に延ばしても近傍Chunkの線分照合数は増えない
   expect(counts[0]).toBeGreaterThan(0);
   expect(counts[1]).toBeLessThanOrEqual(counts[0] + 2);
 });
+
+it("道路を増やしても範囲外セルの線分照合は増えない", () => {
+  const source = sampleWorldCatalog
+    .find((w) => w.id === "race-island")!
+    .buildProject().world.source;
+  if (source.kind !== "procedural" || !source.design)
+    throw new Error("Missing design");
+  const template = source.design.roads[0];
+  const counts = [1, 100].map((roadCount) => {
+    const design = structuredClone(source.design!);
+    design.roads = Array.from({ length: roadCount }, (_, i) => ({
+      ...structuredClone(template),
+      id: `road-${i}`,
+      closed: false,
+      controlPoints: [
+        [i * 200, 8, 0],
+        [i * 200 + 80, 8, 100],
+      ],
+    }));
+    const layers = new SemanticLayers(design, 42);
+    const spy = vi.spyOn(Math, "hypot");
+    try {
+      layers.sampleRoadInfluence(-10000, -10000, true);
+      return spy.mock.calls.length;
+    } finally {
+      spy.mockRestore();
+    }
+  });
+  expect(counts[0]).toBe(0);
+  expect(counts[1]).toBe(0);
+});
+
+it("近傍道路だけ照合し、遠い道路を増やしても照合数は増えない", () => {
+  const source = sampleWorldCatalog
+    .find((w) => w.id === "race-island")!
+    .buildProject().world.source;
+  if (source.kind !== "procedural" || !source.design)
+    throw new Error("Missing design");
+  const template = source.design.roads[0];
+  const counts = [1, 100].map((roadCount) => {
+    const design = structuredClone(source.design!);
+    design.roads = [
+      {
+        ...structuredClone(template),
+        id: "nearby",
+        closed: false,
+        controlPoints: [
+          [0, 8, 0],
+          [0, 8, 100],
+        ],
+      },
+      ...Array.from({ length: roadCount - 1 }, (_, i) => ({
+        ...structuredClone(template),
+        id: `far-${i}`,
+        closed: false,
+        controlPoints: [
+          [2000 + i * 200, 8, 0],
+          [2080 + i * 200, 8, 100],
+        ],
+      })),
+    ];
+    const layers = new SemanticLayers(design, 42);
+    const spy = vi.spyOn(Math, "hypot");
+    try {
+      layers.sampleRoadInfluence(0, 50, true);
+      return spy.mock.calls.length;
+    } finally {
+      spy.mockRestore();
+    }
+  });
+  expect(counts[0]).toBeGreaterThan(0);
+  expect(counts[1]).toBe(counts[0]);
+});

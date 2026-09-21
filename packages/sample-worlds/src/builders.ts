@@ -7,6 +7,7 @@ import {
   type Vec3,
 } from "../../project-schema/src/index";
 import {
+  CURRENT_BIOME_PROFILE_VERSION,
   createProceduralWorld,
   SemanticLayers,
   sampleGeneratedHeight,
@@ -30,6 +31,8 @@ import {
   type SampleWorldMetadata,
 } from "./metadata";
 export interface SampleWorldDescriptor extends SampleWorldMetadata {
+  /** Prepared Manifestの biomeProfileVersion と一致させる。 */
+  biomeProfileVersion: number;
   buildProject(): Project;
 }
 interface Definition extends Omit<SampleWorldDescriptor, "buildProject"> {
@@ -172,6 +175,7 @@ function build(definition: Definition): Project {
 export const sampleWorldCatalog: readonly SampleWorldDescriptor[] =
   metadata.map((item) => ({
     ...item,
+    biomeProfileVersion: CURRENT_BIOME_PROFILE_VERSION,
     buildProject: () => build({ ...item, ...configurations[item.id] }),
   }));
 export const findSampleWorld = (id: string) =>

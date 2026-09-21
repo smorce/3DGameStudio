@@ -182,14 +182,6 @@ export class SemanticLayers {
   sampleRoadInfluence(x: number, z: number, influenceOnly = false) {
     let nearest = { distance: Infinity, weight: 0, height: 0, roadId: "" };
     if (!this.roads.length) return nearest;
-    if (
-      influenceOnly &&
-      !this.roads.some(
-        ({ bounds }) =>
-          x >= bounds[0] && x <= bounds[1] && z >= bounds[2] && z <= bounds[3],
-      )
-    )
-      return nearest;
     const inspect = (roadIndex: number, pointIndex: number) => {
       const { road, points, bounds } = this.roads[roadIndex];
       if (
@@ -225,17 +217,19 @@ export class SemanticLayers {
         };
     };
     if (influenceOnly) {
+      // 道路本数に比例する範囲走査を避け、格子セルに載った線分だけ照合する。
       const segments = this.roadGrid.get(
         `${Math.floor(x / this.roadGridSize)},${Math.floor(z / this.roadGridSize)}`,
       );
-      for (const segment of segments ?? [])
+      if (!segments) return nearest;
+      for (const segment of segments)
         inspect(segment.roadIndex, segment.pointIndex);
-    } else {
-      // 配置の道路距離には、影響範囲外も含む正確な最近傍を返す。
-      this.roads.forEach(({ points }, roadIndex) => {
-        for (let i = 1; i < points.length; i++) inspect(roadIndex, i);
-      });
+      return nearest;
     }
+    // 配置の道路距離には、影響範囲外も含む正確な最近傍を返す。
+    this.roads.forEach(({ points }, roadIndex) => {
+      for (let i = 1; i < points.length; i++) inspect(roadIndex, i);
+    });
     return nearest;
   }
   runwayDistance(

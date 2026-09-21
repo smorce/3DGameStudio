@@ -4,6 +4,7 @@ import { toyIslandsDesign } from "./toy-islands";
 export { deriveSeed } from "./seed";
 export { SemanticLayers } from "./semantic";
 export { toyIslandsDesign } from "./toy-islands";
+export { CURRENT_BIOME_PROFILE_VERSION } from "./biome-surface";
 import {
   GENERATOR_VERSION,
   identity,

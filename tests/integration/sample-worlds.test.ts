@@ -18,6 +18,7 @@ import {
   requiredSlots,
 } from "../../packages/asset-factory/src/index";
 import { bakeWorld, validateBake } from "../../packages/asset-factory/src/bake";
+import { CURRENT_BIOME_PROFILE_VERSION } from "../../packages/world-generator/src/index";
 import { DummyAstraAssetGenerator } from "../../packages/ai-dummy/src/asset-generator";
 import { validateWorld } from "../../packages/world-generator/src/validate";
 import { WorldRuntime } from "../../packages/world-system/src/runtime";
@@ -54,7 +55,9 @@ it("全8Worldをoffline Factory→Catalog→Bake→Validator→Runtimeで検証�
         );
         bakeWorld(p);
         validateBake(p);
-        expect(p.world.buildManifest?.biomeProfileVersion).toBe(1);
+        expect(p.world.buildManifest?.biomeProfileVersion).toBe(
+          CURRENT_BIOME_PROFILE_VERSION,
+        );
       }
       expect(() => parseProject(p)).not.toThrow();
       const catalog = new AssetCatalog(p);

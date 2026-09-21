@@ -8,6 +8,7 @@ import {
   assertBakedProject,
   assetMetadataHash,
 } from "../../asset-catalog/src/index";
+import { CURRENT_BIOME_PROFILE_VERSION } from "../../world-generator/src/index";
 import { requiredSlots } from "./planner";
 export const worldFingerprint = worldContentFingerprint;
 /** 解決候補集合を固定する。個別配置の選択は同じseedとstable IDで再現する。 */
@@ -32,7 +33,7 @@ export function bakeWorld(
     candidates.forEach((a) => assets.add(a.id));
   }
   const manifest: WorldBuildManifest = {
-    biomeProfileVersion: 1,
+    biomeProfileVersion: CURRENT_BIOME_PROFILE_VERSION,
     worldDesignVersion: source.design.version,
     worldId: project.world.id,
     seed: source.seed,

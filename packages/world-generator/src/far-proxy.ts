@@ -1,4 +1,7 @@
-import { biomeSurfaceColor } from "./biome-surface";
+import {
+  biomeSurfaceColor,
+  CURRENT_BIOME_PROFILE_VERSION,
+} from "./biome-surface";
 import type { WorldDesign } from "../../project-schema/src/index";
 import { SemanticLayers } from "./semantic";
 import { computeIndexedNormals } from "./prepare";
@@ -15,7 +18,7 @@ export function buildIslandProxies(
   design: WorldDesign,
   seed: number,
   chunkSize = 32,
-  biomeProfileVersion = 1,
+  biomeProfileVersion = CURRENT_BIOME_PROFILE_VERSION,
 ): IslandProxyData[] {
   const layers = new SemanticLayers(design, seed);
   return design.islands.map((island) => {
