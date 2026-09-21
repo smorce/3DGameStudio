@@ -76,6 +76,17 @@ export const biomeSurfaceProfilesV1: Record<string, BiomeSurfaceProfile> = {
     24,
   ),
 };
+export const biomeSurfaceCatalog: Readonly<
+  Record<number, Readonly<Record<string, BiomeSurfaceProfile>>>
+> = {
+  1: biomeSurfaceProfilesV1,
+};
+export function biomeSurfaceProfiles(version = 1) {
+  const profiles = biomeSurfaceCatalog[version];
+  if (!profiles)
+    throw new Error(`Unsupported biome profile version: ${version}`);
+  return profiles;
+}
 export function biomeSurfaceColor(
   biome: string,
   height: number,
@@ -83,8 +94,10 @@ export function biomeSurfaceColor(
   x: number,
   z: number,
   seed: number,
+  biomeProfileVersion = 1,
 ) {
-  const p = biomeSurfaceProfilesV1[biome] ?? biomeSurfaceProfilesV1.temperate;
+  const profiles = biomeSurfaceProfiles(biomeProfileVersion);
+  const p = profiles[biome] ?? profiles.temperate;
   if (height < -1.2) return p.underwaterColor;
   if (height < p.shoreMaxHeight) return p.shoreColor;
   if (p.snowLine !== undefined && height >= p.snowLine) return p.snowColor!;

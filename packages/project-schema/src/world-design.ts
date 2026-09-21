@@ -137,7 +137,7 @@ export type LandmarkDefinition = z.infer<typeof landmarkDefinitionSchema>;
 export type PropRule = z.infer<typeof propRuleSchema>;
 
 export const worldBuildManifestSchema = z.object({
-  biomeProfileVersion: z.literal(1).optional(),
+  biomeProfileVersion: z.number().int().positive().optional(),
   worldDesignVersion: z.number().int(),
   worldId: z.string(),
   seed: z.number().int(),

@@ -18,7 +18,7 @@ flowchart TD
   API --> Runtime[Worker Streaming・Far World Proxy]
 ```
 
-`packages/sample-worlds/src/index.ts`の`sampleWorldCatalog`がID・名前・説明・アイコン・タグ・推奨Machine・表示順・`buildProject()`を公開します。詳細な島・山・道路の定義は`designs.ts`にあります。ブラウザー用CatalogはNode、Factory、Providerに依存しません。準備用の`prepare.ts`は別入口です。
+`packages/sample-worlds/src/metadata.ts`はID・名前・説明・アイコン・タグ・推奨Machine・表示順だけを公開し、StudioとServerが読み込みます。`builders.ts`はMetadataと生成設定を結び、`buildProject()`を公開します。詳細な島・山・道路の定義は`designs.ts`、準備用Requirementは`prepare.ts`です。`index.ts`は既存利用者向けのBuilder再exportです。Studioのビルドに含まれるSample WorldモジュールはMetadataだけです（[ビルド検証](evidence/sample-worlds-bundle.json)）。
 
 Engineの`world-generator`はDesignを解釈します。World名による8個の分岐もMachine選択の知識も持ちません。新規Presetは汎用の`designed-world`だけです。UIとServerはCatalogを参照します。
 
@@ -81,7 +81,7 @@ pnpm build
 pnpm exec playwright test --config playwright.sample-worlds.config.ts
 ```
 
-prepareはDraft→Requirement union→offline Factory→ファイル共有化→Bake→`demos/worlds/*.json`を実行します。IDと生成日時を固定して再生成差分を抑えます。validateは全8Projectのparse、Asset解決、World Validator、DesignのBake検証、各100Chunkの生成とNaN検査を実行します。旧2PresetはDesign/Bake対象外で、生成互換テスト・Physics・ブラウザで別途検証します。
+prepareはDraft→Requirement union→offline Factory→ファイル共有化→Bake→`demos/worlds/*.json`を実行します。IDと生成日時を固定して再生成差分を抑えます。validateは毎回現在の`buildProject()`を再生成し、PreparedのWorld/CoursesとManifestの`worldFingerprint`を照合します。さらに`sampleDefinitionFingerprint()`でWorld・Courses・Machines・Settings全体を比較します（AssetとBuild Manifestを除外）。生成結果に新たなstampは保存しません。地形・Machine・設定を変更してprepareし忘れると、再生成コマンド付きのエラーで失敗します。単体テストとAPI統合テストも同じ照合を実行します。続いて全8Projectのparse、Asset解決、World Validator、DesignのBake検証、各100Chunkの生成とNaN検査を実行します。旧2PresetはDesign/Bake対象外で、生成互換テスト・Physics・ブラウザで別途検証します。
 
 結果は`docs/evidence/sample-worlds.json`、ブラウザ観測は`docs/evidence/sample-worlds/`、Playスクリーンショットは`docs/screenshots/sample-worlds/`です。専用Playwright configは毎回空の一時data directoryを作り、localhost通信だけで検証します。Chromiumの既存キャッシュを使う場合は`PLAYWRIGHT_BROWSERS_PATH=$HOME/.cache/ms-playwright`を実行時に指定できます。
 
@@ -90,7 +90,7 @@ prepareはDraft→Requirement union→offline Factory→ファイル共有化→
 ## 9個目のSample Worldを追加する手順
 
 1. `packages/sample-worlds/src/designs.ts`へWorld Designのfactoryを追加します。島・山・道路・Biome・Spawn保護領域・Landmarkをデータで記述します。
-2. `src/index.ts`のdefinitionsへ固有ID、名前、説明、アイコン、tags、重複しないsortOrder、recommendedMachine、空色、Design factory、必要ならSpawn/Courseを登録します。
+2. `src/metadata.ts`へ固有ID、名前、説明、アイコン、tags、重複しないsortOrder、recommendedMachineを登録し、`src/builders.ts`のconfigurationsへ同じIDで空色、Design factory、必要ならSpawn/Courseを登録します。
 3. PropRules・Landmarks・Settlementに必要Asset Slotを記述します。既存Slotを優先して共有し、新しいSlotならDummyのPrimitiveまたはオフライン素材を用意します。
 4. Catalog件数テストを9へ更新し、新しいBiome・遊び方・安全性に対するテストを追加します。ブラウザテストのカード件数も更新します。
 5. `pnpm sample-worlds:prepare`で共有libraryとPrepared Projectを生成し、成果物をリポジトリへ含めます。
@@ -103,3 +103,15 @@ UIやServerへの個別if/route追加は不要です。GeneratorへのWorld名�
 低ポリDemo Assetは識別用であり、完成した専用美術素材ではありません。同じSlot内の論理variantは共通形状です。本物の素材へ差し替える場合は、そのSlotのDummy RecordをProject.assetsから外し、新素材をCatalogへ登録して再Bakeします。既存Manifestは解決候補を固定するため、再Bakeするまでは勝手に素材が変わりません。
 
 道路は地形をSplineの高さへ馴染ませる方式で、壁・橋・トンネルの自動設計はありません。雪の滑りや砂の抵抗などBiome別の物理摩擦は今回追加していません。性能値はNode上の生成時間で、描画FPSとは別です。Biome色の斜面サンプリングによりDesign生成のCPU負荷が増えていますが、Worker Pool・Streaming・Frame Budget・Floating Originは維持しています。ブラウザのソフトウェア描画環境では初期読込みや描画に時間がかかります。
+
+## Biome版と道路生成
+
+`WorldBuildManifest.biomeProfileVersion` → `WorldRuntime` → `GeneratorInput` → `biomeSurfaceCatalog[version]`を接続しています。Far ProxyのWorker要求にも同じ版を渡します。省略はv1、未対応の版は明示的なエラーです。Manifestの版を変えてreloadすると生成ContextとChunk cacheも更新します。将来版は既存Profileを変更せずCatalogに追加します。
+
+`sampleTerrain(x,z)`が高さ・道路影響・Biomeをまとめ、頂点ごとの道路距離の二重計算を避けます。影響計算は32m格子に登録した近傍線分だけを走査します。幅・減衰幅が異なる交差道路も既存の最近傍優先規則と同距離の選択順を維持します。Prop配置などが使う全域の正確な道路距離検索は従来の全線分走査です。
+
+`pnpm exec tsx scripts/sample-road-benchmark.ts`は旧二重走査と新実装を同一プロセスで交互に測定し、各100Chunkの地形・色・配置が一致することも検証します。道路を10倍に延ばしても同じ近傍Chunkの線分照合数が増えない回帰テストを含みます。
+
+## 実走E2E
+
+専用Playwright configは8ワールドの読込み検査に加え、草原と砂漠の車が30m進むこと、南国のボートが推進中も水面付近を維持して30m進むことを検証します。レースは経路を見て通常のキー入力で運転し、3CheckpointとGoalを順に通過します。テストからMachineの位置・速度・Course進捗を書き換えません。実走記録は`docs/evidence/sample-worlds/*-drive.json`です。

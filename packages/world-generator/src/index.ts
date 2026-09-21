@@ -329,9 +329,9 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
         resolution,
       );
       const { x, z } = gridWorldPosition(gx, gz, input.chunkSize, resolution);
-      const height = layers
-        ? layers.sampleHeight(x, z)
-        : sampleBaseHeight(input.preset, x, z, input.seed);
+      const terrain = layers?.sampleTerrain(x, z);
+      const height =
+        terrain?.height ?? sampleBaseHeight(input.preset, x, z, input.seed);
       const k = j * resolution + i;
       heights[k] = height;
       const step = input.chunkSize / (resolution - 1);
@@ -352,18 +352,18 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
         : 0;
       colors[k] = layers
         ? biomeSurfaceColor(
-            layers.sampleBiome(x, z),
+            terrain!.biome,
             height,
             slope,
             x,
             z,
             input.seed,
+            input.biomeProfileVersion,
           )
         : colorFor(input.preset, height, x, z, input.seed);
       if (
         layers &&
-        (layers.sampleRoadInfluence(x, z, true).distance <= 0 ||
-          layers.sampleRunwayMask(x, z))
+        (terrain!.roadInfluence.distance <= 0 || layers.sampleRunwayMask(x, z))
       )
         colors[k] = "#a6a28e";
     }

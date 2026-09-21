@@ -369,6 +369,7 @@ export class WorldRuntime {
       generatorVersion:
         source.kind === "procedural" ? source.generatorVersion : 1,
       worldDesign: design,
+      biomeProfileVersion: this.world.buildManifest?.biomeProfileVersion ?? 1,
     });
     if (hash === this.generationContextHash) return;
     // reload時だけhashとsnapshotを作り、Chunkごとの全Design走査・コピーを避ける。
@@ -697,6 +698,7 @@ export class WorldRuntime {
         design: this.generationDesign,
         seed: source.seed,
         generatorVersion: source.generatorVersion,
+        biomeProfileVersion: this.world.buildManifest?.biomeProfileVersion ?? 1,
         preset: source.preset,
         chunkSize: source.chunkSize,
         chunkResolution: source.chunkResolution,
@@ -1071,6 +1073,7 @@ export class WorldRuntime {
     return {
       seed: source.seed,
       generatorVersion: source.generatorVersion,
+      biomeProfileVersion: this.world.buildManifest?.biomeProfileVersion ?? 1,
       preset: source.preset,
       chunkX,
       chunkZ,
@@ -1134,6 +1137,7 @@ export class WorldRuntime {
     const generated: GeneratedChunk = generateChunk({
       seed: source.seed,
       generatorVersion: source.generatorVersion,
+      biomeProfileVersion: this.world.buildManifest?.biomeProfileVersion ?? 1,
       preset: source.preset,
       chunkX,
       chunkZ,

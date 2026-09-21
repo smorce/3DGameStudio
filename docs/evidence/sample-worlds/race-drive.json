@@ -1,0 +1,4104 @@
+{
+  "samples": [
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 112,
+        "position": [
+          1.4432899320127035e-14, 8.186540603637695, 0.004540325608104467
+        ],
+        "simulationPosition": [
+          1.4432899320127035e-14, 8.186540603637695, 0.004540325608104467
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00020892260363325477, -5.087939076130199e-13,
+          3.8627476427698353e-16, 1
+        ],
+        "velocity": [
+          1.877433280996106e-15, -0.06100909784436226, 0.00647742347791791
+        ],
+        "speed": 0.06135199291543225,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "progress": 0,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 7.0msRAF 33.3ms · max 233.4 · p95 66.6 · p99 233.4 · CPU 3.8 · UI 0.0 · Commit 0.5ms · Queue 0 · W 0/4Spike >20/>33/>50 38/32/4 · early 38/32/4 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.99RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ 0.0, 0.0位置 0.00, 0.00 · 高さ 8.19 チェックポイント 0/3 · 1.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 174,
+        "position": [
+          -0.14374767243862152, 8.186310768127441, 0.5711851716041565
+        ],
+        "simulationPosition": [
+          -0.14374767243862152, 8.186310768127441, 0.5711851716041565
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          -0.00017799936176743358, -0.02643682435154915, -0.0001219371915794909,
+          0.9996505379676819
+        ],
+        "velocity": [
+          -0.2954767644405365, -0.061602503061294556, 1.02694571018219
+        ],
+        "speed": 1.070382585045771,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": -1
+        }
+      },
+      "progress": 0,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 66.6 · p99 233.4 · CPU 2.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 56/50/6 · early 56/50/6 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.99RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -0.1, 0.4位置 -0.09, 0.38 · 高さ 8.19 チェックポイント 0/3 · 2.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 236,
+        "position": [
+          -0.5693686008453369, 8.185734748840332, 2.0761404037475586
+        ],
+        "simulationPosition": [
+          -0.5693686008453369, 8.185734748840332, 2.0761404037475586
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00046302995178848505, -0.0769449844956398, -0.0011227119248360395,
+          0.9970346093177795
+        ],
+        "velocity": [
+          -0.6813794374465942, -0.062128860503435135, 1.7369447946548462
+        ],
+        "speed": 1.8668463120356367,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": -1
+        }
+      },
+      "progress": 1,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 50.1 · p99 233.4 · CPU 2.8 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 77/71/10 · early 77/71/10 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.99RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -0.5, 1.8位置 -0.51, 1.77 · 高さ 8.19 チェックポイント 0/3 · 3.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 297,
+        "position": [-0.9576472043991089, 8.181634902954102, 4.33502721786499],
+        "simulationPosition": [
+          -0.9576472043991089, 8.181634902954102, 4.33502721786499
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00044649781193584204, -0.0817779153585434, -0.00013142041279934347,
+          0.9966505169868469
+        ],
+        "velocity": [
+          -0.43050071597099304, -0.06680571287870407, 2.60697078704834
+        ],
+        "speed": 2.6431213657810364,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 2,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 66.6 · p99 150.0 · CPU 4.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 97/91/18 · early 97/91/18 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.99RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -0.9, 4.0位置 -0.91, 4.04 · 高さ 8.18 チェックポイント 0/3 · 4.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 358,
+        "position": [-1.5026556253433228, 8.175423622131348, 7.303380012512207],
+        "simulationPosition": [
+          -1.5026556253433228, 8.175423622131348, 7.303380012512207
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00044633811921812594, -0.08754302561283112, -0.00014454916527029127,
+          0.996160626411438
+        ],
+        "velocity": [
+          -0.584885835647583, -0.06819888949394226, 3.301029682159424
+        ],
+        "speed": 3.353138752239001,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 4,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 66.7 · p99 150.0 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 117/111/23 · early 117/111/23 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.99RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -1.5, 7.1位置 -1.47, 7.14 · 高さ 8.18 チェックポイント 0/3 · 5.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 419,
+        "position": [-2.210408926010132, 8.16401481628418, 10.91994857788086],
+        "simulationPosition": [
+          -2.210408926010132, 8.16401481628418, 10.91994857788086
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0012296888744458556, -0.0940205380320549, -0.000236553605645895,
+          0.9955695271492004
+        ],
+        "velocity": [
+          -0.743973433971405, -0.07583174109458923, 3.9035565853118896
+        ],
+        "speed": 3.9745441170207765,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 6,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 150.0 · CPU 3.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 132/126/27 · early 132/126/27 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.98RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -2.0, 9.9位置 -2.02, 9.91 · 高さ 8.17 チェックポイント 0/3 · 6.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 479,
+        "position": [
+          -3.0305166244506836, 8.145052909851074, 15.222933769226074
+        ],
+        "simulationPosition": [
+          -3.0305166244506836, 8.145052909851074, 15.222933769226074
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0020793648436665535, -0.09403204917907715, -0.00030871384660713375,
+          0.9955669641494751
+        ],
+        "velocity": [
+          -0.8898049592971802, -0.08646883815526962, 4.669158458709717
+        ],
+        "speed": 4.753974173057977,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 8,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 66.7 · p99 150.0 · CPU 4.9 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 152/146/32 · early 152/146/32 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.98RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -2.8, 14.2位置 -2.84, 14.23 · 高さ 8.15 チェックポイント 0/3 · 7.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 539,
+        "position": [-4.037530899047852, 8.119199752807617, 20.050533294677734],
+        "simulationPosition": [
+          -4.037530899047852, 8.119199752807617, 20.050533294677734
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.002076258882880211, -0.1004118025302887, -0.000332371739204973,
+          0.9949437379837036
+        ],
+        "velocity": [
+          -1.048343300819397, -0.08892099559307098, 5.140665054321289
+        ],
+        "speed": 5.247224773206335,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 11,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 150.0 · CPU 2.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 172/166/40 · early 172/166/40 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.98RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -3.9, 19.3位置 -3.88, 19.29 · 高さ 8.12 チェックポイント 0/3 · 8.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 603,
+        "position": [-5.235220909118652, 8.07850170135498, 25.925533294677734],
+        "simulationPosition": [
+          -5.235220909118652, 8.07850170135498, 25.925533294677734
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.003012710716575384, -0.1006520465016365, -0.00015046820044517517,
+          0.9949171543121338
+        ],
+        "velocity": [
+          -1.1801916360855103, -0.097477488219738, 5.832791328430176
+        ],
+        "speed": 5.95179038942116,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 14,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 150.0 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 192/186/47 · early 192/186/47 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.98RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -5.1, 25.2位置 -5.10, 25.25 · 高さ 8.08 チェックポイント 0/3 · 9.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 665,
+        "position": [-6.487785816192627, 8.031354904174805, 32.26287841796875],
+        "simulationPosition": [
+          -6.487785816192627, 8.031354904174805, 32.26287841796875
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0033339180517941713, -0.09429989010095596, -0.0007340737502090633,
+          0.9955379962921143
+        ],
+        "velocity": [
+          -1.1998076438903809, -0.11388126015663147, 6.2321271896362305
+        ],
+        "speed": 6.347591403954404,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 17,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.6ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 212/206/54 · early 212/206/54 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.97RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -6.4, 31.9位置 -6.43, 31.95 · 高さ 8.03 チェックポイント 0/3 · 11.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 727,
+        "position": [-7.622117519378662, 7.977775573730469, 38.85800552368164],
+        "simulationPosition": [
+          -7.622117519378662, 7.977775573730469, 38.85800552368164
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0036043517757207155, -0.08187776803970337, -0.0006300700479187071,
+          0.9966357350349426
+        ],
+        "velocity": [
+          -1.0086115598678589, -0.11983945220708847, 6.392482280731201
+        ],
+        "speed": 6.472672437445506,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 21,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 3.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 227/221/59 · early 227/221/59 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.97RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -7.3, 37.1位置 -7.35, 37.13 · 高さ 7.99 チェックポイント 0/3 · 11.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 787,
+        "position": [-8.567434310913086, 7.924075126647949, 45.3829345703125],
+        "simulationPosition": [
+          -8.567434310913086, 7.924075126647949, 45.3829345703125
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.003505498869344592, -0.0711817741394043, -0.0003269229782745242,
+          0.9974571466445923
+        ],
+        "velocity": [
+          -0.9571496248245239, -0.11602407693862915, 6.670205116271973
+        ],
+        "speed": 6.739527675132137,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 24,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 3.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 247/241/66 · early 247/241/66 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.97RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -8.4, 44.3位置 -8.41, 44.28 · 高さ 7.93 チェックポイント 0/3 · 13.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 849,
+        "position": [-9.400179862976074, 7.867790222167969, 52.365997314453125],
+        "simulationPosition": [
+          -9.400179862976074, 7.867790222167969, 52.365997314453125
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00340249459259212, -0.05483335256576538, -0.0007252428331412375,
+          0.998489499092102
+        ],
+        "velocity": [
+          -0.7466727495193481, -0.1139850914478302, 6.707155227661133
+        ],
+        "speed": 6.749551395751366,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 28,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 3.6msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 267/261/75 · early 267/261/75 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.96RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -9.4, 51.9位置 -9.35, 51.92 · 高さ 7.87 チェックポイント 0/3 · 14.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 910,
+        "position": [-9.955716133117676, 7.8180155754089355, 59.22969055175781],
+        "simulationPosition": [
+          -9.955716133117676, 7.8180155754089355, 59.22969055175781
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.00239215767942369, -0.03923531621694565, -0.0000354591102222912,
+          0.9992271661758423
+        ],
+        "velocity": [
+          -0.5068492889404297, -0.09466001391410828, 6.726550102233887
+        ],
+        "speed": 6.746282902294889,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 32,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 3.6msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.8 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 282/276/84 · early 282/276/84 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.96RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -9.9, 58.0位置 -9.87, 57.98 · 高さ 7.83 チェックポイント 0/3 · 15.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 970,
+        "position": [
+          -10.230513572692871, 7.7820234298706055, 65.92698669433594
+        ],
+        "simulationPosition": [
+          -10.230513572692871, 7.7820234298706055, 65.92698669433594
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0018263987731188536, -0.0174414049834013, -0.00004948028799844906,
+          0.9998462200164795
+        ],
+        "velocity": [
+          -0.2300199568271637, -0.08821247518062592, 6.658250331878662
+        ],
+        "speed": 6.662806323410472,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 36,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.2 · UI 0.0 · Commit 0.8ms · Queue 0 · W 0/4Spike >20/>33/>50 301/295/96 · early 301/295/96 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.96RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -10.2, 65.6位置 -10.22, 65.59 · 高さ 7.78 チェックポイント 0/3 · 16.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1033,
+        "position": [-10.220813751220703, 7.757590293884277, 72.82481384277344],
+        "simulationPosition": [
+          -10.220813751220703, 7.757590293884277, 72.82481384277344
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          0.0008181767771020532, -0.0007115349872037768,
+          -0.000010463142643857282, 0.999999463558197
+        ],
+        "velocity": [
+          -0.009150552563369274, -0.08011307567358017, 6.675899982452393
+        ],
+        "speed": 6.676386928063258,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 40,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 66.6ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 316/310/103 · early 316/310/103 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -10.2, 71.3位置 -10.22, 71.28 · 高さ 7.76 チェックポイント 0/3 · 17.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1094,
+        "position": [-9.700297355651855, 7.751441955566406, 79.25809478759766],
+        "simulationPosition": [
+          -9.700297355651855, 7.751441955566406, 79.25809478759766
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          -0.002135481918230653, 0.038114894181489944, 0.0006540673784911633,
+          0.9992708563804626
+        ],
+        "velocity": [
+          0.3942256271839142, -0.1053667664527893, 6.191635608673096
+        ],
+        "speed": 6.205067889329651,
+        "groundedWheelCount": 3,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 43,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 49.9ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.2 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 336/330/115 · early 336/330/115 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -9.8, 78.5位置 -9.76, 78.54 · 高さ 7.75 チェックポイント 0/3 · 18.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1155,
+        "position": [-8.877225875854492, 7.770581245422363, 85.2193832397461],
+        "simulationPosition": [
+          -8.877225875854492, 7.770581245422363, 85.2193832397461
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          -0.0026387108955532312, 0.07265036553144455, -0.0002022950502578169,
+          0.9973540306091309
+        ],
+        "velocity": [
+          0.8145231604576111, -0.015806065872311592, 5.591376781463623
+        ],
+        "speed": 5.650415216860679,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 46,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.5 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 350/344/123 · early 350/344/123 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.96RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -9.1, 83.6位置 -9.14, 83.65 · 高さ 7.76 チェックポイント 0/3 · 19.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1216,
+        "position": [-7.807820796966553, 7.8094377517700195, 90.69159698486328],
+        "simulationPosition": [
+          -7.807820796966553, 7.8094377517700195, 90.69159698486328
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          -0.005191764794290066, 0.09322036057710648, -0.0003561282064765692,
+          0.9956319332122803
+        ],
+        "velocity": [
+          1.0349013805389404, -0.009122129529714584, 5.480588912963867
+        ],
+        "speed": 5.5774509333199,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 49,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 370/364/135 · early 370/364/135 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -7.9, 90.0位置 -7.95, 89.96 · 高さ 7.80 チェックポイント 0/3 · 20.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1276,
+        "position": [-6.2499775886535645, 7.869109630584717, 95.68730926513672],
+        "simulationPosition": [
+          -6.2499775886535645, 7.869109630584717, 95.68730926513672
+        ],
+        "worldOrigin": [0, 0, 0],
+        "rotation": [
+          -0.007945464923977852, 0.14464472234249115, -0.0008288617245852947,
+          0.9894514679908752
+        ],
+        "velocity": [
+          1.4888180494308472, 0.004645711276680231, 4.986132621765137
+        ],
+        "speed": 5.203664025355097,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 52,
+      "hud": "Rebase 0 · Origin 0, 0 · Hinge 0.000m · SyncGen 15 · Gen 1.1msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 385/379/146 · early 385/379/146 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 0.00 (P 0.00 / R 0.00 / C 0.00 / T 0.00) · RB 0 · SC 0 · Ch 0 · LOD 0Shadow→ -6.6, 94.5位置 -6.60, 94.53 · 高さ 7.85 チェックポイント 0/3 · 21.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1338,
+        "position": [-4.46342658996582, 7.950602054595947, 100.63830423355103],
+        "simulationPosition": [
+          27.53657341003418, 7.950602054595947, 4.638304233551025
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.008819447830319405, 0.18291880190372467, 0.0009549874812364578,
+          0.9830880165100098
+        ],
+        "velocity": [
+          2.733189821243286, 0.009363892488181591, 3.9944279193878174
+        ],
+        "speed": 4.840027756595547,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 55,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 405/399/156 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 27.3, 4.1位置 -4.74, 100.14 · 高さ 7.94 チェックポイント 0/3 · 22.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1400,
+        "position": [-2.385618209838867, 8.054407119750977, 104.97902584075928],
+        "simulationPosition": [
+          29.614381790161133, 8.054407119750977, 8.979025840759277
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.014653014950454235, 0.2164001315832138, -0.001753843855112791,
+          0.9761932492256165
+        ],
+        "velocity": [
+          1.9510313272476196, 0.03504756838083267, 4.183155059814453
+        ],
+        "speed": 4.615900543382871,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 57,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 420/414/165 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.95RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 29.0, 7.7位置 -2.97, 103.74 · 高さ 8.03 チェックポイント 0/3 · 23.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1463,
+        "position": [
+          -0.11939430236816406, 8.170309066772461, 109.02917385101318
+        ],
+        "simulationPosition": [
+          31.880605697631836, 8.170309066772461, 13.029173851013184
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.013317315839231014, 0.2562808394432068, -0.0013819984160363674,
+          0.9665096402168274
+        ],
+        "velocity": [
+          2.9202992916107178, 0.024246418848633766, 3.1077659130096436
+        ],
+        "speed": 4.264615435355656,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 60,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 49.9ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 440/434/175 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.94RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 31.4, 12.4位置 -0.57, 108.37 · 高さ 8.15 チェックポイント 0/3 · 24.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1523,
+        "position": [2.1988296508789062, 8.30344009399414, 112.52776527404785],
+        "simulationPosition": [
+          34.198829650878906, 8.30344009399414, 16.52776527404785
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.02108304388821125, 0.28253173828125, -0.0025396873243153095,
+          0.9590228796005249
+        ],
+        "velocity": [
+          2.3206899166107178, 0.04793057218194008, 3.5925118923187256
+        ],
+        "speed": 4.277153343669107,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 62,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.2 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 455/449/183 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 33.5, 15.5位置 1.51, 111.46 · 高さ 8.27 チェックポイント 0/3 · 25.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1586,
+        "position": [4.683685302734375, 8.440248489379883, 115.87956047058105],
+        "simulationPosition": [
+          36.683685302734375, 8.440248489379883, 19.879560470581055
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.016880419105291367, 0.31166622042655945, -0.005724558141082525,
+          0.9500244855880737
+        ],
+        "velocity": [2.211077928543091, 0.03064802847802639, 2.951446533203125],
+        "speed": 3.6879318792646836,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 64,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 66.6ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 474/468/194 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 36.2, 19.3位置 4.20, 115.30 · 高さ 8.42 チェックポイント 0/3 · 26.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1646,
+        "position": [7.075469970703125, 8.541400909423828, 118.87117195129395],
+        "simulationPosition": [
+          39.075469970703125, 8.541400909423828, 22.871171951293945
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.016576046124100685, 0.33042046427726746, -0.005513687152415514,
+          0.9436721801757812
+        ],
+        "velocity": [2.428497791290283, 0.04236150532960892, 3.039689302444458],
+        "speed": 3.890900548051935,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 67,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 492/486/209 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 39.0, 22.7位置 6.95, 118.72 · 高さ 8.54 チェックポイント 0/3 · 27.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1710,
+        "position": [9.797344207763672, 8.702811241149902, 121.9075756072998],
+        "simulationPosition": [
+          41.79734420776367, 8.702811241149902, 25.907575607299805
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.02771713212132454, 0.35036537051200867, -0.0022075744345784187,
+          0.9362003803253174
+        ],
+        "velocity": [
+          2.5867836475372314, 0.044544413685798645, 2.968046188354492
+        ],
+        "speed": 3.9373508886257857,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 69,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 50.0ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 505/499/219 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 41.0, 25.0位置 8.99, 120.98 · 高さ 8.67 チェックポイント 0/3 · 28.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1771,
+        "position": [12.231136322021484, 8.852066993713379, 124.51468849182129],
+        "simulationPosition": [
+          44.231136322021484, 8.852066993713379, 28.51468849182129
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.018057558685541153, 0.36070623993873596, -0.006617714650928974,
+          0.9324812293052673
+        ],
+        "velocity": [
+          2.4521381855010986, 0.039621006697416306, 2.69036865234375
+        ],
+        "speed": 3.640416870425455,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 71,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 3.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 523/517/232 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 43.7, 28.0位置 11.75, 123.98 · 高さ 8.83 チェックポイント 0/3 · 29.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1833,
+        "position": [14.915287017822266, 8.950736999511719, 127.15313911437988],
+        "simulationPosition": [
+          46.915287017822266, 8.950736999511719, 31.153139114379883
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.018093865364789963, 0.3823123276233673, -0.0076478575356304646,
+          0.9238243699073792
+        ],
+        "velocity": [
+          2.5884854793548584, 0.029604023322463036, 2.549959421157837
+        ],
+        "speed": 3.633651954243752,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 72,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 1.8msRAF 66.7ms · max 233.4 · p95 66.7 · p99 66.8 · CPU 2.5 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 539/533/248 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.93RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 46.5, 30.8位置 14.54, 126.84 · 高さ 8.94 チェックポイント 0/3 · 30.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1897,
+        "position": [17.854278564453125, 9.138141632080078, 129.95954132080078],
+        "simulationPosition": [
+          49.854278564453125, 9.138141632080078, 33.95954132080078
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.033229928463697433, 0.3917604386806488, -0.0011781039647758007,
+          0.9194662570953369
+        ],
+        "velocity": [
+          2.828087329864502, 0.044348739087581635, 2.7138619422912598
+        ],
+        "speed": 3.9198330829023416,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 74,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.7msRAF 66.7ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 5.2 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 555/549/262 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.92RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 49.5, 33.6位置 17.48, 129.60 · 高さ 9.12 チェックポイント 0/3 · 31.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 1960,
+        "position": [20.91811752319336, 9.32386589050293, 132.66341018676758],
+        "simulationPosition": [
+          52.91811752319336, 9.32386589050293, 36.66341018676758
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.01791553944349289, 0.4093993604183197, -0.0059942989610135555,
+          0.9121597409248352
+        ],
+        "velocity": [
+          3.4425835609436035, 0.01334431767463684, 1.9480903148651123
+        ],
+        "speed": 3.9555803012661235,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 77,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.7msRAF 66.7ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 2.7 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 571/565/276 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.92RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 52.5, 36.3位置 20.49, 132.33 · 高さ 9.31 チェックポイント 0/3 · 32.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2021,
+        "position": [24.07925033569336, 9.433100700378418, 135.38177871704102],
+        "simulationPosition": [
+          56.07925033569336, 9.433100700378418, 39.381778717041016
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.01898791827261448, 0.41671958565711975, -0.008516445755958557,
+          0.9087968468666077
+        ],
+        "velocity": [3.138610363006592, 0.04887433722615242, 2.70808744430542],
+        "speed": 4.145720844149582,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 79,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.7msRAF 50.0ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 3.2 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 587/581/290 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.92RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 55.7, 39.0位置 23.66, 135.03 · 高さ 9.42 チェックポイント 0/3 · 33.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2084,
+        "position": [27.588897705078125, 9.652275085449219, 138.16376495361328],
+        "simulationPosition": [
+          59.588897705078125, 9.652275085449219, 42.16376495361328
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.03861677274107933, 0.4361317455768585, -0.00020150725322309881,
+          0.8990538716316223
+        ],
+        "velocity": [3.281698703765869, 0.03840307518839836, 2.532334089279175],
+        "speed": 4.145327142483196,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 81,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.7msRAF 66.7ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 603/597/304 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.92RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 59.1, 41.9位置 27.12, 137.86 · 高さ 9.64 チェックポイント 0/3 · 34.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2147,
+        "position": [31.197154998779297, 9.873104095458984, 140.92438507080078],
+        "simulationPosition": [
+          63.1971549987793, 9.873104095458984, 44.92438507080078
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.0199772659689188, 0.4455358684062958, -0.009939493611454964,
+          0.8949860334396362
+        ],
+        "velocity": [3.483609914779663, 0.04091571271419525, 2.575439453125],
+        "speed": 4.332447404252114,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 84,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.7msRAF 66.7ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 2.9 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 619/613/319 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.91RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 62.7, 44.6位置 30.70, 140.61 · 高さ 9.86 チェックポイント 0/3 · 35.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2211,
+        "position": [35.12146759033203, 9.995964050292969, 143.80378341674805],
+        "simulationPosition": [
+          67.12146759033203, 9.995964050292969, 47.80378341674805
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.019819166511297226, 0.4556303918361664, -0.010158360004425049,
+          0.8898904919624329
+        ],
+        "velocity": [
+          3.6910455226898193, 0.04447009041905403, 2.604818344116211
+        ],
+        "speed": 4.517839444397594,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 86,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 66.6ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 5.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 635/629/335 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.91RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 66.6, 47.5位置 34.60, 143.49 · 高さ 9.98 チェックポイント 0/3 · 36.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2273,
+        "position": [39.123939514160156, 10.247314453125, 146.5561752319336],
+        "simulationPosition": [
+          71.12393951416016, 10.247314453125, 50.556175231933594
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.04351207613945007, 0.46546486020088196, 0.002333490876480937,
+          0.8839930295944214
+        ],
+        "velocity": [
+          3.8836255073547363, 0.05589234083890915, 2.6655116081237793
+        ],
+        "speed": 4.710692429800889,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 89,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 66.6ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 5.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 651/645/350 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.91RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 70.9, 50.4位置 38.87, 146.38 · 高さ 10.24 チェックポイント 0/3 · 37.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2334,
+        "position": [43.15863037109375, 10.496224403381348, 149.21010971069336],
+        "simulationPosition": [
+          75.15863037109375, 10.496224403381348, 53.21010971069336
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.020398972555994987, 0.47375398874282837, -0.010487599298357964,
+          0.8803585171699524
+        ],
+        "velocity": [
+          4.068383693695068, 0.058899346739053726, 2.677936553955078
+        ],
+        "speed": 4.870991603275355,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 91,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 83.3ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 3.1 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 663/657/362 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.90RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 74.1, 52.5位置 42.08, 148.50 · 高さ 10.46 チェックポイント 0/3 · 38.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2397,
+        "position": [47.614227294921875, 10.645742416381836, 151.9066276550293],
+        "simulationPosition": [
+          79.61422729492188, 10.645742416381836, 55.9066276550293
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.02349538914859295, 0.5026998519897461, 0.0006006427574902773,
+          0.8641414642333984
+        ],
+        "velocity": [4.521075248718262, 0.5471659898757935, 1.2592709064483643],
+        "speed": 4.7249629883076265,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 94,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 66.7ms · max 233.4 · p95 66.7 · p99 83.3 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 679/673/377 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.90RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 78.7, 55.4位置 46.66, 151.42 · 高さ 10.60 チェックポイント 0/3 · 39.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2456,
+        "position": [51.77416229248047, 10.883131980895996, 154.2186393737793],
+        "simulationPosition": [
+          83.77416229248047, 10.883131980895996, 58.2186393737793
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.04439761862158775, 0.5041778683662415, 0.0032921370584517717,
+          0.8624516129493713
+        ],
+        "velocity": [3.88313364982605, 0.23044010996818542, 2.1860311031341553],
+        "speed": 4.46212523026455,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 96,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 694/688/392 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.89RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 83.4, 58.0位置 51.43, 154.03 · 高さ 10.87 チェックポイント 1/3 · 40.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2516,
+        "position": [
+          55.826438903808594, 11.145794868469238, 156.49585723876953
+        ],
+        "simulationPosition": [
+          87.8264389038086, 11.145794868469238, 60.49585723876953
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.02102220430970192, 0.5037872195243835, -0.01174125261604786,
+          0.8634920716285706
+        ],
+        "velocity": [
+          4.301723003387451, 0.053686100989580154, 2.4254229068756104
+        ],
+        "speed": 4.93866168840397,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 99,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 83.3ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 706/700/404 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.90RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 86.9, 60.0位置 54.90, 155.97 · 高さ 11.12 チェックポイント 1/3 · 41.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2577,
+        "position": [
+          60.347755432128906, 11.398118019104004, 158.88811111450195
+        ],
+        "simulationPosition": [
+          92.3477554321289, 11.398118019104004, 62.88811111450195
+        ],
+        "worldOrigin": [-32, 0, 96],
+        "rotation": [
+          -0.043720830231904984, 0.5143007636070251, 0.004161629360169172,
+          0.856484591960907
+        ],
+        "velocity": [4.506948947906494, 0.5616260170936584, 2.319650411605835],
+        "speed": 5.099881433344804,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 101,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.8 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 722/716/420 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.89RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 92.0, 62.7位置 60.04, 158.72 · 高さ 11.35 チェックポイント 1/3 · 42.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2639,
+        "position": [64.93265581130981, 11.695682525634766, 161.04003393650055],
+        "simulationPosition": [
+          0.9326558113098145, 11.695682525634766, 1.0400339365005493
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.027357876300811768, 0.5309972167015076, -0.008002428337931633,
+          0.8468939661979675
+        ],
+        "velocity": [4.53213357925415, 0.49060967564582825, 2.1422135829925537],
+        "speed": 5.036865262164369,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 104,
+      "hud": "Rebase 1 · Origin -32, 96 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 66.7ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 7.3 · UI 0.0 · Commit 1.1ms · Queue 0 · W 1/4Spike >20/>33/>50 734/728/432 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.89RebaseMs 1.00 (P 0.70 / R 0.20 / C 0.00 / T 0.10) · RB 1 · SC 185 · Ch 182 · LOD 110Shadow→ 95.9, 64.6位置 63.94, 160.57 · 高さ 11.54 チェックポイント 1/3 · 43.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2702,
+        "position": [69.73471117019653, 11.836495399475098, 163.13235330581665],
+        "simulationPosition": [
+          5.734711170196533, 11.836495399475098, 3.1323533058166504
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.021693548187613487, 0.5489874482154846, -0.01403652410954237,
+          0.8354311585426331
+        ],
+        "velocity": [
+          4.52983283996582, 0.028451165184378624, 1.9090293645858765
+        ],
+        "speed": 4.915748990915252,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 107,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 66.8ms · max 233.4 · p95 83.2 · p99 83.4 · CPU 5.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 750/744/447 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.89RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 4.8, 2.8位置 68.80, 162.77 · 高さ 11.82 チェックポイント 1/3 · 44.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2763,
+        "position": [74.4999589920044, 12.14184284210205, 164.94611930847168],
+        "simulationPosition": [
+          10.499958992004395, 12.14184284210205, 4.94611930847168
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.057176265865564346, 0.5677040815353394, 0.009729241020977497,
+          0.8211871981620789
+        ],
+        "velocity": [
+          4.536445617675781, 0.029139703139662743, 1.7285549640655518
+        ],
+        "speed": 4.854697748390164,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 110,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 66.8ms · max 233.4 · p95 83.2 · p99 83.4 · CPU 4.3 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 766/760/463 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.89RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 9.9, 4.7位置 73.89, 164.73 · 高さ 12.13 チェックポイント 1/3 · 45.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2826,
+        "position": [78.88305759429932, 12.429828643798828, 166.40864944458008],
+        "simulationPosition": [
+          14.883057594299316, 12.429828643798828, 6.408649444580078
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.022010615095496178, 0.5808612704277039, -0.015005799941718578,
+          0.8135665655136108
+        ],
+        "velocity": [
+          4.260051727294922, 0.013324695639312267, 1.4555586576461792
+        ],
+        "speed": 4.501873973423853,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 112,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 83.3ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 782/776/479 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.88RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 14.6, 6.3位置 78.60, 166.31 · 高さ 12.42 チェックポイント 1/3 · 47.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2890,
+        "position": [83.62021446228027, 12.604862213134766, 167.8200602531433],
+        "simulationPosition": [
+          19.620214462280273, 12.604862213134766, 7.8200602531433105
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.034025248140096664, 0.6032764911651611, 0.00484866788610816,
+          0.7967911958694458
+        ],
+        "velocity": [4.155345439910889, 0.6874340176582336, 1.0598458051681519],
+        "speed": 4.343124956106431,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 115,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 794/788/491 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.88RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 18.3, 7.5位置 82.34, 167.51 · 高さ 12.49 チェックポイント 1/3 · 47.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 2953,
+        "position": [88.09465980529785, 12.85401725769043, 168.88699626922607],
+        "simulationPosition": [
+          24.09465980529785, 12.85401725769043, 8.886996269226074
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.04423144832253456, 0.6170633435249329, 0.01437891274690628,
+          0.7855378985404968
+        ],
+        "velocity": [4.284281253814697, 0.5930816531181335, 0.9249425530433655],
+        "speed": 4.422932334490745,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 118,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.7 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 810/804/507 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.88RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 23.2, 8.7位置 87.20, 168.68 · 高さ 12.80 チェックポイント 1/3 · 49.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3013,
+        "position": [92.3519229888916, 13.09485912322998, 169.7043342590332],
+        "simulationPosition": [
+          28.3519229888916, 13.09485912322998, 9.704334259033203
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.02038656361401081, 0.6341283321380615, -0.015555332414805889,
+          0.7728025317192078
+        ],
+        "velocity": [
+          4.488502502441406, -0.06166934221982956, 0.02506347745656967
+        ],
+        "speed": 4.48899610159051,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 120,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.3msRAF 83.3ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.3 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 825/819/522 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.87RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 27.7, 9.6位置 91.74, 169.62 · 高さ 13.09 チェックポイント 1/3 · 50.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3076,
+        "position": [97.02568817138672, 13.397147178649902, 170.08209800720215],
+        "simulationPosition": [
+          33.02568817138672, 13.397147178649902, 10.082098007202148
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.06324595212936401, 0.674758791923523, 0.018852604553103447,
+          0.7350817322731018
+        ],
+        "velocity": [
+          4.261404991149902, -0.029170425608754158, 0.3844316899776459
+        ],
+        "speed": 4.278809546659744,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 122,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 1.2msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 5.7 · UI 0.0 · Commit 1.4ms · Queue 1 · W 4/4Spike >20/>33/>50 841/835/538 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.87RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 32.7, 10.0位置 96.67, 170.05 · 高さ 13.39 チェックポイント 1/3 · 51.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3137,
+        "position": [101.3261604309082, 13.687186241149902, 170.32124137878418],
+        "simulationPosition": [
+          37.3261604309082, 13.687186241149902, 10.32124137878418
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.02101730741560459, 0.6879326105117798, -0.016650615260004997,
+          0.7252790927886963
+        ],
+        "velocity": [
+          4.2611565589904785, -0.03955569863319397, -0.5604047179222107
+        ],
+        "speed": 4.29803133089923,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 125,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 83.3ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 6.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 853/847/550 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.87RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 36.2, 10.3位置 100.19, 170.28 · 高さ 13.61 チェックポイント 1/3 · 52.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3200,
+        "position": [105.85734939575195, 13.938183784484863, 169.9715061187744],
+        "simulationPosition": [
+          41.85734939575195, 13.938183784484863, 9.971506118774414
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.052013203501701355, 0.7333884239196777, 0.023200983181595802,
+          0.6774200797080994
+        ],
+        "velocity": [
+          4.145651817321777, 0.5057761073112488, -0.49376368522644043
+        ],
+        "speed": 4.205477504165095,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 127,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 5.8 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 868/862/565 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.86RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 40.9, 10.1位置 104.92, 170.14 · 高さ 13.80 チェックポイント 1/3 · 53.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3265,
+        "position": [
+          110.24131774902344, 14.172622680664062, 169.29330348968506
+        ],
+        "simulationPosition": [
+          46.24131774902344, 14.172622680664062, 9.293303489685059
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.028078578412532806, 0.7611024975776672, 0.0016093178419396281,
+          0.6480216979980469
+        ],
+        "velocity": [
+          3.8609609603881836, 0.5075812339782715, -1.6037102937698364
+        ],
+        "speed": 4.211477763573243,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 130,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 83.3ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 5.4 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 884/878/581 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.86RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 45.7, 9.5位置 109.75, 169.46 · 高さ 14.09 チェックポイント 1/3 · 54.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3328,
+        "position": [114.5232048034668, 14.40112590789795, 168.20636081695557],
+        "simulationPosition": [
+          50.5232048034668, 14.40112590789795, 8.206360816955566
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.030147533863782883, 0.7880271673202515, 0.014318214729428291,
+          0.6147352457046509
+        ],
+        "velocity": [
+          4.006381034851074, 0.5485668182373047, -1.1546046733856201
+        ],
+        "speed": 4.205368771260052,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 132,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 900/894/597 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.86RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 50.2, 8.3位置 114.16, 168.30 · 高さ 14.35 チェックポイント 1/3 · 55.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3391,
+        "position": [
+          118.85386657714844, 14.673938751220703, 166.75072765350342
+        ],
+        "simulationPosition": [
+          54.85386657714844, 14.673938751220703, 6.750727653503418
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.04051820561289787, 0.8093532919883728, 0.032831933349370956,
+          0.5850023031234741
+        ],
+        "velocity": [
+          4.050777912139893, 0.4359533190727234, -1.4988731145858765
+        ],
+        "speed": 4.341137823603314,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 135,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 912/906/609 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.85RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 53.8, 7.1位置 117.79, 167.14 · 高さ 14.63 チェックポイント 1/3 · 56.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3455,
+        "position": [
+          123.09146499633789, 14.947822570800781, 164.92012882232666
+        ],
+        "simulationPosition": [
+          59.09146499633789, 14.947822570800781, 4.92012882232666
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.015071071684360504, 0.8370732665061951, -0.004090980160981417,
+          0.5468677878379822
+        ],
+        "velocity": [
+          3.969268560409546, 0.041935741901397705, -1.8589632511138916
+        ],
+        "speed": 4.383217525984356,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 137,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 928/922/625 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.85RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 58.2, 5.4位置 122.25, 165.43 · 高さ 14.93 チェックポイント 1/3 · 57.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3517,
+        "position": [
+          127.48930740356445, 15.336545944213867, 162.67710089683533
+        ],
+        "simulationPosition": [
+          63.48930740356445, 15.336545944213867, 2.677100896835327
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.0502280630171299, 0.8533803820610046, 0.056128133088350296,
+          0.5158185362815857
+        ],
+        "velocity": [4.151867389678955, 0.057123031467199326, -2.181640625],
+        "speed": 4.690503350265718,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 140,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 83.3ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.2 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 944/938/641 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.85RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 63.2, 2.8位置 127.22, 162.82 · 高さ 15.33 チェックポイント 1/3 · 58.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3579,
+        "position": [
+          131.81607818603516, 15.644859313964844, 160.26535046100616
+        ],
+        "simulationPosition": [
+          67.81607818603516, 15.644859313964844, 0.26535046100616455
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.009660152718424797, 0.8624417185783386, -0.015701761469244957,
+          0.505820631980896
+        ],
+        "velocity": [
+          4.561817169189453, -0.047280263155698776, -2.409329891204834
+        ],
+        "speed": 5.159193913107826,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 143,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 0.8msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.2 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 956/950/653 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.85RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 66.7, 0.9位置 130.72, 160.89 · 高さ 15.61 チェックポイント 1/3 · 59.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3640,
+        "position": [
+          136.30060577392578, 15.920547485351562, 157.40051865577698
+        ],
+        "simulationPosition": [
+          72.30060577392578, 15.920547485351562, -2.5994813442230225
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.033917441964149475, 0.8767039775848389, 0.05585433542728424,
+          0.47657114267349243
+        ],
+        "velocity": [
+          4.236443042755127, 0.6331421732902527, -2.7290613651275635
+        ],
+        "speed": 5.078985587766414,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 146,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 972/966/668 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.84RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 71.4, -2.0位置 135.43, 157.98 · 高さ 15.79 チェックポイント 1/3 · 60.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3701,
+        "position": [140.37657165527344, 16.31773567199707, 154.49920320510864],
+        "simulationPosition": [
+          76.37657165527344, 16.31773567199707, -5.500796794891357
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.026036281138658524, 0.8872528672218323, 0.0029645750764757395,
+          0.46053841710090637
+        ],
+        "velocity": [
+          4.219430923461914, 0.4131965637207031, -3.0312752723693848
+        ],
+        "speed": 5.2118095221348355,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 149,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 988/982/682 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.84RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 75.8, -5.1位置 139.85, 154.87 · 高さ 16.25 チェックポイント 1/3 · 61.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3762,
+        "position": [144.5936737060547, 16.445510864257812, 151.2099323272705],
+        "simulationPosition": [
+          80.59367370605469, 16.445510864257812, -8.790067672729492
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.017311539500951767, 0.8988451361656189, 0.009535045363008976,
+          0.4378206729888916
+        ],
+        "velocity": [
+          4.101658821105957, -0.004387338180094957, -3.203979969024658
+        ],
+        "speed": 5.204720163025469,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 151,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.8 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1004/998/698 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.84RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 80.3, -8.6位置 144.31, 151.43 · 高さ 16.44 チェックポイント 1/3 · 62.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3822,
+        "position": [148.80630493164062, 16.90761375427246, 147.68796062469482],
+        "simulationPosition": [
+          84.80630493164062, 16.90761375427246, -12.312039375305176
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.03972163423895836, 0.9032753705978394, 0.06022326275706291,
+          0.4229526221752167
+        ],
+        "velocity": [
+          4.1949005126953125, 0.032893307507038116, -3.5054943561553955
+        ],
+        "speed": 5.466878722097965,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 154,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 6.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1016/1010/710 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.84RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 83.8, -11.5位置 147.84, 148.49 · 高さ 16.87 チェックポイント 1/3 · 63.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3885,
+        "position": [152.7027130126953, 17.182064056396484, 144.17815399169922],
+        "simulationPosition": [
+          88.70271301269531, 17.182064056396484, -15.821846008300781
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.005360562354326248, 0.9140282273292542, -0.014666326344013214,
+          0.40534988045692444
+        ],
+        "velocity": [
+          3.8584511280059814, -0.02590859681367874, -3.5380935668945312
+        ],
+        "speed": 5.235114368445063,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 157,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1032/1026/725 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.83RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 88.2, -15.3位置 152.21, 144.69 · 高さ 17.19 チェックポイント 1/3 · 64.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 3948,
+        "position": [156.9412078857422, 17.46250343322754, 140.14205169677734],
+        "simulationPosition": [
+          92.94120788574219, 17.46250343322754, -19.857948303222656
+        ],
+        "worldOrigin": [64, 0, 160],
+        "rotation": [
+          -0.023030174896121025, 0.9186851382255554, 0.053315598517656326,
+          0.390697717666626
+        ],
+        "velocity": [3.974309206008911, 0.672023594379425, -3.853746175765991],
+        "speed": 5.5765678480227265,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 160,
+      "hud": "Rebase 2 · Origin 64, 160 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1048/1042/741 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.83RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 176 · Ch 188 · LOD 79Shadow→ 92.7, -19.6位置 156.67, 140.41 · 高さ 17.41 チェックポイント 1/3 · 65.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4011,
+        "position": [160.9466849565506, 17.892229080200195, 135.97495126724243],
+        "simulationPosition": [
+          0.9466849565505981, 17.892229080200195, 7.974951267242432
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.016678854823112488, 0.9277433156967163, -0.002985412487760186,
+          0.37283405661582947
+        ],
+        "velocity": [
+          3.999127149581909, 0.37727904319763184, -4.219298362731934
+        ],
+        "speed": 5.82561894640489,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 163,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 3.3msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.9 · UI 0.0 · Commit 0.9ms · Queue 9 · W 4/4Spike >20/>33/>50 1060/1054/753 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.83RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 0.0, 9.0位置 160.03, 136.97 · 高さ 17.79 チェックポイント 1/3 · 66.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4072,
+        "position": [165.19699144363403, 17.95960235595703, 131.4140019416809],
+        "simulationPosition": [
+          5.196991443634033, 17.95960235595703, 3.414001941680908
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.013693522661924362, 0.9326721429824829, 0.017070438712835312,
+          0.36006101965904236
+        ],
+        "velocity": [
+          3.5316824913024902, -0.03990696370601654, -4.810207366943359
+        ],
+        "speed": 5.9676183438722825,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 167,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 50.1ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1076/1070/767 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.83RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 4.2, 4.6位置 164.16, 132.58 · 高さ 17.95 チェックポイント 1/3 · 67.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4134,
+        "position": [
+          169.17010593414307, 18.465450286865234, 126.71470367908478
+        ],
+        "simulationPosition": [
+          9.170105934143066, 18.465450286865234, -1.2852963209152222
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.024807216599583626, 0.9374366998672485, 0.036119066178798676,
+          0.34538736939430237
+        ],
+        "velocity": [3.667881727218628, 0.4415598213672638, -4.348363399505615],
+        "speed": 5.705838737194579,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 170,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 5.1msRAF 83.4ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 10.2 · UI 0.0 · Commit 2.5ms · Queue 0 · W 1/4Spike >20/>33/>50 1093/1087/782 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.82RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 8.6, -0.7位置 168.65, 127.33 · 高さ 18.40 チェックポイント 1/3 · 68.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4197,
+        "position": [172.99673557281494, 18.63232421875, 121.9438943862915],
+        "simulationPosition": [
+          12.996735572814941, 18.63232421875, -6.056105613708496
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.006280422676354647, 0.9419544339179993, -0.0025275975931435823,
+          0.335672527551651
+        ],
+        "velocity": [
+          3.9389426708221436, -0.025038069114089012, -4.830928802490234
+        ],
+        "speed": 6.23327918223291,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 173,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 1.0msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1109/1103/798 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.82RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 12.7, -5.7位置 172.73, 122.27 · 高さ 18.63 チェックポイント 1/3 · 69.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4259,
+        "position": [176.8559513092041, 19.011259078979492, 116.72804546356201],
+        "simulationPosition": [
+          16.8559513092041, 19.011259078979492, -11.271954536437988
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.02485004812479019, 0.9484180212020874, 0.05822574719786644,
+          0.31063735485076904
+        ],
+        "velocity": [
+          3.5653700828552246, 0.0832008644938469, -4.898665904998779
+        ],
+        "speed": 6.059349293477733,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 177,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 1.0msRAF 83.2ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 6.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1121/1115/810 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.81RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 15.9, -9.9位置 175.89, 118.07 · 高さ 18.89 チェックポイント 1/3 · 70.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4319,
+        "position": [
+          180.36203575134277, 19.224472045898438, 111.75164794921875
+        ],
+        "simulationPosition": [
+          20.362035751342773, 19.224472045898438, -16.24835205078125
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.005737787578254938, 0.9527323842048645, -0.016941288486123085,
+          0.3032839298248291
+        ],
+        "velocity": [
+          3.863727569580078, -0.22251677513122559, -5.311486721038818
+        ],
+        "speed": 6.571894371862627,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 180,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 1.0msRAF 83.4ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1137/1131/826 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.82RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 19.8, -15.5位置 179.86, 112.46 · 高さ 19.25 チェックポイント 1/3 · 71.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4379,
+        "position": [
+          183.86343002319336, 19.452966690063477, 106.11860466003418
+        ],
+        "simulationPosition": [
+          23.86343002319336, 19.452966690063477, -21.88139533996582
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.015094445087015629, 0.9626409411430359, 0.05042223632335663,
+          0.26561668515205383
+        ],
+        "velocity": [
+          3.1847715377807617, 0.5987356901168823, -5.446156024932861
+        ],
+        "speed": 6.337339317283767,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 184,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 1.0msRAF 66.7ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 2.8 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 1149/1143/838 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.81RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 23.0, -20.2位置 182.99, 107.75 · 高さ 19.26 チェックポイント 1/3 · 72.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4440,
+        "position": [
+          187.23583793640137, 19.729997634887695, 100.47416877746582
+        ],
+        "simulationPosition": [
+          27.235837936401367, 19.729997634887695, -27.52583122253418
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.004499958362430334, 0.9637925624847412, -0.011699473485350609,
+          0.26635825634002686
+        ],
+        "velocity": [3.560281276702881, -0.1768435388803482, -5.95508337020874],
+        "speed": 6.940453468803138,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 187,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 1.0msRAF 66.6ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 3.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1165/1159/854 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.80RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 26.7, -26.6位置 186.71, 101.35 · 高さ 19.73 チェックポイント 1/3 · 73.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4504,
+        "position": [190.73763275146484, 19.850494384765625, 93.8995246887207],
+        "simulationPosition": [
+          30.737632751464844, 19.850494384765625, -34.1004753112793
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.012008782476186752, 0.9711384773254395, 0.042571187019348145,
+          0.23437944054603577
+        ],
+        "velocity": [
+          3.066101551055908, 0.20060260593891144, -5.989836692810059
+        ],
+        "speed": 6.731965814933307,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 191,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.4msRAF 83.3ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 6.3 · UI 0.0 · Commit 1.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1181/1175/870 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.80RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 30.5, -33.7位置 190.53, 94.30 · 高さ 19.83 チェックポイント 1/3 · 75.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4565,
+        "position": [193.65259552001953, 20.044204711914062, 87.79539108276367],
+        "simulationPosition": [
+          33.65259552001953, 20.044204711914062, -40.20460891723633
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.002706409664824605, 0.976491391658783, -0.007792347110807896,
+          0.2153986096382141
+        ],
+        "velocity": [
+          2.7890453338623047, -0.16770930588245392, -6.077949523925781
+        ],
+        "speed": 6.689422299497042,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 195,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 4.5 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1193/1187/882 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.80RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 33.1, -38.8位置 193.07, 89.14 · 高さ 20.06 チェックポイント 1/3 · 75.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4628,
+        "position": [196.22821044921875, 20.077836990356445, 81.3103256225586],
+        "simulationPosition": [
+          36.22821044921875, 20.077836990356445, -46.689674377441406
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.005508468020707369, 0.9831956028938293, 0.02092175930738449,
+          0.1812685877084732
+        ],
+        "velocity": [
+          2.3198821544647217, -0.10943647474050522, -6.085883617401123
+        ],
+        "speed": 6.513970291393635,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 198,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 3.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1209/1203/898 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.80RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 35.9, -45.9位置 195.92, 82.12 · 高さ 20.08 チェックポイント 1/3 · 77.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4689,
+        "position": [198.36783981323242, 20.175785064697266, 75.06178665161133],
+        "simulationPosition": [
+          38.36783981323242, 20.175785064697266, -52.93821334838867
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          -0.00025197453214786947, 0.9864650964736938, -0.0003047543577849865,
+          0.1639709621667862
+        ],
+        "velocity": [
+          2.153473138809204, -0.07416537404060364, -6.300700664520264
+        ],
+        "speed": 6.658962075741642,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 202,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 83.3ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 4.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1221/1215/910 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.79RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 37.7, -51.0位置 197.73, 76.93 · 高さ 20.18 チェックポイント 1/3 · 77.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4751,
+        "position": [199.7902488708496, 20.097026824951172, 69.02320861816406],
+        "simulationPosition": [
+          39.79024887084961, 20.097026824951172, -58.97679138183594
+        ],
+        "worldOrigin": [160, 0, 128],
+        "rotation": [
+          0.0007608967134729028, 0.9945845603942871, -0.014210594817996025,
+          0.10295141488313675
+        ],
+        "velocity": [
+          0.901032030582428, -0.021031036972999573, -5.015535831451416
+        ],
+        "speed": 5.09587094628825,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 206,
+      "hud": "Rebase 3 · Origin 160, 128 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 6.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1237/1231/926 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.79RebaseMs 0.40 (P 0.30 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 165 · Ch 196 · LOD 67Shadow→ 39.7, -58.1位置 199.74, 69.88 · 高さ 20.09 チェックポイント 2/3 · 79.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4815,
+        "position": [200.9520902633667, 20.07473373413086, 63.45112419128418],
+        "simulationPosition": [
+          8.9520902633667, 20.07473373413086, 31.45112419128418
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          0.0008518819813616574, 0.9948211312294006, 0.009443794377148151,
+          0.1011982411146164
+        ],
+        "velocity": [
+          1.0988165140151978, 0.04668956622481346, -5.338550567626953
+        ],
+        "speed": 5.450660493020717,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 209,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 6.5 · UI 0.0 · Commit 1.6ms · Queue 2 · W 4/4Spike >20/>33/>50 1253/1247/942 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.79RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 8.9, 31.9位置 200.86, 63.90 · 高さ 20.07 チェックポイント 2/3 · 80.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4876,
+        "position": [
+          201.76874160766602, 19.875329971313477, 58.123605728149414
+        ],
+        "simulationPosition": [
+          9.768741607666016, 19.875329971313477, 26.123605728149414
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          0.003462305525317788, 0.9963999390602112, -0.04582689702510834,
+          0.07123930752277374
+        ],
+        "velocity": [
+          0.7746989727020264, -0.3392590582370758, -5.46864652633667
+        ],
+        "speed": 5.533656118418961,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 212,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 2.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1265/1259/954 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.78RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 9.6, 27.3位置 201.64, 59.29 · 高さ 20.11 チェックポイント 2/3 · 81.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4935,
+        "position": [202.4073486328125, 19.670795440673828, 52.64162635803223],
+        "simulationPosition": [
+          10.4073486328125, 19.670795440673828, 20.641626358032227
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          0.0007379373419098556, 0.9986135959625244, 0.009438714012503624,
+          0.05178198963403702
+        ],
+        "velocity": [
+          0.5442474484443665, 0.09795063734054565, -5.316549777984619
+        ],
+        "speed": 5.345231627748411,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 214,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 4.5 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1277/1271/966 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.78RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 10.2, 22.5位置 202.19, 54.43 · 高さ 19.91 チェックポイント 2/3 · 81.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 4995,
+        "position": [202.7954978942871, 19.83803939819336, 47.26843070983887],
+        "simulationPosition": [
+          10.79549789428711, 19.83803939819336, 15.268430709838867
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          0.00011338466720189899, 0.999387264251709, 0.017141306772828102,
+          0.03051745891571045
+        ],
+        "velocity": [
+          0.3215601146221161, 0.10972363501787186, -5.092949867248535
+        ],
+        "speed": 5.104270617209102,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 217,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 100.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1290/1284/979 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.77RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 10.8, 16.4位置 202.78, 48.38 · 高さ 19.80 チェックポイント 2/3 · 83.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5057,
+        "position": [202.9620714187622, 19.515674591064453, 42.14587211608887],
+        "simulationPosition": [
+          10.962071418762207, 19.515674591064453, 10.145872116088867
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          0.0003522029146552086, 0.9964775443077087, -0.08316991478204727,
+          0.01073560118675232
+        ],
+        "velocity": [
+          0.12610603868961334, -0.07992617040872574, -5.065151691436768
+        ],
+        "speed": 5.0673516340367515,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 220,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1306/1300/995 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.76RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 11.0, 10.8位置 202.96, 42.81 · 高さ 19.51 チェックポイント 2/3 · 84.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5119,
+        "position": [202.9911756515503, 19.169336318969727, 36.67821979522705],
+        "simulationPosition": [
+          10.991175651550293, 19.169336318969727, 4.678219795227051
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.00007753751560812816, 0.9998348951339722, 0.017983082681894302,
+          -0.002620038576424122
+        ],
+        "velocity": [
+          -0.026598161086440086, -0.056408364325761795, -5.035080909729004
+        ],
+        "speed": 5.035467121653814,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 223,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.8ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1322/1316/1011 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.77RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 11.0, 5.0位置 202.99, 37.02 · 高さ 19.17 チェックポイント 2/3 · 85.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5179,
+        "position": [202.88231563568115, 19.369548797607422, 31.5606689453125],
+        "simulationPosition": [
+          10.882315635681152, 19.369548797607422, -0.4393310546875
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.00038079413934610784, 0.9996569156646729, 0.02250570058822632,
+          -0.013396982103586197
+        ],
+        "velocity": [
+          -0.1321493238210678, 0.15958715975284576, -4.992198944091797
+        ],
+        "speed": 4.99649695313983,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 225,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.5 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1334/1328/1023 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.76RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 10.9, 0.8位置 202.93, 32.80 · 高さ 19.32 チェックポイント 2/3 · 86.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5240,
+        "position": [
+          202.55759048461914, 18.935958862304688, 26.799723625183105
+        ],
+        "simulationPosition": [
+          10.55759048461914, 18.935958862304688, -5.2002763748168945
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.00479115080088377, 0.9933783411979675, -0.10902312397956848,
+          -0.035923443734645844
+        ],
+        "velocity": [
+          -0.35946598649024963, -0.09804397821426392, -4.957467079162598
+        ],
+        "speed": 4.971449311628192,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 228,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 83.3ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.9 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 1350/1344/1038 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.76RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 10.6, -4.5位置 202.60, 27.44 · 高さ 18.93 チェックポイント 2/3 · 87.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5302,
+        "position": [
+          202.13541507720947, 18.456165313720703, 21.325998306274414
+        ],
+        "simulationPosition": [
+          10.135415077209473, 18.456165313720703, -10.674001693725586
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.00015338281809818, 0.9988585710525513, 0.018389951437711716,
+          -0.04408445581793785
+        ],
+        "velocity": [
+          -0.4640165865421295, -0.06798034906387329, -5.212033748626709
+        ],
+        "speed": 5.23308976774418,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 231,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1366/1360/1054 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.76RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 10.2, -10.3位置 202.17, 21.68 · 高さ 18.46 チェックポイント 2/3 · 88.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5363,
+        "position": [201.6511459350586, 18.696346282958984, 15.862981796264648],
+        "simulationPosition": [
+          9.651145935058594, 18.696346282958984, -16.13701820373535
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.0011209013173356652, 0.9986814856529236, 0.02623133547604084,
+          -0.044114530086517334
+        ],
+        "velocity": [
+          -0.48028790950775146, 0.21691295504570007, -5.414857387542725
+        ],
+        "speed": 5.440441915277839,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 234,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 83.3ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1378/1372/1065 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.75RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 9.8, -14.7位置 201.78, 17.31 · 高さ 18.62 チェックポイント 2/3 · 89.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5424,
+        "position": [201.02087593078613, 18.19103240966797, 10.667423248291016],
+        "simulationPosition": [
+          9.020875930786133, 18.19103240966797, -21.332576751708984
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.010123388841748238, 0.9892264604568481, -0.13236457109451294,
+          -0.061710041016340256
+        ],
+        "velocity": [
+          -0.6953999400138855, -0.1081506609916687, -5.532885551452637
+        ],
+        "speed": 5.577463596252117,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 236,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.8 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1394/1388/1081 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.75RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 9.2, -20.2位置 201.16, 11.74 · 高さ 18.18 チェックポイント 2/3 · 90.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5486,
+        "position": [
+          200.24595260620117, 17.612375259399414, 4.6166229248046875
+        ],
+        "simulationPosition": [
+          8.245952606201172, 17.612375259399414, -27.383377075195312
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.000868961273226887, 0.9973899126052856, 0.028934774920344353,
+          -0.06614819169044495
+        ],
+        "velocity": [
+          -0.8719767928123474, -0.029236016795039177, -5.691376209259033
+        ],
+        "speed": 5.757860837776567,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 240,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.9msRAF 66.5ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1410/1404/1097 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.74RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 8.4, -26.6位置 200.35, 5.39 · 高さ 17.61 チェックポイント 2/3 · 91.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5547,
+        "position": [
+          199.39603567123413, 17.88654136657715, -1.0484771728515625
+        ],
+        "simulationPosition": [
+          7.396035671234131, 17.88654136657715, -33.04847717285156
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.0032023892272263765, 0.9969213008880615, 0.01595594733953476,
+          -0.07670088857412338
+        ],
+        "velocity": [
+          -0.8345340490341187, -0.4924306869506836, -5.463622093200684
+        ],
+        "speed": 5.548882899986142,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 243,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 8.4 · UI 0.0 · Commit 2.5ms · Queue 0 · W 2/4Spike >20/>33/>50 1426/1420/1113 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.74RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 7.5, -32.7位置 199.45, -0.71 · 高さ 17.91 チェックポイント 2/3 · 92.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5609,
+        "position": [
+          198.41439819335938, 17.161941528320312, -6.353065490722656
+        ],
+        "simulationPosition": [
+          6.414398193359375, 17.161941528320312, -38.353065490722656
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.01166172418743372, 0.9888315200805664, -0.12150820344686508,
+          -0.08551059663295746
+        ],
+        "velocity": [
+          -0.98368901014328, -1.4150480031967163, -5.3989458084106445
+        ],
+        "speed": 5.667329244201588,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 246,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1438/1432/1125 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.74RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 6.7, -36.7位置 198.71, -4.77 · 高さ 17.32 チェックポイント 2/3 · 93.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5670,
+        "position": [
+          197.17508792877197, 16.708232879638672, -11.86383056640625
+        ],
+        "simulationPosition": [
+          5.175087928771973, 16.708232879638672, -43.86383056640625
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.006314565893262625, 0.9941111207008362, 0.031080283224582672,
+          -0.10362125933170319
+        ],
+        "velocity": [
+          -0.06218533590435982, 0.29609087109565735, -5.1094651222229
+        ],
+        "speed": 5.1184148576644315,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": -1
+        }
+      },
+      "progress": 249,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.4 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1454/1448/1141 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.74RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 5.4, -42.8位置 197.37, -10.80 · 高さ 16.68 チェックポイント 2/3 · 94.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5731,
+        "position": [
+          196.15705013275146, 16.942230224609375, -16.879135131835938
+        ],
+        "simulationPosition": [
+          4.157050132751465, 16.942230224609375, -48.87913513183594
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.004977486561983824, 0.9947547316551208, 0.011123022995889187,
+          -0.10156039148569107
+        ],
+        "velocity": [
+          -1.046735167503357, -0.7141027450561523, -5.060639381408691
+        ],
+        "speed": 5.2168638270564,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 252,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1470/1464/1157 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.74RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 4.3, -48.2位置 196.29, -16.25 · 高さ 16.98 チェックポイント 2/3 · 95.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5791,
+        "position": [194.9970738887787, 16.329191207885742, -21.50334930419922],
+        "simulationPosition": [
+          2.9970738887786865, 16.329191207885742, -53.50334930419922
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.018976310268044472, 0.9818727374076843, -0.14447873830795288,
+          -0.12120921164751053
+        ],
+        "velocity": [
+          -1.1865872144699097, -0.8188584446907043, -4.866209983825684
+        ],
+        "speed": 5.075285014328703,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 255,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.2 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1486/1480/1173 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 3.1, -53.1位置 195.08, -21.16 · 高さ 16.37 チェックポイント 2/3 · 96.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5855,
+        "position": [
+          193.54445338249207, 15.721317291259766, -27.116928100585938
+        ],
+        "simulationPosition": [
+          1.5444533824920654, 15.721317291259766, -59.11692810058594
+        ],
+        "worldOrigin": [192, 0, 32],
+        "rotation": [
+          -0.004318449646234512, 0.9911919832229614, 0.03179236501455307,
+          -0.12848752737045288
+        ],
+        "velocity": [
+          -1.3817890882492065, 0.17915940284729004, -5.121894359588623
+        ],
+        "speed": 5.308035512957589,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 257,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1502/1496/1188 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 1.6, -58.7位置 193.63, -26.77 · 高さ 15.71 チェックポイント 2/3 · 97.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5916,
+        "position": [
+          192.10087794810534, 15.979875564575195, -32.159996032714844
+        ],
+        "simulationPosition": [
+          0.10087794810533524, 15.979875564575195, 31.840003967285156
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.006422864738851786, 0.9900146722793579, 0.015899842604994774,
+          -0.1399177461862564
+        ],
+        "velocity": [
+          -1.4201602935791016, -0.6310290098190308, -4.887070178985596
+        ],
+        "speed": 5.128207075091856,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 260,
+      "hud": "Rebase 4 · Origin 192, 32 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1518/1512/1203 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.40 (P 0.20 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 160 · Ch 195 · LOD 63Shadow→ 0.2, -63.9位置 192.17, -31.93 · 高さ 16.00 チェックポイント 2/3 · 98.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 5980,
+        "position": [190.53094065189362, 15.28670597076416, -37.07636070251465],
+        "simulationPosition": [
+          -1.4690593481063843, 15.28670597076416, 26.92363929748535
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.02826005220413208, 0.9757274389266968, -0.1325514018535614,
+          -0.17201024293899536
+        ],
+        "velocity": [
+          -1.7482686042785645, -1.0896759033203125, -4.628236770629883
+        ],
+        "speed": 5.066005555858934,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 263,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1531/1525/1214 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -1.0, 28.3位置 191.02, -35.68 · 高さ 15.40 チェックポイント 2/3 · 99.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6041,
+        "position": [
+          188.75186252593994, 14.765571594238281, -42.136796951293945
+        ],
+        "simulationPosition": [
+          -3.2481374740600586, 14.765571594238281, 21.863203048706055
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.005654193926602602, 0.9850252270698547, 0.03168183192610741,
+          -0.16938050091266632
+        ],
+        "velocity": [
+          -1.6555631160736084, 0.2581990659236908, -4.676975727081299
+        ],
+        "speed": 4.9680638019911605,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 266,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.4 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1547/1541/1227 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -2.9, 22.9位置 189.11, -41.11 · 高さ 14.74 チェックポイント 2/3 · 100.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6104,
+        "position": [
+          187.0128879547119, 14.898810386657715, -47.027584075927734
+        ],
+        "simulationPosition": [
+          -4.987112045288086, 14.898810386657715, 16.972415924072266
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.012104674242436886, 0.9853729605674744, -0.008845916017889977,
+          -0.1697506606578827
+        ],
+        "velocity": [
+          -1.7286624908447266, -1.2281639575958252, -4.856743812561035
+        ],
+        "speed": 5.29949253937024,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 268,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1563/1557/1241 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.73RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -4.6, 18.0位置 187.35, -46.07 · 高さ 15.02 チェックポイント 2/3 · 101.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6166,
+        "position": [185.2053027153015, 14.2843017578125, -51.620527267456055],
+        "simulationPosition": [
+          -6.794697284698486, 14.2843017578125, 12.379472732543945
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.03371636942028999, 0.9754397869110107, -0.10411737114191055,
+          -0.19115470349788666
+        ],
+        "velocity": [
+          -1.7902464866638184, -1.156284213066101, -4.501650333404541
+        ],
+        "speed": 4.980645679893246,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 271,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1579/1573/1256 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.72RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -6.4, 13.4位置 185.59, -50.61 · 高さ 14.43 チェックポイント 2/3 · 102.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6228,
+        "position": [183.1480360031128, 13.90165901184082, -56.66372871398926],
+        "simulationPosition": [
+          -8.851963996887207, 13.90165901184082, 7.336271286010742
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.005835971795022488, 0.9807316660881042, 0.03034673072397709,
+          -0.19290004670619965
+        ],
+        "velocity": [
+          -1.9536123275756836, 0.25731122493743896, -4.7622785568237305
+        ],
+        "speed": 5.15384392911908,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 274,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 50.1ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1596/1590/1269 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.72RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -8.6, 8.0位置 183.41, -56.03 · 高さ 13.86 チェックポイント 2/3 · 103.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6288,
+        "position": [
+          181.09034252166748, 13.660378456115723, -60.799670934677124
+        ],
+        "simulationPosition": [
+          -10.90965747833252, 13.660378456115723, 3.200329065322876
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.031015414744615555, 0.9699219465255737, -0.07118374854326248,
+          -0.23069977760314941
+        ],
+        "velocity": [
+          -2.2916741371154785, -2.215726852416992, -4.251955032348633
+        ],
+        "speed": 5.3141638507257705,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 277,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.9msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1609/1603/1281 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.72RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -10.3, 4.3位置 181.71, -59.68 · 高さ 14.06 チェックポイント 2/3 · 104.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6350,
+        "position": [178.6519069671631, 13.189398765563965, -65.59024047851562],
+        "simulationPosition": [
+          -13.348093032836914, 13.189398765563965, -1.590240478515625
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.020826702937483788, 0.9704447984695435, -0.029239920899271965,
+          -0.23863820731639862
+        ],
+        "velocity": [
+          -2.243126392364502, -1.921983003616333, -4.453060150146484
+        ],
+        "speed": 5.3437233628935985,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 279,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.5msRAF 66.8ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 5.9 · UI 0.0 · Commit 1.6ms · Queue 5 · W 4/4Spike >20/>33/>50 1627/1621/1294 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.72RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -12.8, -0.5位置 179.18, -64.53 · 高さ 13.48 チェックポイント 2/3 · 105.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6411,
+        "position": [
+          176.08668994903564, 13.147229194641113, -70.30248737335205
+        ],
+        "simulationPosition": [
+          -15.913310050964355, 13.147229194641113, -6.302487373352051
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.007273050956428051, 0.9678447246551514, 0.028146034106612206,
+          -0.24986302852630615
+        ],
+        "velocity": [
+          -2.429935932159424, 0.1899345964193344, -4.393740177154541
+        ],
+        "speed": 5.0245016200274515,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 282,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1643/1637/1308 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.72RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -15.4, -5.5位置 176.54, -69.50 · 高さ 13.10 チェックポイント 2/3 · 106.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6473,
+        "position": [
+          173.32106971740723, 12.741094589233398, -74.46553897857666
+        ],
+        "simulationPosition": [
+          -18.678930282592773, 12.741094589233398, -10.46553897857666
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.04484941065311432, 0.9536256790161133, -0.09761293977499008,
+          -0.2811731696128845
+        ],
+        "velocity": [
+          -2.9202051162719727, 0.2259654998779297, -4.496341705322266
+        ],
+        "speed": 5.366166887011289,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 285,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.0 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1659/1653/1322 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.71RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -18.1, -9.6位置 173.85, -73.65 · 高さ 12.70 チェックポイント 2/3 · 107.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6534,
+        "position": [
+          170.22584533691406, 12.356555938720703, -79.21602439880371
+        ],
+        "simulationPosition": [
+          -21.774154663085938, 12.356555938720703, -15.216024398803711
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.007143717724829912, 0.9574803709983826, 0.02452261932194233,
+          -0.28736555576324463
+        ],
+        "velocity": [
+          -2.949641227722168, 0.19396722316741943, -4.465055465698242
+        ],
+        "speed": 5.354878800468164,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 288,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 1676/1670/1337 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.71RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -21.4, -14.7位置 170.57, -78.70 · 高さ 12.32 チェックポイント 2/3 · 108.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6597,
+        "position": [
+          167.00043296813965, 12.033811569213867, -83.19201469421387
+        ],
+        "simulationPosition": [
+          -24.99956703186035, 12.033811569213867, -19.192014694213867
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.0380268432199955, 0.9378907084465027, -0.07474935799837112,
+          -0.3366415202617645
+        ],
+        "velocity": [
+          -3.2534143924713135, 0.2216511070728302, -3.7505767345428467
+        ],
+        "speed": 4.969975881641699,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 291,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 50.1ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1691/1685/1348 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.71RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -24.1, -18.3位置 167.86, -82.34 · 高さ 12.11 チェックポイント 2/3 · 109.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6658,
+        "position": [
+          163.61639785766602, 11.702625274658203, -87.16313552856445
+        ],
+        "simulationPosition": [
+          -28.383602142333984, 11.702625274658203, -23.163135528564453
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.006298961583524942, 0.9345710873603821, 0.019596317782998085,
+          -0.3551805913448334
+        ],
+        "velocity": [
+          -3.298548936843872, 0.2026366889476776, -3.5662567615509033
+        ],
+        "speed": 4.862064788314637,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 294,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1711/1705/1362 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.70RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -28.2, -22.9位置 163.83, -86.92 · 高さ 11.68 チェックポイント 2/3 · 110.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6721,
+        "position": [160.0685157775879, 11.82280158996582, -90.80239677429199],
+        "simulationPosition": [
+          -31.93148422241211, 11.82280158996582, -26.802396774291992
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.012716223485767841, 0.9257384538650513, 0.008183940313756466,
+          -0.37786200642585754
+        ],
+        "velocity": [
+          -3.4132678508758545, -0.6565555930137634, -3.490183115005493
+        ],
+        "speed": 4.925732518601652,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 297,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.2msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1725/1719/1371 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.70RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -31.0, -25.8位置 161.00, -89.85 · 高さ 11.83 チェックポイント 2/3 · 111.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6784,
+        "position": [156.39297485351562, 11.52700138092041, -94.13636779785156],
+        "simulationPosition": [
+          -35.607025146484375, 11.52700138092041, -30.136367797851562
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.03658031299710274, 0.9144728183746338, -0.05409424006938934,
+          -0.3993435204029083
+        ],
+        "velocity": [
+          -3.5626888275146484, -0.5661810040473938, -3.386168956756592
+        ],
+        "speed": 4.947671453799639,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 300,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 4.4msRAF 66.8ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.2 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1744/1738/1385 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.70RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -34.9, -29.5位置 157.08, -93.50 · 高さ 11.54 チェックポイント 2/3 · 112.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6844,
+        "position": [
+          152.61243438720703, 11.257124900817871, -97.53746795654297
+        ],
+        "simulationPosition": [
+          -39.38756561279297, 11.257124900817871, -33.53746795654297
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.0073592704720795155, 0.9122958183288574, 0.017341244965791702,
+          -0.4090985059738159
+        ],
+        "velocity": [
+          -3.7261598110198975, 0.059471357613801956, -3.3143296241760254
+        ],
+        "speed": 4.987242187554868,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 302,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 4.3 · UI 0.0 · Commit 1.2ms · Queue 1 · W 4/4Spike >20/>33/>50 1758/1752/1396 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.70RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -38.2, -32.5位置 153.78, -96.50 · 高さ 11.22 チェックポイント 2/3 · 113.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6907,
+        "position": [
+          148.83029174804688, 10.948474884033203, -100.40524673461914
+        ],
+        "simulationPosition": [
+          -43.169708251953125, 10.948474884033203, -36.40524673461914
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.039017196744680405, 0.8966529965400696, -0.05374741181731224,
+          -0.43772396445274353
+        ],
+        "velocity": [
+          -2.708052635192871, -0.02807661145925522, -3.5372276306152344
+        ],
+        "speed": 4.454920502306853,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": -1
+        }
+      },
+      "progress": 305,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1775/1769/1410 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.69RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -42.3, -35.7位置 149.68, -99.73 · 高さ 11.24 チェックポイント 2/3 · 114.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 6969,
+        "position": [
+          144.97213745117188, 10.70427131652832, -103.18982315063477
+        ],
+        "simulationPosition": [
+          -47.027862548828125, 10.70427131652832, -39.189823150634766
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.0033781917300075293, 0.9000715613365173, 0.011088917963206768,
+          -0.43558788299560547
+        ],
+        "velocity": [
+          -3.2380411624908447, -1.7381422519683838, -2.699089288711548
+        ],
+        "speed": 4.559729383033624,
+        "groundedWheelCount": 3,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 307,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1790/1784/1425 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.68RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -46.0, -38.5位置 146.00, -102.51 · 高さ 11.02 チェックポイント 2/3 · 115.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7032,
+        "position": [
+          141.32272720336914, 10.770766258239746, -105.86573028564453
+        ],
+        "simulationPosition": [
+          -50.67727279663086, 10.770766258239746, -41.86573028564453
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.007109244354069233, 0.8942614793777466, 0.015165670774877071,
+          -0.44723132252693176
+        ],
+        "velocity": [
+          -3.638965368270874, 0.027663346379995346, -2.7236239910125732
+        ],
+        "speed": 4.5454330769055415,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 310,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1809/1803/1439 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.68RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -50.2, -41.5位置 141.75, -105.55 · 高さ 10.76 チェックポイント 2/3 · 117.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7094,
+        "position": [
+          137.5182113647461, 10.498578071594238, -108.40422821044922
+        ],
+        "simulationPosition": [
+          -54.481788635253906, 10.498578071594238, -44.40422821044922
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.034214992076158524, 0.882235586643219, -0.04838278144598007,
+          -0.46706390380859375
+        ],
+        "velocity": [
+          -3.9183197021484375, -0.9494325518608093, -2.699751615524292
+        ],
+        "speed": 4.8521449117172475,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 312,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 83.4ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.8 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1824/1818/1449 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.68RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -53.7, -43.9位置 138.32, -107.87 · 高さ 10.79 チェックポイント 2/3 · 118.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7155,
+        "position": [
+          133.39471435546875, 10.324125289916992, -110.96931076049805
+        ],
+        "simulationPosition": [
+          -58.60528564453125, 10.324125289916992, -46.96931076049805
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.013166161254048347, 0.8713111281394958, 0.00326264975592494,
+          -0.49054351449012756
+        ],
+        "velocity": [
+          -3.7806544303894043, -1.7116949558258057, -2.348438262939453
+        ],
+        "speed": 4.768480871164381,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 315,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1843/1837/1463 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.68RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -58.3, -46.8位置 133.69, -110.78 · 高さ 10.43 チェックポイント 2/3 · 119.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7217,
+        "position": [
+          129.16785049438477, 10.322746276855469, -113.5230827331543
+        ],
+        "simulationPosition": [
+          -62.832149505615234, 10.322746276855469, -49.5230827331543
+        ],
+        "worldOrigin": [192, 0, -64],
+        "rotation": [
+          -0.007030006032437086, 0.8712165355682373, 0.013431848026812077,
+          -0.49066492915153503
+        ],
+        "velocity": [
+          -4.2958598136901855, 0.015587733127176762, -2.600414752960205
+        ],
+        "speed": 5.02163433592246,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 318,
+      "hud": "Rebase 5 · Origin 192, -64 · Hinge 0.000m · SyncGen 15 · Gen 0.5msRAF 66.6ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1857/1851/1471 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.67RebaseMs 0.60 (P 0.20 / R 0.30 / C 0.00 / T 0.10) · RB 1 · SC 167 · Ch 193 · LOD 63Shadow→ -61.7, -48.9位置 130.23, -112.88 · 高さ 10.30 チェックポイント 2/3 · 120.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7279,
+        "position": [
+          124.74631118774414, 10.052568435668945, -115.89731788635254
+        ],
+        "simulationPosition": [
+          28.74631118774414, 10.052568435668945, 12.102682113647461
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.03681730851531029, 0.8550169467926025, -0.04229138791561127,
+          -0.5155598521232605
+        ],
+        "velocity": [
+          -4.747707843780518, -0.08746404200792313, -1.2840102910995483
+        ],
+        "speed": 4.919050940597074,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 1
+        }
+      },
+      "progress": 321,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1877/1871/1483 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.67RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 29.3, 12.3位置 125.27, -115.67 · 高さ 10.14 チェックポイント 2/3 · 121.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7340,
+        "position": [120.12443351745605, 9.82306957244873, -118.26950263977051],
+        "simulationPosition": [
+          24.124433517456055, 9.82306957244873, 9.730497360229492
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.007402550894767046, 0.8505193591117859, 0.012178054079413414,
+          -0.5257506370544434
+        ],
+        "velocity": [
+          -4.297420978546143, 0.027350202202796936, -2.15191650390625
+        ],
+        "speed": 4.806175167447928,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 324,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1892/1886/1492 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.67RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 25.3, 10.3位置 121.23, -117.74 · 高さ 10.05 チェックポイント 2/3 · 122.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7401,
+        "position": [
+          115.48319625854492, 9.919693946838379, -120.58405828475952
+        ],
+        "simulationPosition": [
+          19.483196258544922, 9.919693946838379, 7.4159417152404785
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.006912695709615946, 0.8504838943481445, 0.012125051580369473,
+          -0.5258159637451172
+        ],
+        "velocity": [
+          -4.79584264755249, 0.0037536274176090956, -2.3928513526916504
+        ],
+        "speed": 5.359650957467318,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 326,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 50.0ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.5 · UI 0.1 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1910/1904/1506 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.66RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 20.1, 7.7位置 116.04, -120.31 · 高さ 9.91 チェックポイント 2/3 · 123.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7463,
+        "position": [110.57800006866455, 9.71055793762207, -122.64216661453247],
+        "simulationPosition": [
+          14.57800006866455, 9.71055793762207, 5.357833385467529
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.03608433157205582, 0.8363661170005798, -0.032982710748910904,
+          -0.5459870100021362
+        ],
+        "velocity": [-5.024770259857178, 0.0621405653655529, -2.1966552734375],
+        "speed": 5.484293209204801,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 329,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 2.8 · UI 0.1 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1925/1919/1515 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.66RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 15.9, 5.9位置 111.83, -122.10 · 高さ 9.66 チェックポイント 3/3 · 124.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7526,
+        "position": [
+          105.27801418304443, 9.508482933044434, -124.80979871749878
+        ],
+        "simulationPosition": [
+          9.278014183044434, 9.508482933044434, 3.1902012825012207
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.006894820369780064, 0.8292213082313538, 0.011135924607515335,
+          -0.5587669014930725
+        ],
+        "velocity": [
+          -4.871955871582031, -0.004335345234721899, -1.9734420776367188
+        ],
+        "speed": 5.2564671066837345,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 333,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 66.7ms · max 233.4 · p95 83.4 · p99 100.0 · CPU 3.4 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 1944/1938/1527 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.66RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 10.1, 3.5位置 106.09, -124.48 · 高さ 9.49 チェックポイント 3/3 · 125.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7589,
+        "position": [
+          100.04372930526733, 9.530916213989258, -126.70260119438171
+        ],
+        "simulationPosition": [
+          4.043729305267334, 9.530916213989258, 1.2973988056182861
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.010380365885794163, 0.8125416040420532, 0.0036981916055083275,
+          -0.5827991366386414
+        ],
+        "velocity": [
+          -5.037959575653076, -0.5587542653083801, -1.120154857635498
+        ],
+        "speed": 5.191145337976893,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 336,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 66.6ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 1964/1958/1538 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.66RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ 4.4, 1.4位置 100.36, -126.63 · 高さ 9.55 チェックポイント 3/3 · 126.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7652,
+        "position": [94.59030199050903, 9.248664855957031, -128.31625512242317],
+        "simulationPosition": [
+          -1.4096980094909668, 9.248664855957031, -0.316255122423172
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.015923170372843742, 0.8024065494537354, -0.003384573617950082,
+          -0.5965558886528015
+        ],
+        "velocity": [
+          -5.262271404266357, -1.222047209739685, -1.6659294366836548
+        ],
+        "speed": 5.653337120940258,
+        "groundedWheelCount": 2,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 339,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.7msRAF 66.8ms · max 233.4 · p95 83.4 · p99 99.9 · CPU 5.0 · UI 0.0 · Commit 2.2ms · Queue 0 · W 3/4Spike >20/>33/>50 1979/1973/1546 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.66RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -0.1, 0.1位置 95.90, -127.90 · 高さ 9.36 チェックポイント 3/3 · 127.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7714,
+        "position": [88.87640285491943, 9.189419746398926, -129.9632042646408],
+        "simulationPosition": [
+          -7.123597145080566, 9.189419746398926, -1.963204264640808
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.007296528667211533, 0.7953919768333435, 0.010266312398016453,
+          -0.6059645414352417
+        ],
+        "velocity": [
+          -5.519082069396973, -0.03349446877837181, -1.3778231143951416
+        ],
+        "speed": 5.688566190415599,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 342,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 0.6msRAF 66.6ms · max 233.4 · p95 83.4 · p99 83.4 · CPU 2.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 1998/1992/1558 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -6.4, -1.8位置 89.53, -129.83 · 高さ 9.19 チェックポイント 3/3 · 128.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7775,
+        "position": [83.21036434173584, 9.032326698303223, -131.14899563789368],
+        "simulationPosition": [
+          -12.78963565826416, 9.032326698303223, -3.1489956378936768
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.031695280224084854, 0.7726784944534302, -0.018874676898121834,
+          -0.6337246894836426
+        ],
+        "velocity": [
+          -5.570052146911621, -0.03637438267469406, -1.1213690042495728
+        ],
+        "speed": 5.681925066271236,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 345,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 0.6msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2013/2007/1570 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -11.5, -3.0位置 84.44, -130.98 · 高さ 9.03 チェックポイント 3/3 · 129.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7836,
+        "position": [77.36591911315918, 8.875110626220703, -132.30781936645508],
+        "simulationPosition": [
+          -18.63408088684082, 8.875110626220703, -4.307819366455078
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.007124668452888727, 0.7723384499549866, 0.009559564292430878,
+          -0.6350993514060974
+        ],
+        "velocity": [
+          -5.881289958953857, -0.034504234790802, -1.1557300090789795
+        ],
+        "speed": 5.993869699734526,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 349,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 0.6msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2029/2023/1585 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -17.9, -4.2位置 78.05, -132.17 · 高さ 8.87 チェックポイント 3/3 · 130.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7899,
+        "position": [71.59624290466309, 8.737106323242188, -132.68640089035034],
+        "simulationPosition": [
+          -24.403757095336914, 8.737106323242188, -4.686400890350342
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.028408676385879517, 0.7305470108985901, -0.012388954870402813,
+          -0.6821588277816772
+        ],
+        "velocity": [
+          -5.31154727935791, -0.06477440148591995, -0.3224940598011017
+        ],
+        "speed": 5.321722713797598,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 352,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 0.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2043/2037/1596 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -22.7, -4.6位置 73.23, -132.60 · 高さ 8.73 チェックポイント 3/3 · 131.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 7963,
+        "position": [65.86186790466309, 8.593687057495117, -132.81852197647095],
+        "simulationPosition": [
+          -30.138132095336914, 8.593687057495117, -4.818521976470947
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.008578517474234104, 0.7037404775619507, 0.009251201525330544,
+          -0.7103452086448669
+        ],
+        "velocity": [
+          -5.049857139587402, -0.07209791243076324, 0.18391212821006775
+        ],
+        "speed": 5.053719314536719,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 355,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 0.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2062/2056/1609 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -29.2, -4.9位置 66.80, -132.93 · 高さ 8.60 チェックポイント 3/3 · 132.5 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8024,
+        "position": [60.7708854675293, 8.475266456604004, -132.30978727340698],
+        "simulationPosition": [
+          -35.2291145324707, 8.475266456604004, -4.309787273406982
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.024362966418266296, 0.6704739928245544, -0.006333527155220509,
+          -0.7415059208869934
+        ],
+        "velocity": [
+          -4.8924384117126465, -0.08516774326562881, 0.655566930770874
+        ],
+        "speed": 4.936899346514436,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 358,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 83.4ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.1 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 2077/2071/1617 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.65RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -33.7, -4.5位置 62.28, -132.49 · 高さ 8.48 チェックポイント 3/3 · 133.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8088,
+        "position": [55.72101593017578, 8.346221923828125, -131.30750608444214],
+        "simulationPosition": [
+          -40.27898406982422, 8.346221923828125, -3.3075060844421387
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.008602125570178032, 0.6250412464141846, 0.007769948802888393,
+          -0.7805057168006897
+        ],
+        "velocity": [
+          -4.576259613037109, -0.08237119019031525, 1.0117231607437134
+        ],
+        "speed": 4.687485553350877,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 360,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.6 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 2096/2090/1632 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.64RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -39.4, -3.5位置 56.62, -131.53 · 高さ 8.35 チェックポイント 3/3 · 134.6 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8151,
+        "position": [51.328125, 8.24549674987793, -129.59761559963226],
+        "simulationPosition": [
+          -44.671875, 8.24549674987793, -1.5976155996322632
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.019537076354026794, 0.5638932585716248, -0.0000508627163071651,
+          -0.8256165385246277
+        ],
+        "velocity": [
+          -4.018274307250977, -0.10041861981153488, 1.6345487833023071
+        ],
+        "speed": 4.339166052654959,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 363,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.6ms · max 233.4 · p95 83.3 · p99 100.0 · CPU 3.8 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2113/2107/1647 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.63RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -44.2, -1.9位置 51.77, -129.84 · 高さ 8.25 チェックポイント 3/3 · 135.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8211,
+        "position": [47.43748474121094, 8.14294147491455, -127.6381219625473],
+        "simulationPosition": [
+          -48.56251525878906, 8.14294147491455, 0.36187803745269775
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.008490616455674171, 0.5148243308067322, 0.0064661758951842785,
+          -0.8572293519973755
+        ],
+        "velocity": [
+          -3.858285665512085, -0.10038228332996368, 2.016144037246704
+        ],
+        "speed": 4.3544553802316095,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 366,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2130/2124/1661 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.63RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -48.3, 0.2位置 47.63, -127.74 · 高さ 8.14 チェックポイント 3/3 · 136.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8275,
+        "position": [
+          43.923038482666016, 8.073607444763184, -124.91663599014282
+        ],
+        "simulationPosition": [
+          -52.076961517333984, 8.073607444763184, 3.0833640098571777
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.010525516234338284, 0.45271268486976624, 0.0018625796074047685,
+          -0.8915924429893494
+        ],
+        "velocity": [
+          -3.3642945289611816, -0.09603244066238403, 2.4508066177368164
+        ],
+        "speed": 4.163430434725707,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 368,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2144/2138/1672 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.63RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -51.3, 2.4位置 44.72, -125.56 · 高さ 8.08 チェックポイント 3/3 · 137.7 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8338,
+        "position": [40.743282318115234, 8.0144624710083, -122.16940021514893],
+        "simulationPosition": [
+          -55.256717681884766, 8.0144624710083, 5.830599784851074
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.004503172822296619, 0.42461028695106506, 0.0026416536420583725,
+          -0.9053611159324646
+        ],
+        "velocity": [
+          -3.206859827041626, -0.09086238592863083, 2.6668553352355957
+        ],
+        "speed": 4.17184890696495,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 371,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 4.2 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2164/2158/1686 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.62RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -55.0, 5.6位置 40.96, -122.35 · 高さ 8.02 チェックポイント 3/3 · 138.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8398,
+        "position": [38.25932693481445, 7.976214408874512, -119.05182933807373],
+        "simulationPosition": [
+          -57.74067306518555, 7.976214408874512, 8.94817066192627
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.005180785898119211, 0.34896320104599, 0.0015139973256736994,
+          -0.9371209144592285
+        ],
+        "velocity": [
+          -2.585252046585083, -0.08536890149116516, 2.972925901412964
+        ],
+        "speed": 3.9406984671510017,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 373,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2178/2172/1697 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.62RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -57.3, 8.4位置 38.69, -119.63 · 高さ 7.98 チェックポイント 3/3 · 139.8 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8461,
+        "position": [35.67898178100586, 7.944599151611328, -115.70053482055664],
+        "simulationPosition": [
+          -60.32101821899414, 7.944599151611328, 12.29946517944336
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.0020310368854552507, 0.3229277729988098, 0.00143559614662081,
+          -0.9464203715324402
+        ],
+        "velocity": [
+          -2.405823230743408, -0.07818526774644852, 3.139798879623413
+        ],
+        "speed": 3.9563158819995246,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 375,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 50.0ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.9 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2196/2190/1711 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.62RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -60.2, 12.1位置 35.83, -115.91 · 高さ 7.95 チェックポイント 3/3 · 141.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8523,
+        "position": [
+          33.287803649902344, 7.9272966384887695, -112.22781562805176
+        ],
+        "simulationPosition": [
+          -62.712196350097656, 7.9272966384887695, 15.772184371948242
+        ],
+        "worldOrigin": [96, 0, -128],
+        "rotation": [
+          -0.001894189859740436, 0.29663482308387756, 0.001077611930668354,
+          -0.9549884796142578
+        ],
+        "velocity": [
+          -2.3818955421447754, -0.0768510177731514, 3.456317901611328
+        ],
+        "speed": 4.198269392216376,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 377,
+      "hud": "Rebase 6 · Origin 96, -128 · Hinge 0.000m · SyncGen 15 · Gen 2.6msRAF 66.7ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 2.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2211/2205/1720 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.61RebaseMs 0.70 (P 0.50 / R 0.20 / C 0.00 / T 0.00) · RB 1 · SC 173 · Ch 195 · LOD 79Shadow→ -62.3, 15.1位置 33.72, -112.85 · 高さ 7.93 チェックポイント 3/3 · 141.9 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8583,
+        "position": [31.217374801635742, 7.913089752197266, -108.6141357421875],
+        "simulationPosition": [
+          31.217374801635742, 7.913089752197266, 19.3858642578125
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          -0.0010571085149422288, 0.26566317677497864, 0.0005602684104815125,
+          -0.9640651941299438
+        ],
+        "velocity": [
+          -2.2001888751983643, -0.07223109155893326, 3.6875979900360107
+        ],
+        "speed": 4.294697585773888,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 380,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 83.3 · p99 83.4 · CPU 3.3 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2229/2223/1734 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.61RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 31.4, 19.1位置 31.36, -108.86 · 高さ 7.91 チェックポイント 3/3 · 143.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8645,
+        "position": [
+          29.121124267578125, 7.903132438659668, -104.66830253601074
+        ],
+        "simulationPosition": [
+          29.121124267578125, 7.903132438659668, 23.331697463989258
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          -0.00003560156255844049, 0.24463266134262085, 0.0004724518512375653,
+          -0.9696156978607178
+        ],
+        "velocity": [
+          -2.114861249923706, -0.06342256814241409, 3.9078152179718018
+        ],
+        "speed": 4.443836215072586,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 382,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2245/2239/1748 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.61RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 29.3, 23.0位置 29.26, -104.93 · 高さ 7.90 チェックポイント 3/3 · 144.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8708,
+        "position": [26.98187255859375, 7.898191452026367, -100.32477760314941],
+        "simulationPosition": [
+          26.98187255859375, 7.898191452026367, 27.675222396850586
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          -0.00003364530857652426, 0.2231648862361908, 0.000459009112091735,
+          -0.9747806191444397
+        ],
+        "velocity": [
+          -1.9980487823486328, -0.06363411992788315, 4.115971088409424
+        ],
+        "speed": 4.57574761525219,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 385,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.7ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 4.0 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2261/2255/1763 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.61RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 27.1, 27.4位置 27.11, -100.60 · 高さ 7.90 チェックポイント 3/3 · 145.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8771,
+        "position": [25.02018928527832, 7.8982343673706055, -95.81351470947266],
+        "simulationPosition": [
+          25.02018928527832, 7.8982343673706055, 32.186485290527344
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0010073338635265827, 0.20186588168144226, 0.0006549902027472854,
+          -0.9794124960899353
+        ],
+        "velocity": [
+          -1.8673421144485474, -0.059607088565826416, 4.302253723144531
+        ],
+        "speed": 4.690405811410293,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 387,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.8 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 2277/2271/1778 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 25.2, 31.9位置 25.14, -96.10 · 高さ 7.90 チェックポイント 3/3 · 146.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8834,
+        "position": [23.029380798339844, 7.904665470123291, -91.02685165405273],
+        "simulationPosition": [
+          23.029380798339844, 7.904665470123291, 36.973148345947266
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.001244454993866384, 0.19562330842018127, -0.000016135332771227695,
+          -0.9806783199310303
+        ],
+        "velocity": [
+          -1.9771041870117188, -0.05507326126098633, 4.758952617645264
+        ],
+        "speed": 5.153601075694344,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 390,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 50.1ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2291/2285/1790 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 23.5, 35.8位置 23.52, -92.20 · 高さ 7.90 チェックポイント 3/3 · 147.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8895,
+        "position": [21.213945388793945, 7.911083221435547, -86.1423225402832],
+        "simulationPosition": [
+          21.213945388793945, 7.911083221435547, 41.8576774597168
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.001458236132748425, 0.17861038446426392, -0.0004438355681486428,
+          -0.9839187264442444
+        ],
+        "velocity": [
+          -1.8361103534698486, -0.03662896901369095, 4.925715923309326
+        ],
+        "speed": 5.256930688969869,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 393,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2309/2303/1804 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 21.5, 41.2位置 21.46, -86.80 · 高さ 7.91 チェックポイント 3/3 · 148.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 8956,
+        "position": [19.455984115600586, 7.924587249755859, -81.04718399047852],
+        "simulationPosition": [
+          19.455984115600586, 7.924587249755859, 46.952816009521484
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.002068429021164775, 0.16606324911117554, -0.00023468132712878287,
+          -0.9861128926277161
+        ],
+        "velocity": [
+          -1.7639209032058716, -0.03413122147321701, 5.10460901260376
+        ],
+        "speed": 5.400890210382118,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 396,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 50.0ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.8 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2323/2317/1815 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 19.9, 45.7位置 19.89, -82.31 · 高さ 7.92 チェックポイント 3/3 · 149.0 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9018,
+        "position": [17.72614288330078, 7.940598011016846, -75.63659286499023],
+        "simulationPosition": [
+          17.72614288330078, 7.940598011016846, 52.363407135009766
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0020078467205166817, 0.15539681911468506, -0.00013328209752216935,
+          -0.9878500699996948
+        ],
+        "velocity": [
+          -1.750267505645752, -0.04576472193002701, 5.423623561859131
+        ],
+        "speed": 5.6992300613193585,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 399,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.7ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2341/2335/1828 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 18.0, 51.6位置 17.96, -76.36 · 高さ 7.94 チェックポイント 3/3 · 150.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9080,
+        "position": [15.976972579956055, 7.959402084350586, -69.8499984741211],
+        "simulationPosition": [
+          15.976972579956055, 7.959402084350586, 58.150001525878906
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.002443542703986168, 0.14474940299987793, -0.00011968376929871738,
+          -0.9894653558731079
+        ],
+        "velocity": [
+          -1.7046144008636475, -0.04298144206404686, 5.70386266708374
+        ],
+        "speed": 5.9532853942126165,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 402,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2357/2351/1842 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 16.2, 57.4位置 16.20, -70.61 · 高さ 7.96 チェックポイント 3/3 · 151.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9140,
+        "position": [
+          14.330777168273926, 7.981363296508789, -63.980079650878906
+        ],
+        "simulationPosition": [
+          14.330777168273926, 7.981363296508789, 64.0199203491211
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.002433124464005232, 0.13399659097194672, -0.00015597882156725973,
+          -0.9909788966178894
+        ],
+        "velocity": [
+          -1.6365300416946411, -0.039074305444955826, 5.933704853057861
+        ],
+        "speed": 6.15537250391213,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 405,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 83.3ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 4.5 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2373/2367/1856 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 14.5, 63.6位置 14.44, -64.38 · 高さ 7.98 チェックポイント 3/3 · 152.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9201,
+        "position": [12.595932960510254, 8.004805564880371, -57.68553924560547],
+        "simulationPosition": [
+          12.595932960510254, 8.004805564880371, 70.31446075439453
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0024364169221371412, 0.1340608149766922, -0.00017355784075334668,
+          -0.9909701347351074
+        ],
+        "velocity": [
+          -1.7669792175292969, -0.037499941885471344, 6.411232948303223
+        ],
+        "speed": 6.650378163550603,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 409,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.8ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2387/2381/1865 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.60RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 13.0, 68.8位置 13.01, -59.17 · 高さ 8.00 チェックポイント 3/3 · 153.1 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9262,
+        "position": [10.971114158630371, 8.03211498260498, -51.14366912841797],
+        "simulationPosition": [
+          10.971114158630371, 8.03211498260498, 76.85633087158203
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0026307334192097187, 0.12376116961240768, -0.0002474918437656015,
+          -0.992308497428894
+        ],
+        "velocity": [
+          -1.6654483079910278, -0.026663772761821747, 6.589207172393799
+        ],
+        "speed": 6.796475570771512,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 412,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.6ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2407/2401/1876 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 11.1, 76.4位置 11.08, -51.58 · 高さ 8.03 チェックポイント 3/3 · 154.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9323,
+        "position": [9.266709327697754, 8.059804916381836, -44.241600036621094],
+        "simulationPosition": [
+          9.266709327697754, 8.059804916381836, 83.7583999633789
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0025329310446977615, 0.11739901453256607, 0.00012184858496766537,
+          -0.9930816888809204
+        ],
+        "velocity": [
+          -1.6371504068374634, -0.03362344950437546, 6.791157245635986
+        ],
+        "speed": 6.985786192399449,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 416,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.7ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2422/2416/1886 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 9.5, 82.6位置 9.51, -45.38 · 高さ 8.06 チェックポイント 3/3 · 155.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9386,
+        "position": [7.617307662963867, 8.088173866271973, -36.999305725097656],
+        "simulationPosition": [
+          7.617307662963867, 8.088173866271973, 91.00069427490234
+        ],
+        "worldOrigin": [0, 0, -128],
+        "rotation": [
+          0.0027057859115302563, 0.11147075891494751, -0.0006001763395033777,
+          -0.9937639236450195
+        ],
+        "velocity": [
+          -1.5717236995697021, -0.022086957469582558, 6.997443675994873
+        ],
+        "speed": 7.171821332144296,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 420,
+      "hud": "Rebase 7 · Origin 0, -128 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 83.3ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.3 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4Spike >20/>33/>50 2440/2434/1900 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.50 (P 0.20 / R 0.20 / C 0.10 / T 0.00) · RB 1 · SC 190 · Ch 196 · LOD 111Shadow→ 7.7, 90.6位置 7.70, -37.35 · 高さ 8.09 チェックポイント 3/3 · 156.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9450,
+        "position": [5.958402633666992, 8.119349479675293, -29.396209955215454],
+        "simulationPosition": [
+          5.958402633666992, 8.119349479675293, 2.603790044784546
+        ],
+        "worldOrigin": [0, 0, -32],
+        "rotation": [
+          0.002479271497577429, 0.10540986806154251, -0.00011630833614617586,
+          -0.9944258332252502
+        ],
+        "velocity": [
+          -1.5366517305374146, -0.03162214159965515, 7.166263580322266
+        ],
+        "speed": 7.329231351475833,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 424,
+      "hud": "Rebase 8 · Origin 0, -32 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.8ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 4.8 · UI 0.0 · Commit 1.5ms · Queue 0 · W 0/4Spike >20/>33/>50 2453/2447/1909 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.59RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 197 · Ch 194 · LOD 142Shadow→ 6.5, 0.3位置 6.44, -31.65 · 高さ 8.11 チェックポイント 3/3 · 157.2 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9512,
+        "position": [4.326518535614014, 8.145113945007324, -21.782137870788574],
+        "simulationPosition": [
+          4.326518535614014, 8.145113945007324, 10.217862129211426
+        ],
+        "worldOrigin": [0, 0, -32],
+        "rotation": [
+          0.002138206036761403, 0.10543441027402878, -0.00023521963157691061,
+          -0.9944239854812622
+        ],
+        "velocity": [
+          -1.6119225025177002, -0.02709111198782921, 7.529935836791992
+        ],
+        "speed": 7.700581912341169,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 428,
+      "hud": "Rebase 8 · Origin 0, -32 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 50.0ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.9 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2473/2467/1920 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.58RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 197 · Ch 194 · LOD 142Shadow→ 4.6, 8.8位置 4.62, -23.16 · 高さ 8.14 チェックポイント 3/3 · 158.4 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9572,
+        "position": [2.7886221408843994, 8.168174743652344, -14.1929931640625],
+        "simulationPosition": [
+          2.7886221408843994, 8.168174743652344, 17.8070068359375
+        ],
+        "worldOrigin": [0, 0, -32],
+        "rotation": [
+          0.0020339384209364653, 0.09923302382230759, -0.00006199000927153975,
+          -0.9950621724128723
+        ],
+        "velocity": [-1.5417265892028809, -0.041324432939291, 7.65748929977417],
+        "speed": 7.811259242962611,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 1,
+          "steering": 0
+        }
+      },
+      "progress": 432,
+      "hud": "Rebase 8 · Origin 0, -32 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 66.7ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.6 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 2488/2482/1930 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.58RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 197 · Ch 194 · LOD 142Shadow→ 3.2, 15.6位置 3.22, -16.35 · 高さ 8.16 チェックポイント 3/3 · 159.3 秒"
+    },
+    {
+      "machine": {
+        "id": "sample-race-island-machine",
+        "physicsStep": 9636,
+        "position": [1.1119755506515503, 8.183049201965332, -5.872501373291016],
+        "simulationPosition": [
+          1.1119755506515503, 8.183049201965332, 26.127498626708984
+        ],
+        "worldOrigin": [0, 0, -32],
+        "rotation": [
+          0.0008930095937103033, 0.09925493597984314, -0.00004009742406196892,
+          -0.9950616955757141
+        ],
+        "velocity": [
+          -1.5712339878082275, -0.051326341927051544, 7.797371864318848
+        ],
+        "speed": 7.954270464869205,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "progress": 437,
+      "hud": "Rebase 8 · Origin 0, -32 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 50.0ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 2.7 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4Spike >20/>33/>50 2508/2502/1942 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.57RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 197 · Ch 194 · LOD 142Shadow→ 1.4, 24.6位置 1.40, -7.31 · 高さ 8.18 チェックポイント 3/3 · 160.4 秒"
+    }
+  ],
+  "hud": "Rebase 8 · Origin 0, -32 · Hinge 0.000m · SyncGen 15 · Gen 3.0msRAF 83.4ms · max 233.4 · p95 66.8 · p99 83.4 · CPU 3.7 · UI 0.0 · Commit 0.2ms · Queue 0 · W 0/4Spike >20/>33/>50 2518/2512/1947 · early 390/384/148 · SyncFb 0 · fastStatsCamFollow INSTANT · α 0.57RebaseMs 0.30 (P 0.20 / R 0.10 / C 0.00 / T 0.00) · RB 1 · SC 197 · Ch 194 · LOD 142Shadow→ 0.4, 29.5位置 0.43, -2.47 · 高さ 8.19 ゴール！ 3/3 · 161.0 秒",
+  "progress": 439
+}

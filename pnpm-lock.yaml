@@ -410,6 +410,9 @@ importers:
 
   packages/sample-worlds:
     dependencies:
+      '@machine-studio/asset-catalog':
+        specifier: workspace:*
+        version: link:../asset-catalog
       '@machine-studio/asset-factory':
         specifier: workspace:*
         version: link:../asset-factory

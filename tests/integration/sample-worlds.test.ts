@@ -1,3 +1,4 @@
+import { assertPreparedSampleCurrent } from "../../packages/sample-worlds/src/freshness";
 import { expect, it, vi } from "vitest";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -108,6 +109,7 @@ it("空data directoryの汎用APIは8Worldと共有ファイルを返し不正ID
       const response = await fetch(`${base}/api/worlds/${descriptor.id}`);
       expect(response.status).toBe(200);
       const p = parseProject(await response.json());
+      expect(() => assertPreparedSampleCurrent(descriptor, p)).not.toThrow();
       for (const asset of p.assets) {
         const urls = [
           asset.files.original,

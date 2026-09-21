@@ -74,6 +74,7 @@ export class FarWorldProxy {
       design: world.source.design,
       seed: world.source.seed,
       chunkSize: world.source.chunkSize,
+      biomeProfileVersion: world.buildManifest?.biomeProfileVersion ?? 1,
     });
   }
   invalidate() {

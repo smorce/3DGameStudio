@@ -15,6 +15,7 @@ export function buildIslandProxies(
   design: WorldDesign,
   seed: number,
   chunkSize = 32,
+  biomeProfileVersion = 1,
 ): IslandProxyData[] {
   const layers = new SemanticLayers(design, seed);
   return design.islands.map((island) => {
@@ -37,6 +38,7 @@ export function buildIslandProxies(
             x * chunkSize,
             z * chunkSize,
             seed,
+            biomeProfileVersion,
           ),
         );
         positions.push(

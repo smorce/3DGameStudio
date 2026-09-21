@@ -1,7 +1,7 @@
 import {
   sampleWorldCatalog,
-  type SampleWorldDescriptor,
-} from "../../../packages/sample-worlds/src/index";
+  type SampleWorldMetadata,
+} from "../../../packages/sample-worlds/src/metadata";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -514,7 +514,7 @@ function App() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [playing, busy]);
-  async function startSampleWorld(descriptor: SampleWorldDescriptor) {
+  async function startSampleWorld(descriptor: SampleWorldMetadata) {
     try {
       const response = await fetch(`/api/worlds/${descriptor.id}`);
       if (!response.ok) throw new Error("Prepared sample world is unavailable");

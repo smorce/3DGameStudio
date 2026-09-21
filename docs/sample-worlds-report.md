@@ -1,10 +1,12 @@
 # 指示18 実装・検証報告
 
+レビュー指摘への対応は[追補報告](sample-worlds-review.md)を参照してください。以下の数値は初回実装時の記録です。
+
 基準HEAD: `333a736`（`ba2609a`の後続）。作業ブランチ: `feat/sample-world-catalog`。
 
 ## 実装した構造
 
-- `packages/sample-worlds`にCatalogと8ワールドのContentを分離。ブラウザー用`buildProject()`とNode用Demo Builderは別入口。
+- `packages/sample-worlds`にCatalogと8ワールドのContentを分離。初回実装ではCatalogとBuilderを同一入口で公開。追補で表示専用MetadataとBuilderを分離。
 - World Generatorには汎用`designed-world`を1種類追加。草原・飛行場・旧群島の生成経路を維持。
 - World Design→Semantic Layers→Asset Slot→Asset Catalogの経路を維持し、`GET /api/worlds`と`GET /api/worlds/:id`へ一般化。IDはCatalogのallowlistで検証。
 - StudioはCatalogのメタデータから8カードと推奨Machineを表示。「じゆうにつくる」は別枠。
@@ -55,7 +57,7 @@ pnpm sample-worlds:validate
 
 ## 性能
 
-各Worldの代表100Chunk（32m、33×33頂点、Chunk X/Z=-5〜4）をNodeで計測しています。地形・色・Prop生成を含み、WebGL描画とWorker転送は含みません。原データは[生成計測](evidence/sample-worlds.json)です。
+各Worldの代表100Chunk（32m、33×33頂点、Chunk X/Z=-5〜4）をNodeで計測しています。地形・色・Prop生成を含み、WebGL描画とWorker転送は含みません。以下の表は初回計測値です。現在の原データは[生成計測](evidence/sample-worlds.json)、道路最適化の比較は[追補報告](sample-worlds-review.md)を参照してください。
 
 | World                | median ms | p95 ms | max ms | entities / 100 Chunk |
 | -------------------- | --------: | -----: | -----: | -------------------: |

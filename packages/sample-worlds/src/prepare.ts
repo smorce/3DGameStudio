@@ -1,4 +1,4 @@
-import { sampleWorldCatalog } from "./index";
+import { sampleWorldCatalog } from "./builders";
 import {
   DummyAssetRequirementPlanner,
   type AssetRequirement,

@@ -20,6 +20,7 @@ workerScope.onmessage = (
         design: WorldDesign;
         seed: number;
         chunkSize: number;
+        biomeProfileVersion?: number;
       }
   >,
 ) => {
@@ -30,6 +31,7 @@ workerScope.onmessage = (
         request.design,
         request.seed,
         request.chunkSize,
+        request.biomeProfileVersion,
       );
       workerScope.postMessage(
         { type: "far-proxies", proxies },

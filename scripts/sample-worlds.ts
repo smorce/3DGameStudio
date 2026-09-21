@@ -1,3 +1,4 @@
+import { assertPreparedSampleCurrent } from "../packages/sample-worlds/src/freshness";
 import {
   mkdir,
   readFile,
@@ -9,7 +10,7 @@ import {
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { performance } from "node:perf_hooks";
-import { sampleWorldCatalog } from "../packages/sample-worlds/src/index";
+import { sampleWorldCatalog } from "../packages/sample-worlds/src/builders";
 import { planSampleWorldAssets } from "../packages/sample-worlds/src/prepare";
 import {
   emptyProject,
@@ -113,6 +114,7 @@ for (const descriptor of sampleWorldCatalog) {
   const p = parseProject(
     JSON.parse(await readFile(`demos/worlds/${descriptor.id}.json`, "utf8")),
   );
+  assertPreparedSampleCurrent(descriptor, p);
   const source = p.world.source;
   if (source.kind !== "procedural")
     throw new Error("Expected procedural world");
@@ -122,7 +124,12 @@ for (const descriptor of sampleWorldCatalog) {
   for (let z = -5; z < 5; z++)
     for (let x = -5; x < 5; x++) {
       const start = performance.now();
-      const chunk = generateChunk({ ...source, chunkX: x, chunkZ: z });
+      const chunk = generateChunk({
+        ...source,
+        biomeProfileVersion: p.world.buildManifest?.biomeProfileVersion,
+        chunkX: x,
+        chunkZ: z,
+      });
       samples.push(performance.now() - start);
       if (!Array.from(chunk.heights).every(Number.isFinite))
         throw new Error("Non-finite terrain");

@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./metadata": "./src/metadata.ts",
+    "./builders": "./src/builders.ts"
+  },
   "dependencies": {
     "@machine-studio/project-schema": "workspace:*",
     "@machine-studio/world-generator": "workspace:*",
     "@machine-studio/machine-system": "workspace:*",
-    "@machine-studio/asset-factory": "workspace:*"
+    "@machine-studio/asset-factory": "workspace:*",
+    "@machine-studio/asset-catalog": "workspace:*"
   }
 }

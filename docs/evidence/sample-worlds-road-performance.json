@@ -1,0 +1,89 @@
+{
+  "method": "Same-process alternating full-scan/double-query versus grid/shared sample; 100 warm-up chunks per mode, then 2 x 100 chunks; geometry, colors and entities fingerprinted outside timing",
+  "worlds": [
+    {
+      "id": "tropical-archipelago",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 3.44150999999988,
+        "p95Ms": 4.5408259999999245
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 3.687217000000146,
+        "p95Ms": 6.476629000000003
+      }
+    },
+    {
+      "id": "toy-islands",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 3.9245209999999133,
+        "p95Ms": 5.252495000000636
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 3.969586000000163,
+        "p95Ms": 4.903827000000092
+      }
+    },
+    {
+      "id": "mountain-island",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 11.666634999999587,
+        "p95Ms": 13.39801400000033
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 4.472093999998833,
+        "p95Ms": 6.3025870000001305
+      }
+    },
+    {
+      "id": "desert-island",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 14.337745000000723,
+        "p95Ms": 18.66299799999979
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 4.129813999999897,
+        "p95Ms": 6.466755999999805
+      }
+    },
+    {
+      "id": "snow-island",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 7.730523999998695,
+        "p95Ms": 16.359276999999565
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 3.959998000002088,
+        "p95Ms": 5.962788000000728
+      }
+    },
+    {
+      "id": "race-island",
+      "identicalChunks": 100,
+      "before": {
+        "samples": 200,
+        "medianMs": 15.420414999996865,
+        "p95Ms": 17.165612000000692
+      },
+      "after": {
+        "samples": 200,
+        "medianMs": 4.310229999999137,
+        "p95Ms": 5.8131240000002435
+      }
+    }
+  ]
+}

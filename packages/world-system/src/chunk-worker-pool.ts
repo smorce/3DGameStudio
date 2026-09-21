@@ -124,6 +124,7 @@ export class ChunkWorkerPool {
       request.generationContextHash ??
       fingerprint({
         generatorVersion: request.input.generatorVersion,
+        biomeProfileVersion: request.input.biomeProfileVersion ?? 1,
         worldDesign: request.input.design,
       })
     );

@@ -1,7 +1,7 @@
 import {
   sampleWorldCatalog,
   findSampleWorld,
-} from "../../../packages/sample-worlds/src/index";
+} from "../../../packages/sample-worlds/src/metadata";
 import { assetLimits } from "../../../packages/asset-core/src/limits";
 import express from "express";
 import { mkdir, readFile, writeFile, cp } from "node:fs/promises";
@@ -139,11 +139,7 @@ export async function createApp(
   });
   app.use(express.json({ limit: "8mb" }));
   app.get("/api/worlds", (_req, res) => {
-    res.json(
-      sampleWorldCatalog.map(
-        ({ buildProject: _build, ...metadata }) => metadata,
-      ),
-    );
+    res.json(sampleWorldCatalog);
   });
   app.get("/api/worlds/:id", async (req, res) => {
     const descriptor = findSampleWorld(req.params.id);

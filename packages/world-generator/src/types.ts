@@ -12,6 +12,8 @@ export interface TerrainEditOverlay {
 export interface GeneratorInput {
   seed: number;
   generatorVersion: number;
+  /** 未指定の旧Projectはv1として生成する。 */
+  biomeProfileVersion?: number;
   preset: EnvironmentPreset;
   chunkX: number;
   chunkZ: number;

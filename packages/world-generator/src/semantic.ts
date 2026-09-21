@@ -58,6 +58,11 @@ function detail(x: number, z: number, seed: number) {
 export class SemanticLayers {
   readonly roads: { road: RoadDefinition; points: Vec3[]; bounds: number[] }[];
   private readonly terrainSeed: number;
+  private readonly roadGrid = new Map<
+    string,
+    { roadIndex: number; pointIndex: number }[]
+  >();
+  private readonly roadGridSize = 32;
   constructor(
     readonly design: WorldDesign,
     readonly seed: number,
@@ -92,6 +97,37 @@ export class SemanticLayers {
           Math.max(...points.map((p) => p[2])) + margin,
         ],
       };
+    });
+    // 他の道路の影響を打ち消す近い線分も含め、最大の路肩・減衰幅まで索引化する。
+    const influenceRange = Math.max(
+      0,
+      ...design.roads.map((r) => r.shoulderWidth + r.terrainFalloff),
+    );
+    this.roads.forEach(({ road, points }, roadIndex) => {
+      const margin = road.width / 2 + influenceRange;
+      for (let pointIndex = 1; pointIndex < points.length; pointIndex++) {
+        const a = points[pointIndex - 1],
+          b = points[pointIndex];
+        const minX = Math.floor(
+          (Math.min(a[0], b[0]) - margin) / this.roadGridSize,
+        );
+        const maxX = Math.floor(
+          (Math.max(a[0], b[0]) + margin) / this.roadGridSize,
+        );
+        const minZ = Math.floor(
+          (Math.min(a[2], b[2]) - margin) / this.roadGridSize,
+        );
+        const maxZ = Math.floor(
+          (Math.max(a[2], b[2]) + margin) / this.roadGridSize,
+        );
+        for (let z = minZ; z <= maxZ; z++)
+          for (let x = minX; x <= maxX; x++) {
+            const key = `${x},${z}`;
+            let segments = this.roadGrid.get(key);
+            if (!segments) this.roadGrid.set(key, (segments = []));
+            segments.push({ roadIndex, pointIndex });
+          }
+      }
     });
   }
   islandAt(x: number, z: number) {
@@ -145,40 +181,60 @@ export class SemanticLayers {
   }
   sampleRoadInfluence(x: number, z: number, influenceOnly = false) {
     let nearest = { distance: Infinity, weight: 0, height: 0, roadId: "" };
-    for (const { road, points, bounds } of this.roads) {
+    if (!this.roads.length) return nearest;
+    if (
+      influenceOnly &&
+      !this.roads.some(
+        ({ bounds }) =>
+          x >= bounds[0] && x <= bounds[1] && z >= bounds[2] && z <= bounds[3],
+      )
+    )
+      return nearest;
+    const inspect = (roadIndex: number, pointIndex: number) => {
+      const { road, points, bounds } = this.roads[roadIndex];
       if (
         influenceOnly &&
         (x < bounds[0] || x > bounds[1] || z < bounds[2] || z > bounds[3])
       )
-        continue;
-      for (let i = 1; i < points.length; i++) {
-        const a = points[i - 1],
-          b = points[i],
-          dx = b[0] - a[0],
-          dz = b[2] - a[2];
-        const t = Math.max(
-          0,
-          Math.min(
-            1,
-            ((x - a[0]) * dx + (z - a[2]) * dz) / (dx * dx + dz * dz || 1),
-          ),
-        );
-        const px = a[0] + dx * t,
-          pz = a[2] + dz * t;
-        const edgeDistance = Math.hypot(x - px, z - pz) - road.width / 2;
-        if (edgeDistance < nearest.distance)
-          nearest = {
-            distance: edgeDistance,
-            weight:
-              1 -
-              smooth((edgeDistance - road.shoulderWidth) / road.terrainFalloff),
-            height:
-              road.elevationMode === "absolute"
-                ? a[1] + (b[1] - a[1]) * t
-                : this.sampleHeightMask(px, pz),
-            roadId: road.id,
-          };
-      }
+        return;
+      const a = points[pointIndex - 1],
+        b = points[pointIndex],
+        dx = b[0] - a[0],
+        dz = b[2] - a[2];
+      const t = Math.max(
+        0,
+        Math.min(
+          1,
+          ((x - a[0]) * dx + (z - a[2]) * dz) / (dx * dx + dz * dz || 1),
+        ),
+      );
+      const px = a[0] + dx * t,
+        pz = a[2] + dz * t;
+      const edgeDistance = Math.hypot(x - px, z - pz) - road.width / 2;
+      if (edgeDistance < nearest.distance)
+        nearest = {
+          distance: edgeDistance,
+          weight:
+            1 -
+            smooth((edgeDistance - road.shoulderWidth) / road.terrainFalloff),
+          height:
+            road.elevationMode === "absolute"
+              ? a[1] + (b[1] - a[1]) * t
+              : this.sampleHeightMask(px, pz),
+          roadId: road.id,
+        };
+    };
+    if (influenceOnly) {
+      const segments = this.roadGrid.get(
+        `${Math.floor(x / this.roadGridSize)},${Math.floor(z / this.roadGridSize)}`,
+      );
+      for (const segment of segments ?? [])
+        inspect(segment.roadIndex, segment.pointIndex);
+    } else {
+      // 配置の道路距離には、影響範囲外も含む正確な最近傍を返す。
+      this.roads.forEach(({ points }, roadIndex) => {
+        for (let i = 1; i < points.length; i++) inspect(roadIndex, i);
+      });
     }
     return nearest;
   }
@@ -239,9 +295,12 @@ export class SemanticLayers {
       ),
     );
   }
-  sampleHeight(x: number, z: number) {
+  sampleHeight(
+    x: number,
+    z: number,
+    road = this.sampleRoadInfluence(x, z, true),
+  ) {
     let h = this.sampleHeightMask(x, z);
-    const road = this.sampleRoadInfluence(x, z, true);
     h += (road.height - h) * road.weight;
     for (const region of this.design.settlements) {
       const w =
@@ -253,6 +312,14 @@ export class SemanticLayers {
       h += (airport.height - h) * w;
     }
     return h;
+  }
+  sampleTerrain(x: number, z: number) {
+    const roadInfluence = this.sampleRoadInfluence(x, z, true);
+    return {
+      height: this.sampleHeight(x, z, roadInfluence),
+      roadInfluence,
+      biome: this.sampleBiome(x, z),
+    };
   }
   sampleSlope(x: number, z: number) {
     return (

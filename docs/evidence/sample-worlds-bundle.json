@@ -1,0 +1,4 @@
+{
+  "sampleModules": ["packages/sample-worlds/src/metadata.ts"],
+  "buildersIncluded": false
+}
