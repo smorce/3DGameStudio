@@ -9,6 +9,8 @@ export const candidateSchema = z.object({
   license: z.string(),
   thumbnail: z.string(),
   category: z.string(),
+  style: z.string().optional(),
+  styleReview: z.literal("reviewed").optional(),
 });
 export type AssetCandidate = z.infer<typeof candidateSchema>;
 export interface DownloadOption {

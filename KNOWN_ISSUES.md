@@ -35,4 +35,7 @@
 - Far Proxyは低解像度terrainのみで、Propと編集差分は近景で反映します。独立したMid専用LODは未追加です。
 - CLIのKenney/KayKitローカルPackは空の境界です。外部Providerのacquireは通常テストで実通信していません。
 - BakeはAsset metadataと保存時SHA-256を固定します。Runtimeで配信ファイル全体のhashを再計算しません。
-- E2Eの既存診断テストに未解決の失敗があります。ベース比較と再実行結果は[今回の検証報告](docs/world-generation-asset-factory-report.md)に記録しています。
+- 自然Propの近傍判定は候補配列を走査します。高密度化にはSpatial Hash化の余地があります。
+- Biome別地表paletteは未導入で、高度ベースの砂・草・岩色を共有します。
+- 未審査の取得Assetはstyle=unverified／reviewRequiredとして区別します。geometry・texture・materialからの自動画風審査・変換は未実装です。
+- 初期報告のE2E失敗4件への対応は[レビュー対応報告](docs/world-generation-review-fixes.md)に記録しています。

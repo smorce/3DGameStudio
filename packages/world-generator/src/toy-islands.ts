@@ -89,7 +89,7 @@ export function toyIslandsDesign(): WorldDesign {
     },
   ];
   return {
-    version: 1,
+    version: 2,
     islands,
     roads: [
       {
@@ -113,7 +113,9 @@ export function toyIslandsDesign(): WorldDesign {
         center: [45, 6, 30],
         radius: 22,
         height: 6,
-        assetSlot: "building.village.house",
+        buildingRules: [
+          { assetSlot: "building.village.house", count: 8, minSpacing: 12 },
+        ],
       },
     ],
     airports: [
@@ -148,11 +150,6 @@ export function toyIslandsDesign(): WorldDesign {
         position: [-390, 0, -325] as Vec3,
       },
       { id: "sign", assetSlot: "road.sign", position: [-485, 0, -327] as Vec3 },
-      {
-        id: "house",
-        assetSlot: "building.village.house",
-        position: [45, 0, 30] as Vec3,
-      },
     ].map((l) => ({
       ...l,
       rotation: [0, 0, 0],

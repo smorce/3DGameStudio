@@ -56,7 +56,11 @@ test("toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smo
   const saved = await page.evaluate(() =>
     JSON.parse(localStorage.getItem("machine-studio.project")!),
   );
+  expect(saved.schemaVersion).toBe(7);
   expect(saved.world.source.design.islands).toHaveLength(5);
+  expect(saved.world.source.design.settlements[0].buildingRules[0].count).toBe(
+    8,
+  );
   expect(saved.assets).toHaveLength(28);
   expect(saved.world.buildManifest.requiredAssets).toHaveLength(28);
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
@@ -92,6 +96,35 @@ test("toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smo
       ),
     )
     .toBe(5);
+  // 実Workerが町の全Chunkへ8棟を配置し、CatalogのAssetへ解決する。
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const api = (
+          window as unknown as {
+            __MACHINE_STUDIO_AGENT__: {
+              getWorldDesignDebug(
+                x: number,
+                z: number,
+              ): {
+                sample?: {
+                  props: { id: string; assetSlot?: string; assetId?: string }[];
+                };
+              };
+            };
+          }
+        ).__MACHINE_STUDIO_AGENT__;
+        const buildings = [16, 48, 80]
+          .flatMap((x) =>
+            [16, 48].flatMap(
+              (z) => api.getWorldDesignDebug(x, z).sample?.props ?? [],
+            ),
+          )
+          .filter((p) => p.assetSlot === "building.village.house" && p.assetId);
+        return new Set(buildings.map((p) => p.id)).size;
+      }),
+    )
+    .toBe(8);
   await page.keyboard.down("KeyW");
   await page.waitForTimeout(1800);
   await page.keyboard.up("KeyW");

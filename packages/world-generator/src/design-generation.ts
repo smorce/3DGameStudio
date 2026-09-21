@@ -1,3 +1,4 @@
+import { settlementEntities } from "./settlement-generation";
 import type {
   WorldDesign,
   PropRule,
@@ -144,6 +145,16 @@ export function generateDesignEntities(
       ],
       scale: [scale, scale, scale],
     });
+  }
+  for (const building of settlementEntities(input, layers)) {
+    const [x, , z] = building.position;
+    if (
+      x >= originX &&
+      x < originX + input.chunkSize &&
+      z >= originZ &&
+      z < originZ + input.chunkSize
+    )
+      result.push(structuredClone(building));
   }
   for (const l of design.landmarks) {
     const [x, , z] = l.position;

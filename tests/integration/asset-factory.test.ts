@@ -26,6 +26,8 @@ const candidate = {
   id: "rock",
   name: "small rock",
   category: "rock",
+  style: "stylized-low-poly",
+  styleReview: "reviewed" as const,
   provider: "local",
   license: "CC0",
   author: "test",
@@ -347,4 +349,42 @@ it("Bake後のvariantのBiome metadata変更を検出する", async () => {
   bakeWorld(p, catalog);
   p.assets[0].catalog!.biomes = ["changed"];
   expect(() => validateBake(p)).toThrow("modified");
+});
+
+it("未審査の外部Assetは要求画風を詐称せず、審査待ちとして保存しDummyで不足を補う", async () => {
+  const external = new LocalLibraryProvider(
+    [{ ...candidate, id: "photo-rock", provider: "polyhaven" }],
+    new Map([["photo-rock", await placeholderGlb()]]),
+  );
+  external.id = "polyhaven";
+  const project = emptyProject(),
+    catalog = new AssetCatalog(project);
+  const result = await new AssetFactory(
+    catalog,
+    memoryAssetStorage(),
+    [external],
+    new DummyAstraAssetGenerator(),
+  ).fulfill(
+    { planner: "dummy", requirements: [{ ...requirement, minVariants: 1 }] },
+    "acquire",
+  );
+  expect(result.errors).toEqual([]);
+  expect(result.reviewRequired).toHaveLength(1);
+  expect(result.registered).toHaveLength(1);
+  const acquired = project.assets.find(
+    (a) => a.id === result.reviewRequired[0],
+  )!;
+  expect(acquired.catalog).toMatchObject({
+    style: "unverified",
+    requestedStyle: "stylized-low-poly",
+    styleAssessment: "unverified",
+  });
+  expect(
+    catalog
+      .query({ slot: requirement.assetSlot, style: requirement.style })
+      .map((a) => a.source.provider),
+  ).toEqual(["dummy-astra"]);
+  expect(project.assets.find((a) => a.ai)?.catalog?.styleAssessment).toBe(
+    "dummy",
+  );
 });

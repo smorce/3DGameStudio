@@ -38,6 +38,10 @@ test("広いWorldの物理Streaming・大量岩・2番目のコースを実走�
   await page.getByRole("button", { name: "Studio", exact: true }).click();
   await expect(page.getByLabel("走るコース")).toHaveValue("bench-b");
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+  // 地形Shaderの準備が完了し、PLAYへ遷移してから入力する。
+  await expect(
+    page.getByRole("button", { name: "■ やめる", exact: true }),
+  ).toBeEnabled();
   await expect(page.getByTestId("runtime-position")).toContainText("200.00");
   await expect
     .poll(async () =>

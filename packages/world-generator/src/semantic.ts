@@ -194,13 +194,16 @@ export class SemanticLayers {
       (r) => distance(x, z, r.center) <= r.radius,
     );
   }
-  sampleNoSpawnMask(x: number, z: number) {
+  sampleNoSpawnMask(x: number, z: number, allowedSettlementId?: string) {
     return (
       this.design.noSpawnRegions.some(
         (r) => distance(x, z, r.center) <= r.radius,
       ) ||
       this.sampleRunwayMask(x, z) ||
-      this.sampleSettlementMask(x, z)
+      this.design.settlements.some(
+        (r) =>
+          r.id !== allowedSettlementId && distance(x, z, r.center) <= r.radius,
+      )
     );
   }
   landmarkDistance(x: number, z: number) {

@@ -17,7 +17,7 @@ test("Starter 3種は同じProcedural World Runtimeを使う", async ({ page }) 
     const project = await page.evaluate(() =>
       JSON.parse(localStorage.getItem("machine-studio.project") ?? "null"),
     );
-    expect(project.schemaVersion).toBe(6);
+    expect(project.schemaVersion).toBe(7);
     expect(project.world.source.kind).toBe("procedural");
     expect(project.world.source.preset).toBe(preset);
     expect(project.world.source.generatorVersion).toBe(1);

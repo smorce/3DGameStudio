@@ -50,6 +50,7 @@ type SpikeDump = {
 async function flyAndDump(
   page: import("@playwright/test").Page,
   label: string,
+  evidenceDir: string,
   query = "",
 ) {
   await page.goto(`/${query}`);
@@ -83,8 +84,8 @@ async function flyAndDump(
     return fn();
   })) as SpikeDump;
 
-  await mkdir("docs/evidence", { recursive: true });
-  const path = `docs/evidence/spike-flight-${label}.json`;
+  await mkdir(evidenceDir, { recursive: true });
+  const path = `${evidenceDir}/spike-flight-${label}.json`;
   await writeFile(
     path,
     JSON.stringify(
@@ -102,6 +103,10 @@ async function flyAndDump(
     ),
   );
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+  // 終了時の診断保存・ダイアログ・DROPが完了してから次の画面へ移動する。
+  await expect(
+    page.getByRole("button", { name: "▶ あそぶ", exact: true }),
+  ).toBeEnabled();
   return { label, query, dump, path };
 }
 
@@ -110,21 +115,21 @@ test.describe("spike prewarm diagnostics", () => {
 
   test("A/B: disablePlayRenderPrewarm vs default preparePlayRendering", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    const evidenceDir = testInfo.outputPath("evidence");
     // A = 無効（旧挙動）、B = Production 既定（準備あり）
     const off = await flyAndDump(
       page,
       "prewarm-a",
+      evidenceDir,
       "?disablePlayRenderPrewarm=1",
     );
-    const on = await flyAndDump(page, "prewarm-b");
+    const on = await flyAndDump(page, "prewarm-b", evidenceDir);
 
-    expect(off.dump.environment?.playRenderPrewarmEnabled ?? false).toBe(
-      false,
-    );
+    expect(off.dump.environment?.playRenderPrewarmEnabled ?? false).toBe(false);
     expect(on.dump.environment?.playRenderPrewarmEnabled).toBe(true);
 
-    const summary = await writeSpikePrewarmSummaryFromDisk();
+    const summary = await writeSpikePrewarmSummaryFromDisk(evidenceDir);
     expect(summary.written).toBe(true);
     console.log(
       "[spike-prewarm-summary]",

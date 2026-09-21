@@ -9,11 +9,6 @@ async function screenshot(name: string, page: import("@playwright/test").Page) {
   });
 }
 
-function parseVec(value: string | null): [number, number, number] {
-  const parsed = JSON.parse(value ?? "[0,0,0]") as number[];
-  return [parsed[0] ?? 0, parsed[1] ?? 0, parsed[2] ?? 0];
-}
-
 test("長距離飛行でShadowが追従しRebase前後の画面を残す", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "ひこうき", exact: false }).click();
@@ -52,12 +47,19 @@ test("長距離飛行でShadowが追従しRebase前後の画面を残す", async
     .toBeGreaterThan(200);
   await screenshot("03-after-200m", page);
 
-  const simulation = parseVec(
-    await page.getByTestId("runtime-position").getAttribute("data-simulation"),
-  );
-  const shadow = parseVec(
-    await page.getByTestId("shadow-follow").getAttribute("data-target"),
-  );
+  // 飛行中の2座標を同じDOM更新の中で取得し、測定時刻のずれを防ぐ。
+  const { simulation, shadow } = await page.evaluate(() => {
+    const position = document.querySelector('[data-testid="runtime-position"]');
+    const follow = document.querySelector('[data-testid="shadow-follow"]');
+    const simulation = position?.getAttribute("data-simulation");
+    const shadow = follow?.getAttribute("data-target");
+    if (!simulation || !shadow)
+      throw new Error("Runtime coordinates are missing");
+    return {
+      simulation: JSON.parse(simulation) as number[],
+      shadow: JSON.parse(shadow) as number[],
+    };
+  });
   // Shadow FollowはSimulation座標の機体付近へ追従する（Globalではない）。
   expect(
     Math.hypot(shadow[0] - simulation[0], shadow[2] - simulation[2]),

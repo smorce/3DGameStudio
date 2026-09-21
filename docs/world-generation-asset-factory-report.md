@@ -3,6 +3,8 @@
 作業ブランチ：`feat/world-generation-asset-factory`
 ベース：`perf/async-world-streaming-frame-budget` / `006e006af6387f736ac134ac2a87604767599d75`
 
+2026-09-21追補：Schema v7、WorkerのDesign更新、Settlement建物配置、E2E失敗の修正は[レビュー対応報告](world-generation-review-fixes.md)を参照してください。
+
 ## 1. 実装概要
 
 World Designに基づく決定的な5島ワールド、共通Semantic Layers、道路地形conform、制約付きProp配置、Asset Catalog/Resolver、開発用Factory、Dummy Planner/Astra、安全なZIP取込、Bake、Validator、Worker遠景Proxyを追加しました。Runtimeは保存済みCatalogとAssetファイルだけを利用します。既存のWorker Pool、32m Streaming、フレーム予算、Floating Origin、Terrain Edit、Tombstoneを維持しています。
@@ -38,7 +40,7 @@ flowchart TB
 
 ## 5–6. Schema / Migration
 
-CURRENT_SCHEMA_VERSIONは6を維持。追加フィールドは`source.design`、`world.buildManifest`、`asset.catalog`、`asset.textureInfo`です。v6データの変換は不要で、従来のv0–v5 migrationも継続します。旧3プリセットはGenerator v1、新しいtoy-islandsはv2です。
+CURRENT_SCHEMA_VERSIONはレビュー対応で7へ更新しました。`source.design`、`world.buildManifest`、`asset.catalog`、`asset.textureInfo`を含む永続データ契約を区別します。v0–v6の移行を維持し、旧SettlementのassetSlotをbuildingRulesへ変換します。同位置のLandmarkが担っている家は二重生成しません。Design変換時は再Bakeします。旧3プリセットはGenerator v1、toy-islandsはv2です。
 
 World DesignはZodで明示的に型付けし、任意Recordへ押し込んでいません。Duplicate Design ID、不正range、危険なAsset配置参照等を検査します。
 
@@ -46,7 +48,7 @@ World DesignはZodで明示的に型付けし、任意Recordへ押し込んで�
 
 Design固定の島・山→海岸と弱いseed detail→道路/集落/滑走路conform→PropのSemantic条件/halo neighbour rejection→固定Landmark→編集差分→Worker mesh→既存queue/commit→Catalog解決です。生成IDはseed/version/semantic type/stable cellから作り、削除済みEntityをTombstoneで除外します。
 
-DesignはWorkerにcontextとして渡し、Chunkごとの大きなコピーを避けます。近景の表示変更時だけ遠景indexを更新します。World Design経路のマシンは局所形状を維持し、Bodyを指定Spawnの標高へ置きます。
+Designはconstructor/reload時の内容fingerprintで更新検知し、変化時だけ全Workerへsnapshotを渡してChunkごとの大きなコピーを避けます。近景の表示変更時だけ遠景indexを更新します。World Design経路のマシンは局所形状を維持し、Bodyを指定Spawnの標高へ置きます。
 
 ## 8. Asset Factory pipeline
 
@@ -64,9 +66,9 @@ Astra Dummyは既存`placeholderGlb()`を使い、provider=`dummy-astra`、model
 
 ## 11. toy-islands
 
-中央草原・熱帯・山岳・空港・レースの5島をDesignに固定しました。中央Spawn、小さな町、灯台、観測所、滑走路、管制塔、ジャンプ台、標識を持ち、CLIは道路に沿ったレースコースも作ります。細部とPropだけseedで変化します。
+中央草原・熱帯・山岳・空港・レースの5島をDesignに固定しました。中央Spawn、buildingRulesによる8棟の町、灯台、観測所、滑走路、管制塔、ジャンプ台、標識を持ち、CLIは道路に沿ったレースコースも作ります。細部とPropだけseedで変化します。
 
-10 Slot / 28 Dummy Assetをofflineで準備でき、全島の1,183 EntityをValidatorへ通してerror/warningとも0でした。Studioの開始画面から用意済みProjectを読み込めます。
+10 Slot / 28 Dummy Assetをofflineで準備でき、全島の1,190 EntityをValidatorへ通してerror/warningとも0でした。Studioの開始画面から用意済みProjectを読み込めます。
 
 近景・遠景の実ブラウザ画像：
 
@@ -76,33 +78,17 @@ Astra Dummyは既存`placeholderGlb()`を使い、provider=`dummy-astra`、model
 
 ## 12–13. Test / Build
 
-| 検証                            | 結果                                                      |
-| ------------------------------- | --------------------------------------------------------- |
-| `pnpm typecheck`                | PASS                                                      |
-| `pnpm lint` / `pnpm cycles`     | PASS、循環なし                                            |
-| `pnpm test`                     | 37 files / 282 tests PASS                                 |
-| `pnpm build`                    | Studio / Player / Server PASS                             |
-| `asset:plan` / offline Factory  | 10 Slot、28登録。再実行は登録0・不足0                     |
-| `world:validate` / `world:bake` | PASS                                                      |
-| 新規toy-islands E2E             | PASS、実Worker・5 Proxy・地表接地・ローカル通信のみを確認 |
-| 全E2E                           | 30 PASS / 4 FAIL                                          |
-| `pnpm smoke`                    | 18 PASS / 1 FAIL                                          |
+レビュー修正後の全E2Eは34件成功です。型チェック、lint、循環依存検査、40ファイル・291件のUnit/Integrationテスト、Studio/Player/Serverのbuildも成功しました。offline Factoryは28 Assetを維持し、再実行の登録・不足・エラーは0です。World Validatorは1,190 Entityでerror/warning 0、Bakeも成功しました。
 
-既存テストを削除・skipせず実行しました。全E2Eで失敗した4件のうち、次の3件はベースブランチの隔離worktreeでも再現しています。
+初期報告の全E2E 30成功/4失敗は修正済みです。原因は、診断ファイルの終了時上書き、終了完了前のnavigation、Shaderコンパイル中のMaterial破棄、異なる時刻のShadow/機体座標比較でした。ベースでも再現したことを理由に残していません。許容誤差を増やさず、テストを削除・skipせず対応しました。Smokeも19件すべて成功しました。最終集計は[レビュー対応報告](world-generation-review-fixes.md)に記録しています。
 
-- `spike-flight-diagnostics`：フレーム計測の浮動小数値を完全一致で比較し失敗。ベースでも`50.099999999999454`と`50.100000000000364`の差で失敗。
-- `spike-prewarm-diagnostics`：page/dialogがdetachされた状態でのnavigation/処理エラー。
-- `world-runtime`：ゴール待ちtimeoutと`undefined.isReady`。ベースでも同じfailure。smokeの失敗もこの1件です。
-
-残る`runtime-stability`は初回カメラtarget差`9.449 > 8`で失敗しましたが、ベース比較と今回ブランチの単独再実行は成功しました。タイミングに依存する結果として記録し、全E2Eがgreenとは報告しません。
-
-Buildには既存のZod annotation、bundleサイズ、Rapier初期化の警告が残ります。記録は[check summary](evidence/world-generation-checks.json)を参照してください。
+Buildの既存bundleサイズ・Zod annotationの警告と、実行時のRapier初期化の警告は残ります。[check summary](evidence/world-generation-checks.json)を参照してください。
 
 ## 14. Performance
 
-ベースと既存各100 Chunkを比較し、高度配列、色、Entity、chunk hashが完全一致しました。Node同期計測の中央値は草原約0.20ms、空港約0.14ms、群島約0.17msで、変更前後は同程度です。p95には0.1ms台の測定変動があります。
+ベースと既存各100 Chunkを比較し、高度配列、色、Entity、chunk hashが完全一致しました。Node同期計測の中央値は草原約0.20ms、空港約0.14ms、群島約0.16msで、変更前後は同程度です。p95には0.1ms台の測定変動があります。
 
-新toy-islandsは中央値約2.09ms、p95約2.98ms、最大約3.39msです。制約判定とProp数が増えるため、従来の単純Generatorの約10–15倍です。実ブラウザではWorkerで生成し、Main Threadへ戻していません。
+新toy-islandsは中央値約2.02ms、p95約2.32ms、最大約2.71msです。制約判定とProp数が増えるため、従来の単純Generatorの約10–15倍です。実ブラウザではWorkerで生成し、Main Threadへ戻していません。
 
 [生成時間の比較](evidence/world-generation-performance.json)はNode計測であり、WebGL/frame時間は含みません。[ブラウザ観測](evidence/toy-islands-browser.json)では5 Proxy、169 render chunk、49 physics chunk、4輪接地を確認しました。この環境はsoftware WebGLで、GPU/frame時間には大きな遅延があり、60fps達成を証明する結果ではありません。生成改善とGPU描画性能を同じ数値として扱っていません。
 
@@ -112,9 +98,9 @@ Buildには既存のZod annotation、bundleサイズ、Rapier初期化の警告�
 - Real Planner、Real Astra、Real Blender computer-useは意図的に未実装。
 - PBR texture setは保存可能、Renderer未対応。PNG/JPEG/WebPに限定し、ZIP64/暗号化/その他archive方式も未対応です。
 - Mid専用地形LODは未追加。Farは地形のみでProp/編集差分は近景へ反映します。
-- 外部Providerのacquire実通信は検証していません。候補styleはタグであり、外観の自動審査はありません。
+- 外部Providerのacquire実通信は検証していません。未審査Assetはstyle=unverifiedとして区別します。外観の自動審査・変換は未実装です。
 - Bakeはファイル生成時SHA-256とmetadata hashを保持しますが、Runtimeの配信ファイルを毎回再hashしません。
-- E2Eの既存失敗は上記のとおり残っています。
+- 自然Propの近傍判定のSpatial Hash化とBiome別地表paletteは今後の改善項目です。
 
 ## 16–17. 将来の接続箇所
 
@@ -139,6 +125,7 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 
 ## 追加ファイル一覧
 
+- ["2026_0916_1953_\345\240\261\345\221\212\345\206\205\345\256\271.md"](../"2026_0916_1953_\345\240\261\345\221\212\345\206\205\345\256\271.md")
 - [docs/asset-factory.md](../docs/asset-factory.md)
 - [docs/evidence/toy-islands-browser.json](../docs/evidence/toy-islands-browser.json)
 - [docs/evidence/world-generation-checks.json](../docs/evidence/world-generation-checks.json)
@@ -146,6 +133,7 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 - [docs/screenshots/toy-islands-far.png](../docs/screenshots/toy-islands-far.png)
 - [docs/screenshots/toy-islands.png](../docs/screenshots/toy-islands.png)
 - [docs/world-generation-asset-factory-report.md](../docs/world-generation-asset-factory-report.md)
+- [docs/world-generation-review-fixes.md](../docs/world-generation-review-fixes.md)
 - [docs/world-generation.md](../docs/world-generation.md)
 - [packages/ai-dummy/src/asset-generator.ts](../packages/ai-dummy/src/asset-generator.ts)
 - [packages/asset-catalog/package.json](../packages/asset-catalog/package.json)
@@ -161,6 +149,7 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 - [packages/world-generator/src/far-proxy.ts](../packages/world-generator/src/far-proxy.ts)
 - [packages/world-generator/src/seed.ts](../packages/world-generator/src/seed.ts)
 - [packages/world-generator/src/semantic.ts](../packages/world-generator/src/semantic.ts)
+- [packages/world-generator/src/settlement-generation.ts](../packages/world-generator/src/settlement-generation.ts)
 - [packages/world-generator/src/toy-islands.ts](../packages/world-generator/src/toy-islands.ts)
 - [packages/world-generator/src/types.ts](../packages/world-generator/src/types.ts)
 - [packages/world-generator/src/validate.ts](../packages/world-generator/src/validate.ts)
@@ -171,6 +160,9 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 - [tests/integration/asset-factory.test.ts](../tests/integration/asset-factory.test.ts)
 - [tests/integration/toy-islands-physics.test.ts](../tests/integration/toy-islands-physics.test.ts)
 - [tests/unit/asset-archive.test.ts](../tests/unit/asset-archive.test.ts)
+- [tests/unit/generation-context.test.ts](../tests/unit/generation-context.test.ts)
+- [tests/unit/schema-v7.test.ts](../tests/unit/schema-v7.test.ts)
+- [tests/unit/settlement-generation.test.ts](../tests/unit/settlement-generation.test.ts)
 - [tests/unit/world-design.test.ts](../tests/unit/world-design.test.ts)
 
 ## 変更ファイル一覧
@@ -179,6 +171,7 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 - [README.md](../README.md)
 - [apps/server/src/app.ts](../apps/server/src/app.ts)
 - [apps/studio/src/main.tsx](../apps/studio/src/main.tsx)
+- [docs/project-schema.md](../docs/project-schema.md)
 - [package.json](../package.json)
 - [packages/ai-dummy/package.json](../packages/ai-dummy/package.json)
 - [packages/asset-core/src/index.ts](../packages/asset-core/src/index.ts)
@@ -198,3 +191,13 @@ Studioの「おもちゃの群島」を選択してください。既定保存�
 - [packages/world-system/src/chunk-worker-pool.ts](../packages/world-system/src/chunk-worker-pool.ts)
 - [packages/world-system/src/runtime.ts](../packages/world-system/src/runtime.ts)
 - [pnpm-lock.yaml](../pnpm-lock.yaml)
+- [tests/e2e/fixtures.ts](../tests/e2e/fixtures.ts)
+- [tests/e2e/panel-aerodynamics.spec.ts](../tests/e2e/panel-aerodynamics.spec.ts)
+- [tests/e2e/procedural-world.spec.ts](../tests/e2e/procedural-world.spec.ts)
+- [tests/e2e/runtime-stability.spec.ts](../tests/e2e/runtime-stability.spec.ts)
+- [tests/e2e/spike-flight-diagnostics.spec.ts](../tests/e2e/spike-flight-diagnostics.spec.ts)
+- [tests/e2e/spike-prewarm-diagnostics.spec.ts](../tests/e2e/spike-prewarm-diagnostics.spec.ts)
+- [tests/e2e/world-runtime.spec.ts](../tests/e2e/world-runtime.spec.ts)
+- [tests/unit/flight-controls.test.ts](../tests/unit/flight-controls.test.ts)
+- [tests/unit/model.test.ts](../tests/unit/model.test.ts)
+- [tests/unit/world-runtime.test.ts](../tests/unit/world-runtime.test.ts)

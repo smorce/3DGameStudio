@@ -1,6 +1,6 @@
 import { semanticContext } from "../../world-generator/src/design-generation";
-import { AssetCatalog } from "../../asset-catalog/src/index";
-import type { Project } from "../../project-schema/src/index";
+import { AssetCatalog, fingerprint } from "../../asset-catalog/src/index";
+import type { Project, WorldDesign } from "../../project-schema/src/index";
 import {
   isProceduralWorld,
   worldChunkResolution,
@@ -242,6 +242,8 @@ export class WorldRuntime {
   private debug: boolean;
   private catalog: AssetCatalog;
   private readonly pool: ChunkWorkerPool;
+  private generationContextHash = "";
+  private generationDesign?: WorldDesign;
   private playHotPath = false;
   private commitBudgetMs: number;
   private maxRenderPerFrame: number;
@@ -277,6 +279,7 @@ export class WorldRuntime {
         );
       },
     });
+    this.refreshGenerationContext();
     for (const consumer of ["renderer", "physics", "editor"] as WorldConsumer[])
       this.refs.set(consumer, new Set());
   }
@@ -308,7 +311,7 @@ export class WorldRuntime {
     const c = worldToChunk(x, z, source.chunkSize),
       key = chunkKey(c.chunkX, c.chunkZ);
     return {
-      ...semanticContext(source.design, source.seed).debugSample(x, z),
+      ...semanticContext(this.generationDesign!, source.seed).debugSample(x, z),
       chunkKey: key,
       chunkBounds: [
         c.chunkX * source.chunkSize,
@@ -359,10 +362,27 @@ export class WorldRuntime {
     return ticket === this.generation;
   }
 
+  private refreshGenerationContext() {
+    const source = this.world.source;
+    const design = source.kind === "procedural" ? source.design : undefined;
+    const hash = fingerprint({
+      generatorVersion:
+        source.kind === "procedural" ? source.generatorVersion : 1,
+      worldDesign: design,
+    });
+    if (hash === this.generationContextHash) return;
+    // reload時だけhashとsnapshotを作り、Chunkごとの全Design走査・コピーを避ける。
+    // Main ThreadのSemantic cacheも、変更前の参照を使い続けない。
+    this.generationContextHash = hash;
+    this.generationDesign = design ? structuredClone(design) : undefined;
+    this.pool.setGenerationContext(hash, this.generationDesign);
+  }
+
   reload(world: World) {
     this.generation++;
     this.pool.cancelAll();
     this.world = world;
+    this.refreshGenerationContext();
     this.cache.clear();
     this.prepared.clear();
     this.lifecycle.clear();
@@ -461,6 +481,7 @@ export class WorldRuntime {
         this.pool.enqueue({
           chunkKey: request.key,
           input: this.generatorInput(request.key),
+          generationContextHash: this.generationContextHash,
           priority: request.priority,
           runtimeGeneration: this.generation,
         });
@@ -478,10 +499,12 @@ export class WorldRuntime {
         .enqueue({
           chunkKey: request.key,
           input: this.generatorInput(request.key),
+          generationContextHash: this.generationContextHash,
           priority: request.priority,
           runtimeGeneration: generation,
         })
         .then((result) => {
+          if (generation !== this.generation) return;
           // onResult で accept 済み。ここは stale / error 時の pending 調整のみ。
           if (!result) {
             this.pending = Math.max(0, this.pending - 1);
@@ -489,6 +512,7 @@ export class WorldRuntime {
           }
         })
         .catch(() => {
+          if (generation !== this.generation) return;
           this.pending = Math.max(0, this.pending - 1);
           this.lifecycle.delete(request.key);
         });
@@ -670,7 +694,7 @@ export class WorldRuntime {
     if (!chunk) {
       // Cache miss では Full Chunk 生成せず軽量サンプルを使う。
       return sampleGeneratedHeight({
-        design: source.design,
+        design: this.generationDesign,
         seed: source.seed,
         generatorVersion: source.generatorVersion,
         preset: source.preset,
@@ -1053,7 +1077,7 @@ export class WorldRuntime {
       chunkSize: source.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
-      design: source.design,
+      design: this.generationDesign,
       terrainEdit: edit
         ? {
             heightDeltas: edit.heightDeltas,
@@ -1116,7 +1140,7 @@ export class WorldRuntime {
       chunkSize: source.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
-      design: source.design,
+      design: this.generationDesign,
     });
     const tomb = new Set(this.world.edits.generatedEntityTombstones);
     return {

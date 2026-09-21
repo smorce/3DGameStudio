@@ -35,12 +35,12 @@ const world = () => ({
 });
 
 describe("World Designと生成互換性", () => {
-  it("Schemaで保存され、v6の既存Projectは変更されない", () => {
+  it("Schema v7で保存され、v6の既存Projectは内容を保持して移行する", () => {
     const legacy = emptyProject();
-    expect(parseProject(legacy)).toEqual(legacy);
+    expect(parseProject({ ...legacy, schemaVersion: 6 })).toEqual(legacy);
     const p = { ...legacy, world: world() };
     expect(parseProject(JSON.parse(JSON.stringify(p)))).toEqual(p);
-    expect(p.schemaVersion).toBe(6);
+    expect(p.schemaVersion).toBe(7);
     expect(
       worldDesignSchema.safeParse({
         ...design,
@@ -94,7 +94,7 @@ describe("World Designと生成互換性", () => {
     );
     const entities = chunks
       .flatMap((i) => generateChunk(i).entities)
-      .filter((e) => !e.landmark);
+      .filter((e) => !e.landmark && !e.settlementId);
     expect(entities.length).toBeGreaterThan(15);
     for (const e of entities) {
       const [x, y, z] = e.position;
@@ -146,7 +146,7 @@ describe("World Designと生成互換性", () => {
     const layers = new SemanticLayers(design, 42);
     expect(
       runway.entities
-        .filter((e) => !e.landmark)
+        .filter((e) => !e.landmark && !e.settlementId)
         .every((e) => !layers.sampleRunwayMask(e.position[0], e.position[2])),
     ).toBe(true);
   });

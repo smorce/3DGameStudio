@@ -84,7 +84,7 @@ describe("モデルとコマンド", () => {
   });
   it("旧スキーマと壊れた入力", () => {
     const p = emptyProject();
-    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(6);
+    expect(parseProject({ ...p, schemaVersion: 0 }).schemaVersion).toBe(7);
     expect(() => parseProject({ ...p, schemaVersion: 9 })).toThrow();
     expect(() => parseProject({})).toThrow();
   });
@@ -103,7 +103,7 @@ describe("モデルとコマンド", () => {
     project.machines.push(machine);
     const migrated = parseProject({ ...project, schemaVersion: 2 });
     const panel = migrated.machines[0].parts[0];
-    expect(migrated.schemaVersion).toBe(6);
+    expect(migrated.schemaVersion).toBe(7);
     expect(panel.definitionId).toBe("Panel");
     expect(panel.physics.size[0]).toBe(PANEL_SIDE);
     expect(panel.physics.size[2]).toBe(PANEL_SIDE);
@@ -134,7 +134,7 @@ describe("モデルとコマンド", () => {
     const migratedMotor = migrated.machines[0].parts.find(
       (part) => part.definitionId === "Motor",
     )!;
-    expect(migrated.schemaVersion).toBe(6);
+    expect(migrated.schemaVersion).toBe(7);
     expect(migratedMotor.actuator.motorTorque).toBe(200);
     expect(migratedMotor.actuator.targetAngularVelocity).toBe(10);
   });

@@ -1,3 +1,4 @@
+import { settlementEntities } from "./settlement-generation";
 import type { Project, World } from "../../project-schema/src/index";
 import type { GeneratedEntity } from "./types";
 import { SemanticLayers } from "./semantic";
@@ -86,11 +87,30 @@ export function validateWorld(
       const [x, y, z] = e.position;
       if (layers.sampleRunwayMask(x, z))
         add("error", "prop-runway", "Prop intersects runway", e.id);
-      if (layers.sampleNoSpawnMask(x, z))
+      if (layers.sampleNoSpawnMask(x, z, e.settlementId))
         add("error", "prop-no-spawn", "Prop intersects no-spawn region", e.id);
       if (y <= sea && e.assetSlot?.includes("tree"))
         add("error", "tree-water", "Tree is underwater", e.id);
     }
+  // 部分Chunkの観測だけでも、町全体の配置可能数を同じ生成器で検査する。
+  const buildings = settlementEntities(
+    { ...world.source, chunkX: 0, chunkZ: 0 },
+    layers,
+  );
+  for (const settlement of layers.design.settlements)
+    settlement.buildingRules.forEach((rule, index) => {
+      const count = buildings.filter(
+        (e) =>
+          e.settlementId === settlement.id && e.settlementRuleIndex === index,
+      ).length;
+      if (count !== rule.count)
+        add(
+          "error",
+          "settlement-building-count",
+          `Settlement requires ${rule.count} buildings but has ${count}`,
+          `${settlement.id}:${index}`,
+        );
+    });
   const requirements = [
     ...layers.design.islands.flatMap((i) =>
       i.propRules.map((r) => ({ slot: r.assetSlot, biome: r.biome })),
@@ -99,10 +119,12 @@ export function validateWorld(
       slot: l.assetSlot,
       biome: layers.sampleBiome(l.position[0], l.position[2]),
     })),
-    ...layers.design.settlements.map((r) => ({
-      slot: r.assetSlot,
-      biome: layers.sampleBiome(r.center[0], r.center[2]),
-    })),
+    ...layers.design.settlements.flatMap((s) =>
+      s.buildingRules.map((r) => ({
+        slot: r.assetSlot,
+        biome: layers.sampleBiome(s.center[0], s.center[2]),
+      })),
+    ),
   ];
   const checked = new Set<string>();
   for (const { slot, biome } of requirements) {

@@ -4,7 +4,7 @@ export const test = base.extend<{ consoleGuard: void }>({
     async ({ page }, use, testInfo) => {
       const errors: string[] = [],
         consoleLog: string[] = [];
-      page.on("pageerror", (error) => errors.push(error.message));
+      page.on("pageerror", (error) => errors.push(error.stack ?? error.message));
       page.on("console", (message) => {
         consoleLog.push(`${message.type()}: ${message.text()}`);
         if (message.type() === "error") errors.push(message.text());

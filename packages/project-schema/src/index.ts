@@ -175,6 +175,8 @@ export const assetSchema = z.object({
       tags: z.array(z.string()),
       biomes: z.array(z.string()),
       style: z.string(),
+      requestedStyle: z.string().optional(),
+      styleAssessment: z.enum(["unverified", "reviewed", "dummy"]).optional(),
       variantGroup: z.string().optional(),
       contentHash: z.string(),
       status: z.enum(["ready", "unsupported"]),
@@ -256,7 +258,7 @@ export const terrainSchema = z
     "Invalid terrain grid",
   );
 export type Terrain = z.infer<typeof terrainSchema>;
-export const CURRENT_SCHEMA_VERSION = 6;
+export const CURRENT_SCHEMA_VERSION = 7;
 export const GENERATOR_VERSION = 1;
 export const environmentPresets = [
   "grassland",
@@ -352,7 +354,7 @@ export const courseSchema = z.object({
 export type Course = z.infer<typeof courseSchema>;
 export const projectSchema = z
   .object({
-    schemaVersion: z.literal(6),
+    schemaVersion: z.literal(7),
     id: z.string(),
     name: z.string(),
     world: worldSchema,
@@ -723,6 +725,54 @@ function migrateV4Project(input: Record<string, unknown>) {
   };
 }
 
+/** v6の永続データを保持し、旧SettlementのSlotだけ配置Ruleへ移行する。 */
+function migrateV6Project(input: Record<string, unknown>) {
+  const world = input.world;
+  if (
+    !isRecord(world) ||
+    !isRecord(world.source) ||
+    !isRecord(world.source.design)
+  )
+    return { ...input, schemaVersion: CURRENT_SCHEMA_VERSION };
+  const design = world.source.design;
+  const settlements = Array.isArray(design.settlements)
+    ? design.settlements.map((value) => {
+        if (!isRecord(value) || !("assetSlot" in value)) return value;
+        const { assetSlot, ...settlement } = value;
+        // 同位置の固定Landmarkが既に担っている家を重複生成しない。
+        const fixed =
+          Array.isArray(design.landmarks) &&
+          design.landmarks.some(
+            (landmark) =>
+              isRecord(landmark) &&
+              landmark.assetSlot === assetSlot &&
+              Array.isArray(landmark.position) &&
+              Array.isArray(settlement.center) &&
+              landmark.position[0] === settlement.center[0] &&
+              landmark.position[2] === settlement.center[2],
+          );
+        return {
+          ...settlement,
+          buildingRules:
+            settlement.buildingRules ??
+            (fixed ? [] : [{ assetSlot, count: 1, minSpacing: 12 }]),
+        };
+      })
+    : design.settlements;
+  const changed =
+    JSON.stringify(settlements) !== JSON.stringify(design.settlements);
+  return {
+    ...input,
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    world: {
+      ...world,
+      // Design変換時は以前の解決固定を再Bakeする。Asset原本・配置編集は維持する。
+      ...(changed ? { buildManifest: undefined } : {}),
+      source: { ...world.source, design: { ...design, settlements } },
+    },
+  };
+}
+
 export function parseProject(input: unknown): Project {
   if (
     typeof input === "object" &&
@@ -784,13 +834,15 @@ export function parseProject(input: unknown): Project {
   ) {
     input = migrateV5Project(input as Record<string, unknown>);
   }
+  if (isRecord(input) && input.schemaVersion === 6)
+    input = migrateV6Project(input);
   return projectSchema.parse(input);
 }
 export const uid = () => crypto.randomUUID();
 export function emptyProject(): Project {
   const n = 33;
   return {
-    schemaVersion: 6,
+    schemaVersion: CURRENT_SCHEMA_VERSION,
     id: uid(),
     name: "わたしのスタジオ",
     world: {

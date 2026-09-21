@@ -1,3 +1,4 @@
+import { fingerprint } from "../../asset-catalog/src/index";
 import type { GeneratorInput } from "../../world-generator/src/index";
 import {
   CHUNK_PRIORITY_ORDER,
@@ -17,6 +18,7 @@ export interface ChunkJobRequest {
   input: GeneratorInput;
   priority: ChunkPriority;
   runtimeGeneration: number;
+  generationContextHash?: string;
 }
 
 export interface ChunkJobResult {
@@ -54,6 +56,7 @@ interface QueuedJob {
   input: GeneratorInput;
   priority: ChunkPriority;
   runtimeGeneration: number;
+  generationContextHash: string;
   resolve: (result: ChunkJobResult | undefined) => void;
   reject: (error: Error) => void;
 }
@@ -72,7 +75,7 @@ function canUseWorkers(forceSync?: boolean) {
 }
 
 export class ChunkWorkerPool {
-  private workerDesigns = new WeakMap<Worker, GeneratorInput["design"]>();
+  private workerContextHashes = new WeakMap<Worker, string>();
   private readonly workers: Worker[] = [];
   private readonly busy = new Set<Worker>();
   /** Worker が処理中の Job。onerror 時の回収に使う。 */
@@ -100,6 +103,32 @@ export class ChunkWorkerPool {
     if (this.useWorkers) this.spawnWorkers(this.desiredCount);
   }
 
+  /** reload境界で内容が変わったWorkerだけへcontextを送る。実行中JobとはFIFO順になる。 */
+  setGenerationContext(hash: string, design: GeneratorInput["design"]) {
+    for (const worker of this.workers)
+      this.sendGenerationContext(worker, hash, design);
+  }
+
+  private sendGenerationContext(
+    worker: Worker,
+    hash: string,
+    design: GeneratorInput["design"],
+  ) {
+    if (this.workerContextHashes.get(worker) === hash) return;
+    worker.postMessage({ type: "generation-context", hash, design });
+    this.workerContextHashes.set(worker, hash);
+  }
+
+  private contextHash(request: ChunkJobRequest) {
+    return (
+      request.generationContextHash ??
+      fingerprint({
+        generatorVersion: request.input.generatorVersion,
+        worldDesign: request.input.design,
+      })
+    );
+  }
+
   get stats(): ChunkWorkerPoolStats {
     return {
       workerCount: this.useWorkers ? this.workers.length : 0,
@@ -124,6 +153,7 @@ export class ChunkWorkerPool {
       existing.priority = higherPriority(existing.priority, request.priority);
       existing.runtimeGeneration = request.runtimeGeneration;
       existing.input = request.input;
+      existing.generationContextHash = this.contextHash(request);
       this.reheap();
       return new Promise((resolve, reject) => {
         const previousResolve = existing.resolve;
@@ -145,6 +175,7 @@ export class ChunkWorkerPool {
         input: request.input,
         priority: request.priority,
         runtimeGeneration: request.runtimeGeneration,
+        generationContextHash: this.contextHash(request),
         resolve,
         reject,
       };
@@ -267,13 +298,11 @@ export class ChunkWorkerPool {
       this.inFlightByKey.set(job.chunkKey, job);
       this.busy.add(worker);
       this.jobByWorker.set(worker, job);
-      if (this.workerDesigns.get(worker) !== job.input.design) {
-        worker.postMessage({
-          type: "generation-context",
-          design: job.input.design,
-        });
-        this.workerDesigns.set(worker, job.input.design);
-      }
+      this.sendGenerationContext(
+        worker,
+        job.generationContextHash,
+        job.input.design,
+      );
       const message: PrepareChunkRequest = {
         type: "prepare-chunk",
         jobId: job.jobId,

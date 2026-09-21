@@ -21,7 +21,7 @@ flowchart LR
 
 ## PlannerとDummy Astra
 
-`AssetRequirementPlanner.plan(WorldDesign)`が交換用境界です。`DummyAssetRequirementPlanner`は島のPropRules、Landmarks、SettlementsからSlotを重複排除して昇順に並べ、木5、岩4、building3、jump_ramp3、それ以外1を要求します。Biome集合と`stylized-low-poly`を付けます。toy-islandsでは10 Slot、計28 variantです。
+`AssetRequirementPlanner.plan(WorldDesign)`が交換用境界です。`DummyAssetRequirementPlanner`は島のPropRules、Landmarks、SettlementsのbuildingRulesからSlotを重複排除して昇順に並べ、木5、岩4、building3、jump_ramp3、それ以外1を要求します。Biome集合と`stylized-low-poly`を付けます。toy-islandsでは10 Slot、計28 variantです。
 
 `asset-core`の`AssetGenerator.generate(AssetGenerationRequest)`が生成交換境界です。`ai-dummy/src/asset-generator.ts`の`DummyAstraAssetGenerator`は既存`placeholderGlb()`を使い、provider=`dummy-astra`、model=`dummy`、license=`project-owned`と生成入力hashを記録します。各variantは識別が異なる共通placeholder形状です。OpenAI API、Astra、Blender、課金APIは一切呼びません。
 
@@ -33,7 +33,7 @@ flowchart LR
 
 初期優先順位はlocal→kenney→polyhaven→ambientcg→kaykit-local→dummy-astraです。KenneyとKayKitは利用者が用意するローカルPack境界です。KayKit公式APIやHTML scrapingは仮定しません。CLIのLocal Libraryは既存の`data-dir/library.json`からmodelを検索し、必要になったruntime GLBだけを読み込みます。Kenney/KayKitの専用Pack Providerは空で、利用者のPackをプログラムから注入できます。
 
-初期許可ライセンスはCC0/project-ownedのみです。unknownは採用しません。source、license、author、sourceUrl、retrievedAtを保持します。Factory結果は登録済み、不足、unsupported、取得失敗を分けます。styleはRequirementのタグとして付与し、外観がそのstyleに一致するかの自動画像判定はしません。外部取得素材を完成Worldへ採用する際は外観の確認が必要です。
+初期許可ライセンスはCC0/project-ownedのみです。unknownは採用しません。source、license、author、sourceUrl、retrievedAtを保持します。Factory結果は登録済み、不足、unsupported、画風の審査待ち`reviewRequired`、取得失敗を分けます。未審査素材は`style=unverified`、`styleAssessment=unverified`とし、要求は`requestedStyle`へ記録します。要求画風の候補数には含めず、必要ならDummyで不足を補います。ローカルPackの明示レビュー済みmetadata（style/styleReview）だけを引き継ぎ、外部Providerの申告だけでは審査済みにしません。Dummyは`styleAssessment=dummy`と区別します。geometry/texture/materialの自動画風審査・変換は未実装です。
 
 | mode    | 動作                                                             |
 | ------- | ---------------------------------------------------------------- |
@@ -58,7 +58,7 @@ ZIPはGLBとして解釈せず、明示的な展開境界を通します。仕�
 - PNG/JPEG/WebP画像だけの素材は`type=texture`として原ZIP・画像群を保存。roleを推測したMaterialや偽のGLBは作らない。
 - 現RendererはPBR texture setを扱わないため`textureInfo.state=unsupported`、Catalog statusもunsupported。モデルResolverの候補や必要model variant数には数えない。Studioで未対応表示し配置を禁止。
 
-画像は寸法上限も検証します。EXR、TIFF等は現段階では明示的な非対応です。source保存を優先し、Renderer対応ができるまで誤ってモデルとして消費しません。textureの`files.runtime`はSchema v6互換のため元ZIPを指し、利用側はtype/stateで除外します。
+画像は寸法上限も検証します。EXR、TIFF等は現段階では明示的な非対応です。source保存を優先し、Renderer対応ができるまで誤ってモデルとして消費しません。textureの`files.runtime`は従来のAsset files構造を保持して元ZIPを指し、利用側はtype/stateで除外します。
 
 ## Resolver / Bake
 

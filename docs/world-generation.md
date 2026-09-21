@@ -1,6 +1,6 @@
 # World Designによるワールド生成
 
-`toy-islands`は保存済みのWorld Designを使うGenerator v2です。従来の`grassland`、`airfield`、`archipelago`はv1の地形、seed派生、Entity IDを維持します。Project Schemaはv6のままで、追加フィールドは省略可能です。
+`toy-islands`は保存済みのWorld Designを使うGenerator v2です。従来の`grassland`、`airfield`、`archipelago`はv1の地形、seed派生、Entity IDを維持します。Project Schemaはv7です。従来のv6は読込時に移行し、新しい永続データ契約を明確に区別します。
 
 ```mermaid
 flowchart TD
@@ -21,7 +21,7 @@ flowchart TD
 
 `packages/project-schema/src/world-design.ts`が型とZod検証を提供します。World Designは島、山、Catmull-Rom道路、集落、回転付き滑走路、固定Landmark、Biome領域、No-Spawn領域、Gameplay領域を保持します。PropRuleにはSlot、Biome、密度、標高、傾斜角度（度）、道路・水・Landmarkからの距離、最小間隔、scale範囲、yaw方針があります。
 
-`source.design`、`world.buildManifest`、`asset.catalog`、`asset.textureInfo`は追加の任意フィールドです。既存v6データに変換は不要で、以前のv0–v5 migrationも継続します。toy-islandsにはWorld Designを必須とし、欠損時に従来草原へ黙ってフォールバックしません。
+`source.design`、`world.buildManifest`、`asset.catalog`、`asset.textureInfo`は追加の任意フィールドです。v0–v6のmigrationを継続します。旧Settlement.assetSlotはbuildingRulesへ移行し、同位置・同Slotの固定Landmarkがある場合は重複生成を避けます。Designを変換したProjectのBuild Manifestは無効化するため再Bakeが必要です。toy-islandsにはWorld Designを必須とし、欠損時に従来草原へ黙ってフォールバックしません。
 
 ## Macro / Meso / Micro
 
@@ -29,7 +29,7 @@ flowchart TD
 - Meso：道路、集落、滑走路、Biome、Landmark、配置禁止領域を共通Samplerで評価します。
 - Micro：弱い補間ノイズと、world-space cellのjitterから配置とscale/yawを生成します。
 
-32m Chunkと33×33高度配列、既存のWorker Pool、非同期queue、Floating Originを維持します。Designは各Workerに初回または参照変更時にcontextメッセージで渡し、各Chunk jobに複製しません。SamplerとSpline評価結果はDesign参照の寿命に対応するWeakMapで共有します。Designは不変データとして扱い、更新時は新しいオブジェクトでWorldRuntimeをreloadしてください。
+32m Chunkと33×33高度配列、既存のWorker Pool、非同期queue、Floating Originを維持します。constructor/reload時に`fingerprint({ generatorVersion, worldDesign })`を計算し、内容が変わればDesign snapshotを作って全Workerへcontextを送ります。同じオブジェクトを直接変更してreloadしても更新され、変更がなければ再送しません。各Chunk jobではhashを渡し、Designの再hashや複製をしません。Main ThreadのSamplerとSpline cacheも同じsnapshotへ切り替えます。reload前に直接変更した内容は生成へ反映しません。
 
 ## Semantic Layers
 
@@ -49,6 +49,12 @@ Biome、標高、水面上、傾斜、海岸からの保守的距離、道路端
 
 生成物の主参照は`assetSlot`です。RuntimeのCatalog Resolverが一度解決して`assetId`を付け、同じAsset IDを既存のWorldAssetBatch/LODへまとめます。未解決時は`missingAsset=true`を保持し、互換kindの表示を使います。ValidatorはMissingAssetをerrorにします。Tombstoneは安定IDに対して従来どおり適用します。
 
+## Settlementの建物配置
+
+Settlementは地形の平坦化、自然Propの配置禁止、`buildingRules: [{ assetSlot, count, minSpacing }]`を持ちます。町全体のcell候補をseedで決定し、道路・明示No-Spawn・滑走路・水面・傾斜・Landmark・他の建物との間隔を検査してからChunkへ分配します。町自身のNo-Spawnだけは町の建物に限って除外します。
+
+PlannerとValidatorはbuildingRulesのSlotを参照し、Catalog解決・Instancing・Colliderは既存Propと共通です。要求数を配置できない場合はValidatorが`settlement-building-count`エラーを出します。探索は1 Ruleあたり10万cellまでで、上限超過も不足として報告します。toy-islands Design v2は町に8棟、最小間隔12mを配置し、以前のLandmarkの家は含めません。旧保存Worldの家はmigrationで保持します。
+
 ## Seed Namespace
 
 `deriveSeed(worldSeed, namespace, stableId)`は型を含む入力から32bit値を生成します。v2はterrain/prop/density/jitter/priority/scale/rotation等を分離しています。v1の`seed + 9`等は既存出力を保存するため意図的に変更していません。rule順序を変える変更は配置IDにも影響するため、完成WorldではBakeを更新してください。
@@ -61,7 +67,7 @@ Biome、標高、水面上、傾斜、海岸からの保守的距離、道路端
 
 ## Validator / Debug
 
-`validateWorld()`はSpawn水没・地下、道路急勾配、滑走路/No-SpawnへのProp侵入、木の水没、Landmark水没、必須Slot不足、島の有効陸地、Checkpoint位置をerror/warning/infoで報告します。呼び出し側が渡した配置群を検証します。CLIは全島のChunkを走査します。自動repairはしません。
+`validateWorld()`はSpawn水没・地下、道路急勾配、滑走路/No-SpawnへのProp侵入、木の水没、Landmark水没、必須Slot不足、Settlement建物の配置可能数、島の有効陸地、Checkpoint位置をerror/warning/infoで報告します。呼び出し側が渡した配置群を検証します。CLIは全島のChunkを走査します。自動repairはしません。
 
 開発時、または`?agent=1`で以下をブラウザconsoleから参照できます。
 
@@ -95,3 +101,7 @@ pnpm dev
 ```
 
 Studio起動時の「おもちゃの群島」から`.data/worlds/toy-islands.json`を読み込みます。APIは用意済みProjectを読むだけで、RuntimeからFactoryを呼びません。
+
+## 今後の改善
+
+自然Propの近傍判定は候補配列の走査です。高密度の森ではSpatial Hash化を検討します。地表色は高度ベースの砂・草・岩を共有しており、Biome別paletteや材質ルールは未導入です。

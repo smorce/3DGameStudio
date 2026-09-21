@@ -33,6 +33,7 @@ export interface FactoryResult {
   missing: { assetSlot: string; count: number }[];
   registered: string[];
   unsupported: string[];
+  reviewRequired: string[];
   errors: string[];
 }
 export class AssetFactory {
@@ -53,6 +54,7 @@ export class AssetFactory {
       missing: [],
       registered: [],
       unsupported: [],
+      reviewRequired: [],
       errors: [],
     };
     const providers = this.providers
@@ -210,19 +212,29 @@ export class AssetFactory {
     const runtime = await this.storage.load(
       record.files.runtime.replace("/api/files/", ""),
     );
+    const dummy = ai?.provider === "dummy-astra" && ai.model === "dummy";
+    const reviewed =
+      ["local", "kenney", "kaykit-local"].includes(candidate.provider) &&
+      candidate.styleReview === "reviewed" &&
+      candidate.style === requirement.style;
     record.catalog = {
       slots: [requirement.assetSlot],
       tags: requirement.assetSlot.split("."),
       biomes: requirement.biomes,
-      style: requirement.style,
+      style: dummy || reviewed ? requirement.style : "unverified",
+      requestedStyle: requirement.style,
+      styleAssessment: dummy ? "dummy" : reviewed ? "reviewed" : "unverified",
       variantGroup: requirement.assetSlot,
       contentHash: createHash("sha256").update(runtime).digest("hex"),
       status: record.type === "texture" ? "unsupported" : "ready",
     };
     if (ai) record.ai = ai;
     this.catalog.register(record);
-    (record.type === "texture" ? result.unsupported : result.registered).push(
-      record.id,
-    );
+    (record.type === "texture"
+      ? result.unsupported
+      : record.catalog.styleAssessment === "unverified"
+        ? result.reviewRequired
+        : result.registered
+    ).push(record.id);
   }
 }

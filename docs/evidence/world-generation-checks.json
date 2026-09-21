@@ -4,33 +4,70 @@
   "workBranch": "feat/world-generation-asset-factory",
   "typecheck": "pass",
   "lintAndCycles": "pass",
-  "unitIntegration": { "files": 37, "passed": 282, "failed": 0 },
+  "unitIntegration": {
+    "files": 40,
+    "passed": 291,
+    "failed": 0
+  },
   "build": "pass: studio, player, server",
-  "worldValidation": { "generatedEntities": 1183, "errors": 0, "warnings": 0 },
+  "worldValidation": {
+    "generatedEntities": 1190,
+    "errors": 0,
+    "warnings": 0
+  },
   "offlineFactory": {
     "requirements": 10,
     "variants": 28,
     "missing": 0,
     "repeatRegistered": 0
   },
-  "e2eFull": { "passed": 30, "failed": 4 },
-  "smoke": { "passed": 18, "failed": 1 },
+  "e2eFull": {
+    "passed": 34,
+    "failed": 0
+  },
+  "smoke": {
+    "passed": 19,
+    "failed": 0
+  },
   "baseBranchFailureReproduction": {
     "tested": 5,
     "passed": 2,
     "failed": 3,
     "failures": [
-      "spike-flight-diagnostics: floating point strict equality",
+      "spike-flight-diagnostics: UI stop overwrote the test measurement file",
       "spike-prewarm-diagnostics: detached page/dialog",
       "world-runtime: goal timeout and undefined isReady"
-    ]
+    ],
+    "status": "Historical failures fixed; see reviewFixes"
   },
-  "targetedRerun": { "runtimeStability": "pass", "toyIslands": "pass" },
-  "finalToyIslands": "pass after proxy sea clipping, opaque ocean and dirty-only index updates",
+  "targetedRerun": {
+    "runtimeStability": "pass",
+    "toyIslands": "pass"
+  },
+  "finalToyIslands": "pass: schema v7, 5 proxies, 8 resolved settlement buildings, offline assets, real Workers",
   "legacyComparison": "100 chunks per legacy preset: heights, colors, entities and hash equal to base",
   "notes": [
     "No tests removed or skipped",
     "External provider acquisition and paid AI services were not called",
     "Browser uses Chromium software WebGL; Node generation timings exclude rendering"
-  ]
+  ],
+  "reviewDate": "2026-09-21",
+  "reviewBaseCommit": "8c068fd",
+  "schemaVersion": 7,
+  "reviewFixes": {
+    "spikeFlight": "closed: isolated measurement files; exact equality retained",
+    "spikePrewarm": "closed: await stop/save/dialog/drop completion before navigation",
+    "worldRuntime": "closed: protect shader compilation from streaming material disposal",
+    "runtimeStability": "closed: sample both coordinates atomically",
+    "workerContext": "content fingerprint and immutable snapshot on constructor/reload; 3 regression cases pass",
+    "settlement": "8 buildings; 12m spacing; planner/resolver/validator and real Worker E2E pass",
+    "migration": "v0-v6 to v7; legacy landmark and texture metadata preserved",
+    "assetStyle": "unverified acquisitions are reviewRequired; dummy distinguished"
+  },
+  "developmentServer": {
+    "studio": "http://localhost:5183/",
+    "api": "http://localhost:8787/",
+    "project": ".data/worlds/toy-islands.json",
+    "servedProjectVerified": true
+  }
 }

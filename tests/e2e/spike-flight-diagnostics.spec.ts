@@ -47,6 +47,7 @@ type CaseResult = {
 async function flyAndDump(
   page: import("@playwright/test").Page,
   label: string,
+  evidenceDir: string,
   query = "",
 ): Promise<CaseResult> {
   await page.goto(`/${query}`);
@@ -80,8 +81,8 @@ async function flyAndDump(
     return fn();
   })) as SpikeDump;
 
-  await mkdir("docs/evidence", { recursive: true });
-  const path = `docs/evidence/spike-flight-${label}.json`;
+  await mkdir(evidenceDir, { recursive: true });
+  const path = `${evidenceDir}/spike-flight-${label}.json`;
   await writeFile(
     path,
     JSON.stringify(
@@ -99,6 +100,10 @@ async function flyAndDump(
     ),
   );
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+  // 終了時の診断保存・ダイアログ・DROPが完了してから次の画面へ移動する。
+  await expect(
+    page.getByRole("button", { name: "▶ あそぶ", exact: true }),
+  ).toBeEnabled();
   return { label, query, dump, path };
 }
 
@@ -107,33 +112,39 @@ test.describe("spike flight diagnostics", () => {
 
   test("録画なし GPU A/B（baseline / shadowOFF / dpr1 / both）", async ({
     page,
-  }) => {
-    const baseline = await flyAndDump(page, "baseline");
+  }, testInfo) => {
+    // UIの終了時保存と競合しない、テスト専用の計測ファイルを使う。
+    const evidenceDir = testInfo.outputPath("evidence");
+    const baseline = await flyAndDump(page, "baseline", evidenceDir);
     const shadowOff = await flyAndDump(
       page,
       "shadow-off",
+      evidenceDir,
       "?disableShadow=1",
     );
-    const dpr1 = await flyAndDump(page, "dpr1", "?pixelRatio=1");
+    const dpr1 = await flyAndDump(page, "dpr1", evidenceDir, "?pixelRatio=1");
     const both = await flyAndDump(
       page,
       "shadow-off-dpr1",
+      evidenceDir,
       "?disableShadow=1&pixelRatio=1",
     );
 
     expect(baseline.dump.environment?.visibilityState).toBeTruthy();
     expect(baseline.dump.environment?.webglRenderer).toBeTruthy();
     expect(shadowOff.dump.environment?.shadowMapEnabled).toBe(false);
-    expect(dpr1.dump.environment?.effectivePixelRatio).toBeLessThanOrEqual(1.01);
+    expect(dpr1.dump.environment?.effectivePixelRatio).toBeLessThanOrEqual(
+      1.01,
+    );
     expect(both.dump.environment?.shadowMapEnabled).toBe(false);
-    expect(both.dump.environment?.effectivePixelRatio).toBeLessThanOrEqual(1.01);
+    expect(both.dump.environment?.effectivePixelRatio).toBeLessThanOrEqual(
+      1.01,
+    );
 
     // summary はメモリ上の dump を使わず、書き出した4ファイルから再生成する。
-    const summaryResult = await writeSpikeFlightSummaryFromDisk();
+    const summaryResult = await writeSpikeFlightSummaryFromDisk(evidenceDir);
     expect(summaryResult.written).toBe(true);
-    expect(summaryResult.summary?.baseline?.p95).toBe(
-      baseline.dump.frameP95Ms,
-    );
+    expect(summaryResult.summary?.baseline?.p95).toBe(baseline.dump.frameP95Ms);
     expect(summaryResult.summary?.shadowOff?.p95).toBe(
       shadowOff.dump.frameP95Ms,
     );

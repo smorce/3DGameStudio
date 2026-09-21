@@ -17,7 +17,9 @@ export function requiredSlots(design: WorldDesign) {
     ...new Set([
       ...design.islands.flatMap((i) => i.propRules.map((r) => r.assetSlot)),
       ...design.landmarks.map((l) => l.assetSlot),
-      ...design.settlements.map((s) => s.assetSlot),
+      ...design.settlements.flatMap((s) =>
+        s.buildingRules.map((r) => r.assetSlot),
+      ),
     ]),
   ].sort();
 }

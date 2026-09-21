@@ -69,17 +69,25 @@ const region = z.object({
   center: point,
   radius: positive,
 });
+export const settlementBuildingRuleSchema = z.object({
+  assetSlot: z.string().min(1),
+  count: z.number().int().min(1).max(256),
+  minSpacing: positive.min(1),
+});
+export const settlementDefinitionSchema = region.extend({
+  height: z.number().finite(),
+  buildingRules: z.array(settlementBuildingRuleSchema),
+});
+export type SettlementBuildingRule = z.infer<
+  typeof settlementBuildingRuleSchema
+>;
+export type SettlementDefinition = z.infer<typeof settlementDefinitionSchema>;
 export const worldDesignSchema = z
   .object({
     version: z.number().int().positive(),
     islands: z.array(islandDefinitionSchema),
     roads: z.array(roadDefinitionSchema),
-    settlements: z.array(
-      region.extend({
-        height: z.number().finite(),
-        assetSlot: z.string().min(1),
-      }),
-    ),
+    settlements: z.array(settlementDefinitionSchema),
     airports: z.array(
       z.object({
         id: z.string().min(1),

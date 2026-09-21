@@ -28,6 +28,8 @@ export interface GeneratedEntity {
   assetId?: string;
   biome?: string;
   landmark?: boolean;
+  settlementId?: string;
+  settlementRuleIndex?: number;
   missingAsset?: boolean;
   id: string;
   name: string;

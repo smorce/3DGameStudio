@@ -131,6 +131,8 @@ export class ThreeRenderer implements RendererAdapter {
   chunks = new Map<string, THREE.Group>();
   private observer: ResizeObserver;
   private generation = 0;
+  private playPreparation?: Promise<{ ms: number; deferredCount: number }>;
+  private afterPreparation: (() => void)[] = [];
   private templates = new AssetTemplates();
   private selected?: string;
   private project?: Project;
@@ -553,7 +555,19 @@ export class ThreeRenderer implements RendererAdapter {
    * 1回描画し、Geometry/Buffer 等の初回 GPU 準備も済ませる。
    * Gameplay の最初の RAF から ~20–30ms Stall を避けるための準備フェーズ。
    */
-  async preparePlayRendering(
+  preparePlayRendering(
+    options: { state?: PhysicsRenderState } = {},
+  ): Promise<{ ms: number; deferredCount: number }> {
+    if (this.playPreparation) return this.playPreparation;
+    // compileAsyncが参照するMaterialを、通常描画のStreamingや再読込から保護する。
+    this.playPreparation = this.preparePlayScene(options).finally(() => {
+      this.playPreparation = undefined;
+      const changes = this.afterPreparation.splice(0);
+      for (const apply of changes) apply();
+    });
+    return this.playPreparation;
+  }
+  private async preparePlayScene(
     options: {
       state?: PhysicsRenderState;
     } = {},
@@ -640,6 +654,10 @@ export class ThreeRenderer implements RendererAdapter {
     p: Project,
     options?: { courseId?: string | null; world?: WorldRuntime },
   ) {
+    if (this.playPreparation) {
+      this.afterPreparation.push(() => this.load(p, options));
+      return;
+    }
     this.project = p;
     this.editWorkspace = true;
     ++this.generation;
@@ -1100,6 +1118,10 @@ export class ThreeRenderer implements RendererAdapter {
     };
   }
   restoreEditTransforms(p: Project) {
+    if (this.playPreparation) {
+      this.afterPreparation.push(() => this.restoreEditTransforms(p));
+      return;
+    }
     this.project = p;
     this.editWorkspace = true;
     this.syncProjectPartTransforms(p);
@@ -1182,6 +1204,7 @@ export class ThreeRenderer implements RendererAdapter {
     thrust = 0,
     options: RenderFrameOptions = {},
   ) {
+    if (this.playPreparation) return;
     this.parts.forEach((visual) => {
       updateThrusterFlame(visual, thrust);
       updateMotorActivity(visual, thrust);
@@ -1465,6 +1488,10 @@ export class ThreeRenderer implements RendererAdapter {
     };
   }
   dispose() {
+    if (this.playPreparation) {
+      this.afterPreparation.push(() => this.dispose());
+      return;
+    }
     this.generation++;
     this.observer.disconnect();
     this.canvas.removeEventListener("pointerdown", this.pointerDown);

@@ -123,6 +123,9 @@ else if (command === "factory") {
           author: a.source.author,
           license: a.license.id,
           thumbnail: a.files.thumbnail,
+          style: a.catalog?.style,
+          styleReview:
+            a.catalog?.styleAssessment === "reviewed" ? "reviewed" : undefined,
           category: [
             ...(a.catalog?.tags ?? []),
             ...(a.catalog?.slots ?? []),
@@ -179,8 +182,11 @@ else if (command === "factory") {
     entities,
     courses: project.courses,
     canResolve: (slot, biome) =>
-      catalog.resolveAssetSlot(slot, { seed: source.seed, biome }).status ===
-      "resolved",
+      catalog.resolveAssetSlot(slot, {
+        seed: source.seed,
+        biome,
+        style: "stylized-low-poly",
+      }).status === "resolved",
   });
   console.log(
     JSON.stringify(
