@@ -81,7 +81,8 @@ export const biomeSurfaceProfilesV1: Record<string, BiomeSurfaceProfile> = {
 export const biomeSurfaceCatalog: Readonly<
   Record<number, Readonly<Record<string, BiomeSurfaceProfile>>>
 > = {
-  [CURRENT_BIOME_PROFILE_VERSION]: biomeSurfaceProfilesV1,
+  // 歴史的な版キーは固定値。CURRENTを上げてもv1をキーからずらさない。
+  1: biomeSurfaceProfilesV1,
 };
 export function biomeSurfaceProfiles(
   version = CURRENT_BIOME_PROFILE_VERSION,

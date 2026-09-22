@@ -35,7 +35,8 @@ export interface SampleWorldDescriptor extends SampleWorldMetadata {
   biomeProfileVersion: number;
   buildProject(): Project;
 }
-interface Definition extends Omit<SampleWorldDescriptor, "buildProject"> {
+/** Worldを組み立てる入力。biomeProfileVersionはDescriptor側の属性。 */
+interface Definition extends SampleWorldMetadata {
   preset?: EnvironmentPreset;
   design?: () => WorldDesign;
   sky: string;

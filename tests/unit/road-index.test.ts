@@ -4,6 +4,7 @@ import {
   SemanticLayers,
   generateChunk,
 } from "../../packages/world-generator/src/index";
+import type { Vec3 } from "../../packages/project-schema/src/index";
 import { bruteRoadInfluence } from "../fixtures/road-reference";
 
 it.each(
@@ -117,7 +118,7 @@ it("道路を増やしても範囲外セルの線分照合は増えない", () =
       controlPoints: [
         [i * 200, 8, 0],
         [i * 200 + 80, 8, 100],
-      ],
+      ] as Vec3[],
     }));
     const layers = new SemanticLayers(design, 42);
     const spy = vi.spyOn(Math, "hypot");
@@ -149,7 +150,7 @@ it("近傍道路だけ照合し、遠い道路を増やしても照合数は増�
         controlPoints: [
           [0, 8, 0],
           [0, 8, 100],
-        ],
+        ] as Vec3[],
       },
       ...Array.from({ length: roadCount - 1 }, (_, i) => ({
         ...structuredClone(template),
@@ -158,7 +159,7 @@ it("近傍道路だけ照合し、遠い道路を増やしても照合数は増�
         controlPoints: [
           [2000 + i * 200, 8, 0],
           [2080 + i * 200, 8, 100],
-        ],
+        ] as Vec3[],
       })),
     ];
     const layers = new SemanticLayers(design, 42);
