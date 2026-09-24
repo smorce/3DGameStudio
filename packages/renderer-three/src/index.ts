@@ -12,6 +12,7 @@ import {
 } from "./instances";
 import {
   activeCourse,
+  worldChunkSize,
   type Project,
   type Part,
   type Vec3,
@@ -1009,7 +1010,7 @@ export class ThreeRenderer implements RendererAdapter {
           if (value === group) this.chunks.delete(key);
         this.farProxy?.invalidate();
       },
-      this.worldRuntime?.chunkSize ?? p.world.chunkSize,
+      this.worldRuntime?.chunkSize ?? worldChunkSize(p.world),
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS : 2,
       this.worldRuntime?.procedural ? RENDER_CHUNK_RADIUS + 1 : 3,
       this.worldRuntime?.procedural

@@ -302,7 +302,7 @@ export const emptyWorldEdits = (): WorldEdits => ({
   terrainChunks: {},
   generatedEntityTombstones: [],
 });
-export const worldSchema = z.object({
+export const worldObjectSchema = z.object({
   id: z.string(),
   name: z.string(),
   source: worldSourceSchema,
@@ -319,12 +319,20 @@ export const worldSchema = z.object({
   spawnPoints: z.array(vec3),
   environment: z.object({ sky: z.string(), fog: z.number().min(0).max(1) }),
 });
+export const worldSchema = worldObjectSchema.refine(
+  (world) =>
+    world.source.kind !== "procedural" ||
+    world.chunkSize === world.source.chunkSize,
+  "Procedural world.chunkSize must equal source.chunkSize",
+);
 export type World = z.infer<typeof worldSchema>;
 export function isProceduralWorld(
   world: Pick<World, "source">,
 ): world is World & { source: z.infer<typeof proceduralWorldSourceSchema> } {
   return world.source.kind === "procedural";
 }
+// 手続きWorldの正規値は source.chunkSize。world.chunkSize は有限Worldの値で、
+// 手続きWorldでは source と同じ値でなければならない。
 export function worldChunkSize(world: Pick<World, "source" | "chunkSize">) {
   return world.source.kind === "procedural"
     ? world.source.chunkSize

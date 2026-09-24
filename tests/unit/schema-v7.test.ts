@@ -34,6 +34,12 @@ it("Chunk一辺は1m未満を拒否し、1mは有限Worldと手続きWorldの両
       },
     }),
   ).toThrow();
+  expect(() =>
+    parseProject({
+      ...procedural,
+      world: { ...procedural.world, chunkSize: 64 },
+    }),
+  ).toThrow("Procedural world.chunkSize must equal source.chunkSize");
 });
 
 it("v6有限Worldは内容を保持してv7へ移行し、保存・再読込が冪等になる", () => {

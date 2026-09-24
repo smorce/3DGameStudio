@@ -94,15 +94,17 @@ Engine → PhysicsRenderState → ThreeRenderer → Part Visual の流れを維�
 
 `packages/physics-rapier/` には適用済み推力の記録と既存剛体速度を描画状態へコピーする処理だけを追加。
 物理のForce計算・ミキサー・接地判定は変更していない。
-`packages/aerodynamics/`、`packages/water-system/`、`packages/project-schema/` と依存関係ファイルに差分なし。
-Force / Impulse / Collider / Gravity / 空力係数の追加・変更なし。Schema Versionは7のまま。
+`packages/aerodynamics/`、`packages/water-system/` に差分なし。
+`packages/project-schema/` にはChunk一辺の実用上の下限1mを追加。手続きWorldでは `source.chunkSize` を正規値とし、`world.chunkSize` はそれと同じ値でなければならない。
+Schema Versionは7のまま。
+PhysicsのForce / Impulse / Collider / Gravity / 空力係数には変更なし。
 統合テストでもVFX更新前後のPhysicsRenderStateと物理速度が一致することを確認した。
 
 ## テスト結果
 
 - typecheck：成功。
 - lint：成功、循環依存なし。
-- unit / integration：`pnpm test` 全47ファイル・353テスト成功。
+- unit / integration：`pnpm test` 全47ファイル・355テスト成功。
 - レビュー回帰：速度40m/sと5m/sの分離、Part別推力・無効Thruster・停止・respawn、傾斜したサスペンション方向、441Chunkから9キーのみの検索、負座標・Rebase後の地形照射、1m Chunkで3Chunk先の排気地面煙を確認。
 - e2e：使い捨てWorktreeで `pnpm test:e2e --reporter=line,json` を実行し、既定Chromiumの全17ファイル・47テストが成功（約11分、失敗・スキップ・リトライなし）。今回の探索半径修正を含むソースと回帰テストをコピーし、SHA-256で作業ツリーとの一致を確認した。
 - build：Studio / Player / Serverすべて成功。既存のbundleサイズ・依存ライブラリ注釈に関する警告あり。

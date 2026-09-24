@@ -20,6 +20,7 @@ import type RAPIER from "@dimforge/rapier3d-compat";
 import {
   activeCourse,
   PANEL_SIDE,
+  worldChunkSize,
   type Project,
   type Vec3,
   type Part,
@@ -534,11 +535,11 @@ export class RapierPhysics {
     ) => {
       const [x0, z0] = chunkCoordinate(
           min,
-          this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+          this.worldRuntime?.chunkSize ?? worldChunkSize(project.world),
         ),
         [x1, z1] = chunkCoordinate(
           max,
-          this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+          this.worldRuntime?.chunkSize ?? worldChunkSize(project.world),
         );
       if ((x1 - x0 + 1) * (z1 - z0 + 1) > 4096) {
         spanning.push({
@@ -888,7 +889,7 @@ export class RapierPhysics {
           }
         }
       },
-      this.worldRuntime?.chunkSize ?? project.world.chunkSize,
+      this.worldRuntime?.chunkSize ?? worldChunkSize(project.world),
       this.worldRuntime?.procedural
         ? physicsStreaming.loadRadius + 1
         : physicsStreaming.loadRadius,

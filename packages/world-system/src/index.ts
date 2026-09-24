@@ -1,13 +1,14 @@
-import type {
-  EnvironmentPreset,
-  Project,
+import {
+  worldChunkSize,
+  type EnvironmentPreset,
+  type Project,
 } from "../../project-schema/src/index";
 import { createProceduralWorld } from "../../world-generator/src/index";
 import { chunkCoordinate } from "./chunks";
 export function groupInstances(project: Project) {
   const groups = new Map<string, Project["world"]["entities"]>();
   for (const e of project.world.entities) {
-    const key = `${chunkCoordinate(e.transform.position, project.world.chunkSize)}:${e.assetId ?? e.kind}`;
+    const key = `${chunkCoordinate(e.transform.position, worldChunkSize(project.world))}:${e.assetId ?? e.kind}`;
     groups.set(key, [...(groups.get(key) ?? []), e]);
   }
   return groups;

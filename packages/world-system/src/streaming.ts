@@ -1,4 +1,8 @@
-import type { Vec3, World } from "../../project-schema/src/index";
+import {
+  worldChunkSize,
+  type Vec3,
+  type World,
+} from "../../project-schema/src/index";
 import {
   PrefetchDirectionState,
   chunkCoordinate,
@@ -15,7 +19,7 @@ export interface TerrainChunk {
 }
 
 export function terrainChunks(project: {
-  world: Pick<World, "terrain" | "chunkSize">;
+  world: Pick<World, "terrain" | "chunkSize" | "source">;
 }): TerrainChunk[] {
   const t = project.world.terrain;
   const chunks = new Map<string, TerrainChunk>();
@@ -23,7 +27,10 @@ export function terrainChunks(project: {
     for (let x = 0; x < t.resolution - 1; x++) {
       const px = (x / (t.resolution - 1) - 0.5) * t.size,
         pz = (z / (t.resolution - 1) - 0.5) * t.size,
-        key = chunkCoordinate([px, 0, pz], project.world.chunkSize).join(",");
+        key = chunkCoordinate(
+          [px, 0, pz],
+          worldChunkSize(project.world),
+        ).join(",");
       let chunk = chunks.get(key);
       if (!chunk) {
         chunk = { key, vertices: [], indices: [], colors: [] };

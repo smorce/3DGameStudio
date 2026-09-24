@@ -309,16 +309,16 @@ export class WorldRuntime {
   debugDesignAt(x: number, z: number) {
     const source = this.world.source;
     if (source.kind !== "procedural" || !source.design) return undefined;
-    const c = worldToChunk(x, z, source.chunkSize),
+    const c = worldToChunk(x, z, this.chunkSize),
       key = chunkKey(c.chunkX, c.chunkZ);
     return {
       ...semanticContext(this.generationDesign!, source.seed).debugSample(x, z),
       chunkKey: key,
       chunkBounds: [
-        c.chunkX * source.chunkSize,
-        c.chunkZ * source.chunkSize,
-        (c.chunkX + 1) * source.chunkSize,
-        (c.chunkZ + 1) * source.chunkSize,
+        c.chunkX * this.chunkSize,
+        c.chunkZ * this.chunkSize,
+        (c.chunkX + 1) * this.chunkSize,
+        (c.chunkZ + 1) * this.chunkSize,
       ],
       props:
         this.peekChunk(key)?.entities.map((e) => ({
@@ -703,7 +703,7 @@ export class WorldRuntime {
         biomeProfileVersion: this.world.buildManifest?.biomeProfileVersion ??
         CURRENT_BIOME_PROFILE_VERSION,
         preset: source.preset,
-        chunkSize: source.chunkSize,
+        chunkSize: this.chunkSize,
         chunkResolution: source.chunkResolution,
         x,
         z,
@@ -1081,7 +1081,7 @@ export class WorldRuntime {
       preset: source.preset,
       chunkX,
       chunkZ,
-      chunkSize: source.chunkSize,
+      chunkSize: this.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
       design: this.generationDesign,
@@ -1146,7 +1146,7 @@ export class WorldRuntime {
       preset: source.preset,
       chunkX,
       chunkZ,
-      chunkSize: source.chunkSize,
+      chunkSize: this.chunkSize,
       chunkResolution: source.chunkResolution,
       parameters: source.parameters,
       design: this.generationDesign,
@@ -1245,7 +1245,7 @@ export function sampleWorldHeight(world: World, x: number, z: number) {
     seed: world.source.seed,
     generatorVersion: world.source.generatorVersion,
     preset: world.source.preset,
-    chunkSize: world.source.chunkSize,
+    chunkSize: worldChunkSize(world),
     chunkResolution: world.source.chunkResolution,
     x,
     z,

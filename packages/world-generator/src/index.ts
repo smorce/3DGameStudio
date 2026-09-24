@@ -15,6 +15,11 @@ import {
 } from "../../project-schema/src/index";
 
 export const DEFAULT_CHUNK_SIZE = 32;
+
+function assertValidChunkSize(chunkSize: number) {
+  if (!Number.isFinite(chunkSize) || chunkSize < MIN_CHUNK_SIZE)
+    throw new Error(`chunkSize must be at least ${MIN_CHUNK_SIZE} meter`);
+}
 export const DEFAULT_CHUNK_RESOLUTION = 33;
 export const DEFAULT_CACHE_LIMIT = 256;
 export const RENDER_CHUNK_RADIUS = 6;
@@ -295,6 +300,7 @@ function placeEntities(
 }
 
 export function generateChunk(input: GeneratorInput): GeneratedChunk {
+  assertValidChunkSize(input.chunkSize);
   const design = input.design;
   if (["toy-islands", "designed-world"].includes(input.preset) && !design)
     throw new Error("World Design is required for this preset");
@@ -483,8 +489,7 @@ export function createProceduralWorld(options: {
   const preset = options.preset;
   const seed = options.seed ?? 42;
   const chunkSize = options.chunkSize ?? DEFAULT_CHUNK_SIZE;
-  if (!Number.isFinite(chunkSize) || chunkSize < MIN_CHUNK_SIZE)
-    throw new Error(`chunkSize must be at least ${MIN_CHUNK_SIZE} meter`);
+  assertValidChunkSize(chunkSize);
   const chunkResolution = options.chunkResolution ?? DEFAULT_CHUNK_RESOLUTION;
   const n = 33;
   return {

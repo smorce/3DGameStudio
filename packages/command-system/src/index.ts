@@ -10,6 +10,7 @@ import {
   partSchema,
   courseSchema,
   worldSchema,
+  worldObjectSchema,
   assetSchema,
   entitySchema,
   connectionSchema,
@@ -115,7 +116,7 @@ export const commandSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("world.create"), world: worldSchema }),
   z.object({
     type: z.literal("world.update"),
-    patch: worldSchema.omit({ id: true }).partial(),
+    patch: worldObjectSchema.omit({ id: true }).partial(),
   }),
   z.object({
     type: z.enum([
@@ -445,9 +446,26 @@ function apply(p: Project, c: Command) {
     case "world.create":
       p.world = c.world;
       break;
-    case "world.update":
+    case "world.update": {
       Object.assign(p.world, c.patch);
+      // 手続きWorldの正規値は source.chunkSize。片方だけの更新はもう一方へ写す。
+      if (isProceduralWorld(p.world)) {
+        const sourceSize =
+          c.patch.source?.kind === "procedural"
+            ? c.patch.source.chunkSize
+            : undefined;
+        if (
+          sourceSize !== undefined &&
+          c.patch.chunkSize !== undefined &&
+          sourceSize !== c.patch.chunkSize
+        )
+          break;
+        if (sourceSize !== undefined) p.world.chunkSize = sourceSize;
+        else if (c.patch.chunkSize !== undefined)
+          p.world.source.chunkSize = c.patch.chunkSize;
+      }
       break;
+    }
     case "terrain.raise":
     case "terrain.lower":
     case "terrain.flatten":

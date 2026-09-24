@@ -46,6 +46,9 @@ it("手続きWorldの生成は1m未満のChunkを拒否する", () => {
   expect(
     createProceduralWorld({ preset: "grassland", chunkSize: 1 }).source,
   ).toMatchObject({ kind: "procedural", chunkSize: 1 });
+  expect(() => generateChunk({ ...input(0, 0), chunkSize: 0.01 })).toThrow(
+    "chunkSize must be at least 1 meter",
+  );
 });
 
 it("WorldPosition変換と負Chunk座標の往復", () => {
