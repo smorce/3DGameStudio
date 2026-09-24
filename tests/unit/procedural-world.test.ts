@@ -8,6 +8,7 @@ import { CommandBus } from "../../packages/command-system/src/index";
 import {
   chunkHash,
   chunkKey,
+  createProceduralWorld,
   generateChunk,
   generatedEntityId,
   sampleGeneratedHeight,
@@ -36,6 +37,15 @@ const input = (
   chunkZ,
   chunkSize: 32,
   chunkResolution: 33,
+});
+
+it("手続きWorldの生成は1m未満のChunkを拒否する", () => {
+  expect(() =>
+    createProceduralWorld({ preset: "grassland", chunkSize: 0.01 }),
+  ).toThrow("chunkSize must be at least 1 meter");
+  expect(
+    createProceduralWorld({ preset: "grassland", chunkSize: 1 }).source,
+  ).toMatchObject({ kind: "procedural", chunkSize: 1 });
 });
 
 it("WorldPosition変換と負Chunk座標の往復", () => {

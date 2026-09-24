@@ -260,6 +260,8 @@ export const terrainSchema = z
 export type Terrain = z.infer<typeof terrainSchema>;
 export const CURRENT_SCHEMA_VERSION = 7;
 export const GENERATOR_VERSION = 1;
+// 1m未満だと近傍Chunkの走査が半径方向に膨張する。実用上の下限。
+export const MIN_CHUNK_SIZE = 1;
 export const environmentPresets = [
   "grassland",
   "airfield",
@@ -277,7 +279,7 @@ export const proceduralWorldSourceSchema = z.object({
   seed: z.number().int(),
   generatorVersion: z.number().int().positive(),
   preset: environmentPresetSchema,
-  chunkSize: z.number().positive(),
+  chunkSize: z.number().finite().min(MIN_CHUNK_SIZE),
   chunkResolution: z.number().int().min(3).max(129),
   parameters: z.record(z.string(), z.unknown()).default({}),
   design: worldDesignSchema.optional(),
@@ -309,7 +311,7 @@ export const worldSchema = z.object({
   terrain: terrainSchema,
   water: z.object({ enabled: z.boolean(), height: z.number().finite() }),
   entities: z.array(entitySchema),
-  chunkSize: z.number().positive(),
+  chunkSize: z.number().finite().min(MIN_CHUNK_SIZE),
   lighting: z.object({
     intensity: z.number().min(0).max(10),
     timeOfDay: z.number().min(0).max(24),

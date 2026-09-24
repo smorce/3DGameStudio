@@ -7,6 +7,7 @@ export { toyIslandsDesign } from "./toy-islands";
 export { CURRENT_BIOME_PROFILE_VERSION } from "./biome-surface";
 import {
   GENERATOR_VERSION,
+  MIN_CHUNK_SIZE,
   identity,
   type EnvironmentPreset,
   type Vec3,
@@ -482,6 +483,8 @@ export function createProceduralWorld(options: {
   const preset = options.preset;
   const seed = options.seed ?? 42;
   const chunkSize = options.chunkSize ?? DEFAULT_CHUNK_SIZE;
+  if (!Number.isFinite(chunkSize) || chunkSize < MIN_CHUNK_SIZE)
+    throw new Error(`chunkSize must be at least ${MIN_CHUNK_SIZE} meter`);
   const chunkResolution = options.chunkResolution ?? DEFAULT_CHUNK_RESOLUTION;
   const n = 33;
   return {

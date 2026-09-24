@@ -1,11 +1,40 @@
 import { expect, it } from "vitest";
 import {
   CURRENT_SCHEMA_VERSION,
+  MIN_CHUNK_SIZE,
   emptyProject,
   parseProject,
 } from "../../packages/project-schema/src/index";
 import { createProceduralWorld } from "../../packages/world-generator/src/index";
 import { makeRecord } from "../../packages/asset-core/src/index";
+
+it("Chunk一辺は1m未満を拒否し、1mは有限Worldと手続きWorldの両方で受け付ける", () => {
+  const finite = emptyProject();
+  finite.world.chunkSize = MIN_CHUNK_SIZE;
+  expect(parseProject(finite).world.chunkSize).toBe(MIN_CHUNK_SIZE);
+  expect(() =>
+    parseProject({
+      ...finite,
+      world: { ...finite.world, chunkSize: 0.01 },
+    }),
+  ).toThrow();
+  const procedural = {
+    ...emptyProject(),
+    world: createProceduralWorld({ preset: "grassland", chunkSize: 1 }),
+  };
+  expect(parseProject(procedural).world.chunkSize).toBe(1);
+  if (procedural.world.source.kind !== "procedural")
+    throw new Error("Expected procedural world");
+  expect(() =>
+    parseProject({
+      ...procedural,
+      world: {
+        ...procedural.world,
+        source: { ...procedural.world.source, chunkSize: 0.01 },
+      },
+    }),
+  ).toThrow();
+});
 
 it("v6有限Worldは内容を保持してv7へ移行し、保存・再読込が冪等になる", () => {
   const legacy = { ...emptyProject(), schemaVersion: 6 };

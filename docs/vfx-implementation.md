@@ -83,7 +83,7 @@ Engine → PhysicsRenderState → ThreeRenderer → Part Visual の流れを維�
 - 粒子の追加ドローコールは最大2。透明粒子はShadowを生成しない。
 - 粒子更新のVector3、Geometry、Material生成なし。計算用Vector3を再利用。
 - 排気Raycastは稼働中Thrusterのみ、1エミッター約12Hz、全体で最大4回/フレーム。
-- Rayごとに半径 `max(1, ceil(3.5 / chunkSize))` の範囲のキーをMapから取得。標準32mでは隣接8Chunkを含む9キー、1mでは81キーとなり、短いChunkでもRay到達範囲を取りこぼさない。ロード済みChunk全体の走査を廃止。グローバル座標へ原点を足し戻して負座標・Rebase後のChunkキーを求める。
+- Rayごとに半径 `max(1, ceil(3.5 / chunkSize))` の範囲のキーをMapから取得。標準32mでは隣接8Chunkを含む9キー、1mでは81キーとなり、短いChunkでもRay到達範囲を取りこぼさない。ロード済みChunk全体の走査を廃止。グローバル座標へ原点を足し戻して負座標・Rebase後のChunkキーを求める。`chunkSize` の下限はProject Schemaの1mであり、VFX側では探索半径を固定上限で切らない。
 - 対象は地形メッシュのみ。木・建物・水面・Physics Worldは照射しない。
 - hitを短期キャッシュし、遠ざかった場合と推力OFF時に放出を止める。
 - PLAY前prewarmで粒子ShaderとBuffer、三層炎を描画準備し、その後粒子をclear。
