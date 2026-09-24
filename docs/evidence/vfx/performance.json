@@ -1,0 +1,130 @@
+{
+  "scenario": "starter-plane-straight",
+  "baselineCommit": "d2fd5c6a3641257ebc74878d3ce12caa8e4945d4",
+  "renderer": "Chromium / ANGLE SwiftShader",
+  "note": "同一環境でブラウザーを逐次実行した単発比較。Streaming件数とフレーム数は実行ごとに変動。実GPUの60fps保証を示すものではない。",
+  "before": {
+    "schemaVersion": 1,
+    "runId": "starter-plane-straight-mudghm8w-ceea7ff3",
+    "scenario": "starter-plane-straight",
+    "result": "pass",
+    "durationMs": 12728.453436,
+    "frame": {
+      "p50Ms": 49.900000000000546,
+      "p95Ms": 66.69999999999982,
+      "p99Ms": 199.89999999999998,
+      "maxMs": 916.6000000000001,
+      "sampleCount": 170
+    },
+    "spikes": {
+      "over20Ms": 149,
+      "over33Ms": 133,
+      "over50Ms": 32
+    },
+    "physics": {
+      "p50Ms": 1.2999999998137355,
+      "p95Ms": 4.5,
+      "maxMs": 18.09999999962747
+    },
+    "render": {
+      "p50Ms": 2,
+      "p95Ms": 4.7999999998137355,
+      "maxMs": 63.30000000074506
+    },
+    "gpu": {
+      "p50Ms": 36.356281,
+      "p95Ms": 49.94046,
+      "maxMs": 58.731729
+    },
+    "streaming": {
+      "maxWorkerQueue": 126,
+      "maxCommitMs": 0.10000000055879354,
+      "syncFallback": null
+    },
+    "rebase": {
+      "count": 1
+    },
+    "drawCalls": {
+      "max": 142
+    },
+    "triangles": {
+      "max": 122528
+    },
+    "assertions": {
+      "passed": 3,
+      "failed": 0
+    },
+    "notableEvents": [
+      "world.chunk.committed",
+      "diagnostic.frame.spike",
+      "world.origin.rebase.completed"
+    ],
+    "metrics": {
+      "distanceM": 104.09750051355046,
+      "rebaseCount": 1,
+      "turnYawDeltaRad": 4.18968416978232e-6
+    }
+  },
+  "after": {
+    "schemaVersion": 1,
+    "runId": "starter-plane-straight-mudgjqwp-1104d6df",
+    "scenario": "starter-plane-straight",
+    "result": "pass",
+    "durationMs": 9573.08859,
+    "frame": {
+      "p50Ms": 49.90000000000009,
+      "p95Ms": 50.100000000000364,
+      "p99Ms": 116.70000000000005,
+      "maxMs": 183.29999999999995,
+      "sampleCount": 173
+    },
+    "spikes": {
+      "over20Ms": 149,
+      "over33Ms": 130,
+      "over50Ms": 21
+    },
+    "physics": {
+      "p50Ms": 1.199999999254942,
+      "p95Ms": 4.2999999998137355,
+      "maxMs": 11.899999999441206
+    },
+    "render": {
+      "p50Ms": 2.199999999254942,
+      "p95Ms": 5,
+      "maxMs": 48
+    },
+    "gpu": {
+      "p50Ms": 38.973661,
+      "p95Ms": 44.593616,
+      "maxMs": 77.244786
+    },
+    "streaming": {
+      "maxWorkerQueue": 117,
+      "maxCommitMs": 0.10000000055879354,
+      "syncFallback": null
+    },
+    "rebase": {
+      "count": 1
+    },
+    "drawCalls": {
+      "max": 146
+    },
+    "triangles": {
+      "max": 124576
+    },
+    "assertions": {
+      "passed": 3,
+      "failed": 0
+    },
+    "notableEvents": [
+      "world.chunk.committed",
+      "diagnostic.frame.spike",
+      "world.origin.rebase.completed"
+    ],
+    "metrics": {
+      "distanceM": 104.3750540474355,
+      "rebaseCount": 1,
+      "turnYawDeltaRad": 5.012047327383531e-6
+    }
+  }
+}

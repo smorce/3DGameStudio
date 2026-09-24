@@ -54,6 +54,10 @@ export interface AgentGameState {
     rebaseCount: number | null;
   };
   renderer: {
+    activeVaporParticles: number;
+    activeGroundSmokeParticles: number;
+    vaporEmitters: number;
+    groundSmokeEmitters: number;
     drawCalls: number | null;
     triangles: number | null;
     geometries: number | null;
@@ -229,6 +233,10 @@ export function createAgentObservationApi(
           rebaseCount: world?.rebaseCount ?? null,
         },
         renderer: {
+          activeVaporParticles: render.activeVaporParticles ?? 0,
+          activeGroundSmokeParticles: render.activeGroundSmokeParticles ?? 0,
+          vaporEmitters: render.vaporEmitters ?? 0,
+          groundSmokeEmitters: render.groundSmokeEmitters ?? 0,
           drawCalls: render.drawCalls ?? null,
           triangles: render.triangles ?? null,
           geometries: render.geometries ?? null,

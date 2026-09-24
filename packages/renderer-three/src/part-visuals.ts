@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { EFFECT_CONFIG } from "./effects/effect-config";
 import type { Part } from "../../project-schema/src/index";
 
 export interface PartVisualOptions {
@@ -43,14 +44,22 @@ function addMesh(
   return mesh;
 }
 
-export function updateThrusterFlame(visual: THREE.Object3D, thrust: number) {
+export function updateThrusterFlame(
+  visual: THREE.Object3D,
+  thrust: number,
+  time = 0,
+) {
   const amount = Math.min(1, Math.abs(thrust));
   const visible = visual.userData.ghost !== true && amount > 0.01;
   visual.traverse((object) => {
     if (!object.userData.thrusterFlame) return;
     const baseLength = object.userData.baseLength as number,
       exhaustZ = object.userData.exhaustZ as number,
-      lengthScale = 0.15 + amount * 0.85;
+      lengthScale =
+        amount *
+        (1 +
+          EFFECT_CONFIG.flame.flicker *
+            Math.sin(time * EFFECT_CONFIG.flame.frequency));
     object.visible = visible;
     object.scale.set(1, lengthScale, 1);
     object.position.z = exhaustZ - (baseLength * lengthScale) / 2;
@@ -472,14 +481,14 @@ function createThrusterVisual(part: Part, options: PartVisualOptions) {
   );
   rim.position.z = nozzleExitZ;
 
-  const flameLength = sz * 0.62;
+  const flameLength = sz * 1.1;
   const flame = addMesh(
     group,
     new THREE.ConeGeometry(nozzleExitRadius * 0.72, flameLength, 10),
-    "#ff8a32",
+    "#5c9eff",
     options,
     "thruster-flame",
-    { emissive: "#ff5a24", emissiveIntensity: 1.4 },
+    { emissive: "#397dff", emissiveIntensity: 1.4 },
   );
   flame.rotation.x = -Math.PI / 2;
   flame.userData.thrusterFlame = true;
@@ -490,15 +499,40 @@ function createThrusterVisual(part: Part, options: PartVisualOptions) {
   const flameCore = addMesh(
     group,
     new THREE.ConeGeometry(nozzleExitRadius * 0.38, flameCoreLength, 8),
-    "#ffe08a",
+    "#ffffff",
     options,
     "thruster-flame-core",
-    { emissive: "#ffd04a", emissiveIntensity: 1.8 },
+    { emissive: "#e9f8ff", emissiveIntensity: 1.8 },
   );
   flameCore.rotation.x = -Math.PI / 2;
   flameCore.userData.thrusterFlame = true;
   flameCore.userData.baseLength = flameCoreLength;
   flameCore.userData.exhaustZ = nozzleExitZ;
+  const tail = addMesh(
+    group,
+    new THREE.ConeGeometry(nozzleExitRadius * 0.6, sz * 1.6, 10),
+    "#357aff",
+    options,
+    "thruster-flame-tail",
+    { emissive: "#2363ff", emissiveIntensity: 1.2 },
+  );
+  tail.rotation.x = -Math.PI / 2;
+  tail.userData.thrusterFlame = true;
+  tail.userData.baseLength = sz * 1.6;
+  tail.userData.exhaustZ = nozzleExitZ;
+  for (const mesh of [flame, flameCore, tail]) {
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
+    const mat = mesh.material as THREE.MeshStandardMaterial;
+    mat.transparent = true;
+    mat.depthWrite = false;
+    mat.blending = THREE.AdditiveBlending;
+    if (!options.ghost)
+      mat.opacity =
+        mesh === tail
+          ? EFFECT_CONFIG.flame.tailOpacity
+          : EFFECT_CONFIG.flame.bodyOpacity;
+  }
   updateThrusterFlame(group, options.thrust ?? 0);
 
   return group;

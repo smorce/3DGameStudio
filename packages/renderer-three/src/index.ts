@@ -1,3 +1,4 @@
+import { VisualEffects } from "./effects/visual-effects";
 import { FarWorldProxy } from "./far-proxy";
 import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
 import * as THREE from "three";
@@ -60,6 +61,8 @@ export const PLAY_MAX_POLAR_ANGLE = Math.PI * 0.48;
 /** 編集中は下面も見られるよう、ほぼ全周まで回せる。 */
 export const EDIT_MAX_POLAR_ANGLE = Math.PI * 0.95;
 export interface RenderFrameOptions {
+  /** DROPなど、姿勢だけ描画する場合は演出を停止する。 */
+  effectsEnabled?: boolean;
   previous?: PhysicsRenderState;
   alpha?: number;
   dt?: number;
@@ -126,6 +129,7 @@ export class ThreeRenderer implements RendererAdapter {
   camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2500);
   controls: OrbitControls;
   root = new THREE.Group();
+  readonly effects = new VisualEffects();
   machines = new Map<string, THREE.Group>();
   parts = new Map<string, THREE.Object3D>();
   chunks = new Map<string, THREE.Group>();
@@ -378,6 +382,7 @@ export class ThreeRenderer implements RendererAdapter {
       sun,
       sun.target,
       this.root,
+      this.effects.group,
       this.highlighted,
       this.ghost,
       this.selectionOutline,
@@ -573,6 +578,7 @@ export class ThreeRenderer implements RendererAdapter {
     } = {},
   ): Promise<{ ms: number; deferredCount: number }> {
     const started = performance.now();
+    this.effects.prewarm();
     const deferred: THREE.Object3D[] = [];
     this.root.traverse((object) => {
       if (
@@ -608,6 +614,7 @@ export class ThreeRenderer implements RendererAdapter {
       await this.renderer.compileAsync(this.scene, this.camera);
       this.renderer.render(this.scene, this.camera);
     } finally {
+      this.effects.clear();
       deferred.forEach((object, index) => {
         object.visible = previous[index] ?? false;
       });
@@ -658,6 +665,7 @@ export class ThreeRenderer implements RendererAdapter {
       this.afterPreparation.push(() => this.load(p, options));
       return;
     }
+    this.effects.clear();
     this.project = p;
     this.editWorkspace = true;
     ++this.generation;
@@ -722,6 +730,7 @@ export class ThreeRenderer implements RendererAdapter {
         this.parts.set(part.id, visual);
       }
     }
+    this.effects.load(p, this.parts);
     this.syncProjectPartTransforms(p);
     this.applyEditWorkspaceVisuals();
     for (const [batchKey, entities] of groupInstances(p)) {
@@ -862,6 +871,7 @@ export class ThreeRenderer implements RendererAdapter {
               roughness: 1,
             }),
           );
+          mesh.userData.vfxTerrain = true;
           mesh.receiveShadow = true;
           group.add(mesh);
           group.position.set(
@@ -900,6 +910,7 @@ export class ThreeRenderer implements RendererAdapter {
                 roughness: 1,
               }),
             );
+            mesh.userData.vfxTerrain = true;
             mesh.receiveShadow = true;
             group.add(mesh);
           }
@@ -1047,6 +1058,7 @@ export class ThreeRenderer implements RendererAdapter {
   setEditMachineLift(enabled: boolean) {
     // 互換API名。実体は編集ワークスペース（地面非表示＋カメラ制限）の切替。
     if (this.editWorkspace === enabled) return;
+    if (enabled) this.effects.clear();
     this.editWorkspace = enabled;
     this.applyEditWorkspaceVisuals();
   }
@@ -1057,6 +1069,7 @@ export class ThreeRenderer implements RendererAdapter {
   };
 
   shiftOrigin(delta: Vec3) {
+    this.effects.shiftOrigin(delta);
     this.camera.position.x -= delta[0];
     this.camera.position.y -= delta[1];
     this.camera.position.z -= delta[2];
@@ -1122,6 +1135,7 @@ export class ThreeRenderer implements RendererAdapter {
       this.afterPreparation.push(() => this.restoreEditTransforms(p));
       return;
     }
+    this.effects.clear();
     this.project = p;
     this.editWorkspace = true;
     this.syncProjectPartTransforms(p);
@@ -1206,7 +1220,11 @@ export class ThreeRenderer implements RendererAdapter {
   ) {
     if (this.playPreparation) return;
     this.parts.forEach((visual) => {
-      updateThrusterFlame(visual, thrust);
+      updateThrusterFlame(
+        visual,
+        state && options.effectsEnabled !== false ? thrust : 0,
+        this.effects.time,
+      );
       updateMotorActivity(visual, thrust);
     });
     const interpolated =
@@ -1375,6 +1393,14 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.update();
     this.updateShadowFollow(this.controls.target.toArray() as Vec3);
     this.updateLodBatches();
+    this.effects.update(
+      options.effectsEnabled === false ? undefined : interpolated,
+      thrust,
+      options.dt ?? 1 / 60,
+      options.velocity,
+      this.chunks,
+      this.renderer.domElement.height,
+    );
     this.gpuTimer.begin(this.gpuTimerMeta);
     this.renderer.render(this.scene, this.camera);
     this.gpuTimer.end();
@@ -1396,6 +1422,10 @@ export class ThreeRenderer implements RendererAdapter {
   }
   get fastStats() {
     return {
+      activeVaporParticles: this.effects.vapor.activeCount,
+      activeGroundSmokeParticles: this.effects.smoke.activeCount,
+      vaporEmitters: this.effects.vaporEmitters,
+      groundSmokeEmitters: this.effects.groundSmokeEmitters,
       farWorldProxyCount: this.farProxy?.group.children.length ?? 0,
       renderChunksCreated: this.lastStreamStats.created,
       renderChunkPending: this.lastStreamStats.pending,
@@ -1499,6 +1529,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.canvas.removeEventListener("pointermove", this.pointerMove);
     this.canvas.removeEventListener("pointerleave", this.pointerLeave);
     this.canvas.removeEventListener("pointercancel", this.pointerCancel);
+    this.effects.dispose();
     this.controls.dispose();
     this.farProxy?.dispose();
     this.streamer?.dispose();

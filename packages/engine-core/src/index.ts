@@ -566,6 +566,7 @@ export class Engine {
         this.currentRenderState ?? this.physics.renderState(),
         throttle,
         {
+          effectsEnabled: !dropping,
           previous: this.previousRenderState,
           alpha: this.interpolationAlpha,
           dt,

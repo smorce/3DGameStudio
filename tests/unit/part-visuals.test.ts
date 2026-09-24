@@ -145,6 +145,7 @@ it("Ghostは通常Visualと同じ構成で全Meshを透過する", () => {
     "thruster-nozzle-rim",
     "thruster-flame",
     "thruster-flame-core",
+    "thruster-flame-tail",
   ]);
   for (const mesh of meshes(visual)) {
     const material = mesh.material as THREE.MeshStandardMaterial;
@@ -174,4 +175,24 @@ it("Panelは余分なシート形状を生成しない", () => {
   const visual = createPartVisual(createPart("Panel"));
 
   expect(visual.getObjectByName("panel-seat")).toBeUndefined();
+});
+
+it("Thrusterの三層炎は推力で伸び、時間で小さく揺らぎ、Ghostでは消える", () => {
+  const visual = createPartVisual(createPart("Thruster"));
+  const flame = visual.getObjectByName("thruster-flame")!;
+  updateThrusterFlame(visual, 0.5, 0);
+  const half = flame.scale.y;
+  updateThrusterFlame(visual, 1, 0);
+  expect(flame.scale.y).toBeCloseTo(half * 2);
+  updateThrusterFlame(visual, 1, 0.04);
+  expect(flame.scale.y).toBeGreaterThan(1);
+  expect(flame.scale.y).toBeLessThan(1.15);
+  const ghost = createPartVisual(createPart("Thruster"), { ghost: true });
+  updateThrusterFlame(ghost, 1, 1);
+  for (const name of [
+    "thruster-flame",
+    "thruster-flame-core",
+    "thruster-flame-tail",
+  ])
+    expect(ghost.getObjectByName(name)?.visible).toBe(false);
 });

@@ -5839,7 +5839,13 @@
             "enabled": true
           },
           "metadata": {
-            "aeroRole": "main-wing"
+            "aeroRole": "main-wing",
+            "visualEffects": {
+              "wingVapor": {
+                "enabled": true,
+                "side": -1
+              }
+            }
           }
         },
         {
@@ -7443,7 +7449,13 @@
             "enabled": true
           },
           "metadata": {
-            "aeroRole": "main-wing"
+            "aeroRole": "main-wing",
+            "visualEffects": {
+              "wingVapor": {
+                "enabled": true,
+                "side": 1
+              }
+            }
           }
         },
         {

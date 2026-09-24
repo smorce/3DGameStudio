@@ -1078,6 +1078,8 @@ export function planeTemplate() {
         [wingAngle, 0, 0],
       );
       parent.metadata.aeroRole = "main-wing";
+      if (i === 3)
+        parent.metadata.visualEffects = { wingVapor: { enabled: true, side } };
       wingPanels[side].push(parent);
     }
   }
