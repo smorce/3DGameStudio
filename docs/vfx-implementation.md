@@ -83,14 +83,14 @@ Engine → PhysicsRenderState → ThreeRenderer → Part Visual の流れを維�
 - 粒子の追加ドローコールは最大2。透明粒子はShadowを生成しない。
 - 粒子更新のVector3、Geometry、Material生成なし。計算用Vector3を再利用。
 - 排気Raycastは稼働中Thrusterのみ、1エミッター約12Hz、全体で最大4回/フレーム。
-- Rayごとに現在Chunkと隣接8Chunkの9キーだけをMapから取得。ロード済みChunk全体の走査を廃止。グローバル座標へ原点を足し戻して負座標・Rebase後のChunkキーを求める。
+- Rayごとに半径 `max(1, ceil(3.5 / chunkSize))` の範囲のキーをMapから取得。標準32mでは隣接8Chunkを含む9キー、1mでは81キーとなり、短いChunkでもRay到達範囲を取りこぼさない。ロード済みChunk全体の走査を廃止。グローバル座標へ原点を足し戻して負座標・Rebase後のChunkキーを求める。
 - 対象は地形メッシュのみ。木・建物・水面・Physics Worldは照射しない。
 - hitを短期キャッシュし、遠ざかった場合と推力OFF時に放出を止める。
 - PLAY前prewarmで粒子ShaderとBuffer、三層炎を描画準備し、その後粒子をclear。
 - `fastStats` の4カウンターはScene traverseを行わず取得。
 - Post Processing、EffectComposer、Bloomは導入しない。既存GPU timer・直接描画を維持。
 
-## Physicsを変更していないことの確認
+## Physics挙動を変更していないことの確認
 
 `packages/physics-rapier/` には適用済み推力の記録と既存剛体速度を描画状態へコピーする処理だけを追加。
 物理のForce計算・ミキサー・接地判定は変更していない。
@@ -102,11 +102,13 @@ Force / Impulse / Collider / Gravity / 空力係数の追加・変更なし。Sc
 
 - typecheck：成功。
 - lint：成功、循環依存なし。
-- unit / integration：`pnpm test` 全47ファイル・352テスト成功。
-- レビュー回帰：速度40m/sと5m/sの分離、Part別推力・無効Thruster・停止・respawn、傾斜したサスペンション方向、441Chunkから9キーのみの検索、負座標・Rebase後の地形照射を確認。
-- e2e：新規VFX E2EがChromiumで成功。既存の全E2Eスイートは未実行。
+- unit / integration：`pnpm test` 全47ファイル・353テスト成功。
+- レビュー回帰：速度40m/sと5m/sの分離、Part別推力・無効Thruster・停止・respawn、傾斜したサスペンション方向、441Chunkから9キーのみの検索、負座標・Rebase後の地形照射、1m Chunkで3Chunk先の排気地面煙を確認。
+- e2e：使い捨てWorktreeで `pnpm test:e2e --reporter=line,json` を実行し、既定Chromiumの全17ファイル・47テストが成功（約11分、失敗・スキップ・リトライなし）。今回の探索半径修正を含むソースと回帰テストをコピーし、SHA-256で作業ツリーとの一致を確認した。
 - build：Studio / Player / Serverすべて成功。既存のbundleサイズ・依存ライブラリ注釈に関する警告あり。
 - 実WebGLプローブ：成功。Shader/console/pageエラーなし。prewarm、排気地面煙、地面から離れた後の停止、EDIT、reload、disposeを確認。
+
+[全E2Eの結果と対象ソースのハッシュ](evidence/vfx/e2e-full.json)を保存した。詳細ログ・Playwright JSON・テスト成果物はローカルの `test-results/vfx-final-validation/` に保管。テストが生成したdocsの変更は作業中のリポジトリへコピーせず、使い捨てWorktreeとともに破棄した。これらはローカルCLIの実行結果であり、GitHub Status Checkの結果ではない。
 
 再現コマンド：
 
@@ -115,7 +117,7 @@ pnpm typecheck
 pnpm lint
 pnpm test
 pnpm build
-pnpm exec playwright test tests/e2e/visual-effects.spec.ts
+pnpm test:e2e
 # 別ターミナルでViteを起動してから実行
 pnpm exec vite apps/studio --host 127.0.0.1 --port 5182 --strictPort
 OBSERVE_BASE_URL=http://127.0.0.1:5182 pnpm exec tsx scripts/vfx-browser-probe.ts
@@ -150,24 +152,34 @@ STOPしてDROPを経由しEDITへ戻ったとき、再読込時とも粒子0を�
 
 ## Performance比較
 
-以下は初回実装時の計測値（2026-09-24のレビュー修正後の再測定ではない）。
+2026-09-24に `fb3715c`（Part別入力導入前）と `f2ffad1`（導入後）を再測定した。
+独立したWorktreeとViteポートを使い、Chromium / ANGLE SwiftShader、1280×720、DPR 1で既存の `pnpm observe run starter-plane-straight --json` を実行。
+両側1回ずつウォームアップした後、変更前→変更後を3組逐次実行し、全6回でシナリオが成功。E2E・ビルドは測定完了後に実行した。
+下表は各実行で得た指標の3回の中央値で、全フレームを結合したパーセンタイルではない。
 
-変更前 `d2fd5c6` と変更後で `starter-plane-straight` を同一環境・逐次実行。両方のシナリオが成功。
+| 指標             |   fb3715c |   f2ffad1 |
+| ---------------- | --------: | --------: |
+| drawCalls最大    |    146.00 |    146.00 |
+| triangles最大    | 120480.00 | 120480.00 |
+| render p50 (ms)  |      2.10 |      2.20 |
+| render p95 (ms)  |      5.10 |      5.50 |
+| physics p95 (ms) |      4.20 |      4.70 |
+| GPU p95 (ms)     |     45.34 |     44.85 |
+| frame p95 (ms)   |     66.60 |     66.60 |
+| frame p99 (ms)   |    116.70 |    183.20 |
+| spikes >20ms     |    150.00 |    152.00 |
+| spikes >33ms     |    134.00 |    134.00 |
+| spikes >50ms     |     22.00 |     22.00 |
 
-| 指標            |    変更前 |    変更後 |
-| --------------- | --------: | --------: |
-| drawCalls最大   |    142.00 |    146.00 |
-| triangles最大   | 122528.00 | 124576.00 |
-| render p95 (ms) |      4.80 |      5.00 |
-| GPU p95 (ms)    |     49.94 |     44.59 |
-| frame p95 (ms)  |     66.70 |     50.10 |
-| frame p99 (ms)  |    199.90 |    116.70 |
-| spikes >20ms    |    149.00 |    149.00 |
-| spikes >33ms    |    133.00 |    130.00 |
-| spikes >50ms    |     32.00 |     21.00 |
-| 計測フレーム数  |    170.00 |    173.00 |
+[今回の測定JSON（各実行の値・run ID・スパイクを含む）](evidence/vfx/performance-review.json)。
+今回の探索半径修正は比較コミットには含まれないが、このシナリオの標準32m Chunkでは修正前後とも9Chunkを検索する。
 
-[測定JSON](evidence/vfx/performance.json)。単発比較であり、Streamingされた地形数と取得フレーム数は実行ごとに変動するため、全体のドローコール差はVFXだけの差ではない。今回の実測では目立つフレーム時間の悪化は見られなかったが、性能改善を証明する測定ではない。SwiftShader環境のため、実GPUの60fps品質は未確認。
+render p95は約0.4ms、physics p95は約0.5ms増加した。frame p95と33/50ms超のスパイク数の中央値は同等だが、全区間frame p99は116.7→183.2msに増加しており、「悪化なし」とは断定しない。
+変更後の大きなスパイクはPLAY開始1秒以内に集中していた。補助集計として開始1秒後以降だけを見ると、frame p99中央値は83.3→83.3ms、render p95中央値は3.7→3.9ms。
+この測定だけではMap・Object・配列の割り当てとスパイクの因果関係は特定できない。今回は測定結果を記録し、先回りした最適化は入れていない。
+
+対象はStarter Planeの37Part。数百Partの負荷試験と実GPUの60fps確認は含まない。
+初回実装の旧測定値は[旧測定JSON](evidence/vfx/performance.json)として残すが、今回の変更の性能根拠には用いない。
 
 ## 残課題
 

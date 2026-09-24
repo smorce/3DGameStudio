@@ -304,3 +304,48 @@ it("大量のChunkでも9キーだけ検索し、負座標・境界・Origin Reb
   geometry.dispose();
   material.dispose();
 });
+
+it("1m Chunkでも排気Rayが届く3Chunk先の地面に煙を生成する", () => {
+  const project = emptyProject();
+  project.world.source = { kind: "finite" };
+  project.world.chunkSize = 1;
+  project.machines = [planeTemplate()];
+  const part = createPart("Thruster");
+  project.machines[0].parts = [part];
+  const visual = new THREE.Group();
+  visual.position.set(0.4, 0.7, 0.5);
+  visual.quaternion.setFromUnitVectors(
+    new THREE.Vector3(0, 0, -1),
+    new THREE.Vector3(1, -0.25, 0).normalize(),
+  );
+  const effects = new VisualEffects();
+  effects.load(project, new Map([[part.id, visual]]));
+  const terrain = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial(),
+  );
+  terrain.rotation.x = -Math.PI / 2;
+  terrain.userData.vfxTerrain = true;
+  const chunk = new THREE.Group();
+  chunk.position.set(3.5, 0, 0.5);
+  chunk.add(terrain);
+  const chunks = new Map([["3,0", chunk]]);
+  const get = vi.spyOn(chunks, "get");
+  const state: PhysicsRenderState = {
+    poses: new Map(),
+    wheels: new Map(),
+    effectInputs: new Map([[part.id, { thrust: 1 }]]),
+  };
+  try {
+    effects.update(state, 0.05, chunks, 720);
+    expect(get).toHaveBeenCalledTimes(81);
+    expect(get).toHaveBeenCalledWith("3,0");
+    expect(effects.smoke.activeCount).toBe(1);
+    expect(effects.smoke.positions[0]).toBeCloseTo(3.2, 1);
+    expect(effects.smoke.positions[1]).toBeGreaterThan(0);
+  } finally {
+    effects.dispose();
+    terrain.geometry.dispose();
+    terrain.material.dispose();
+  }
+});

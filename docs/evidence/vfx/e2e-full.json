@@ -1,0 +1,679 @@
+{
+  "baseCommit": "f2ffad15d011ca99fe6064addb2e565935720c14",
+  "sourceNote": "f2ffad1に今回のChunk探索半径修正と回帰テストをコピー。main workspaceと同一内容であることをSHA-256で確認。",
+  "sourceSha256": {
+    "packages/renderer-three/src/effects/visual-effects.ts": "a1cd16ab1284589f0e73d239896213c01e15751f72ee1b7111e4ce324a725ffc",
+    "tests/unit/visual-effects.test.ts": "d879bf30da951814269be34439708f38906b2dae97118ed7d051140486046074"
+  },
+  "command": "pnpm test:e2e --reporter=line,json",
+  "execution": "使い捨てWorktree、既定Chromium、workers=1。GitHub Status CheckではなくローカルCLIの実行結果。",
+  "stats": {
+    "startTime": "2026-09-24T05:46:22.817Z",
+    "duration": 659070.622,
+    "expected": 47,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cases": [
+    {
+      "file": "flows.spec.ts",
+      "line": 30,
+      "title": "3 LEVELの詳細値保持とUndo @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 7166,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 57,
+      "title": "WorldとCourseを作りチェックポイントからゴールまで走る @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 14835,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 104,
+      "title": "素材検索・Preview・Import・配置・復元 @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2216,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 147,
+      "title": "Provider障害からローカル素材へ復帰 @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1166,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 177,
+      "title": "ダミーAIのPreview・承認・Undoと生成Job @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 3420,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 207,
+      "title": "壊れた保存データでも新規作成できる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2810,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 221,
+      "title": "独立Playerが本番ビルドで起動する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1192,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "flows.spec.ts",
+      "line": 232,
+      "title": "外部素材デモを読み込みGLBを描画する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1744,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "observation-agent.spec.ts",
+      "line": 80,
+      "title": "Agent API が11 Scenarioを公開する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 11987,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "observation-agent.spec.ts",
+      "line": 157,
+      "title": "11 Scenario smoke: begin→短時間play→events→end @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 30353,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 13,
+      "title": "正方形Panel、Tilt、Hinge空力面を確認する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2778,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 48,
+      "title": "Starter Planeを表示して保存する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 747,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 56,
+      "title": "SuspensionをPaletteとInspectorで操作できる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1228,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 73,
+      "title": "Generic Flight ControlのMotor・Hinge・Binding Inspectorを編集できる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1591,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 114,
+      "title": "Starter Boatを表示して保存する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 766,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 122,
+      "title": "車・飛行機・ボートで共通速度HUDをPlay中だけ表示する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 10204,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 139,
+      "title": "Starter PlaneをW+Aで左旋回させる @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 6041,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "panel-aerodynamics.spec.ts",
+      "line": 159,
+      "title": "Starter Boatが浮上しW+Aで左旋回する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 7337,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "part-visual.spec.ts",
+      "line": 15,
+      "title": "Machine PartのVisual Evidenceを保存する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1666,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "placement.spec.ts",
+      "line": 9,
+      "title": "タイヤ候補から取り付けて選択する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1285,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "placement.spec.ts",
+      "line": 36,
+      "title": "Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実走・保存復元 @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 12541,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "placement.spec.ts",
+      "line": 128,
+      "title": "配置取消・パレット切替・コピー・キーボードとドラッグの区別",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 3264,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "placement.spec.ts",
+      "line": 170,
+      "title": "全パーツを光る位置へ配置し、Studioの詳細値を保持する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 3710,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "placement.spec.ts",
+      "line": 221,
+      "title": "候補をタップして取り付ける",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 1108,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "play-stop-edit-pose.spec.ts",
+      "line": 8,
+      "title": "Play停止後に編集Poseへ戻り候補とVisualが一致する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 8944,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "procedural-world.spec.ts",
+      "line": 4,
+      "title": "Starter 3種は同じProcedural World Runtimeを使う",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 2311,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "reset-view.spec.ts",
+      "line": 4,
+      "title": "走行後に新しくつくると候補ボタンが画面内に出る",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 8099,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "runtime-stability.spec.ts",
+      "line": 12,
+      "title": "長距離飛行でShadowが追従しRebase前後の画面を残す",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 13248,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-gameplay.spec.ts",
+      "line": 30,
+      "title": "starter-grassland: 実際の前進入力で30m走行する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 11326,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-gameplay.spec.ts",
+      "line": 30,
+      "title": "desert-island: 実際の前進入力で30m走行する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 12765,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-gameplay.spec.ts",
+      "line": 30,
+      "title": "tropical-archipelago: 実際の前進入力で30m走行する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 7928,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-gameplay.spec.ts",
+      "line": 66,
+      "title": "race-island: 道路を実走して3CheckpointからGoalまで到達する",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 166349,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "starter-grassland: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 11896,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "airfield: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 11949,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "tropical-archipelago: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 13444,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "toy-islands: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 14404,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "mountain-island: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 12512,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "desert-island: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 13521,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "snow-island: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 13684,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "sample-worlds.spec.ts",
+      "line": 7,
+      "title": "race-island: fresh dataで選択して遊べる",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 13745,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "spike-flight-diagnostics.spec.ts",
+      "line": 113,
+      "title": "録画なし GPU A/B（baseline / shadowOFF / dpr1 / both）",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 95969,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "spike-prewarm-diagnostics.spec.ts",
+      "line": 116,
+      "title": "A/B: disablePlayRenderPrewarm vs default preparePlayRendering",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 29089,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "studio.spec.ts",
+      "line": 3,
+      "title": "空から板と4輪を組み立て保存・再読込 @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 6254,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "toy-islands.spec.ts",
+      "line": 47,
+      "title": "toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 19057,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "visual-effects.spec.ts",
+      "line": 11,
+      "title": "PLAYの翼・車輪VFXとSTOP・再読込の消去を確認する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 14667,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "world-runtime.spec.ts",
+      "line": 6,
+      "title": "広いWorldの物理Streaming・大量岩・2番目のコースを実走する @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 4347,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "file": "world-runtime.spec.ts",
+      "line": 60,
+      "title": "圧縮LOD素材を読込・Instancing描画し、非Box Collider上を走る @smoke",
+      "project": "chromium",
+      "status": "expected",
+      "results": [
+        {
+          "status": "passed",
+          "durationMs": 11835,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "runnerErrors": []
+}

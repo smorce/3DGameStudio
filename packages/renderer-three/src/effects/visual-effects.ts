@@ -167,8 +167,12 @@ export class VisualEffects {
             this.point.z + worldOrigin[2],
             this.chunkSize,
           );
-          for (let x = chunkX - 1; x <= chunkX + 1; x++) {
-            for (let z = chunkZ - 1; z <= chunkZ + 1; z++) {
+          const radius = Math.max(
+            1,
+            Math.ceil(EFFECT_CONFIG.wash.distance / this.chunkSize),
+          );
+          for (let x = chunkX - radius; x <= chunkX + radius; x++) {
+            for (let z = chunkZ - radius; z <= chunkZ + radius; z++) {
               const chunk = chunks.get(chunkKey(x, z));
               if (!chunk?.visible) continue;
               // 地形メッシュのみ対象。木・建物・水面には煙を付けない。

@@ -1,0 +1,860 @@
+{
+  "scenario": "starter-plane-straight",
+  "beforeCommit": "fb3715cf91e283d8cb0ce274cfa7349dd32ca0e1",
+  "afterCommit": "f2ffad15d011ca99fe6064addb2e565935720c14",
+  "environment": {
+    "renderer": "Chromium / ANGLE SwiftShader",
+    "viewport": [1280, 720],
+    "devicePixelRatio": 1,
+    "workers": 1
+  },
+  "method": "各コミットを独立したWorktreeで起動。両側1回ずつウォームアップ後、before→afterの順で3組を逐次実行。既存のpnpm observe run starter-plane-straight --jsonを使用。E2E・ビルドは計測完了後に実行。",
+  "scope": "Starter Plane（37 Parts）の実ブラウザー比較。数百Partの負荷試験と実GPUの60fps確認は含まない。今回の探索半径修正は比較コミットには含まれないが、標準32m Chunkの探索範囲は同一。",
+  "metrics": {
+    "before": {
+      "render.p50Ms": {
+        "median": 2.0999999940395355,
+        "values": [2, 2.2999999970197678, 2.0999999940395355]
+      },
+      "render.p95Ms": {
+        "median": 5.0999999940395355,
+        "values": [5.200000002980232, 5.0999999940395355, 4.800000011920929]
+      },
+      "physics.p95Ms": {
+        "median": 4.200000002980232,
+        "values": [4, 4.9000000059604645, 4.200000002980232]
+      },
+      "gpu.p95Ms": {
+        "median": 45.344275,
+        "values": [45.344275, 47.278357, 44.876083]
+      },
+      "frame.p95Ms": {
+        "median": 66.59999999999945,
+        "values": [50.100000000000364, 66.60000000000014, 66.59999999999945]
+      },
+      "frame.p99Ms": {
+        "median": 116.70000000000005,
+        "values": [116.70000000000005, 116.59999999999991, 150]
+      },
+      "spikes.over20Ms": {
+        "median": 150,
+        "values": [152, 146, 150]
+      },
+      "spikes.over33Ms": {
+        "median": 134,
+        "values": [134, 131, 137]
+      },
+      "spikes.over50Ms": {
+        "median": 22,
+        "values": [19, 22, 22]
+      },
+      "drawCalls.max": {
+        "median": 146,
+        "values": [146, 146, 146]
+      },
+      "triangles.max": {
+        "median": 120480,
+        "values": [118592, 126624, 120480]
+      }
+    },
+    "after": {
+      "render.p50Ms": {
+        "median": 2.2000000029802322,
+        "values": [2, 2.4000000059604645, 2.2000000029802322]
+      },
+      "render.p95Ms": {
+        "median": 5.5,
+        "values": [5.700000002980232, 5.300000011920929, 5.5]
+      },
+      "physics.p95Ms": {
+        "median": 4.700000002980232,
+        "values": [4, 4.899999991059303, 4.700000002980232]
+      },
+      "gpu.p95Ms": {
+        "median": 44.85247,
+        "values": [44.85247, 48.149552, 44.024651]
+      },
+      "frame.p95Ms": {
+        "median": 66.60000000000036,
+        "values": [66.60000000000036, 66.69999999999982, 50.100000000000364]
+      },
+      "frame.p99Ms": {
+        "median": 183.20000000000005,
+        "values": [216.60000000000002, 183.20000000000005, 83.30000000000018]
+      },
+      "spikes.over20Ms": {
+        "median": 152,
+        "values": [155, 146, 152]
+      },
+      "spikes.over33Ms": {
+        "median": 134,
+        "values": [135, 130, 134]
+      },
+      "spikes.over50Ms": {
+        "median": 22,
+        "values": [22, 27, 21]
+      },
+      "drawCalls.max": {
+        "median": 146,
+        "values": [146, 146, 146]
+      },
+      "triangles.max": {
+        "median": 120480,
+        "values": [120480, 124576, 118592]
+      }
+    }
+  },
+  "runs": [
+    {
+      "label": "after-warmup",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3xcua-1ce0b317",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 10144.584407999999,
+        "frame": {
+          "p50Ms": 49.899999999999636,
+          "p95Ms": 50.100000000000364,
+          "p99Ms": 133.4000000000001,
+          "maxMs": 183.29999999999995,
+          "sampleCount": 176
+        },
+        "spikes": {
+          "over20Ms": 152,
+          "over33Ms": 130,
+          "over50Ms": 20
+        },
+        "physics": {
+          "p50Ms": 1.2000000029802322,
+          "p95Ms": 4.5,
+          "maxMs": 12.100000008940697
+        },
+        "render": {
+          "p50Ms": 2.2000000029802322,
+          "p95Ms": 5.199999988079071,
+          "maxMs": 180
+        },
+        "gpu": {
+          "p50Ms": 37.999834,
+          "p95Ms": 43.705737,
+          "maxMs": 71.616875
+        },
+        "streaming": {
+          "maxWorkerQueue": 121,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 120480
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 104.4145446459814,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 5.023192539666299e-6
+        }
+      }
+    },
+    {
+      "label": "before-1",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3xl1g-220e7301",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 9981.378957,
+        "frame": {
+          "p50Ms": 49.899999999999636,
+          "p95Ms": 50.100000000000364,
+          "p99Ms": 116.70000000000005,
+          "maxMs": 200.10000000000014,
+          "sampleCount": 179
+        },
+        "spikes": {
+          "over20Ms": 152,
+          "over33Ms": 134,
+          "over50Ms": 19
+        },
+        "physics": {
+          "p50Ms": 1.0999999940395355,
+          "p95Ms": 4,
+          "maxMs": 15.5
+        },
+        "render": {
+          "p50Ms": 2,
+          "p95Ms": 5.200000002980232,
+          "maxMs": 9.700000002980232
+        },
+        "gpu": {
+          "p50Ms": 36.672859,
+          "p95Ms": 45.344275,
+          "maxMs": 64.797143
+        },
+        "streaming": {
+          "maxWorkerQueue": 151,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 118592
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 102.74061841597128,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 6.263439271510952e-6
+        }
+      }
+    },
+    {
+      "label": "after-1",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3xsva-1d6e52a6",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 9347.748129,
+        "frame": {
+          "p50Ms": 49.899999999999636,
+          "p95Ms": 66.60000000000036,
+          "p99Ms": 216.60000000000002,
+          "maxMs": 249.9000000000001,
+          "sampleCount": 172
+        },
+        "spikes": {
+          "over20Ms": 155,
+          "over33Ms": 135,
+          "over50Ms": 22
+        },
+        "physics": {
+          "p50Ms": 1.0999999940395355,
+          "p95Ms": 4,
+          "maxMs": 19.5
+        },
+        "render": {
+          "p50Ms": 2,
+          "p95Ms": 5.700000002980232,
+          "maxMs": 56.400000005960464
+        },
+        "gpu": {
+          "p50Ms": 37.797989,
+          "p95Ms": 44.85247,
+          "maxMs": 74.122018
+        },
+        "streaming": {
+          "maxWorkerQueue": 115,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 120480
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 110.54594336300804,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 3.507153592603975e-6
+        }
+      }
+    },
+    {
+      "label": "before-2",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3y0oz-8036271a",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 10502.521773999999,
+        "frame": {
+          "p50Ms": 49.900000000000546,
+          "p95Ms": 66.60000000000014,
+          "p99Ms": 116.59999999999991,
+          "maxMs": 183.30000000000018,
+          "sampleCount": 168
+        },
+        "spikes": {
+          "over20Ms": 146,
+          "over33Ms": 131,
+          "over50Ms": 22
+        },
+        "physics": {
+          "p50Ms": 1.2999999970197678,
+          "p95Ms": 4.9000000059604645,
+          "maxMs": 15
+        },
+        "render": {
+          "p50Ms": 2.2999999970197678,
+          "p95Ms": 5.0999999940395355,
+          "maxMs": 173.09999999403954
+        },
+        "gpu": {
+          "p50Ms": 39.741507,
+          "p95Ms": 47.278357,
+          "maxMs": 86.158101
+        },
+        "streaming": {
+          "maxWorkerQueue": 130,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 126624
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 106.29225098442419,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 2.1357495011014932e-6
+        }
+      }
+    },
+    {
+      "label": "after-2",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3y93b-9b1038ae",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 10653.581068,
+        "frame": {
+          "p50Ms": 49.90000000000009,
+          "p95Ms": 66.69999999999982,
+          "p99Ms": 183.20000000000005,
+          "maxMs": 183.39999999999986,
+          "sampleCount": 163
+        },
+        "spikes": {
+          "over20Ms": 146,
+          "over33Ms": 130,
+          "over50Ms": 27
+        },
+        "physics": {
+          "p50Ms": 1.2000000029802322,
+          "p95Ms": 4.899999991059303,
+          "maxMs": 12.5
+        },
+        "render": {
+          "p50Ms": 2.4000000059604645,
+          "p95Ms": 5.300000011920929,
+          "maxMs": 58.30000001192093
+        },
+        "gpu": {
+          "p50Ms": 39.666734,
+          "p95Ms": 48.149552,
+          "maxMs": 132.756543
+        },
+        "streaming": {
+          "maxWorkerQueue": 121,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 124576
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 107.59718766539218,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 5.467436429740063e-7
+        }
+      }
+    },
+    {
+      "label": "before-3",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3yi8y-6e60ac29",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 9845.584292000001,
+        "frame": {
+          "p50Ms": 33.5,
+          "p95Ms": 66.59999999999945,
+          "p99Ms": 150,
+          "maxMs": 183.29999999999995,
+          "sampleCount": 175
+        },
+        "spikes": {
+          "over20Ms": 150,
+          "over33Ms": 137,
+          "over50Ms": 22
+        },
+        "physics": {
+          "p50Ms": 1.0999999940395355,
+          "p95Ms": 4.200000002980232,
+          "maxMs": 12.899999991059303
+        },
+        "render": {
+          "p50Ms": 2.0999999940395355,
+          "p95Ms": 4.800000011920929,
+          "maxMs": 56
+        },
+        "gpu": {
+          "p50Ms": 37.714339,
+          "p95Ms": 44.876083,
+          "maxMs": 90.643124
+        },
+        "streaming": {
+          "maxWorkerQueue": 130,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 120480
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 109.17285714065615,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 4.845240781106732e-6
+        }
+      }
+    },
+    {
+      "label": "after-3",
+      "summary": {
+        "schemaVersion": 1,
+        "runId": "starter-plane-straight-muf3yq47-850a7e94",
+        "scenario": "starter-plane-straight",
+        "result": "pass",
+        "durationMs": 9873.822976,
+        "frame": {
+          "p50Ms": 49.90000000000009,
+          "p95Ms": 50.100000000000364,
+          "p99Ms": 83.30000000000018,
+          "maxMs": 200.0999999999999,
+          "sampleCount": 171
+        },
+        "spikes": {
+          "over20Ms": 152,
+          "over33Ms": 134,
+          "over50Ms": 21
+        },
+        "physics": {
+          "p50Ms": 1.2000000029802322,
+          "p95Ms": 4.700000002980232,
+          "maxMs": 15.799999997019768
+        },
+        "render": {
+          "p50Ms": 2.2000000029802322,
+          "p95Ms": 5.5,
+          "maxMs": 77.40000000596046
+        },
+        "gpu": {
+          "p50Ms": 38.496602,
+          "p95Ms": 44.024651,
+          "maxMs": 78.298112
+        },
+        "streaming": {
+          "maxWorkerQueue": 143,
+          "maxCommitMs": 0.10000000894069672,
+          "syncFallback": null
+        },
+        "rebase": {
+          "count": 1
+        },
+        "drawCalls": {
+          "max": 146
+        },
+        "triangles": {
+          "max": 118592
+        },
+        "assertions": {
+          "passed": 3,
+          "failed": 0
+        },
+        "notableEvents": [
+          "world.chunk.committed",
+          "diagnostic.frame.spike",
+          "world.origin.rebase.completed"
+        ],
+        "metrics": {
+          "distanceM": 107.94120182102401,
+          "rebaseCount": 1,
+          "turnYawDeltaRad": 1.2693848310831867e-6
+        }
+      }
+    }
+  ],
+  "steadyState": {
+    "definition": "engine.play.startedの1000ms後以降のrenderer.frame。開始直後の影響を切り分ける補助集計。全区間の値はmetrics/runsに保持。",
+    "runs": [
+      {
+        "label": "before-1",
+        "playStartMs": 862.3000000119209,
+        "frameCount": 148,
+        "frameP95Ms": 50.09999999999991,
+        "frameP99Ms": 66.59999999999991,
+        "renderP95Ms": 3.699999988079071,
+        "physicsP95Ms": 3.2999999970197678,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 603.8999999880791,
+            "rafMs": 200.10000000000014,
+            "physicsMs": 7.799999997019768,
+            "renderMs": 9.700000002980232,
+            "gpuMs": 45.355255,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 853.8999999880791,
+            "rafMs": 116.70000000000005,
+            "physicsMs": 5.9000000059604645,
+            "renderMs": 4.899999991059303,
+            "gpuMs": 20.818409,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 7070.199999988079,
+            "rafMs": 83.30000000000018,
+            "physicsMs": 1.4000000059604645,
+            "renderMs": 1.7000000029802322,
+            "gpuMs": 42.593199,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      },
+      {
+        "label": "after-1",
+        "playStartMs": 596.9000000059605,
+        "frameCount": 148,
+        "frameP95Ms": 50.100000000000364,
+        "frameP99Ms": 83.30000000000018,
+        "renderP95Ms": 3.9000000059604645,
+        "physicsP95Ms": 3.7000000029802322,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 774.5999999940395,
+            "rafMs": 249.9000000000001,
+            "physicsMs": 5,
+            "renderMs": 6.899999991059303,
+            "gpuMs": 23.092477,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 74.59999999403954,
+            "rafMs": 216.60000000000002,
+            "physicsMs": 0,
+            "renderMs": 56.400000005960464,
+            "gpuMs": 0.00047,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 1057.9999999940396,
+            "rafMs": 83.40000000000009,
+            "physicsMs": 3.5999999940395355,
+            "renderMs": 5.799999997019768,
+            "gpuMs": 74.122018,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      },
+      {
+        "label": "before-2",
+        "playStartMs": 841.8999999910593,
+        "frameCount": 138,
+        "frameP95Ms": 66.59999999999991,
+        "frameP99Ms": 83.39999999999964,
+        "renderP95Ms": 4,
+        "physicsP95Ms": 3.8999999910593033,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 549.5000000089408,
+            "rafMs": 183.30000000000018,
+            "physicsMs": 6.899999991059303,
+            "renderMs": 4.5,
+            "gpuMs": 41.221483,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 666.1000000089407,
+            "rafMs": 116.59999999999991,
+            "physicsMs": 7.5,
+            "renderMs": 4.9000000059604645,
+            "gpuMs": 41.221483,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 2649.400000008941,
+            "rafMs": 100,
+            "physicsMs": 9.099999994039536,
+            "renderMs": 5.600000008940697,
+            "gpuMs": 86.158101,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      },
+      {
+        "label": "after-2",
+        "playStartMs": 542.7000000029802,
+        "frameCount": 142,
+        "frameP95Ms": 66.59999999999945,
+        "frameP99Ms": 83.30000000000018,
+        "renderP95Ms": 4,
+        "physicsP95Ms": 3.9000000059604645,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 598.3999999970197,
+            "rafMs": 183.39999999999986,
+            "physicsMs": 6.699999988079071,
+            "renderMs": 9.100000008940697,
+            "gpuMs": 21.087012,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 831.5999999970197,
+            "rafMs": 183.20000000000005,
+            "physicsMs": 7.5,
+            "renderMs": 4.5,
+            "gpuMs": 132.756543,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 64.99999999701981,
+            "rafMs": 166.60000000000002,
+            "physicsMs": 0,
+            "renderMs": 50.80000001192093,
+            "gpuMs": 0.00049,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      },
+      {
+        "label": "before-3",
+        "playStartMs": 784.2999999970198,
+        "frameCount": 146,
+        "frameP95Ms": 50.100000000000364,
+        "frameP99Ms": 83.30000000000018,
+        "renderP95Ms": 3.3999999910593033,
+        "physicsP95Ms": 3.2000000029802322,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 547.8000000029801,
+            "rafMs": 183.29999999999995,
+            "physicsMs": 12.899999991059303,
+            "renderMs": 56,
+            "gpuMs": 42.280619,
+            "streamingCommitMs": 0.09999999403953552,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 697.8000000029801,
+            "rafMs": 150,
+            "physicsMs": 8.799999997019768,
+            "renderMs": 6.800000011920929,
+            "gpuMs": 76.823706,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 3331.0000000029804,
+            "rafMs": 116.70000000000027,
+            "physicsMs": 2.4000000059604645,
+            "renderMs": 2.0999999940395355,
+            "gpuMs": 36.255501,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      },
+      {
+        "label": "after-3",
+        "playStartMs": 872.7999999970198,
+        "frameCount": 142,
+        "frameP95Ms": 50.100000000000364,
+        "frameP99Ms": 66.69999999999982,
+        "renderP95Ms": 3.8999999910593033,
+        "physicsP95Ms": 3.2000000029802322,
+        "largestSpikes": [
+          {
+            "timestampFromPlayMs": 533.2000000029802,
+            "rafMs": 200.0999999999999,
+            "physicsMs": 15.799999997019768,
+            "renderMs": 11.899999991059303,
+            "gpuMs": 43.334769,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 733.1000000029803,
+            "rafMs": 83.30000000000018,
+            "physicsMs": 4.5,
+            "renderMs": 5.4000000059604645,
+            "gpuMs": 22.024339,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          },
+          {
+            "timestampFromPlayMs": 649.8000000029801,
+            "rafMs": 83.29999999999995,
+            "physicsMs": 4.299999997019768,
+            "renderMs": 77.40000000596046,
+            "gpuMs": 22.024339,
+            "streamingCommitMs": 0,
+            "severity": "high"
+          }
+        ]
+      }
+    ]
+  },
+  "beforeWarmup": {
+    "schemaVersion": 1,
+    "runId": "starter-plane-straight-muf3wa3g-65f18820",
+    "scenario": "starter-plane-straight",
+    "result": "pass",
+    "durationMs": 9590.457771,
+    "frame": {
+      "p50Ms": 33.400000000000546,
+      "p95Ms": 50.100000000000364,
+      "p99Ms": 150,
+      "maxMs": 183.29999999999995,
+      "sampleCount": 175
+    },
+    "spikes": {
+      "over20Ms": 154,
+      "over33Ms": 135,
+      "over50Ms": 20
+    },
+    "physics": {
+      "p50Ms": 1,
+      "p95Ms": 4,
+      "maxMs": 14.700000002980232
+    },
+    "render": {
+      "p50Ms": 1.9000000059604645,
+      "p95Ms": 5,
+      "maxMs": 82.3999999910593
+    },
+    "gpu": {
+      "p50Ms": 37.654151,
+      "p95Ms": 42.752623,
+      "maxMs": 63.086839
+    },
+    "streaming": {
+      "maxWorkerQueue": 135,
+      "maxCommitMs": 0.10000000894069672,
+      "syncFallback": null
+    },
+    "rebase": {
+      "count": 1
+    },
+    "drawCalls": {
+      "max": 146
+    },
+    "triangles": {
+      "max": 118592
+    },
+    "assertions": {
+      "passed": 3,
+      "failed": 0
+    },
+    "notableEvents": [
+      "world.chunk.committed",
+      "diagnostic.frame.spike",
+      "world.origin.rebase.completed"
+    ],
+    "metrics": {
+      "distanceM": 107.41454303296288,
+      "rebaseCount": 1,
+      "turnYawDeltaRad": 5.516555734824296e-6
+    }
+  },
+  "interpretation": "全区間render p95中央値は5.1→5.5ms、physics p95は4.2→4.7ms。frame p95は66.6msで同等だがframe p99は116.7→183.2ms。変更後の大きなスパイクは開始1秒以内に集中。開始1秒後以降のframe p99中央値は83.3msで同等。新しい割り当て処理が原因だとはこの測定だけでは特定できず、悪化なしとも断定しない。先回りした最適化は行わない。"
+}
