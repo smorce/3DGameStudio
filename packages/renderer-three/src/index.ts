@@ -1219,10 +1219,12 @@ export class ThreeRenderer implements RendererAdapter {
     options: RenderFrameOptions = {},
   ) {
     if (this.playPreparation) return;
-    this.parts.forEach((visual) => {
+    this.parts.forEach((visual, id) => {
       updateThrusterFlame(
         visual,
-        state && options.effectsEnabled !== false ? thrust : 0,
+        state && options.effectsEnabled !== false
+          ? (state.effectInputs?.get(id)?.thrust ?? 0)
+          : 0,
         this.effects.time,
       );
       updateMotorActivity(visual, thrust);
@@ -1395,11 +1397,10 @@ export class ThreeRenderer implements RendererAdapter {
     this.updateLodBatches();
     this.effects.update(
       options.effectsEnabled === false ? undefined : interpolated,
-      thrust,
       options.dt ?? 1 / 60,
-      options.velocity,
       this.chunks,
       this.renderer.domElement.height,
+      this.worldRuntime?.worldOrigin,
     );
     this.gpuTimer.begin(this.gpuTimerMeta);
     this.renderer.render(this.scene, this.camera);

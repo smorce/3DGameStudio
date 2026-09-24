@@ -28,7 +28,9 @@ page.on("pageerror", (error) => errors.push(error.message));
 page.on("console", (message) => {
   if (message.type() === "error") errors.push(message.text());
 });
-const directory = "docs/evidence/vfx";
+const directory = process.argv.includes("--update-evidence")
+  ? "docs/evidence/vfx"
+  : "test-results/vfx-probe";
 await mkdir(directory, { recursive: true });
 try {
   await page.route("**/vfx-harness", (route) =>
@@ -63,7 +65,19 @@ try {
     project.machines = [planeTemplate()];
     const renderer = new ThreeRenderer(document.querySelector("canvas")!);
     renderer.load(project);
-    const state: PhysicsRenderState = { poses: new Map(), wheels: new Map() };
+    const state: PhysicsRenderState = {
+      poses: new Map(),
+      wheels: new Map(),
+      effectInputs: new Map(
+        project.machines[0].parts.map((part) => [
+          part.id,
+          {
+            thrust: part.definitionId === "Thruster" ? 1 : 0,
+            velocity: [6, 0, 36] as [number, number, number],
+          },
+        ]),
+      ),
+    };
     for (const part of project.machines[0].parts) {
       const visual = renderer.parts.get(part.id)!;
       state.poses.set(part.id, {
@@ -79,6 +93,35 @@ try {
     };
   }, `/@fs${process.cwd()}`);
   assert.deepEqual(initial, { vapor: 0, smoke: 0 });
+  const independentFlames = await page.evaluate(() => {
+    const { renderer, project, state } = (window as unknown as ProbeWindow)
+      .vfxProbe;
+    const thrusters = project.machines[0].parts.filter(
+      (part) => part.definitionId === "Thruster",
+    );
+    const original = state.effectInputs;
+    const inputs = new Map(original);
+    inputs.set(thrusters[0].id, { thrust: 0 });
+    inputs.set(thrusters[1].id, { thrust: 0.5 });
+    state.effectInputs = inputs;
+    renderer.render(state, 1, { dt: 0 });
+    const off = renderer.parts
+      .get(thrusters[0].id)!
+      .getObjectByName("thruster-flame")!;
+    const half = renderer.parts
+      .get(thrusters[1].id)!
+      .getObjectByName("thruster-flame")!;
+    const result = {
+      offVisible: off.visible,
+      halfVisible: half.visible,
+      halfScale: half.scale.y,
+    };
+    state.effectInputs = original;
+    return result;
+  });
+  assert.equal(independentFlames.offVisible, false);
+  assert.equal(independentFlames.halfVisible, true);
+  assert.equal(independentFlames.halfScale, 0.5);
   const flight = await page.evaluate(() => {
     const { renderer, project, state } = (window as unknown as ProbeWindow)
       .vfxProbe;
@@ -131,6 +174,15 @@ try {
     const { renderer, project, state } = (window as unknown as ProbeWindow)
       .vfxProbe;
     renderer.load(project);
+    state.effectInputs = new Map(
+      project.machines[0].parts.map((part) => [
+        part.id,
+        {
+          thrust: part.definitionId === "Thruster" ? 1 : 0,
+          velocity: [0, 0, 0] as [number, number, number],
+        },
+      ]),
+    );
     for (const part of project.machines[0].parts) {
       const visual = renderer.parts.get(part.id)!;
       if (part.definitionId === "Thruster") {
@@ -196,7 +248,7 @@ try {
   await writeFile(
     `${directory}/renderer-probe.json`,
     JSON.stringify(
-      { initial, flight, rebase, wash, lifecycle, errors },
+      { initial, independentFlames, flight, rebase, wash, lifecycle, errors },
       null,
       2,
     ) + "\n",

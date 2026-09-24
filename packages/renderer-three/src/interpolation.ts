@@ -49,5 +49,5 @@ export function interpolatePhysicsRenderState(
         : wheel,
     );
   }
-  return { poses, wheels };
+  return { poses, wheels, effectInputs: current.effectInputs };
 }

@@ -1,5 +1,9 @@
 import * as THREE from "three";
-import type { Project, Vec3 } from "../../../project-schema/src/index";
+import {
+  worldChunkSize,
+  type Project,
+  type Vec3,
+} from "../../../project-schema/src/index";
 import type { PhysicsRenderState } from "../../../physics-rapier/src/index";
 import {
   EFFECT_CAPACITY,
@@ -9,7 +13,10 @@ import {
   washEmission,
   type EffectQuality,
 } from "./effect-config";
+import { chunkKey, worldToChunk } from "../../../world-generator/src/index";
 import { EffectParticleSystem } from "./particle-system";
+
+const ZERO_ORIGIN: Vec3 = [0, 0, 0];
 
 type EmitterKind = "vapor" | "contact" | "wash";
 interface Emitter {
@@ -33,6 +40,7 @@ export class VisualEffects {
   readonly vapor: EffectParticleSystem;
   readonly smoke: EffectParticleSystem;
   private emitters: Emitter[] = [];
+  private chunkSize = 32;
   private readonly point = new THREE.Vector3();
   private readonly spawn = new THREE.Vector3();
   private readonly direction = new THREE.Vector3();
@@ -51,6 +59,7 @@ export class VisualEffects {
   load(project: Project, visuals: Map<string, THREE.Object3D>) {
     this.clear();
     this.emitters = [];
+    this.chunkSize = worldChunkSize(project.world);
     this.vaporEmitters = 0;
     this.groundSmokeEmitters = 0;
     for (const machine of project.machines)
@@ -96,11 +105,10 @@ export class VisualEffects {
   }
   update(
     state: PhysicsRenderState | undefined,
-    thrust: number,
     dt: number,
-    velocity: Vec3 | undefined,
     chunks: Map<string, THREE.Group>,
     viewportHeight: number,
+    worldOrigin: Vec3 = ZERO_ORIGIN,
   ) {
     if (!state) {
       this.clear();
@@ -110,9 +118,11 @@ export class VisualEffects {
       ? Math.max(0, Math.min(EFFECT_CONFIG.maxDt, dt))
       : 0;
     this.time += dt;
-    const speed = velocity ? Math.hypot(...velocity) : 0;
     let rays = 0;
     for (const emitter of this.emitters) {
+      const input = state.effectInputs?.get(emitter.id);
+      const speed = input?.velocity ? Math.hypot(...input.velocity) : 0;
+      const thrust = input?.thrust ?? 0;
       emitter.visual.updateWorldMatrix(true, false);
       this.point.copy(emitter.anchor).applyMatrix4(emitter.visual.matrixWorld);
       let rate = 0;
@@ -122,7 +132,16 @@ export class VisualEffects {
         rate = contactEmission(speed, wheel?.inContact === true);
         if (wheel) {
           this.point.fromArray(wheel.pose.position);
-          this.point.y -= wheel.wheelRadiusM ?? 0;
+          this.direction.fromArray(wheel.suspensionDirectionWorld);
+          if (
+            !Number.isFinite(this.direction.lengthSq()) ||
+            this.direction.lengthSq() === 0
+          )
+            this.direction.set(0, -1, 0);
+          this.point.addScaledVector(
+            this.direction.normalize(),
+            wheel.wheelRadiusM ?? 0,
+          );
           this.point.y += EFFECT_CONFIG.smoke.groundOffset;
         }
       } else {
@@ -142,15 +161,24 @@ export class VisualEffects {
           this.ray.set(this.point, this.direction);
           this.ray.far = EFFECT_CONFIG.wash.distance;
           this.hits.length = 0;
-          for (const chunk of chunks.values()) {
-            if (!chunk.visible) continue;
-            // 地形メッシュのみ対象。木・建物・水面には煙を付けない。
-            const terrain = chunk.children.find(
-              (child) => child.userData.vfxTerrain === true,
-            );
-            if (terrain) {
-              terrain.updateWorldMatrix(true, false);
-              this.ray.intersectObject(terrain, false, this.hits);
+          // Chunkのキーはグローバル座標。Rebase済み描画座標を戻して近傍だけ検索する。
+          const { chunkX, chunkZ } = worldToChunk(
+            this.point.x + worldOrigin[0],
+            this.point.z + worldOrigin[2],
+            this.chunkSize,
+          );
+          for (let x = chunkX - 1; x <= chunkX + 1; x++) {
+            for (let z = chunkZ - 1; z <= chunkZ + 1; z++) {
+              const chunk = chunks.get(chunkKey(x, z));
+              if (!chunk?.visible) continue;
+              // 地形メッシュのみ対象。木・建物・水面には煙を付けない。
+              const terrain = chunk.children.find(
+                (child) => child.userData.vfxTerrain === true,
+              );
+              if (terrain) {
+                terrain.updateWorldMatrix(true, false);
+                this.ray.intersectObject(terrain, false, this.hits);
+              }
             }
           }
           let nearest: THREE.Intersection | undefined;

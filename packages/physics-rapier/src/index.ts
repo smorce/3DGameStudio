@@ -79,9 +79,15 @@ export interface WheelRenderState {
   inContact?: boolean;
   wheelRadiusM?: number;
 }
+/** 描画専用の入力スナップショット。物理へ書き戻さない。 */
+export interface PartEffectInput {
+  thrust?: number;
+  velocity?: Vec3;
+}
 export interface PhysicsRenderState {
   poses: Map<string, Pose>;
   wheels: Map<string, WheelRenderState>;
+  effectInputs?: ReadonlyMap<string, Readonly<PartEffectInput>>;
 }
 /** CCD A/B 実験用。all=現行、off=全無効、chassis-only=主胴体のみ、hinge-only=Hinge側のみ。 */
 export type CcdExperimentMode = "all" | "off" | "chassis-only" | "hinge-only";
@@ -443,6 +449,7 @@ export class RapierPhysics {
     body: RAPIER.RigidBody;
     machineId: string;
   }[] = [];
+  private readonly appliedThrusterCommands = new Map<string, number>();
   private forceByMachine = new Map<string, ForceAccumulator>();
   private water: WaterSurface = { enabled: false, height: 0 };
   private gravityMagnitude = 9.81;
@@ -1292,6 +1299,7 @@ export class RapierPhysics {
           applyEqualOppositeTorque(motor, axisWorld, appliedTorque);
       }
     }
+    this.appliedThrusterCommands.clear();
     const thrustersByBody = new Map<
       RAPIER.RigidBody,
       {
@@ -1449,6 +1457,10 @@ export class RapierPhysics {
         );
         const direction = rotate([0, 0, 1], thrusterPose.rotation);
         const command = thrusterCommands.get(part.id) ?? throttle;
+        this.appliedThrusterCommands.set(
+          part.id,
+          part.actuator.motorTorque !== 0 ? command : 0,
+        );
         const force = direction.map(
           (value) => value * command * part.actuator.motorTorque,
         ) as Vec3;
@@ -2150,12 +2162,32 @@ export class RapierPhysics {
         });
       });
     }
-    return { poses, wheels };
+    const effectInputs = new Map<string, PartEffectInput>();
+    // 現在の剛体速度と適用済み推力だけをコピーし、描画側の変更から物理を分離する。
+    for (const { part, body } of this.parts) {
+      const velocity = body.linvel();
+      effectInputs.set(part.id, {
+        velocity: [velocity.x, velocity.y, velocity.z],
+        thrust:
+          part.definitionId === "Thruster" && part.actuator.enabled
+            ? (this.appliedThrusterCommands.get(part.id) ?? 0)
+            : 0,
+      });
+    }
+    for (const vehicle of this.vehicles) {
+      const velocity = vehicle.body.linvel();
+      for (const wheel of vehicle.wheelRuntime)
+        effectInputs.set(wheel.part.id, {
+          velocity: [velocity.x, velocity.y, velocity.z],
+        });
+    }
+    return { poses, wheels, effectInputs };
   }
   wheelStates() {
     return this.renderState().wheels;
   }
   respawn(position: Vec3 = [0, 2, 0]) {
+    this.appliedThrusterCommands.clear();
     if (!this.world) return;
     this.streamer?.update(position);
     const local = this.worldRuntime?.toSimulation(position) ?? position;
@@ -2186,6 +2218,7 @@ export class RapierPhysics {
     };
   }
   dispose() {
+    this.appliedThrusterCommands.clear();
     this.generation++;
     this.streamer?.dispose();
     this.prefetchRetention.reset();

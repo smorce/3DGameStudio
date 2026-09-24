@@ -25,5 +25,5 @@ export function shiftPhysicsRenderState(
   const wheels = new Map<string, WheelRenderState>();
   for (const [id, wheel] of state.wheels)
     wheels.set(id, { ...wheel, pose: shiftPose(wheel.pose, delta) });
-  return { poses, wheels };
+  return { poses, wheels, effectInputs: state.effectInputs };
 }

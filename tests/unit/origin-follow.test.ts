@@ -101,3 +101,27 @@ it("Render Interpolationは位置をlerpし回転をslerpする", () => {
   );
   expect(pose.position[0]).toBeCloseTo(0.5);
 });
+
+it("推力入力は補間で再点火せず、原点移動でも速度とPart対応を維持する", () => {
+  const previous = {
+    poses: new Map(),
+    wheels: new Map(),
+    effectInputs: new Map([
+      ["a", { thrust: 1, velocity: [40, 0, 0] as [number, number, number] }],
+    ]),
+  };
+  const current = {
+    poses: new Map(),
+    wheels: new Map(),
+    effectInputs: new Map([
+      ["a", { thrust: 0, velocity: [5, 0, 0] as [number, number, number] }],
+    ]),
+  };
+  const mid = interpolatePhysicsRenderState(previous, current, 0.5);
+  expect(mid.effectInputs?.get("a")).toEqual({
+    thrust: 0,
+    velocity: [5, 0, 0],
+  });
+  const shifted = shiftPhysicsRenderState(mid, [256, 0, -256]);
+  expect(shifted.effectInputs).toEqual(current.effectInputs);
+});

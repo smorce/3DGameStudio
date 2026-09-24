@@ -10,8 +10,22 @@ type AgentWindow = Window & {
 
 test("PLAYの翼・車輪VFXとSTOP・再読込の消去を確認する @smoke", async ({
   page,
-}) => {
+}, testInfo) => {
   test.setTimeout(90_000);
+  // STOP時の自動診断保存もテスト添付へ隔離し、追跡中のdocsを変更しない。
+  await page.route("**/api/evidence", async (route) => {
+    await testInfo.attach("stop-diagnostics", {
+      body: route.request().postData() ?? "{}",
+      contentType: "application/json",
+    });
+    await route.fulfill({
+      json: {
+        path: testInfo.outputPath("stop-diagnostics.json"),
+        summaryUpdated: false,
+        summaryMissing: [],
+      },
+    });
+  });
   const project = emptyProject();
   Object.assign(
     project.world,
@@ -41,7 +55,9 @@ test("PLAYの翼・車輪VFXとSTOP・再読込の消去を確認する @smoke",
       timeout: 30_000,
     })
     .toBeGreaterThan(0);
-  await page.screenshot({ path: "docs/screenshots/vfx-ground-contact.png" });
+  await page.screenshot({
+    path: testInfo.outputPath("vfx-ground-contact.png"),
+  });
   await expect
     .poll(async () => (await state()).renderer.activeVaporParticles, {
       timeout: 30_000,
@@ -62,7 +78,7 @@ test("PLAYの翼・車輪VFXとSTOP・再読込の消去を確認する @smoke",
   await page.keyboard.down("ArrowLeft");
   await page.waitForTimeout(700);
   await page.keyboard.up("ArrowLeft");
-  await page.screenshot({ path: "docs/screenshots/vfx-flight-turn.png" });
+  await page.screenshot({ path: testInfo.outputPath("vfx-flight-turn.png") });
   await page.keyboard.up("KeyW");
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
   await expect

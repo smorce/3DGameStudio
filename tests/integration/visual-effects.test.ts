@@ -42,14 +42,7 @@ it("既存PhysicsRenderStateから接地煙と飛行軌跡を生成し、入力�
       }
       const velocity = physics.vehicles[0].body.linvel();
       const snapshot = step === 300 ? structuredClone(state) : undefined;
-      effects.update(
-        state,
-        1,
-        1 / 60,
-        [velocity.x, velocity.y, velocity.z],
-        new Map(),
-        720,
-      );
+      effects.update(state, 1 / 60, new Map(), 720);
       if (snapshot) {
         expect(state).toEqual(snapshot);
         expect(physics.renderState()).toEqual(snapshot);
@@ -67,7 +60,7 @@ it("既存PhysicsRenderStateから接地煙と飛行軌跡を生成し、入力�
     expect(maxSmoke).toBeGreaterThan(0);
     expect(airborne).toBe(true);
     expect(effects.smoke.activeCount).toBe(0);
-    effects.update(undefined, 1, 1 / 60, [0, 0, 30], new Map(), 720);
+    effects.update(undefined, 1 / 60, new Map(), 720);
     expect(effects.vapor.activeCount).toBe(0);
     effects.prewarm();
     effects.load(project, visuals);
@@ -76,5 +69,57 @@ it("既存PhysicsRenderStateから接地煙と飛行軌跡を生成し、入力�
   } finally {
     physics.dispose();
     effects.dispose();
+  }
+});
+
+it("描画入力は各剛体の速度と実際の混合済み推力を読み取り、停止・respawnで推力を残さない", async () => {
+  const project = emptyProject();
+  project.machines = [planeTemplate(), planeTemplate()];
+  for (const part of project.machines[1].parts)
+    part.transform.position[0] += 80;
+  const [left, right] = project.machines[0].parts
+    .filter((part) => part.definitionId === "Thruster")
+    .sort((a, b) => a.transform.position[0] - b.transform.position[0]);
+  const disabled = project.machines[1].parts.find(
+    (part) => part.definitionId === "Thruster",
+  )!;
+  disabled.actuator.enabled = false;
+  const physics = new RapierPhysics();
+  try {
+    await physics.load(project);
+    expect(physics.renderState().effectInputs?.get(left.id)?.thrust).toBe(0);
+    physics.step({ throttle: 0.5, steering: 1 });
+    physics.vehicles[0].body.setLinvel({ x: 0, y: 0, z: 40 }, true);
+    physics.vehicles[1].body.setLinvel({ x: 0, y: 0, z: 5 }, true);
+    const snapshot = physics.renderState();
+    expect(snapshot.effectInputs?.get(left.id)?.thrust).toBeCloseTo(0.175);
+    expect(snapshot.effectInputs?.get(right.id)?.thrust).toBeCloseTo(0.825);
+    expect(snapshot.effectInputs?.get(disabled.id)?.thrust).toBe(0);
+    for (let index = 0; index < 2; index++) {
+      const part = project.machines[index].parts.find(
+        (part) => part.definitionId === "Panel",
+      )!;
+      const wheel = project.machines[index].parts.find(
+        (part) => part.definitionId === "Wheel",
+      )!;
+      expect(snapshot.effectInputs?.get(part.id)?.velocity).toEqual([
+        0,
+        0,
+        index === 0 ? 40 : 5,
+      ]);
+      expect(snapshot.effectInputs?.get(wheel.id)?.velocity).toEqual([
+        0,
+        0,
+        index === 0 ? 40 : 5,
+      ]);
+    }
+    physics.step({ throttle: 0 });
+    expect(physics.renderState().effectInputs?.get(right.id)?.thrust).toBe(0);
+    expect(snapshot.effectInputs?.get(right.id)?.thrust).toBeCloseTo(0.825);
+    physics.step({ throttle: 1 });
+    physics.respawn();
+    expect(physics.renderState().effectInputs?.get(right.id)?.thrust).toBe(0);
+  } finally {
+    physics.dispose();
   }
 });
