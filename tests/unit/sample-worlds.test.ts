@@ -17,10 +17,10 @@ import {
 import { buildIslandProxies } from "../../packages/world-generator/src/far-proxy";
 
 describe("Sample World Catalog", () => {
-  it("8個のID・表示順がuniqueで全DraftをSchemaで読める", () => {
-    expect(sampleWorldCatalog).toHaveLength(8);
-    expect(new Set(sampleWorldCatalog.map((w) => w.id)).size).toBe(8);
-    expect(new Set(sampleWorldCatalog.map((w) => w.sortOrder)).size).toBe(8);
+  it("9個のID・表示順がuniqueで全DraftをSchemaで読める", () => {
+    expect(sampleWorldCatalog).toHaveLength(9);
+    expect(new Set(sampleWorldCatalog.map((w) => w.id)).size).toBe(9);
+    expect(new Set(sampleWorldCatalog.map((w) => w.sortOrder)).size).toBe(9);
     for (const w of sampleWorldCatalog) {
       const project = parseProject(w.buildProject());
       expect(w.buildProject()).toEqual(project);

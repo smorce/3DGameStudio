@@ -1,3 +1,4 @@
+import { alpineRotorTick } from "./alpine-rotor";
 import * as THREE from "three";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -139,6 +140,7 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
     }
     return group;
   }
+  const rotorTicks: ((time: number) => void)[] = [];
   template.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
     const mesh = new THREE.InstancedMesh(
@@ -158,10 +160,15 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
           o.matrixWorld,
         ),
       );
+    if (o.name === "alpine-windmill-rotor")
+      rotorTicks.push(alpineRotorTick(mesh));
     mesh.instanceMatrix.needsUpdate = true;
     mesh.computeBoundingSphere();
     group.add(mesh);
   });
+  if (rotorTicks.length)
+    group.userData.updateAlpineRotor = (time: number) =>
+      rotorTicks.forEach((tick) => tick(time));
   return group;
 }
 export class AssetTemplates {
@@ -260,6 +267,9 @@ export class WorldAssetBatch {
   }
   update(camera: THREE.Vector3) {
     if (this.disposed) return;
+    this.group.children[0]?.userData.updateAlpineRotor?.(
+      performance.now() / 1000,
+    );
     const target = chooseLod(
       camera.distanceTo(this.center),
       this.levels.map((l) => l.distance),

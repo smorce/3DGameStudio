@@ -1,3 +1,4 @@
+import { prepareAlpineLods } from "../packages/sample-worlds/src/alpine-prepare";
 import { assertPreparedSampleCurrent } from "../packages/sample-worlds/src/freshness";
 import {
   mkdir,
@@ -42,6 +43,17 @@ if (process.argv[2] === "prepare") {
   ).fulfill(await planSampleWorldAssets(), "offline", 42);
   if (result.errors.length || result.missing.length)
     throw new Error(JSON.stringify(result));
+  await prepareAlpineLods(library.assets, new LocalAssetStorage(temp));
+  for (const asset of library.assets) {
+    if (!asset.catalog?.slots.some((slot) => slot.includes("alpine-village")))
+      continue;
+    // オフライン生成器の汎用ラベルを、実際の素材出自へ置き換える。
+    asset.name = asset.name.replace("Dummy", "Alpine procedural");
+    asset.source.sourceUrl =
+      "repository:packages/ai-dummy/src/alpine-models.ts";
+    asset.license.attributionText =
+      "3DGameStudio: repository-generated geometry (project-owned)";
+  }
   const preparedFiles = new Set<string>();
   // 同じ実ファイルはcontent hashで1回だけ保存する。
   const rewriteFiles = async (object: Record<string, unknown>) => {
@@ -168,15 +180,16 @@ for (const descriptor of sampleWorldCatalog) {
     issues,
   });
 }
-await mkdir("docs/evidence", { recursive: true });
+const evidencePath =
+  process.env.UPDATE_WORLD_EVIDENCE === "1"
+    ? "docs/evidence/sample-worlds.json"
+    : "test-results/sample-world-validation.json";
+await mkdir(path.dirname(evidencePath), { recursive: true });
 const result = {
   worlds: report,
   uniqueAssetCount: assets.size,
   uniqueRuntimeFileCount: files.size,
   totalLogicalReferences: references,
 };
-await writeFile(
-  "docs/evidence/sample-worlds.json",
-  JSON.stringify(result, null, 2) + "\n",
-);
+await writeFile(evidencePath, JSON.stringify(result, null, 2) + "\n");
 console.log(JSON.stringify(result, null, 2));

@@ -1,3 +1,4 @@
+import { isAlpineVillage, alpineSurfaceColor } from "./alpine-farmland";
 import {
   biomeSurfaceColor,
   CURRENT_BIOME_PROFILE_VERSION,
@@ -12,6 +13,12 @@ export interface IslandProxyData {
   normals: Float32Array;
   indices: Uint32Array;
   cellKeys: string[];
+  forest?: {
+    position: [number, number, number];
+    scale: number;
+    key: string;
+    pine: boolean;
+  }[];
 }
 /** 32m境界に揃えた低解像度mesh。近景Chunk単位で三角形を除外できる。 */
 export function buildIslandProxies(
@@ -44,6 +51,13 @@ export function buildIslandProxies(
             biomeProfileVersion,
           ),
         );
+        if (isAlpineVillage(design))
+          colors[colors.length - 1] = alpineSurfaceColor(
+            x * chunkSize,
+            z * chunkSize,
+            layers.sampleHeight(x * chunkSize, z * chunkSize),
+            colors[colors.length - 1],
+          );
         positions.push(
           x * chunkSize,
           layers.sampleHeight(x * chunkSize, z * chunkSize) - 0.08,
@@ -59,7 +73,23 @@ export function buildIslandProxies(
       }
     const vertices = new Float32Array(positions),
       triangles = new Uint32Array(indices);
+    const forest: IslandProxyData["forest"] = [];
+    if (isAlpineVillage(design))
+      for (let z = -810; z < -150; z += 14)
+        for (let x = -950; x <= 950; x += 14) {
+          const px = x + Math.sin(x * 3.17 + z) * 6,
+            pz = z + Math.cos(z * 1.39 + x) * 6;
+          const h = layers.sampleHeight(px, pz);
+          if (h < 110 && layers.sampleRoadInfluence(px, pz, true).distance > 8)
+            forest.push({
+              position: [px, h, pz],
+              scale: 13 + (Math.sin(x + z) + 1) * 4,
+              key: `${Math.floor(px / chunkSize)},${Math.floor(pz / chunkSize)}`,
+              pine: (x + z) % 3 !== 0,
+            });
+        }
     return {
+      ...(forest.length ? { forest } : {}),
       id: island.id,
       positions: vertices,
       colors,

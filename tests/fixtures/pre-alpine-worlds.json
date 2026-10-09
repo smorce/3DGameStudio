@@ -1,0 +1,13 @@
+{
+  "commit": "fa71e23",
+  "worldFiles": {
+    "starter-grassland": "52cb5cf97c206e757b40d71eccad623f84e4b88c7f1963e61b4b524c20f58380",
+    "airfield": "95c86ce8ad52c06b0968d2d95d635857e1c4965be17085f2e949ddb579a51602",
+    "tropical-archipelago": "1690256e5d867e3e2435fc888c641443b81cc9c38b151e69dbcf9e3c76f0094f",
+    "toy-islands": "953432fa7eef69b42b7234b744b65c6a6867c397a0845702aba679de3989bf61",
+    "mountain-island": "343c6edf2707a950bd20fd3ec125333a1ec4a73421f02a3222b7ee23f75d3258",
+    "desert-island": "a2eb10ba4e53aaf348d5d3fd0f5a8980181f3950da15b1b652a94a8bdaf6287e",
+    "snow-island": "4540c1a99479b41e71f74ab8cf7fba5dc6e3dcb15671ba109f072327d3f5d24e",
+    "race-island": "62e01d14524d1a8c5c7d38a4b2a4e84c501e19f14ae44b00dd4e0206db86b6c5"
+  }
+}

@@ -1,3 +1,4 @@
+import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
 import { hexToRgb } from "../../world-generator/src/prepare";
 import { CURRENT_BIOME_PROFILE_VERSION } from "../../world-generator/src/index";
 import * as THREE from "three";
@@ -12,6 +13,10 @@ export class FarWorldProxy {
   readonly group = new THREE.Group();
   private worker?: Worker;
   private meshes: { mesh: THREE.Mesh; data: IslandProxyData }[] = [];
+  private forest: {
+    mesh: THREE.InstancedMesh;
+    trees: NonNullable<IslandProxyData["forest"]>;
+  }[] = [];
   private dirty = true;
   private disposed = false;
   constructor(world: World) {
@@ -43,7 +48,16 @@ export class FarWorldProxy {
         geometry.setIndex(new THREE.BufferAttribute(data.indices, 1));
         geometry.setAttribute(
           "color",
-          new THREE.Float32BufferAttribute(data.colors.flatMap(hexToRgb), 3),
+          new THREE.Float32BufferAttribute(
+            data.colors.flatMap((hex) =>
+              world.source.kind === "procedural" &&
+              world.source.design &&
+              isAlpineVillage(world.source.design)
+                ? new THREE.Color(hex).toArray()
+                : hexToRgb(hex),
+            ),
+            3,
+          ),
         );
         const material = new THREE.MeshStandardMaterial({
           vertexColors: true,
@@ -69,6 +83,26 @@ export class FarWorldProxy {
         const mesh = new THREE.Mesh(geometry, material);
         this.meshes.push({ mesh, data });
         this.group.add(mesh);
+        for (const pine of [true, false]) {
+          const trees = (data.forest ?? []).filter(
+            (tree) => tree.pine === pine,
+          );
+          if (!trees.length) continue;
+          const g = pine
+            ? new THREE.ConeGeometry(0.28, 1, 5)
+            : new THREE.IcosahedronGeometry(0.38, 0);
+          g.translate(0, pine ? 0.5 : 0.65, 0);
+          const foliage = new THREE.InstancedMesh(
+            g,
+            new THREE.MeshStandardMaterial({
+              color: pine ? "#496b48" : "#618142",
+              roughness: 1,
+            }),
+            trees.length,
+          );
+          this.forest.push({ mesh: foliage, trees });
+          this.group.add(foliage);
+        }
       }
       this.dirty = true;
       this.worker?.terminate();
@@ -84,6 +118,9 @@ export class FarWorldProxy {
         CURRENT_BIOME_PROFILE_VERSION,
     });
   }
+  get terrainProxyCount() {
+    return this.meshes.length;
+  }
   invalidate() {
     this.dirty = true;
   }
@@ -92,6 +129,20 @@ export class FarWorldProxy {
     if (!this.dirty || !this.meshes.length) return;
     this.dirty = false;
     const keys = new Set(loadedKeys);
+    const transform = new THREE.Object3D();
+    for (const { mesh, trees } of this.forest) {
+      let count = 0;
+      for (const tree of trees) {
+        if (keys.has(tree.key)) continue;
+        transform.position.fromArray(tree.position);
+        transform.scale.setScalar(tree.scale);
+        transform.updateMatrix();
+        mesh.setMatrixAt(count++, transform.matrix);
+      }
+      mesh.count = count;
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.computeBoundingSphere();
+    }
     for (const { mesh, data } of this.meshes) {
       const indices: number[] = [];
       for (let i = 0; i < data.cellKeys.length; i++)
@@ -108,6 +159,12 @@ export class FarWorldProxy {
       mesh.geometry.dispose();
       (mesh.material as THREE.Material).dispose();
     }
+    for (const { mesh } of this.forest) {
+      mesh.dispose();
+      mesh.geometry.dispose();
+      (mesh.material as THREE.Material).dispose();
+    }
+    this.forest = [];
     this.meshes = [];
     this.group.clear();
   }

@@ -1,3 +1,4 @@
+import { alpineModelGlb } from "./alpine-models";
 import { demoPrimitiveGlb } from "./demo-primitives";
 import type {
   AssetGenerator,
@@ -17,7 +18,9 @@ export class DummyAstraAssetGenerator implements AssetGenerator {
       .update(JSON.stringify(request))
       .digest("hex");
     const bytes = this.demoPrimitives
-      ? await demoPrimitiveGlb(request.assetSlot)
+      ? request.assetSlot.includes("alpine-village")
+        ? await alpineModelGlb(request.assetSlot, request.variantIndex)
+        : await demoPrimitiveGlb(request.assetSlot)
       : await placeholderGlb();
     return {
       candidate: {

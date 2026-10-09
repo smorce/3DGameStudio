@@ -1,3 +1,4 @@
+import { isAlpineVillage } from "./alpine-farmland";
 import type {
   RoadDefinition,
   Vec3,
@@ -155,10 +156,21 @@ export class SemanticLayers {
       );
       if (!mask) continue;
       let mountain = 0;
-      for (const m of island.mountains)
+      for (const m of island.mountains) {
+        const radial = distance(x, z, m.center) / m.radius;
+        const angle = Math.atan2(z - m.center[2], x - m.center[0]);
         mountain +=
           m.height *
-          Math.pow(smooth(1 - distance(x, z, m.center) / m.radius), m.falloff);
+          (isAlpineVillage(this.design) && m.height > 100
+            ? Math.pow(
+                Math.max(
+                  0,
+                  1 - radial * (1 + Math.sin(angle * 7 + m.center[0]) * 0.12),
+                ),
+                m.falloff,
+              )
+            : Math.pow(smooth(1 - radial), m.falloff));
+      }
       height = Math.max(
         height,
         -8 +

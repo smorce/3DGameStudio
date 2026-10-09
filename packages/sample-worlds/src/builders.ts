@@ -1,3 +1,4 @@
+import { alpineVillageDesign } from "./alpine-village";
 import {
   emptyProject,
   parseProject,
@@ -48,6 +49,12 @@ const configurations: Record<
   string,
   Omit<Definition, keyof SampleWorldMetadata>
 > = {
+  "alpine-village": {
+    design: alpineVillageDesign,
+    sky: "#a9cfdf",
+    spawn: [6, 14, 60],
+    lighting: { intensity: 2.1, timeOfDay: 14 },
+  },
   "starter-grassland": {
     preset: "grassland",
     sky: "#c8e6f5",
@@ -118,7 +125,12 @@ function build(definition: Definition): Project {
     sky: definition.sky,
     fog: layers ? 0.00065 : p.world.environment.fog,
   };
-  if (layers) p.world.water = { enabled: true, height: 0 };
+  if (layers)
+    p.world.water = { enabled: definition.id !== "alpine-village", height: 0 };
+  if (definition.id === "alpine-village") {
+    source.chunkSize = p.world.chunkSize = 64;
+    p.world.environment.fog = 0.0008;
+  }
   p.world.lighting = definition.lighting ?? { intensity: 2, timeOfDay: 14 };
   const templates = {
     car: starterCarTemplate,

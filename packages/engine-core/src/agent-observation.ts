@@ -77,6 +77,8 @@ export interface AgentGameState {
 export interface MachineStudioAgentApi {
   version: 1;
   getState(): AgentGameState;
+  setInspectionView(position: Vec3, target: Vec3): void;
+  getRenderedEntityPosition(entityId: string): Vec3 | undefined;
   getWorldDesignDebug(x?: number, z?: number): unknown;
   getPhysicsStep(): number;
   getTelemetrySummary(): unknown;
@@ -131,6 +133,8 @@ export interface EngineObservationHost {
     };
   };
   renderer: {
+    setInspectionView?(position: Vec3, target: Vec3): void;
+    getRenderedEntityPosition?(entityId: string): Vec3 | undefined;
     fastStats: Record<string, number>;
     useDampedCameraFollow: boolean;
     getMotionProbe?: () => {
@@ -172,10 +176,18 @@ export function createAgentObservationApi(
 ): MachineStudioAgentApi {
   return {
     version: 1,
+    setInspectionView(position, target) {
+      engine.renderer.setInspectionView?.(position, target);
+    },
+    getRenderedEntityPosition(entityId) {
+      return engine.renderer.getRenderedEntityPosition?.(entityId);
+    },
     getWorldDesignDebug(x = engine.position[0], z = engine.position[2]) {
       return {
         sample: engine.worldRuntime?.debugDesignAt?.(x, z),
         farWorldProxyCount: engine.renderer.fastStats.farWorldProxyCount ?? 0,
+        renderPending: engine.renderer.fastStats.renderChunkPending ?? 0,
+        renderedChunks: engine.renderer.fastStats.loadedChunks ?? 0,
       };
     },
     getState(): AgentGameState {

@@ -1,3 +1,7 @@
+import { addAlpineTerrainSkirt } from "./alpine-terrain";
+import { alpineRenderChunk } from "./alpine-ready";
+import { alpineClouds, alpineChimneySmoke } from "./alpine-atmosphere";
+import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
 import { VisualEffects } from "./effects/visual-effects";
 import { FarWorldProxy } from "./far-proxy";
 import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
@@ -127,6 +131,9 @@ export function syncPartVisualTransforms(
 export class ThreeRenderer implements RendererAdapter {
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
+  private inspectionView = false;
+  private alpineCloudGroup?: THREE.Group;
+  private alpineSmoke = new Set<THREE.InstancedMesh>();
   camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2500);
   controls: OrbitControls;
   root = new THREE.Group();
@@ -396,6 +403,38 @@ export class ThreeRenderer implements RendererAdapter {
     canvas.addEventListener("pointermove", this.pointerMove);
     canvas.addEventListener("pointerleave", this.pointerLeave);
     canvas.addEventListener("pointercancel", this.pointerCancel);
+  }
+  /** 観測API用。絶対座標をSimulation座標へ変換して全景を検証する。 */
+  setInspectionView(position: Vec3, target: Vec3) {
+    if (![...position, ...target].every(Number.isFinite))
+      throw new Error("Camera coordinates must be finite");
+    this.inspectionView = true;
+    this.camera.position.fromArray(
+      this.worldRuntime?.toSimulation(position) ?? position,
+    );
+    this.controls.target.fromArray(
+      this.worldRuntime?.toSimulation(target) ?? target,
+    );
+    this.controls.update();
+  }
+  /** 表示済みInstanceの位置を観測し、読込完了とRebaseの検証に使う。 */
+  getRenderedEntityPosition(entityId: string): Vec3 | undefined {
+    let position: Vec3 | undefined;
+    this.root.updateMatrixWorld(true);
+    this.root.traverse((object) => {
+      if (position || !(object instanceof THREE.InstancedMesh)) return;
+      const ids = object.userData.entityIds as string[] | undefined;
+      const index = ids?.indexOf(entityId) ?? -1;
+      if (index < 0) return;
+      const matrix = new THREE.Matrix4();
+      object.getMatrixAt(index, matrix);
+      const local = new THREE.Vector3()
+        .setFromMatrixPosition(matrix)
+        .applyMatrix4(object.matrixWorld)
+        .toArray() as Vec3;
+      position = this.worldRuntime?.toGlobal(local) ?? local;
+    });
+    return position;
   }
   resetView() {
     this.camera.position.set(7, 5.5, 8);
@@ -667,6 +706,7 @@ export class ThreeRenderer implements RendererAdapter {
       return;
     }
     this.effects.clear();
+    this.inspectionView = false;
     this.project = p;
     this.editWorkspace = true;
     ++this.generation;
@@ -681,6 +721,14 @@ export class ThreeRenderer implements RendererAdapter {
     this.clear(this.root);
     this.farProxy = new FarWorldProxy(p.world);
     this.root.add(this.farProxy.group);
+    if (
+      p.world.source.kind === "procedural" &&
+      p.world.source.design &&
+      isAlpineVillage(p.world.source.design)
+    ) {
+      this.alpineCloudGroup = alpineClouds();
+      this.root.add(this.alpineCloudGroup);
+    } else this.alpineCloudGroup = undefined;
     this.showAttachmentCandidates([]);
     this.parts.clear();
     this.machines.clear();
@@ -839,6 +887,10 @@ export class ThreeRenderer implements RendererAdapter {
         this.root.add(mesh);
       }
     }
+    const alpineWorld =
+      p.world.source.kind === "procedural" &&
+      !!p.world.source.design &&
+      isAlpineVillage(p.world.source.design);
     this.clearSharedBuiltinTemplates();
     this.lodBatches.clear();
     this.prefetchRetention.reset();
@@ -864,6 +916,7 @@ export class ThreeRenderer implements RendererAdapter {
             new THREE.BufferAttribute(prepared.colors, 3),
           );
           geo.setIndex(new THREE.BufferAttribute(prepared.indices, 1));
+          if (alpineWorld) addAlpineTerrainSkirt(geo, prepared.resolution);
           // Main Thread では Terrain Normal / Color を再計算しない。
           const mesh = new THREE.Mesh(
             geo,
@@ -917,10 +970,29 @@ export class ThreeRenderer implements RendererAdapter {
           }
         }
         const generated =
-          this.worldRuntime?.peekChunk(key)?.entities ??
+          (alpineWorld && this.worldRuntime
+            ? alpineRenderChunk(this.worldRuntime, key)
+            : this.worldRuntime?.peekChunk(key)
+          )?.entities ??
           (this.worldRuntime?.isPlayHotPath
             ? []
             : (this.worldRuntime?.getChunk(key)?.entities ?? []));
+        if (
+          p.world.source.kind === "procedural" &&
+          p.world.source.design &&
+          isAlpineVillage(p.world.source.design)
+        ) {
+          const smoke = alpineChimneySmoke(generated, [
+            Number(key.split(",")[0]) * this.worldRuntime!.chunkSize,
+            0,
+            Number(key.split(",")[1]) * this.worldRuntime!.chunkSize,
+          ]);
+          if (smoke) {
+            this.alpineSmoke.add(smoke);
+            smoke.userData.release = () => this.alpineSmoke.delete(smoke);
+            group.add(smoke);
+          }
+        }
         const byKind = new Map<string, typeof generated>();
         for (const entity of generated) {
           const batchKey = entity.assetId ?? entity.kind;
@@ -1137,6 +1209,7 @@ export class ThreeRenderer implements RendererAdapter {
       return;
     }
     this.effects.clear();
+    this.inspectionView = false;
     this.project = p;
     this.editWorkspace = true;
     this.syncProjectPartTransforms(p);
@@ -1299,21 +1372,23 @@ export class ThreeRenderer implements RendererAdapter {
           first.position[1],
           first.position[2],
         ];
-        const target = new THREE.Vector3(...first.position);
-        // Production: 補間済み機体位置へ Instant 追従（平行移動の遅れを残さない）。
-        // OrbitControls.enableDamping はマウス周回の慣性用で、こことは独立。
-        // 診断用に旧 Damped を強制できる（useDampedCameraFollow）。
-        const useDamping =
-          options.useDampedCameraFollow ?? this.useDampedCameraFollow;
-        if (useDamping) {
-          const follow = cameraFollowAlpha(options.dt ?? 1 / 60);
-          const delta = target.clone().sub(this.controls.target);
-          this.camera.position.add(delta.multiplyScalar(follow));
-          this.controls.target.lerp(target, follow);
-        } else {
-          const delta = target.clone().sub(this.controls.target);
-          this.camera.position.add(delta);
-          this.controls.target.copy(target);
+        if (!this.inspectionView) {
+          const target = new THREE.Vector3(...first.position);
+          // Production: 補間済み機体位置へ Instant 追従（平行移動の遅れを残さない）。
+          // OrbitControls.enableDamping はマウス周回の慣性用で、こことは独立。
+          // 診断用に旧 Damped を強制できる（useDampedCameraFollow）。
+          const useDamping =
+            options.useDampedCameraFollow ?? this.useDampedCameraFollow;
+          if (useDamping) {
+            const follow = cameraFollowAlpha(options.dt ?? 1 / 60);
+            const delta = target.clone().sub(this.controls.target);
+            this.camera.position.add(delta.multiplyScalar(follow));
+            this.controls.target.lerp(target, follow);
+          } else {
+            const delta = target.clone().sub(this.controls.target);
+            this.camera.position.add(delta);
+            this.controls.target.copy(target);
+          }
         }
       }
     } else if (this.project) {
@@ -1403,6 +1478,13 @@ export class ThreeRenderer implements RendererAdapter {
       this.renderer.domElement.height,
       this.worldRuntime?.worldOrigin,
     );
+    for (const smoke of this.alpineSmoke)
+      smoke.userData.alpineTick(this.effects.time);
+    const clouds = this.alpineCloudGroup;
+    if (clouds) {
+      const origin = this.worldRuntime?.worldOrigin ?? [0, 0, 0];
+      clouds.position.set(-origin[0], -origin[1], -origin[2]);
+    }
     this.gpuTimer.begin(this.gpuTimerMeta);
     this.renderer.render(this.scene, this.camera);
     this.gpuTimer.end();
@@ -1428,7 +1510,7 @@ export class ThreeRenderer implements RendererAdapter {
       activeGroundSmokeParticles: this.effects.smoke.activeCount,
       vaporEmitters: this.effects.vaporEmitters,
       groundSmokeEmitters: this.effects.groundSmokeEmitters,
-      farWorldProxyCount: this.farProxy?.group.children.length ?? 0,
+      farWorldProxyCount: this.farProxy?.terrainProxyCount ?? 0,
       renderChunksCreated: this.lastStreamStats.created,
       renderChunkPending: this.lastStreamStats.pending,
       renderCommitMs: this.lastStreamStats.commitMs,
@@ -1511,7 +1593,7 @@ export class ThreeRenderer implements RendererAdapter {
       triangles: this.renderer.info.render.triangles,
       loadedChunks: [...this.chunks.values()].filter((g) => g.visible).length,
       loadedAssets: assetIds.size,
-      farWorldProxyCount: this.farProxy?.group.children.length ?? 0,
+      farWorldProxyCount: this.farProxy?.terrainProxyCount ?? 0,
       renderChunksCreated: this.lastStreamStats.created,
       renderChunkPending: this.lastStreamStats.pending,
       renderCommitMs: this.lastStreamStats.commitMs,

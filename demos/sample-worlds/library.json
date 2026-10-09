@@ -90,6 +90,825 @@
     }
   },
   {
+    "id": "factory-bf5c8379f4e36f58c316e5388e257cf7",
+    "name": "building.alpine-village.barn (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/9715274f71ddf4b6c218f7acd86ffd56a65e4aa71c53f7fe6ac4512fdd4a69cc.glb",
+      "runtime": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
+      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3",
+      "generationId": "42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -5,
+          -4.7683716530855236e-8,
+          -3.75
+        ],
+        "max": [
+          5,
+          6.400000095367432,
+          3.75
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
+      "colliderBytes": 28486,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22376,
+        "runtimeBytes": 6072,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6072
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.barn"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "barn"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.barn",
+      "contentHash": "7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-55842ba46d6e6e1f3167a4d82a582648",
+    "name": "building.alpine-village.barn (Alpine procedural 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/0e682c722ba6117b3880e52d0d76f24ed3fe31c65a01469d7fe2e45b7109c991.glb",
+      "runtime": "/api/files/sample-worlds/34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564.glb",
+      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28",
+      "generationId": "7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -5,
+          -4.7683716530855236e-8,
+          -3.75
+        ],
+        "max": [
+          5,
+          6.400000095367432,
+          3.75
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
+      "colliderBytes": 28486,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22376,
+        "runtimeBytes": 6076,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6076
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.barn"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "barn"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.barn",
+      "contentHash": "34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-cb511ceda2644b227baccea431ef50af",
+    "name": "building.alpine-village.barn (Alpine procedural 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/9715274f71ddf4b6c218f7acd86ffd56a65e4aa71c53f7fe6ac4512fdd4a69cc.glb",
+      "runtime": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
+      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30",
+      "generationId": "718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -5,
+          -4.7683716530855236e-8,
+          -3.75
+        ],
+        "max": [
+          5,
+          6.400000095367432,
+          3.75
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
+      "colliderBytes": 28486,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22376,
+        "runtimeBytes": 6072,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6072
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.barn"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "barn"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.barn",
+      "contentHash": "7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-cf7026e76c083a959793c0c903151b51",
+    "name": "building.alpine-village.stone (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5735d826628687247d4f139dee1244c7b265e319936b23df7a6f379116c9c964",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/77dbad0181744e235444b622d7c60ff4c7073a374d3bb8ca4089b163d6be4bbc.glb",
+      "runtime": "/api/files/sample-worlds/0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee.glb",
+      "thumbnail": "/api/files/sample-worlds/9372ffa1e028efe28ecfef6559ba843e39cc27ad780dd5161f4498c3cf6cecc1.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5735d826628687247d4f139dee1244c7b265e319936b23df7a6f379116c9c964",
+      "generationId": "5735d826628687247d4f139dee1244c7b265e319936b23df7a6f379116c9c964"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/385ac9ee0f6123d772f54d3735805ed59070ab4741d4a95313fb48554c5a2c8c.json",
+      "colliderBytes": 34318,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22436,
+        "runtimeBytes": 6292,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6292
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.stone"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "stone"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.stone",
+      "contentHash": "0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-4223a26ff5c8289e9a95f87112bfa28e",
+    "name": "building.alpine-village.stone (Alpine procedural 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-9eedc2a6b0b272a632a7fc2493bc6b9a15e0a724dab602d12f1a4bc13672d743",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/e32e2ca339918aafe0264e8e8f7c45021a6605824e9fa8df67d1d11bd993a4bf.glb",
+      "runtime": "/api/files/sample-worlds/bd75c618a883cb16b2f456cf07db6a46f823188118f8c0240c7533cc7f5120b9.glb",
+      "thumbnail": "/api/files/sample-worlds/9372ffa1e028efe28ecfef6559ba843e39cc27ad780dd5161f4498c3cf6cecc1.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "9eedc2a6b0b272a632a7fc2493bc6b9a15e0a724dab602d12f1a4bc13672d743",
+      "generationId": "9eedc2a6b0b272a632a7fc2493bc6b9a15e0a724dab602d12f1a4bc13672d743"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/385ac9ee0f6123d772f54d3735805ed59070ab4741d4a95313fb48554c5a2c8c.json",
+      "colliderBytes": 34318,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22436,
+        "runtimeBytes": 6288,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/bd75c618a883cb16b2f456cf07db6a46f823188118f8c0240c7533cc7f5120b9.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6288
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.stone"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "stone"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.stone",
+      "contentHash": "bd75c618a883cb16b2f456cf07db6a46f823188118f8c0240c7533cc7f5120b9",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-60a00066a577b5fc0c1b11736c843c52",
+    "name": "building.alpine-village.stone (Alpine procedural 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-9976e5e344452113a4c77f8708f83c5f4b099b7b6b4ec59eb494b2f1708a97d3",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/77dbad0181744e235444b622d7c60ff4c7073a374d3bb8ca4089b163d6be4bbc.glb",
+      "runtime": "/api/files/sample-worlds/0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee.glb",
+      "thumbnail": "/api/files/sample-worlds/9372ffa1e028efe28ecfef6559ba843e39cc27ad780dd5161f4498c3cf6cecc1.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "9976e5e344452113a4c77f8708f83c5f4b099b7b6b4ec59eb494b2f1708a97d3",
+      "generationId": "9976e5e344452113a4c77f8708f83c5f4b099b7b6b4ec59eb494b2f1708a97d3"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 200,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/385ac9ee0f6123d772f54d3735805ed59070ab4741d4a95313fb48554c5a2c8c.json",
+      "colliderBytes": 34318,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 22436,
+        "runtimeBytes": 6292,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee.glb",
+          "triangles": 200,
+          "distance": 0,
+          "bytes": 6292
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.stone"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "stone"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.stone",
+      "contentHash": "0dc008cb74d137062c6aff91064af876f49dab38c87a6cae307d74d2c54a28ee",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-cd5a875fb3591cd1cca41d1953ef083d",
+    "name": "building.alpine-village.timber (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-611f4c06c533755a66f9e5a3abcda396ae1ba81ae1e12911a39691c7dae84e26",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/fef6eb3f8091aeedc94b545ffe3cfbad19c653166de5b0f103b3963c6df6ec8c.glb",
+      "runtime": "/api/files/sample-worlds/44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab.glb",
+      "thumbnail": "/api/files/sample-worlds/bf2b2ad3fcaa3a57dc2de26125303f88b17552e7c5fdd3017070340e71853407.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "611f4c06c533755a66f9e5a3abcda396ae1ba81ae1e12911a39691c7dae84e26",
+      "generationId": "611f4c06c533755a66f9e5a3abcda396ae1ba81ae1e12911a39691c7dae84e26"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 236,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/b55f14418fd614e110964635fa0ca5b9493db8ba189d21cc52b9a34542e96358.json",
+      "colliderBytes": 40924,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 26324,
+        "runtimeBytes": 7028,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab.glb",
+          "triangles": 236,
+          "distance": 0,
+          "bytes": 7028
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.timber"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "timber"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.timber",
+      "contentHash": "44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-0ecaf65573e0b376a6fa82b05f77aedb",
+    "name": "building.alpine-village.timber (Alpine procedural 1)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-7ecf20ff05cf982faa5b42bb544ec8ce8f17b2f0dbdd230cf6184f9676e4974f",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/4b8a14b9e841c6b7bac252b7ae5083a9fe1edd7c961a01e15f69423d912235e5.glb",
+      "runtime": "/api/files/sample-worlds/d7895eb9b86cde9efb09e88dd4abe4ae00fe753a9e8be4a976af4c7f176c526f.glb",
+      "thumbnail": "/api/files/sample-worlds/bf2b2ad3fcaa3a57dc2de26125303f88b17552e7c5fdd3017070340e71853407.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "7ecf20ff05cf982faa5b42bb544ec8ce8f17b2f0dbdd230cf6184f9676e4974f",
+      "generationId": "7ecf20ff05cf982faa5b42bb544ec8ce8f17b2f0dbdd230cf6184f9676e4974f"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 236,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/b55f14418fd614e110964635fa0ca5b9493db8ba189d21cc52b9a34542e96358.json",
+      "colliderBytes": 40924,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 26324,
+        "runtimeBytes": 7036,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/d7895eb9b86cde9efb09e88dd4abe4ae00fe753a9e8be4a976af4c7f176c526f.glb",
+          "triangles": 236,
+          "distance": 0,
+          "bytes": 7036
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.timber"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "timber"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.timber",
+      "contentHash": "d7895eb9b86cde9efb09e88dd4abe4ae00fe753a9e8be4a976af4c7f176c526f",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-b93c8b0e9af047a21b9ad85ffa33a469",
+    "name": "building.alpine-village.timber (Alpine procedural 2)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-5de6bc1d6f763f3b25d55fdb62326622e3e06b11199baaceb473effd48c48448",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/fef6eb3f8091aeedc94b545ffe3cfbad19c653166de5b0f103b3963c6df6ec8c.glb",
+      "runtime": "/api/files/sample-worlds/44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab.glb",
+      "thumbnail": "/api/files/sample-worlds/bf2b2ad3fcaa3a57dc2de26125303f88b17552e7c5fdd3017070340e71853407.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "5de6bc1d6f763f3b25d55fdb62326622e3e06b11199baaceb473effd48c48448",
+      "generationId": "5de6bc1d6f763f3b25d55fdb62326622e3e06b11199baaceb473effd48c48448"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.9000000953674316,
+          -4.7683716530855236e-8,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.9000000953674316,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "triangles": 236,
+      "collider": "trimesh",
+      "colliderFile": "/api/files/sample-worlds/b55f14418fd614e110964635fa0ca5b9493db8ba189d21cc52b9a34542e96358.json",
+      "colliderBytes": 40924,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 26324,
+        "runtimeBytes": 7028,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab.glb",
+          "triangles": 236,
+          "distance": 0,
+          "bytes": 7028
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "building.alpine-village.timber"
+      ],
+      "tags": [
+        "building",
+        "alpine-village",
+        "timber"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "building.alpine-village.timber",
+      "contentHash": "44dde7d7fff8adb21515dcbd9e3f08d50165c67ede6663f8b1b217dbc048d6ab",
+      "status": "ready"
+    }
+  },
+  {
     "id": "factory-0e7dcdfcf7f95dabe7c2f4cb3015085f",
     "name": "building.desert.outpost (Dummy 0)",
     "type": "model",
@@ -960,6 +1779,113 @@
     }
   },
   {
+    "id": "factory-430be2a6f4845122f4d331f6acbd09ab",
+    "name": "landmark.alpine-village.windmill (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-d2d8a7cd5098930936f9590b6338ebcc3be18284619fcb3f114f4423682c8c60",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/d95c2d5e7a78614f810e46dd26e6a47035c060f1bdc3d924d319d0fab7ccd429.glb",
+      "runtime": "/api/files/sample-worlds/60a3190d8f36dd629dbc66d3921add15afe916e28a3813616d717e37ec9b3511.glb",
+      "thumbnail": "/api/files/sample-worlds/c12c551c30afb4bfe7dd69ae0f57cf513b09f80bbbf2376a76f67d7fcf928849.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "d2d8a7cd5098930936f9590b6338ebcc3be18284619fcb3f114f4423682c8c60",
+      "generationId": "d2d8a7cd5098930936f9590b6338ebcc3be18284619fcb3f114f4423682c8c60"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -6.031620979309082,
+          0,
+          -3.5999999046325684
+        ],
+        "max": [
+          6.031620979309082,
+          16.531620025634766,
+          3.5999999046325684
+        ]
+      },
+      "triangles": 644,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/3a7afb463cb1dc13bdaf3af03057872cf04fbb0456d8cced4ce7f23f1c1d7133.json",
+      "colliderBytes": 111188,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 70940,
+        "runtimeBytes": 19308,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/60a3190d8f36dd629dbc66d3921add15afe916e28a3813616d717e37ec9b3511.glb",
+          "triangles": 644,
+          "distance": 0,
+          "bytes": 19308
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/993768f48fb911785007a161ce16d07dae13979dcd061390f0f6f8816c6302b0.glb",
+          "triangles": 628,
+          "distance": 60,
+          "bytes": 19136
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/6f6f1a13405e8a7bf17867c3cf0fa32b54acb5ca471c9394b3f6397298f84455.glb",
+          "triangles": 604,
+          "distance": 150,
+          "bytes": 18840
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "landmark.alpine-village.windmill"
+      ],
+      "tags": [
+        "landmark",
+        "alpine-village",
+        "windmill"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "landmark.alpine-village.windmill",
+      "contentHash": "60a3190d8f36dd629dbc66d3921add15afe916e28a3813616d717e37ec9b3511",
+      "status": "ready"
+    }
+  },
+  {
     "id": "factory-b14fb541a1a745f0e43fa043a05ce079",
     "name": "landmark.lighthouse (Dummy 0)",
     "type": "model",
@@ -1145,6 +2071,220 @@
       "styleAssessment": "dummy",
       "variantGroup": "landmark.observatory",
       "contentHash": "97b08acf605553ba40fe8e327af9f322d3a7e133f29536c12a1481cebe278606",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-5ee53c97ef59709760e6e8e492fe3675",
+    "name": "landscape.alpine-village.wall (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-ab9a5535b853e21dd26f5bb1259c0d450407d51b4356d5c06a3a464f4dddd0f4",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/a94544cff0f54b2931d593ef4c37b37e7e77cd5a6516318a27ed9f16b9cf4225.glb",
+      "runtime": "/api/files/sample-worlds/ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412.glb",
+      "thumbnail": "/api/files/sample-worlds/69028a5321d909e656b9f545f3cad1d01041db7855d372d8ec9edb8d9a98fcac.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "ab9a5535b853e21dd26f5bb1259c0d450407d51b4356d5c06a3a464f4dddd0f4",
+      "generationId": "ab9a5535b853e21dd26f5bb1259c0d450407d51b4356d5c06a3a464f4dddd0f4"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.502406358718872,
+          -0.012256782501935959,
+          -0.3029550015926361
+        ],
+        "max": [
+          1.6224063634872437,
+          0.8322567939758301,
+          0.3029550015926361
+        ]
+      },
+      "triangles": 300,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/5e34f6aad42113b0e29a03222ed9bff2703b51ebfc9d961eb1d1652f9fdbb41d.json",
+      "colliderBytes": 55748,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 33236,
+        "runtimeBytes": 17104,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412.glb",
+          "triangles": 300,
+          "distance": 0,
+          "bytes": 17104
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/42001e4a59364c07a9a3abf9d6c46ed15b4c5694753be879750a411439743091.glb",
+          "distance": 60,
+          "triangles": 12,
+          "bytes": 2236
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/42001e4a59364c07a9a3abf9d6c46ed15b4c5694753be879750a411439743091.glb",
+          "distance": 150,
+          "triangles": 12,
+          "bytes": 2236
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "landscape.alpine-village.wall"
+      ],
+      "tags": [
+        "landscape",
+        "alpine-village",
+        "wall"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "landscape.alpine-village.wall",
+      "contentHash": "ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-0263aa80b30fe92053de641f39ac3eb9",
+    "name": "landscape.alpine-village.wheat (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-0379e30fe3f6b3b8bffd2770b28f4ba5c2d1aebe9b6a9e75ecfbdd4103f599b4",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/a42fec71d26da456de2e60106ac882568f12d28170be08647ab53e25debb113d.glb",
+      "runtime": "/api/files/sample-worlds/1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb.glb",
+      "thumbnail": "/api/files/sample-worlds/c3a9f86ef6f0357e4fd57686a695ad9ab3c340ece21e4806ffa109bdb9f6c28a.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "0379e30fe3f6b3b8bffd2770b28f4ba5c2d1aebe9b6a9e75ecfbdd4103f599b4",
+      "generationId": "0379e30fe3f6b3b8bffd2770b28f4ba5c2d1aebe9b6a9e75ecfbdd4103f599b4"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -1.5820780992507935,
+          -1.1920929132713809e-8,
+          -1.6020780801773071
+        ],
+        "max": [
+          1.6220780611038208,
+          0.7420780658721924,
+          1.6020780801773071
+        ]
+      },
+      "triangles": 416,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/c28921991815a1df0a8ebab3d3f753d3a93591dc0ad332b1cadd412cea6f7f16.json",
+      "colliderBytes": 69788,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 45768,
+        "runtimeBytes": 20664,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb.glb",
+          "triangles": 416,
+          "distance": 0,
+          "bytes": 20664
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/6628b4c69d9d93fb5367fbdc77b72425accae1ac7ae122ce9154bb2c5fe069ca.glb",
+          "distance": 60,
+          "triangles": 104,
+          "bytes": 6736
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/388d57e9a2cbde5ad3745f2f7feb6b03b6c722fe97f1a6852f28986a284bddfc.glb",
+          "distance": 150,
+          "triangles": 26,
+          "bytes": 3444
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "landscape.alpine-village.wheat"
+      ],
+      "tags": [
+        "landscape",
+        "alpine-village",
+        "wheat"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "landscape.alpine-village.wheat",
+      "contentHash": "1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb",
       "status": "ready"
     }
   },
@@ -3224,6 +4364,222 @@
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.alpine",
       "contentHash": "438e4710c5da078aa5b414f129a6537cecf494df5ff721552e7c7a207eb3151c",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-cfc84de4e4270267dad214f720dee6da",
+    "name": "nature.tree.alpine-village.oak (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-abfd1981f37feb6dd1457e9bbcafd3c24fadce0edab6036430439681a39f70ef",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/1c329f728e1011e9f278499468a6edf0ec305b438b52171b8c5712f6dc188b28.glb",
+      "runtime": "/api/files/sample-worlds/4f627f2b936668a8d781b064630b7a957b2e12876a102949f5a24ea630fd766a.glb",
+      "thumbnail": "/api/files/sample-worlds/c75d07a92711d390a3cf78dd1643147171934e8c6ca55a8f246f0464fcd8d186.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "abfd1981f37feb6dd1457e9bbcafd3c24fadce0edab6036430439681a39f70ef",
+      "generationId": "abfd1981f37feb6dd1457e9bbcafd3c24fadce0edab6036430439681a39f70ef"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -3.5770316123962402,
+          -9.536743306171047e-8,
+          -3.6542470455169678
+        ],
+        "max": [
+          3.665781021118164,
+          8.860000610351562,
+          3.0684866905212402
+        ]
+      },
+      "triangles": 588,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/8b3541822df4d6f7b95058291ff636714a8d454a51cbc78375c40a7223999aa7.json",
+      "colliderBytes": 106249,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 64344,
+        "runtimeBytes": 10052,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/4f627f2b936668a8d781b064630b7a957b2e12876a102949f5a24ea630fd766a.glb",
+          "triangles": 588,
+          "distance": 0,
+          "bytes": 10052
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/e9949fb9a50e116ff43115367939935d26129db889faab289e2b52c5e0111987.glb",
+          "distance": 60,
+          "triangles": 128,
+          "bytes": 7784
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/95491130447d04e1430428ece22c64e1def9a02302228455e050dcc2500c6f73.glb",
+          "distance": 150,
+          "triangles": 88,
+          "bytes": 5828
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine-village.oak"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine-village",
+        "oak"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine-village.oak",
+      "contentHash": "4f627f2b936668a8d781b064630b7a957b2e12876a102949f5a24ea630fd766a",
+      "status": "ready"
+    }
+  },
+  {
+    "id": "factory-bbfda6d015c28793a3dfe3012d16d4fc",
+    "name": "nature.tree.alpine-village.pine (Alpine procedural 0)",
+    "type": "model",
+    "source": {
+      "provider": "dummy-astra",
+      "sourceAssetId": "dummy-ce93b5514ce91954bee76497815a2fffeb4e648b4940f5e6bf9bf361de0978d6",
+      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "author": "3DGameStudio",
+      "retrievedAt": "2026-01-01T00:00:00.000Z"
+    },
+    "license": {
+      "id": "project-owned",
+      "name": "project-owned",
+      "url": "",
+      "attributionRequired": true,
+      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+    },
+    "files": {
+      "original": "/api/files/sample-worlds/3da050d8a2b86da8a66f734ec1a39397d59c0fda1ca79edabc4a56de5bf001de.glb",
+      "runtime": "/api/files/sample-worlds/978d9c512f7a383cdc1f436565b29acb52989efe0cac762c1db2df70d2f54db7.glb",
+      "thumbnail": "/api/files/sample-worlds/76182d614b53b9e0a4afa19b67093a004dd2a5dd12b96e2c90e0673eb8bb51a0.svg"
+    },
+    "processing": {
+      "importedAt": "2026-01-01T00:00:00.000Z",
+      "optimizedAt": "2026-01-01T00:00:00.000Z",
+      "pipelineVersion": "2"
+    },
+    "ai": {
+      "provider": "dummy-astra",
+      "model": "dummy",
+      "promptHash": "ce93b5514ce91954bee76497815a2fffeb4e648b4940f5e6bf9bf361de0978d6",
+      "generationId": "ce93b5514ce91954bee76497815a2fffeb4e648b4940f5e6bf9bf361de0978d6"
+    },
+    "runtimeInfo": {
+      "bounds": {
+        "min": [
+          -2.200000047683716,
+          0,
+          -2.200000047683716
+        ],
+        "max": [
+          2.200000047683716,
+          9.399999618530273,
+          2.200000047683716
+        ]
+      },
+      "triangles": 92,
+      "collider": "convexHull",
+      "colliderFile": "/api/files/sample-worlds/d02f2f4c9283c1001b43ecad8cd0e47e014bf042945e482a9336c5d198a1da72.json",
+      "colliderBytes": 11757,
+      "optimization": {
+        "profile": "balanced",
+        "sourceBytes": 10748,
+        "runtimeBytes": 4508,
+        "textureBytes": 0,
+        "warnings": []
+      },
+      "lodLevels": [
+        0,
+        1,
+        2
+      ],
+      "lods": [
+        {
+          "level": 0,
+          "file": "/api/files/sample-worlds/978d9c512f7a383cdc1f436565b29acb52989efe0cac762c1db2df70d2f54db7.glb",
+          "triangles": 92,
+          "distance": 0,
+          "bytes": 4508
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/e5275d85e07045ac274433d0617f866fa9488e28606ae41397dc2b760291db05.glb",
+          "triangles": 86,
+          "distance": 60,
+          "bytes": 4424
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/7f4f4583a791f906b3af053f041f2bef79dfe3cecdfc7ef5795cc6ac9b12af88.glb",
+          "triangles": 76,
+          "distance": 150,
+          "bytes": 4296
+        }
+      ]
+    },
+    "catalog": {
+      "slots": [
+        "nature.tree.alpine-village.pine"
+      ],
+      "tags": [
+        "nature",
+        "tree",
+        "alpine-village",
+        "pine"
+      ],
+      "biomes": [
+        "temperate"
+      ],
+      "style": "stylized-low-poly",
+      "requestedStyle": "stylized-low-poly",
+      "styleAssessment": "dummy",
+      "variantGroup": "nature.tree.alpine-village.pine",
+      "contentHash": "978d9c512f7a383cdc1f436565b29acb52989efe0cac762c1db2df70d2f54db7",
       "status": "ready"
     }
   },

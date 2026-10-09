@@ -7,7 +7,7 @@ for (const descriptor of sampleWorldCatalog) {
   test(`${descriptor.id}: fresh dataで選択して遊べる`, async ({
     page,
     request,
-  }) => {
+  }, testInfo) => {
     const external: string[] = [];
     await page.route(/^https?:/, async (route) => {
       if (
@@ -23,7 +23,9 @@ for (const descriptor of sampleWorldCatalog) {
       await (await request.get(`/api/worlds/${descriptor.id}`)).json(),
     );
     await page.goto("/?agent=1");
-    await expect(page.locator('[data-testid^="sample-world-"]')).toHaveCount(8);
+    await expect(page.locator('[data-testid^="sample-world-"]')).toHaveCount(
+      sampleWorldCatalog.length,
+    );
     await page.getByTestId(`sample-world-${descriptor.id}`).click();
     await expect(
       page.getByText(`${project.world.name}を読み込みました`),
@@ -90,11 +92,10 @@ for (const descriptor of sampleWorldCatalog) {
       expect(project.courses[0].checkpoints).toHaveLength(3);
     }
     expect(external).toEqual([]);
-    await mkdir("docs/screenshots/sample-worlds", { recursive: true });
-    await mkdir("docs/evidence/sample-worlds", { recursive: true });
+    await mkdir(testInfo.outputDir, { recursive: true });
     const filename = `${String(descriptor.sortOrder).padStart(2, "0")}-${descriptor.id === "starter-grassland" ? "grassland" : descriptor.id}`;
     await page.screenshot({
-      path: `docs/screenshots/sample-worlds/${filename}.png`,
+      path: testInfo.outputPath(`${filename}.png`),
     });
     await page.mouse.move(700, 290);
     for (let i = 0; i < 16; i++) {
@@ -106,10 +107,10 @@ for (const descriptor of sampleWorldCatalog) {
     await page.mouse.up();
     await page.waitForTimeout(250);
     await page.screenshot({
-      path: `docs/screenshots/sample-worlds/${filename}-overview.png`,
+      path: testInfo.outputPath(`${filename}-overview.png`),
     });
     await writeFile(
-      `docs/evidence/sample-worlds/${descriptor.id}.json`,
+      testInfo.outputPath(`${descriptor.id}.json`),
       JSON.stringify(current, null, 2) + "\n",
     );
   });

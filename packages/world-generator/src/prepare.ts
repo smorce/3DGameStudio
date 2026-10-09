@@ -1,3 +1,4 @@
+import { isAlpineVillage } from "./alpine-farmland";
 import {
   chunkKey,
   generateChunk,
@@ -130,7 +131,14 @@ export function prepareChunk(input: GeneratorInput): PreparedChunk {
       positions[o] = i * cell;
       positions[o + 1] = heights[k];
       positions[o + 2] = j * cell;
-      const [r, g, b] = hexToRgb(colors[k]);
+      const rgb = hexToRgb(colors[k]);
+      // 新ワールドだけsRGBを線形化し、既存ワールドの保存済み色を維持する。
+      const [r, g, b] =
+        input.design && isAlpineVillage(input.design)
+          ? rgb.map((c) =>
+              c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4,
+            )
+          : rgb;
       colorRgb[o] = r;
       colorRgb[o + 1] = g;
       colorRgb[o + 2] = b;

@@ -31,14 +31,16 @@ export class DummyAssetRequirementPlanner implements AssetRequirementPlanner {
       planner: "dummy",
       requirements: requiredSlots(design).map((assetSlot) => ({
         assetSlot,
-        minVariants: assetSlot.startsWith("nature.tree.")
-          ? 5
-          : assetSlot.startsWith("nature.rock.")
-            ? 4
-            : assetSlot.startsWith("building.") ||
-                assetSlot === "course.jump_ramp"
-              ? 3
-              : 1,
+        minVariants: assetSlot.startsWith("nature.tree.alpine-village.")
+          ? 1
+          : assetSlot.startsWith("nature.tree.")
+            ? 5
+            : assetSlot.startsWith("nature.rock.")
+              ? 4
+              : assetSlot.startsWith("building.") ||
+                  assetSlot === "course.jump_ramp"
+                ? 3
+                : 1,
         biomes: [
           ...new Set([
             ...design.landmarks

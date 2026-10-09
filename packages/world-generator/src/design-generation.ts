@@ -1,3 +1,4 @@
+import { isAlpineVillage, alpineFieldAt } from "./alpine-farmland";
 import { settlementEntities } from "./settlement-generation";
 import type {
   WorldDesign,
@@ -48,6 +49,7 @@ export function generateDesignEntities(
     originZ = input.chunkZ * input.chunkSize;
   const candidates: Placement[] = [];
   for (const { rule, island, key } of entries) {
+    if (!rule.density) continue;
     const cell = rule.minSpacing;
     if (
       originX + input.chunkSize + maxSpacing <
@@ -74,6 +76,9 @@ export function generateDesignEntities(
         const x = (cx + seedUnit(seed, "jitter-x", id)) * cell,
           z = (cz + seedUnit(seed, "jitter-z", id)) * cell;
         if (
+          (isAlpineVillage(design) &&
+            (alpineFieldAt(x, z) ||
+              (z > -145 && seedUnit(seed, "clearing", id) > 0.15))) ||
           layers.islandAt(x, z)?.id !== island.id ||
           layers.sampleBiome(x, z) !== rule.biome ||
           layers.sampleNoSpawnMask(x, z)
@@ -179,6 +184,52 @@ export function generateDesignEntities(
       scale: l.scale,
       landmark: true,
     });
+  }
+  if (isAlpineVillage(design)) {
+    // 作物タイルの中心は絶対座標格子に固定し、Chunkの読込順に依存しない。
+    for (
+      let z = Math.ceil(originZ / 4) * 4;
+      z < originZ + input.chunkSize;
+      z += 4
+    )
+      for (
+        let x = Math.ceil(originX / 4) * 4;
+        x < originX + input.chunkSize;
+        x += 4
+      ) {
+        const field = alpineFieldAt(x, z);
+        if (
+          field?.crop !== "wheat" ||
+          ![-1.8, 1.8].every((dx) =>
+            [-1.8, 1.8].every(
+              (dz) => alpineFieldAt(x + dx, z + dz)?.id === field.id,
+            ),
+          )
+        )
+          continue;
+        const h = layers.sampleHeight(x, z);
+        result.push({
+          id: `gen:${input.generatorVersion}:${input.seed}:wheat:${x}:${z}`,
+          name: field.id,
+          assetSlot: "landscape.alpine-village.wheat",
+          biome: "temperate",
+          kind: "building",
+          landmark: true,
+          position: [x, h - 0.12, z],
+          rotation: [
+            Math.atan2(
+              layers.sampleHeight(x, z + 2) - layers.sampleHeight(x, z - 2),
+              4,
+            ),
+            0,
+            -Math.atan2(
+              layers.sampleHeight(x + 2, z) - layers.sampleHeight(x - 2, z),
+              4,
+            ),
+          ],
+          scale: [1, 1, 1],
+        });
+      }
   }
   return result.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 }

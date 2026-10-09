@@ -10,6 +10,15 @@ export interface SampleWorldMetadata {
 
 const metadata: SampleWorldMetadata[] = [
   {
+    id: "alpine-village",
+    name: "Alpine Village（アルプスの村）",
+    shortDescription: "麦畑と石垣を抜け、風車のある山麓の村へ",
+    icon: "🌾",
+    tags: ["temperate", "alpine", "explore"],
+    recommendedMachine: "car",
+    sortOrder: 9,
+  },
+  {
     id: "starter-grassland",
     name: "はじまりの草原",
     shortDescription: "くるまで緩やかな丘を自由に走ろう",

@@ -107,7 +107,7 @@ it("空data directoryの汎用APIは8Worldと共有ファイルを返し不正ID
     throw new Error("Missing server address");
   const base = `http://127.0.0.1:${address.port}`;
   try {
-    expect(await (await fetch(`${base}/api/worlds`)).json()).toHaveLength(8);
+    expect(await (await fetch(`${base}/api/worlds`)).json()).toHaveLength(9);
     for (const descriptor of sampleWorldCatalog) {
       const response = await fetch(`${base}/api/worlds/${descriptor.id}`);
       expect(response.status).toBe(200);
