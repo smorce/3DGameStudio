@@ -1,5 +1,7 @@
 # Alpine Village（アルプスの村）実装報告
 
+> 以下は初期実装`13968cc`の記録です。最新の景観・比較画像・検証結果は[視覚品質改善報告](alpine-village-visual-upgrade.md)を参照してください。
+
 ## 作業基準と起動方法
 
 `feat/renderer-flight-vfx` の指定コミット `fa71e23` から、独立ブランチ `feat/alpine-village-world` に実装した。既存8ワールドのPrepared JSONは変更していない。`tests/fixtures/pre-alpine-worlds.json` のSHA-256比較と、既存3Presetの生成出力の回帰テストで確認する。

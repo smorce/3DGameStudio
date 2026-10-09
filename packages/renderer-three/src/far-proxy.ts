@@ -1,3 +1,5 @@
+import { alpineSurfaceMaterial } from "./alpine-surface";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
 import { hexToRgb } from "../../world-generator/src/prepare";
 import { CURRENT_BIOME_PROFILE_VERSION } from "../../world-generator/src/index";
@@ -59,10 +61,15 @@ export class FarWorldProxy {
             3,
           ),
         );
-        const material = new THREE.MeshStandardMaterial({
-          vertexColors: true,
-          roughness: 1,
-        });
+        const material =
+          world.source.kind === "procedural" &&
+          world.source.design &&
+          isAlpineVillage(world.source.design)
+            ? alpineSurfaceMaterial()
+            : new THREE.MeshStandardMaterial({
+                vertexColors: true,
+                roughness: 1,
+              });
         // 半透明の海を通してProxyの四角い海底領域が見えないようにする。
         if (world.water.enabled)
           material.onBeforeCompile = (shader) => {
@@ -88,14 +95,32 @@ export class FarWorldProxy {
             (tree) => tree.pine === pine,
           );
           if (!trees.length) continue;
-          const g = pine
-            ? new THREE.ConeGeometry(0.28, 1, 5)
-            : new THREE.IcosahedronGeometry(0.38, 0);
-          g.translate(0, pine ? 0.5 : 0.65, 0);
+          const parts = pine
+            ? [0, 1, 2].map((tier) => {
+                const part = new THREE.ConeGeometry(
+                  0.29 - tier * 0.06,
+                  0.52,
+                  5,
+                );
+                part.translate(0, 0.3 + tier * 0.23, 0);
+                return part;
+              })
+            : [0, 1, 2].map((tier) => {
+                const part = new THREE.IcosahedronGeometry(0.25, 0);
+                part.scale(1.15, 1, 1);
+                part.translate(
+                  Math.sin(tier * 2.4) * 0.17,
+                  0.52 + tier * 0.08,
+                  Math.cos(tier * 2.4) * 0.15,
+                );
+                return part;
+              });
+          const g = mergeGeometries(parts)!;
+          parts.forEach((part) => part.dispose());
           const foliage = new THREE.InstancedMesh(
             g,
             new THREE.MeshStandardMaterial({
-              color: pine ? "#496b48" : "#618142",
+              color: pine ? "#365139" : "#577333",
               roughness: 1,
             }),
             trees.length,
@@ -135,7 +160,16 @@ export class FarWorldProxy {
       for (const tree of trees) {
         if (keys.has(tree.key)) continue;
         transform.position.fromArray(tree.position);
-        transform.scale.setScalar(tree.scale);
+        transform.scale.set(
+          tree.scale * (0.8 + Math.sin(tree.position[0]) * 0.15),
+          tree.scale,
+          tree.scale,
+        );
+        transform.rotation.set(
+          0,
+          tree.position[0] * 0.13,
+          Math.sin(tree.position[2]) * 0.04,
+        );
         transform.updateMatrix();
         mesh.setMatrixAt(count++, transform.matrix);
       }

@@ -1,0 +1,143 @@
+{
+  "environmentBefore": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "memory": {
+      "usedJSHeapSize": 132028570
+    }
+  },
+  "environmentAfter": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "memory": {
+      "usedJSHeapSize": 222340381
+    }
+  },
+  "method": "Nearest-rank median/p95 over distinct rendered frames; renderMs is CPU submission time. Frame RAF includes GPU/software rasterization, scheduling and other work. Initial is the first short window after wheels contact, not cold page-load time.",
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "beforeGeneration": {
+    "samples": 100,
+    "median": 7.024918999999954,
+    "p95": 12.549811999999974,
+    "max": 26.54097999999999
+  },
+  "afterGeneration": {
+    "samples": 100,
+    "median": 8.124006999999892,
+    "p95": 23.05498,
+    "max": 41.589113
+  },
+  "views": [
+    {
+      "view": "initial",
+      "beforeFrameMs": 133.3000000000011,
+      "afterFrameMs": 183.29999999999927,
+      "beforeDrawCalls": 152,
+      "afterDrawCalls": 124,
+      "beforeTriangles": 266826,
+      "afterTriangles": 382940,
+      "beforeCpuMs": 4.800000000745058,
+      "afterCpuMs": 6.199999999254942
+    },
+    {
+      "view": "reference",
+      "beforeFrameMs": 250,
+      "afterFrameMs": 283.3000000000029,
+      "beforeDrawCalls": 405,
+      "afterDrawCalls": 338,
+      "beforeTriangles": 523242,
+      "afterTriangles": 500360,
+      "beforeCpuMs": 7.600000001490116,
+      "afterCpuMs": 8.100000001490116
+    },
+    {
+      "view": "overview",
+      "beforeFrameMs": 300,
+      "afterFrameMs": 383.3000000000029,
+      "beforeDrawCalls": 595,
+      "afterDrawCalls": 522,
+      "beforeTriangles": 703590,
+      "afterTriangles": 691390,
+      "beforeCpuMs": 4.699999999254942,
+      "afterCpuMs": 4.400000002235174
+    },
+    {
+      "view": "village",
+      "beforeFrameMs": 233.3000000000029,
+      "afterFrameMs": 316.6000000000058,
+      "beforeDrawCalls": 414,
+      "afterDrawCalls": 374,
+      "beforeTriangles": 541984,
+      "afterTriangles": 578398,
+      "beforeCpuMs": 5.399999998509884,
+      "afterCpuMs": 8
+    },
+    {
+      "view": "farmland",
+      "beforeFrameMs": 233.3000000000029,
+      "afterFrameMs": 333.3999999999942,
+      "beforeDrawCalls": 301,
+      "afterDrawCalls": 275,
+      "beforeTriangles": 483910,
+      "afterTriangles": 687424,
+      "beforeCpuMs": 3.800000000745058,
+      "afterCpuMs": 6.800000000745058
+    },
+    {
+      "view": "aerial",
+      "beforeFrameMs": 233.3000000000029,
+      "afterFrameMs": 283.3000000000029,
+      "beforeDrawCalls": 500,
+      "afterDrawCalls": 423,
+      "beforeTriangles": 608180,
+      "afterTriangles": 593008,
+      "beforeCpuMs": 4.600000001490116,
+      "afterCpuMs": 4.299999997019768
+    },
+    {
+      "view": "windmill",
+      "beforeFrameMs": 183.3000000000029,
+      "afterFrameMs": 233.3000000000029,
+      "beforeDrawCalls": 194,
+      "afterDrawCalls": 170,
+      "beforeTriangles": 305366,
+      "afterTriangles": 328754,
+      "beforeCpuMs": 3.399999998509884,
+      "afterCpuMs": 4.899999998509884
+    },
+    {
+      "view": "forest",
+      "beforeFrameMs": 150,
+      "afterFrameMs": 199.89999999999418,
+      "beforeDrawCalls": 199,
+      "afterDrawCalls": 174,
+      "beforeTriangles": 304144,
+      "afterTriangles": 326616,
+      "beforeCpuMs": 4.600000001490116,
+      "afterCpuMs": 7.5
+    },
+    {
+      "view": "driving",
+      "beforeFrameMs": 166.6999999999971,
+      "afterFrameMs": 216.60000000000582,
+      "beforeDrawCalls": 215,
+      "afterDrawCalls": 197,
+      "beforeTriangles": 318762,
+      "afterTriangles": 347812,
+      "beforeCpuMs": 3.899999998509884,
+      "afterCpuMs": 3.899999998509884
+    }
+  ]
+}

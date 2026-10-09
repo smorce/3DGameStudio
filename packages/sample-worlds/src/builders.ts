@@ -51,9 +51,9 @@ const configurations: Record<
 > = {
   "alpine-village": {
     design: alpineVillageDesign,
-    sky: "#a9cfdf",
+    sky: "#86b4cc",
     spawn: [6, 14, 60],
-    lighting: { intensity: 2.1, timeOfDay: 14 },
+    lighting: { intensity: 2.8, timeOfDay: 15.5 },
   },
   "starter-grassland": {
     preset: "grassland",
@@ -129,7 +129,7 @@ function build(definition: Definition): Project {
     p.world.water = { enabled: definition.id !== "alpine-village", height: 0 };
   if (definition.id === "alpine-village") {
     source.chunkSize = p.world.chunkSize = 64;
-    p.world.environment.fog = 0.0008;
+    p.world.environment.fog = 0.00048;
   }
   p.world.lighting = definition.lighting ?? { intensity: 2, timeOfDay: 14 };
   const templates = {

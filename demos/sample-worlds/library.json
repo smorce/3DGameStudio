@@ -2075,7 +2075,7 @@
     }
   },
   {
-    "id": "factory-5ee53c97ef59709760e6e8e492fe3675",
+    "id": "factory-ee1d3791bf482d85934df8062d0ba979",
     "name": "landscape.alpine-village.wall (Alpine procedural 0)",
     "type": "model",
     "source": {
@@ -2093,8 +2093,8 @@
       "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/a94544cff0f54b2931d593ef4c37b37e7e77cd5a6516318a27ed9f16b9cf4225.glb",
-      "runtime": "/api/files/sample-worlds/ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412.glb",
+      "original": "/api/files/sample-worlds/7b4f822ba74a6869a2b4c928346cb0cdbca7e9a8262ca7d6d344b352ea935954.glb",
+      "runtime": "/api/files/sample-worlds/c210bbf81dd1157f00a117dffb059cd93535b44b5e2234a1856ca942b65b1b4b.glb",
       "thumbnail": "/api/files/sample-worlds/69028a5321d909e656b9f545f3cad1d01041db7855d372d8ec9edb8d9a98fcac.svg"
     },
     "processing": {
@@ -2128,7 +2128,7 @@
       "optimization": {
         "profile": "balanced",
         "sourceBytes": 33236,
-        "runtimeBytes": 17104,
+        "runtimeBytes": 17112,
         "textureBytes": 0,
         "warnings": []
       },
@@ -2140,21 +2140,21 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412.glb",
+          "file": "/api/files/sample-worlds/c210bbf81dd1157f00a117dffb059cd93535b44b5e2234a1856ca942b65b1b4b.glb",
           "triangles": 300,
           "distance": 0,
-          "bytes": 17104
+          "bytes": 17112
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/42001e4a59364c07a9a3abf9d6c46ed15b4c5694753be879750a411439743091.glb",
+          "file": "/api/files/sample-worlds/74dd62bd7f871342dc1d74965cbbe696ccdc5ceda071fdf7ee56b02d57049e34.glb",
           "distance": 60,
           "triangles": 12,
           "bytes": 2236
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/42001e4a59364c07a9a3abf9d6c46ed15b4c5694753be879750a411439743091.glb",
+          "file": "/api/files/sample-worlds/74dd62bd7f871342dc1d74965cbbe696ccdc5ceda071fdf7ee56b02d57049e34.glb",
           "distance": 150,
           "triangles": 12,
           "bytes": 2236
@@ -2177,12 +2177,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "landscape.alpine-village.wall",
-      "contentHash": "ab2f1223f0cffd9fa9094046831853fd3cdd35b8ed90dec653880bdea03e1412",
+      "contentHash": "c210bbf81dd1157f00a117dffb059cd93535b44b5e2234a1856ca942b65b1b4b",
       "status": "ready"
     }
   },
   {
-    "id": "factory-0263aa80b30fe92053de641f39ac3eb9",
+    "id": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
     "name": "landscape.alpine-village.wheat (Alpine procedural 0)",
     "type": "model",
     "source": {
@@ -2200,9 +2200,9 @@
       "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/a42fec71d26da456de2e60106ac882568f12d28170be08647ab53e25debb113d.glb",
-      "runtime": "/api/files/sample-worlds/1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb.glb",
-      "thumbnail": "/api/files/sample-worlds/c3a9f86ef6f0357e4fd57686a695ad9ab3c340ece21e4806ffa109bdb9f6c28a.svg"
+      "original": "/api/files/sample-worlds/d59a2c327f49033511eddbd14d876d7e964874ee1beeb7996bf6dee27a2c892a.glb",
+      "runtime": "/api/files/sample-worlds/e2e35ec26d5c451000acf113979d11210897ea157be4f32a7494125b29674319.glb",
+      "thumbnail": "/api/files/sample-worlds/1545f7117f3b1135b37ac106d8b05293df6215522cc4923504e9b2a8804e02c3.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -2218,24 +2218,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -1.5820780992507935,
-          -1.1920929132713809e-8,
-          -1.6020780801773071
+          -1.9051563739776611,
+          -4.76837147544984e-9,
+          -1.9090793132781982
         ],
         "max": [
-          1.6220780611038208,
-          0.7420780658721924,
-          1.6020780801773071
+          1.9455221891403198,
+          1.1584289073944092,
+          1.9240765571594238
         ]
       },
-      "triangles": 416,
+      "triangles": 1274,
       "collider": "convexHull",
-      "colliderFile": "/api/files/sample-worlds/c28921991815a1df0a8ebab3d3f753d3a93591dc0ad332b1cadd412cea6f7f16.json",
-      "colliderBytes": 69788,
+      "colliderFile": "/api/files/sample-worlds/34444ba77b905704a3243aa8b912028ff13dfc0df47dff43bc0af08360696162.json",
+      "colliderBytes": 234747,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 45768,
-        "runtimeBytes": 20664,
+        "sourceBytes": 138432,
+        "runtimeBytes": 56160,
         "textureBytes": 0,
         "warnings": []
       },
@@ -2247,24 +2247,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb.glb",
-          "triangles": 416,
+          "file": "/api/files/sample-worlds/e2e35ec26d5c451000acf113979d11210897ea157be4f32a7494125b29674319.glb",
+          "triangles": 1274,
           "distance": 0,
-          "bytes": 20664
+          "bytes": 56160
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/6628b4c69d9d93fb5367fbdc77b72425accae1ac7ae122ce9154bb2c5fe069ca.glb",
+          "file": "/api/files/sample-worlds/1ea8949973e03fd2f003a234943af635778087fe4818c49183c1b8f179dce442.glb",
           "distance": 60,
-          "triangles": 104,
-          "bytes": 6736
+          "triangles": 234,
+          "bytes": 12140
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/388d57e9a2cbde5ad3745f2f7feb6b03b6c722fe97f1a6852f28986a284bddfc.glb",
+          "file": "/api/files/sample-worlds/9938b08d21e8c3f76604134250e3061e40b7bc2f8c524f61ad59d67b589aa99c.glb",
           "distance": 150,
           "triangles": 26,
-          "bytes": 3444
+          "bytes": 3388
         }
       ]
     },
@@ -2284,7 +2284,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "landscape.alpine-village.wheat",
-      "contentHash": "1811395cbd7e18a87b730159d7390e6dd7407cfefe26306de66bad2cfdd46fdb",
+      "contentHash": "e2e35ec26d5c451000acf113979d11210897ea157be4f32a7494125b29674319",
       "status": "ready"
     }
   },

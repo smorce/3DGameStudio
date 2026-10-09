@@ -1,0 +1,125 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 45
+  },
+  "machine": {
+    "id": "sample-desert-island-machine",
+    "physicsStep": 125,
+    "position": [
+      -0.0000018676219042390585,
+      7.962001323699951,
+      -0.06098948046565056
+    ],
+    "simulationPosition": [
+      -0.0000018676219042390585,
+      7.962001323699951,
+      -0.06098948046565056
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -0.002208719030022621,
+      -0.000016762072846177034,
+      -0.00013296327961143106,
+      0.9999975562095642
+    ],
+    "velocity": [
+      0.000026694684493122622,
+      -0.061490826308727264,
+      -0.06838629394769669
+    ],
+    "speed": 0.09196633967184417,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      6.999998129384011,
+      12.86200135231018,
+      7.93901738154144
+    ],
+    "target": [
+      -0.0000018706159899011177,
+      7.962001352310181,
+      -0.06098261845856907
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "-1,-1",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 121,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.782608695652174,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 0,
+    "groundSmokeEmitters": 4,
+    "drawCalls": 98,
+    "triangles": 82134,
+    "geometries": null,
+    "textures": null,
+    "gpuTimingMs": 41.395047
+  },
+  "frame": {
+    "rafMs": 50.09999999999991,
+    "cpuWorkMs": 2.7000000029802322,
+    "physicsMs": 1,
+    "renderMs": 1.7000000029802322,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "desert",
+      "road": {
+        "distance": -4.9390105195057545,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "-1,-1",
+      "chunkBounds": [
+        -32,
+        -32,
+        0,
+        0
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:main:nature.plant.cactus:0:-1:-2",
+          "position": [
+            -4.258511143038049,
+            8.072943916414188,
+            -20.788335183402523
+          ],
+          "assetSlot": "nature.plant.cactus",
+          "assetId": "factory-05a5be3d8526fdf27d8b173cec8731b3",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 1,
+    "renderPending": 79,
+    "renderedChunks": 90
+  }
+}

@@ -78,7 +78,12 @@ export function generateDesignEntities(
         if (
           (isAlpineVillage(design) &&
             (alpineFieldAt(x, z) ||
-              (z > -145 && seedUnit(seed, "clearing", id) > 0.15))) ||
+              seedUnit(seed, "clearing", id) >
+                layers.sampleAlpineForestDensity(
+                  x,
+                  z,
+                  layers.sampleHeight(x, z),
+                ))) ||
           layers.islandAt(x, z)?.id !== island.id ||
           layers.sampleBiome(x, z) !== rule.biome ||
           layers.sampleNoSpawnMask(x, z)
@@ -142,13 +147,22 @@ export function generateDesignEntities(
           : "building",
       position: [p.x, layers.sampleHeight(p.x, p.z), p.z],
       rotation: [
-        0,
+        isAlpineVillage(design)
+          ? (seedUnit(input.seed, "lean", p.id) - 0.5) * 0.07
+          : 0,
         p.rule.rotationMode === "yaw"
           ? seedUnit(input.seed, "rotation", p.id) * Math.PI * 2
           : 0,
         0,
       ],
-      scale: [scale, scale, scale],
+      scale:
+        isAlpineVillage(design) && p.rule.assetSlot.includes("tree")
+          ? [
+              scale * (0.8 + seedUnit(input.seed, "width", p.id) * 0.4),
+              scale,
+              scale * (0.85 + seedUnit(input.seed, "depth", p.id) * 0.3),
+            ]
+          : [scale, scale, scale],
     });
   }
   for (const building of settlementEntities(input, layers)) {
@@ -215,7 +229,11 @@ export function generateDesignEntities(
           biome: "temperate",
           kind: "building",
           landmark: true,
-          position: [x, h - 0.12, z],
+          position: [
+            x + (seedUnit(input.seed, "wheat-x", `${x},${z}`) - 0.5) * 0.2,
+            h - 0.12,
+            z + (seedUnit(input.seed, "wheat-z", `${x},${z}`) - 0.5) * 0.2,
+          ],
           rotation: [
             Math.atan2(
               layers.sampleHeight(x, z + 2) - layers.sampleHeight(x, z - 2),

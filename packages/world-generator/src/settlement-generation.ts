@@ -1,3 +1,4 @@
+import { isAlpineVillage } from "./alpine-farmland";
 import type { GeneratedEntity, GeneratorInput } from "./types";
 import type { SemanticLayers } from "./semantic";
 import { deriveSeed, seedUnit } from "./seed";
@@ -83,6 +84,19 @@ export function settlementEntities(
         const range = rule.scaleRange ?? [1, 1];
         const scale =
           range[0] + seedUnit(seed, "scale", p.id) * (range[1] - range[0]);
+        // Alpineの正面は最寄りの道路へ向け、集落のまとまりを保つ。
+        let roadFacing: number | undefined;
+        if (isAlpineVillage(layers.design)) {
+          let nearest = Infinity;
+          for (const { points } of layers.roads)
+            for (const point of points) {
+              const d = Math.hypot(point[0] - p.x, point[2] - p.z);
+              if (d < nearest) {
+                nearest = d;
+                roadFacing = Math.atan2(point[0] - p.x, point[2] - p.z);
+              }
+            }
+        }
         placed.push({
           x: p.x,
           z: p.z,
@@ -98,9 +112,10 @@ export function settlementEntities(
             position: [p.x, layers.sampleHeight(p.x, p.z), p.z],
             rotation: [
               0,
-              rule.rotationMode === "none"
-                ? 0
-                : seedUnit(seed, "rotation", p.id) * Math.PI * 2,
+              roadFacing ??
+                (rule.rotationMode === "none"
+                  ? 0
+                  : seedUnit(seed, "rotation", p.id) * Math.PI * 2),
               0,
             ],
             scale: [scale, scale, scale],

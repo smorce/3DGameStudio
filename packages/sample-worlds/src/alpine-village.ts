@@ -13,13 +13,13 @@ export function alpineVillageDesign(): WorldDesign {
     biome: "temperate",
     density,
     altitudeMin: 3,
-    altitudeMax: 100,
+    altitudeMax: assetSlot.endsWith(".oak") ? 80 : 150,
     slopeMax: 37,
     minDistanceFromRoad: 5,
     minDistanceFromWater: 10,
     minDistanceFromLandmark: 4,
     minSpacing: 9,
-    scaleRange: [1.1, 1.7],
+    scaleRange: [0.85, 1.9],
     rotationMode: "yaw",
   });
   const d: WorldDesign = {
@@ -91,7 +91,7 @@ export function alpineVillageDesign(): WorldDesign {
           count: i === 2 ? 4 : 5,
           minSpacing: 18,
           minDistanceFromRoad: 9,
-          scaleRange: [0.95, 1.25],
+          scaleRange: [1.2, 1.45],
           rotationMode: "yaw" as const,
         })),
       },
@@ -102,7 +102,7 @@ export function alpineVillageDesign(): WorldDesign {
         assetSlot: "landmark.alpine-village.windmill",
         position: [-205, 0, -65],
         rotation: [0, 0.12, 0],
-        scale: [1, 1, 1],
+        scale: [1.6, 1.6, 1.6],
         snapToTerrain: true,
       },
     ],
@@ -137,7 +137,7 @@ export function alpineVillageDesign(): WorldDesign {
           assetSlot: "landscape.alpine-village.wall",
           position: [x, -0.12, z],
           rotation: [0, -Math.atan2(b[1] - a[1], b[0] - a[0]), 0],
-          scale: [length / count / 3, 0.9 + (j % 3) * 0.08, 1],
+          scale: [length / count / 3, 1.5 + (j % 3) * 0.12, 1.7],
           snapToTerrain: true,
         });
       }

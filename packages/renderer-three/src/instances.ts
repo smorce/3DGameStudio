@@ -311,7 +311,16 @@ export class WorldAssetBatch {
         this.release?.();
         this.release = entry.release;
         this.pendingRelease = undefined;
-        this.group.add(instanceTemplate(template, this.entities));
+        const instances = instanceTemplate(template, this.entities);
+        // 密な麦の各茎をShadow Mapへ再描画せず、建物・樹木・石垣の影を優先する。
+        if (
+          this.asset?.catalog?.slots.includes("landscape.alpine-village.wheat")
+        ) {
+          instances.traverse((object) => {
+            if (object instanceof THREE.Mesh) object.castShadow = false;
+          });
+        }
+        this.group.add(instances);
         this.current = index;
         this.group.userData.lodLevel = lod.level;
         this.group.userData.runtimeBytes =

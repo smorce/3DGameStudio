@@ -1,0 +1,137 @@
+
+> machine-studio@ test /home/smorce/env2/work/3DGameStudio
+> vitest run
+
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+stderr | tests/integration/terrain-collider-modes.experimental.test.ts > experimental A_world: 最小構成では Rebase 相当移動の前後で接地・加速が成立する
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/integration/terrain-collider-modes.experimental.test.ts (3 tests) 103ms
+ ✓ tests/unit/placement.test.ts (37 tests) 213ms
+ ✓ tests/unit/settlement-generation.test.ts (2 tests) 243ms
+ ✓ tests/unit/model.test.ts (16 tests) 267ms
+ ✓ tests/unit/procedural-world.test.ts (13 tests) 131ms
+stderr | tests/integration/terrain-vehicle-rebase.test.ts > DynamicRayCastVehicleControllerはTerrain Standalone Trimesh上でRebase前後も接地・加速する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/runtime-stability.test.ts > Building Colliderは見た目の外壁付近で接触する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/world-streaming.test.ts > Machineの移動で近傍Colliderだけを維持し、遠方は増え続けない
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/flight-controls.test.ts > Position制御のHingeはMotor Partなしで自分の関節を駆動する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/procedural-world.test.ts > CarはChunk境界を越えても地形が続く
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/unit/sample-freshness.test.ts (17 tests) 531ms
+stderr | tests/integration/observation-pipeline.test.ts > Physics → ObservationHub へ machine sample を流せる
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/toy-islands-physics.test.ts > 標高のあるWorld DesignのSpawnでマシンが接地する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/placement.test.ts > 候補だけから作った4輪車が回転・つけ直し後にも走行し、保存モデルを維持する
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/physics.test.ts > 4輪車が物理世界で前進し編集・保存データを変更しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+stderr | tests/integration/visual-effects.test.ts > 既存PhysicsRenderStateから接地煙と飛行軌跡を生成し、入力状態と物理結果を変更しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/unit/generation-context.test.ts (3 tests) 559ms
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+ ✓ tests/unit/biome-version.test.ts (4 tests) 564ms
+ ✓ tests/integration/placement.test.ts (1 test) 430ms
+   ✓ 候補だけから作った4輪車が回転・つけ直し後にも走行し、保存モデルを維持する  428ms
+ ✓ tests/unit/flight-controls.test.ts (5 tests) 229ms
+ ✓ tests/integration/world-streaming.test.ts (3 tests) 604ms
+   ✓ Machineの移動で近傍Colliderだけを維持し、遠方は増え続けない  306ms
+ ✓ tests/unit/visual-effects.test.ts (9 tests) 326ms
+ ✓ tests/unit/systems.test.ts (16 tests) 179ms
+ ✓ tests/unit/world-runtime.test.ts (10 tests) 306ms
+ ✓ tests/integration/pipelines.test.ts (4 tests) 692ms
+   ✓ 生成Jobが成功・失敗を報告する  423ms
+ ✓ tests/unit/asset-archive.test.ts (13 tests) 139ms
+ ✓ tests/unit/turn-motion-diagnostics.test.ts (3 tests) 24ms
+ ✓ tests/integration/asset-factory.test.ts (10 tests) 759ms
+   ✓ toy-islands → Planner → offline Factory → Processor → Catalog → Runtime → Validator → Bakeが通る  447ms
+ ✓ tests/unit/async-streaming.test.ts (15 tests) 524ms
+   ✓ async streaming foundations > Prepared data は finite で normal 長が異常でない  396ms
+ ✓ tests/unit/part-visuals.test.ts (9 tests) 48ms
+stdout | tests/integration/runtime-pipeline.test.ts > Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成
+prune: Removed types... Accessor (1)
+
+ ✓ tests/unit/streaming-frame-budget.test.ts (6 tests) 140ms
+ ✓ tests/unit/schema-v7.test.ts (4 tests) 96ms
+ ✓ tests/integration/observation-pipeline.test.ts (2 tests) 1037ms
+   ✓ Physics → ObservationHub へ machine sample を流せる  647ms
+   ✓ World → ObservationHub へ streaming stats を流せる  389ms
+ ✓ tests/unit/spike-flight-summary.test.ts (2 tests) 46ms
+ ✓ tests/unit/observation-hub.test.ts (6 tests) 29ms
+ ✓ tests/integration/terrain-vehicle-rebase.test.ts (1 test) 1063ms
+   ✓ DynamicRayCastVehicleControllerはTerrain Standalone Trimesh上でRebase前後も接地・加速する  1062ms
+ ✓ tests/unit/runtime-telemetry.test.ts (4 tests) 30ms
+ ✓ tests/unit/camera-follow-toggle-log.test.ts (1 test) 6ms
+ ✓ tests/unit/water-system.test.ts (5 tests) 5ms
+ ✓ tests/unit/spike-prewarm-diagnostics.test.ts (2 tests) 6ms
+ ✓ tests/unit/aerodynamics.test.ts (7 tests) 9ms
+ ✓ tests/integration/flight-controls.test.ts (4 tests) 1229ms
+   ✓ PlaneはControl Surfaceの実PoseとNose→Mainの接地順をTelemetryへ出す  753ms
+ ✓ tests/unit/builtin-entities.test.ts (4 tests) 10ms
+ ✓ tests/unit/world-design.test.ts (12 tests) 1616ms
+   ✓ World Designと生成互換性 > No-Spawn・水面・傾斜・道路距離・隣接Chunk間隔を守る  1259ms
+ ✓ tests/unit/world-asset-batch-lod.test.ts (2 tests) 8ms
+ ✓ tests/unit/thruster-steering.test.ts (5 tests) 5ms
+ ✓ tests/integration/toy-islands-physics.test.ts (1 test) 1357ms
+   ✓ 標高のあるWorld DesignのSpawnでマシンが接地する  1355ms
+ ✓ tests/unit/renderer-transforms.test.ts (3 tests) 19ms
+ ✓ tests/unit/origin-follow.test.ts (6 tests) 9ms
+ ✓ tests/integration/visual-effects.test.ts (2 tests) 1543ms
+   ✓ 既存PhysicsRenderStateから接地煙と飛行軌跡を生成し、入力状態と物理結果を変更しない  1506ms
+ ✓ tests/unit/road-index.test.ts (11 tests) 2166ms
+   ✓ 'alpine-village' の索引化後の地形・色・Propは全線分走査と完全一致する  368ms
+   ✓ 異なる幅・減衰幅の交差道路、負座標、境界、範囲外、同距離を正しく扱う  421ms
+ ✓ tests/integration/procedural-world.test.ts (7 tests) 1840ms
+   ✓ CarはChunk境界を越えても地形が続く  606ms
+   ✓ Planeは旧512m境界を越えても地形が続く  772ms
+stderr | tests/integration/runtime-pipeline.test.ts > 生成したHull/TrimeshをRapierに反映し、破損ColliderはBoxへ戻す
+using deprecated parameters for the initialization function; pass a single object instead
+
+stdout | tests/integration/runtime-pipeline.test.ts > LODに不向きなモデルはLOD0だけを生成し元データは変更しない
+prune: Removed types... Animation (1), Accessor (1)
+
+ ✓ tests/integration/runtime-pipeline.test.ts (10 tests) 2005ms
+   ✓ Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコードと再生成  854ms
+   ✓ performanceのRuntime Textureだけを縮小し元PNGを保持する  807ms
+ ✓ tests/integration/sample-worlds.test.ts (2 tests) 2222ms
+   ✓ 全8Worldをoffline Factory→Catalog→Bake→Validator→Runtimeで検証する  1555ms
+   ✓ 空data directoryの汎用APIは8Worldと共有ファイルを返し不正IDを拒否する  666ms
+ ✓ tests/unit/alpine-village.test.ts (14 tests) 3510ms
+   ✓ Alpine Village > 地形・建物・農地はSeedとChunk順に対して決定的で、必須景観を持つ  2034ms
+   ✓ 改修山脈のChunk境界は連続し、遠景も同じ高さ関数を使う  965ms
+ ✓ tests/unit/sample-worlds.test.ts (18 tests) 4925ms
+   ✓ Sample World Catalog > 9個のID・表示順がuniqueで全DraftをSchemaで読める  373ms
+   ✓ Sample World Catalog > 'alpine-village' の地形とPropは決定的でMacroはseedによらない  3844ms
+ ✓ tests/integration/physics.test.ts (32 tests) 4622ms
+   ✓ 4輪車が物理世界で前進し編集・保存データを変更しない  602ms
+   ✓ Plane Main Gearは平坦地の静止条件で左右対称なSuspension状態になる  484ms
+   ✓ Starter PlaneはW+↑(pitch)で安定離陸する  333ms
+   ✓ 主翼の迎角を0度にすると離陸性能が下がる  352ms
+   ✓ 翼面積またはThruster推力を減らすと離陸性能が下がる  488ms
+ ✓ tests/integration/runtime-stability.test.ts (6 tests) 4793ms
+   ✓ Origin Rebaseの直前直後でGlobal座標は連続する  1178ms
+   ✓ Starter Planeの長距離飛行でRebaseしても空中停止せずHingeが離れない  3230ms
+
+ Test Files  48 passed (48)
+      Tests  372 passed (372)
+   Start at  19:32:03
+   Duration  5.97s (transform 4.23s, setup 0ms, collect 24.22s, tests 41.22s, environment 10ms, prepare 4.83s)
+

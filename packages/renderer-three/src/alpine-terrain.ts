@@ -57,3 +57,57 @@ export function addAlpineTerrainSkirt(
   geometry.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
   geometry.setIndex(indices);
 }
+
+/** 遠景の三角形補間へ外周を合わせ、同じサンプラーでも生じるLOD間の隙間を閉じる。 */
+export function alignAlpineTerrainBoundary(
+  geometry: THREE.BufferGeometry,
+  resolution: number,
+  size: number,
+  originX: number,
+  originZ: number,
+  height: (x: number, z: number) => number,
+) {
+  const position = geometry.getAttribute("position");
+  // PreparedChunkの物理用Bufferを変更しない。
+  const adjusted = new THREE.Float32BufferAttribute(
+    new Float32Array(position.array),
+    3,
+  );
+  const step = size / 4;
+  const samples = new Map<string, number>();
+  const sample = (x: number, z: number) => {
+    const key = `${x},${z}`;
+    let value = samples.get(key);
+    if (value === undefined) {
+      value = height(x, z);
+      samples.set(key, value);
+    }
+    return value;
+  };
+  const coarse = (x: number, z: number) => {
+    const cx = Math.floor(x / step) * step,
+      cz = Math.floor(z / step) * step;
+    const u = (x - cx) / step,
+      v = (z - cz) / step;
+    const a = sample(cx, cz),
+      b = sample(cx + step, cz),
+      c = sample(cx, cz + step),
+      d = sample(cx + step, cz + step);
+    return u + v <= 1
+      ? a * (1 - u - v) + b * u + c * v
+      : d * (u + v - 1) + c * (1 - u) + b * (1 - v);
+  };
+  for (let z = 0; z < resolution; z++)
+    for (let x = 0; x < resolution; x++) {
+      const edge = Math.min(x, z, resolution - 1 - x, resolution - 1 - z);
+      if (edge >= 3) continue;
+      const i = z * resolution + x;
+      const target = coarse(
+        originX + position.getX(i),
+        originZ + position.getZ(i),
+      );
+      const weight = 1 - edge / 3;
+      adjusted.setY(i, position.getY(i) * (1 - weight) + target * weight);
+    }
+  geometry.setAttribute("position", adjusted);
+}

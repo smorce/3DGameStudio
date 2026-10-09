@@ -1,0 +1,561 @@
+
+> machine-studio@ test:e2e /home/smorce/env2/work/3DGameStudio
+> playwright test
+
+[WebServer] (node:488069) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:488086) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer]
+[WebServer] (!) Some chunks are larger than 2000 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] (node:488210) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js (330:0): A comment
+[WebServer]
+[WebServer] "// Wrapped in a `@__PURE__` IIFE: esbuild never tree-shakes a top-level initializer that contains a member access on `Number`, so the bare object literal survived into every bundle."
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/util.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer] node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js (70:0): A comment
+[WebServer]
+[WebServer] "/** Anchors a pattern source. The interpolation lives here rather than at the call site because
+[WebServer]  * esbuild will not drop a `@__PURE__` call whose own argument interpolates a variable, but it
+[WebServer]  * will drop `anchor(dateSource)`. Keeping it inline pinned `date` into every bundle. */"
+[WebServer]
+[WebServer] in "node_modules/.pnpm/zod@4.5.4/node_modules/zod/v4/core/regexes.js" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+[WebServer]
+[WebServer] (!) Some chunks are larger than 2000 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] (node:488325) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:488364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:488388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 49 tests using 1 worker
+
+(node:488417) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/alpine-village.spec.ts:15:1 › Alpine Village: 景観・再読込・車の移動と同条件の描画性能 (4.6m)
+  ✓   2 [chromium] › tests/e2e/flows.spec.ts:30:1 › 3 LEVELの詳細値保持とUndo @smoke (3.2s)
+  ✓   3 [chromium] › tests/e2e/flows.spec.ts:57:1 › WorldとCourseを作りチェックポイントからゴールまで走る @smoke (13.2s)
+  ✓   4 [chromium] › tests/e2e/flows.spec.ts:104:1 › 素材検索・Preview・Import・配置・復元 @smoke (2.7s)
+  ✓   5 [chromium] › tests/e2e/flows.spec.ts:147:1 › Provider障害からローカル素材へ復帰 @smoke (1.3s)
+  ✓   6 [chromium] › tests/e2e/flows.spec.ts:177:1 › ダミーAIのPreview・承認・Undoと生成Job @smoke (3.0s)
+  ✓   7 [chromium] › tests/e2e/flows.spec.ts:207:1 › 壊れた保存データでも新規作成できる (784ms)
+  ✓   8 [chromium] › tests/e2e/flows.spec.ts:221:1 › 独立Playerが本番ビルドで起動する @smoke (1.3s)
+  ✓   9 [chromium] › tests/e2e/flows.spec.ts:232:1 › 外部素材デモを読み込みGLBを描画する (1.1s)
+  ✓  10 [chromium] › tests/e2e/observation-agent.spec.ts:80:1 › Agent API が11 Scenarioを公開する @smoke (12.2s)
+  ✓  11 [chromium] › tests/e2e/observation-agent.spec.ts:157:1 › 11 Scenario smoke: begin→短時間play→events→end @smoke (32.5s)
+  ✓  12 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:13:1 › 正方形Panel、Tilt、Hinge空力面を確認する @smoke (3.2s)
+  ✓  13 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:48:1 › Starter Planeを表示して保存する @smoke (766ms)
+  ✓  14 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:56:1 › SuspensionをPaletteとInspectorで操作できる (1.6s)
+  ✓  15 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:73:1 › Generic Flight ControlのMotor・Hinge・Binding Inspectorを編集できる (2.0s)
+  ✓  16 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:114:1 › Starter Boatを表示して保存する @smoke (896ms)
+  ✓  17 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:122:1 › 車・飛行機・ボートで共通速度HUDをPlay中だけ表示する (10.3s)
+  ✓  18 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:139:1 › Starter PlaneをW+Aで左旋回させる @smoke (6.4s)
+  ✓  19 [chromium] › tests/e2e/panel-aerodynamics.spec.ts:159:1 › Starter Boatが浮上しW+Aで左旋回する @smoke (7.7s)
+  ✓  20 [chromium] › tests/e2e/part-visual.spec.ts:15:1 › Machine PartのVisual Evidenceを保存する (1.8s)
+  ✓  21 [chromium] › tests/e2e/placement.spec.ts:9:1 › タイヤ候補から取り付けて選択する @smoke (1.3s)
+  ✓  22 [chromium] › tests/e2e/placement.spec.ts:36:1 › Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実走・保存復元 @smoke (11.9s)
+  ✓  23 [chromium] › tests/e2e/placement.spec.ts:128:1 › 配置取消・パレット切替・コピー・キーボードとドラッグの区別 (3.1s)
+  ✓  24 [chromium] › tests/e2e/placement.spec.ts:170:1 › 全パーツを光る位置へ配置し、Studioの詳細値を保持する (3.9s)
+  ✓  25 [chromium] › tests/e2e/placement.spec.ts:221:3 › タッチ › 候補をタップして取り付ける (1.2s)
+  ✓  26 [chromium] › tests/e2e/play-stop-edit-pose.spec.ts:8:1 › Play停止後に編集Poseへ戻り候補とVisualが一致する (8.9s)
+  ✓  27 [chromium] › tests/e2e/procedural-world.spec.ts:4:1 › Starter 3種は同じProcedural World Runtimeを使う (2.8s)
+  ✓  28 [chromium] › tests/e2e/reset-view.spec.ts:4:1 › 走行後に新しくつくると候補ボタンが画面内に出る (8.3s)
+  ✓  29 [chromium] › tests/e2e/runtime-stability.spec.ts:12:1 › 長距離飛行でShadowが追従しRebase前後の画面を残す (12.9s)
+  ✓  30 [chromium] › tests/e2e/sample-gameplay.spec.ts:30:3 › starter-grassland: 実際の前進入力で30m走行する (11.8s)
+  ✓  31 [chromium] › tests/e2e/sample-gameplay.spec.ts:30:3 › desert-island: 実際の前進入力で30m走行する (13.8s)
+  ✓  32 [chromium] › tests/e2e/sample-gameplay.spec.ts:30:3 › tropical-archipelago: 実際の前進入力で30m走行する (8.1s)
+race-drive: {"position":[-10.120793342590332,7.776357173919678,67.18681335449219],"speed":6.959012217613186,"progress":36,"error":-0.0009392959994818754,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[23.321537017822266,9.409036636352539,134.77860260009766],"speed":4.576938974581134,"progress":78,"error":0.026736660151184255,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[85.75508117675781,12.777935028076172,168.3564338684082],"speed":4.331220624878208,"progress":116,"error":0.03196937681384249,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[147.07318115234375,16.771026611328125,148.94288063049316],"speed":5.396427497768525,"progress":153,"error":-0.02741569253024201,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[200.15153121948242,20.105443954467773,67.8785171508789],"speed":6.061209436647829,"progress":206,"error":0.016469821554507377,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[196.03585004806519,16.88775634765625,-17.29009246826172],"speed":5.5852512251143756,"progress":252,"error":0.035642099851445064,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[161.34422051906586,11.814811706542969,-89.49544143676758],"speed":4.523099831428137,"progress":296,"error":0.010561142596724249,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[97.13198471069336,9.35676097869873,-127.64295959472656],"speed":5.145101635888369,"progress":338,"error":0.02071822218780639,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[33.38194274902344,7.927585124969482,-112.30841445922852],"speed":4.312570431803877,"progress":377,"error":0.022822503368147062,"controls":{"throttle":1,"steering":0}}
+race-drive: {"position":[5.539482593536377,8.127758026123047,-27.091136932373047],"speed":7.598263253581352,"progress":425,"error":0.01053351526770907,"controls":{"throttle":1,"steering":0}}
+  ✓  33 [chromium] › tests/e2e/sample-gameplay.spec.ts:66:1 › race-island: 道路を実走して3CheckpointからGoalまで到達する (2.7m)
+  ✓  34 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › starter-grassland: fresh dataで選択して遊べる (12.6s)
+  ✓  35 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › airfield: fresh dataで選択して遊べる (12.9s)
+  ✓  36 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › tropical-archipelago: fresh dataで選択して遊べる (14.9s)
+  ✓  37 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › toy-islands: fresh dataで選択して遊べる (15.8s)
+  ✓  38 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › mountain-island: fresh dataで選択して遊べる (13.7s)
+  ✓  39 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › desert-island: fresh dataで選択して遊べる (14.3s)
+  ✓  40 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › snow-island: fresh dataで選択して遊べる (14.0s)
+  ✓  41 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › race-island: fresh dataで選択して遊べる (14.9s)
+  ✓  42 [chromium] › tests/e2e/sample-worlds.spec.ts:7:3 › alpine-village: fresh dataで選択して遊べる (34.9s)
+[spike-flight-summary] {
+  "note": "Origin Rebase は主因ではない前提。GPU/Compositor/解像度 A/B（録画なし）。ディスク上の最新4 JSON からのみ生成。",
+  "generatedAt": "2026-10-09T10:23:57.759Z",
+  "sourceSavedAts": [
+    "2026-10-09T10:22:42.818Z",
+    "2026-10-09T10:23:06.879Z",
+    "2026-10-09T10:23:31.203Z",
+    "2026-10-09T10:23:55.516Z"
+  ],
+  "readingGuide": {
+    "baseline only bad vs manual recording": "画面キャプチャ / Chrome Compositor が主因の可能性",
+    "shadow-off improves": "Shadow GPU 負荷が主因の可能性",
+    "dpr1 improves": "描画解像度・Fill Rate が主因の可能性",
+    "only both improves": "GPU 総負荷が限界に近い可能性",
+    "all unchanged": "Chrome/OS/ディスプレイ側、または別の GPU 同期を調査"
+  },
+  "baseline": {
+    "path": "docs/evidence/spike-flight-baseline.json",
+    "query": "",
+    "savedAt": "2026-10-09T10:22:42.818Z",
+    "position": [
+      -5.33258056640625,
+      563.1679840087891
+    ],
+    "spikes": [
+      373,
+      361,
+      179
+    ],
+    "early": [
+      122,
+      110,
+      29
+    ],
+    "p50": 50,
+    "p95": 66.70000000000073,
+    "p99": 100,
+    "maxMs": 183.39999999999998,
+    "rebaseEvents": 5,
+    "spikeWindows": 1,
+    "environment": {
+      "visibilityState": "visible",
+      "hasFocus": true,
+      "devicePixelRatio": 1,
+      "canvasCss": [
+        1280,
+        491
+      ],
+      "drawingBuffer": [
+        1280,
+        491
+      ],
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "longAnimationFrameCount": 64,
+      "shadowMapEnabled": true,
+      "effectivePixelRatio": 1,
+      "gpuTimerSupported": true,
+      "gpuSamples": 240,
+      "gpuP50": 50.4917,
+      "gpuP95": 62.868011,
+      "gpuMax": 126.471368
+    },
+    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 17 · Gen 0.5ms\nRAF 50.1ms · max 183.4 · p95 66.7 · p99 100.0 · CPU 3.1 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4\nSpike >20/>33/>50 369/357/176 · early 122/110/29 · SyncFb 0 · fastStats\nCamFollow INSTANT · α 0.94\nRebaseMs 0.40 (P 0.10 / R 0.10 / C 0.00 / T 0.20) · RB 6 · SC 69 · Ch 193 · LOD 0\nShadow→ 26.7, 83.2\n位置 -5.33, 563.17 · 高さ 93.59"
+  },
+  "shadowOff": {
+    "path": "docs/evidence/spike-flight-shadow-off.json",
+    "query": "?disableShadow=1",
+    "savedAt": "2026-10-09T10:23:06.879Z",
+    "position": [
+      -5.431240081787109,
+      565.2565002441406
+    ],
+    "spikes": [
+      451,
+      395,
+      75
+    ],
+    "early": [
+      131,
+      100,
+      14
+    ],
+    "p50": 50,
+    "p95": 50.10000000000218,
+    "p99": 66.70000000000073,
+    "maxMs": 116.69999999999993,
+    "rebaseEvents": 5,
+    "spikeWindows": 5,
+    "environment": {
+      "visibilityState": "visible",
+      "hasFocus": true,
+      "devicePixelRatio": 1,
+      "canvasCss": [
+        1280,
+        491
+      ],
+      "drawingBuffer": [
+        1280,
+        491
+      ],
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "longAnimationFrameCount": 64,
+      "shadowMapEnabled": false,
+      "effectivePixelRatio": 1,
+      "gpuTimerSupported": true,
+      "gpuSamples": 240,
+      "gpuP50": 41.300737,
+      "gpuP95": 49.794601,
+      "gpuMax": 89.50261
+    },
+    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 15 · Gen 0.3ms\nRAF 50.0ms · max 116.7 · p95 50.1 · p99 66.7 · CPU 2.3 · UI 0.0 · Commit 0.1ms · Queue 0 · W 0/4\nSpike >20/>33/>50 440/386/74 · early 131/100/14 · SyncFb 0 · fastStats\nCamFollow INSTANT · α 0.95\nRebaseMs 0.20 (P 0.20 / R 0.00 / C 0.00 / T 0.00) · RB 6 · SC 70 · Ch 194 · LOD 0\nShadow→ 26.6, 85.2\n位置 -5.43, 565.26 · 高さ 95.23"
+  },
+  "dpr1": {
+    "path": "docs/evidence/spike-flight-dpr1.json",
+    "query": "?pixelRatio=1",
+    "savedAt": "2026-10-09T10:23:31.203Z",
+    "position": [
+      -5.5200042724609375,
+      565.8813171386719
+    ],
+    "spikes": [
+      375,
+      359,
+      197
+    ],
+    "early": [
+      117,
+      101,
+      37
+    ],
+    "p50": 50.099999999998545,
+    "p95": 66.70000000000073,
+    "p99": 83.39999999999964,
+    "maxMs": 183.4000000000001,
+    "rebaseEvents": 5,
+    "spikeWindows": 2,
+    "environment": {
+      "visibilityState": "visible",
+      "hasFocus": true,
+      "devicePixelRatio": 1,
+      "canvasCss": [
+        1280,
+        491
+      ],
+      "drawingBuffer": [
+        1280,
+        491
+      ],
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "longAnimationFrameCount": 64,
+      "shadowMapEnabled": true,
+      "effectivePixelRatio": 1,
+      "gpuTimerSupported": true,
+      "gpuSamples": 240,
+      "gpuP50": 51.930903,
+      "gpuP95": 61.894414,
+      "gpuMax": 102.873215
+    },
+    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 14 · Gen 0.5ms\nRAF 49.9ms · max 183.4 · p95 66.7 · p99 83.4 · CPU 3.4 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4\nSpike >20/>33/>50 365/349/193 · early 117/101/37 · SyncFb 0 · fastStats\nCamFollow INSTANT · α 0.94\nRebaseMs 0.20 (P 0.10 / R 0.10 / C 0.00 / T 0.00) · RB 6 · SC 70 · Ch 194 · LOD 0\nShadow→ 26.5, 85.9\n位置 -5.52, 565.88 · 高さ 95.89"
+  },
+  "shadowOffDpr1": {
+    "path": "docs/evidence/spike-flight-shadow-off-dpr1.json",
+    "query": "?disableShadow=1&pixelRatio=1",
+    "savedAt": "2026-10-09T10:23:55.516Z",
+    "position": [
+      -5.63215446472168,
+      566.9053268432617
+    ],
+    "spikes": [
+      462,
+      410,
+      60
+    ],
+    "early": [
+      138,
+      114,
+      14
+    ],
+    "p50": 50,
+    "p95": 50.100000000000364,
+    "p99": 66.70000000000073,
+    "maxMs": 133.30000000000007,
+    "rebaseEvents": 5,
+    "spikeWindows": 5,
+    "environment": {
+      "visibilityState": "visible",
+      "hasFocus": true,
+      "devicePixelRatio": 1,
+      "canvasCss": [
+        1280,
+        491
+      ],
+      "drawingBuffer": [
+        1280,
+        491
+      ],
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "longAnimationFrameCount": 58,
+      "shadowMapEnabled": false,
+      "effectivePixelRatio": 1,
+      "gpuTimerSupported": true,
+      "gpuSamples": 240,
+      "gpuP50": 40.632886,
+      "gpuP95": 46.025049,
+      "gpuMax": 63.105237
+    },
+    "hud": "Rebase 5 · Origin -32, 480 · Hinge 0.000m · SyncGen 17 · Gen 0.4ms\nRAF 33.5ms · max 133.3 · p95 50.1 · p99 66.7 · CPU 2.3 · UI 0.0 · Commit 0.0ms · Queue 0 · W 0/4\nSpike >20/>33/>50 448/399/56 · early 138/114/14 · SyncFb 0 · fastStats\nCamFollow INSTANT · α 0.96\nRebaseMs 0.40 (P 0.10 / R 0.20 / C 0.00 / T 0.10) · RB 6 · SC 70 · Ch 194 · LOD 0\nShadow→ 26.8, 82.4\n位置 -5.18, 562.42 · 高さ 92.93"
+  }
+}
+  ✓  43 [chromium] › tests/e2e/spike-flight-diagnostics.spec.ts:113:3 › spike flight diagnostics › 録画なし GPU A/B（baseline / shadowOFF / dpr1 / both） (1.6m)
+[spike-prewarm-summary] {
+  "note": "PLAY描画準備 A/B。A=disablePlayRenderPrewarm、B=Production既定。ディスク上の prewarm-a/b からのみ生成。",
+  "generatedAt": "2026-10-09T10:24:27.980Z",
+  "verdict": "first-throttle render cost dropped after prepare — shader/buffer first-use likely",
+  "a": {
+    "path": "docs/evidence/spike-flight-prewarm-a.json",
+    "query": "?disablePlayRenderPrewarm=1",
+    "savedAt": "2026-10-09T10:24:10.218Z",
+    "spikes": [
+      217,
+      204,
+      73
+    ],
+    "early": [
+      132,
+      119,
+      27
+    ],
+    "p50": 50,
+    "p95": 66.70000000000073,
+    "maxMs": 166.70000000000005,
+    "longAnimationFrameCount": 64,
+    "playRenderPrewarmEnabled": false,
+    "playRenderPrewarmMs": 0,
+    "playRenderPrewarmDeferredCount": 0,
+    "shaderPrewarmEnabled": false,
+    "shaderPrewarmMs": 0,
+    "shaderPrewarmDeferredCount": 0,
+    "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "gpuMax": 114.611437,
+    "gpuMaxSample": {
+      "gpuMs": 114.611437,
+      "frame": 3,
+      "timeMs": 828.4
+    },
+    "maxRenderFrame": {
+      "timeMs": 2811.6,
+      "frame": 48,
+      "renderMs": 43.19999999925494,
+      "rafIntervalMs": 49.90000000000009,
+      "thrustBecameActive": false,
+      "thrustActive": true,
+      "shaderProgramCount": 8,
+      "geometryCount": 121,
+      "textureCount": 1,
+      "positionZ": 6.744100570678711
+    },
+    "firstThrust": {
+      "timeMs": 1445.1,
+      "frame": 17,
+      "renderMs": 29,
+      "cpuWorkMs": 32.899999998509884,
+      "rafIntervalMs": 33.399999999999864,
+      "physicsStepMs": 3.399999998509884,
+      "positionZ": 0.09722043573856354,
+      "shaderProgramCount": 7,
+      "geometryCount": 107,
+      "textureCount": 1
+    },
+    "heavyRenders": [
+      {
+        "timeMs": 2811.6,
+        "frame": 48,
+        "renderMs": 43.19999999925494,
+        "rafIntervalMs": 49.90000000000009,
+        "thrustBecameActive": false,
+        "thrustActive": true,
+        "shaderProgramCount": 8,
+        "geometryCount": 121,
+        "textureCount": 1,
+        "positionZ": 6.744100570678711
+      }
+    ],
+    "spikeWindows": [
+      {
+        "centerTimeMs": 11778,
+        "spikeRafIntervalMs": 66.70000000000073,
+        "earlySpike": false,
+        "peakRenderMs": 2.800000000745058,
+        "peakThrustBecameActive": false,
+        "peakThrustActive": false,
+        "peakProgramCount": 8,
+        "nearestGpu": {
+          "gpuMs": 46.972797,
+          "frame": 212,
+          "timeMs": 11778,
+          "deltaMs": 0
+        }
+      }
+    ]
+  },
+  "b": {
+    "path": "docs/evidence/spike-flight-prewarm-b.json",
+    "query": "",
+    "savedAt": "2026-10-09T10:24:25.749Z",
+    "spikes": [
+      227,
+      213,
+      57
+    ],
+    "early": [
+      133,
+      121,
+      35
+    ],
+    "p50": 50,
+    "p95": 66.69999999999982,
+    "maxMs": 183.39999999999998,
+    "longAnimationFrameCount": 64,
+    "playRenderPrewarmEnabled": true,
+    "playRenderPrewarmMs": 70.30000000074506,
+    "playRenderPrewarmDeferredCount": 6,
+    "shaderPrewarmEnabled": true,
+    "shaderPrewarmMs": 70.30000000074506,
+    "shaderPrewarmDeferredCount": 6,
+    "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "gpuMax": 90.05527,
+    "gpuMaxSample": {
+      "gpuMs": 90.05527,
+      "frame": 4,
+      "timeMs": 786
+    },
+    "maxRenderFrame": {
+      "timeMs": 786,
+      "frame": 4,
+      "renderMs": 94,
+      "rafIntervalMs": 50,
+      "thrustBecameActive": false,
+      "thrustActive": false,
+      "shaderProgramCount": 8,
+      "geometryCount": 99,
+      "textureCount": 1,
+      "positionZ": -0.00008094310760498047
+    },
+    "firstThrust": {
+      "timeMs": 1452.7,
+      "frame": 19,
+      "renderMs": 4,
+      "cpuWorkMs": 7.800000000745058,
+      "rafIntervalMs": 33.40000000000009,
+      "physicsStepMs": 3.699999999254942,
+      "positionZ": 0.09741143882274628,
+      "shaderProgramCount": 8,
+      "geometryCount": 110,
+      "textureCount": 1
+    },
+    "heavyRenders": [
+      {
+        "timeMs": 786,
+        "frame": 4,
+        "renderMs": 94,
+        "rafIntervalMs": 50,
+        "thrustBecameActive": false,
+        "thrustActive": false,
+        "shaderProgramCount": 8,
+        "geometryCount": 99,
+        "textureCount": 1,
+        "positionZ": -0.00008094310760498047
+      }
+    ],
+    "spikeWindows": [
+      {
+        "centerTimeMs": 969.4,
+        "spikeRafIntervalMs": 183.39999999999998,
+        "earlySpike": true,
+        "peakRenderMs": 94,
+        "peakThrustBecameActive": false,
+        "peakThrustActive": false,
+        "peakProgramCount": 8
+      },
+      {
+        "centerTimeMs": 11702.3,
+        "spikeRafIntervalMs": 66.69999999999891,
+        "earlySpike": false,
+        "peakRenderMs": 2.199999999254942,
+        "peakThrustBecameActive": false,
+        "peakThrustActive": false,
+        "peakProgramCount": 8,
+        "nearestGpu": {
+          "gpuMs": 42.476699,
+          "frame": 225,
+          "timeMs": 11702.3,
+          "deltaMs": 0
+        }
+      }
+    ]
+  }
+}
+  ✓  44 [chromium] › tests/e2e/spike-prewarm-diagnostics.spec.ts:116:3 › spike prewarm diagnostics › A/B: disablePlayRenderPrewarm vs default preparePlayRendering (29.8s)
+  ✓  45 [chromium] › tests/e2e/studio.spec.ts:3:1 › 空から板と4輪を組み立て保存・再読込 @smoke (6.1s)
+  ✓  46 [chromium] › tests/e2e/toy-islands.spec.ts:47:1 › toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smoke (20.3s)
+  ✓  47 [chromium] › tests/e2e/visual-effects.spec.ts:11:1 › PLAYの翼・車輪VFXとSTOP・再読込の消去を確認する @smoke (15.0s)
+  ✓  48 [chromium] › tests/e2e/world-runtime.spec.ts:6:1 › 広いWorldの物理Streaming・大量岩・2番目のコースを実走する @smoke (4.2s)
+  ✓  49 [chromium] › tests/e2e/world-runtime.spec.ts:60:1 › 圧縮LOD素材を読込・Instancing描画し、非Box Collider上を走る @smoke (11.6s)
+
+  49 passed (16.2m)

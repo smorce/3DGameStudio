@@ -1,0 +1,146 @@
+
+> machine-studio@ sample-worlds:validate /home/smorce/env2/work/3DGameStudio
+> tsx scripts/sample-worlds.ts validate
+
+{
+  "worlds": [
+    {
+      "id": "starter-grassland",
+      "chunks": 100,
+      "medianMs": 0.20931600000000117,
+      "p95Ms": 0.6164979999999787,
+      "maxMs": 4.006921000000034,
+      "entityCount": 135,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "legacy-world",
+          "message": "World Design validation is not applicable"
+        }
+      ]
+    },
+    {
+      "id": "airfield",
+      "chunks": 100,
+      "medianMs": 0.1489080000000058,
+      "p95Ms": 0.4808959999999729,
+      "maxMs": 0.8144209999999816,
+      "entityCount": 8,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "legacy-world",
+          "message": "World Design validation is not applicable"
+        }
+      ]
+    },
+    {
+      "id": "tropical-archipelago",
+      "chunks": 100,
+      "medianMs": 3.5346640000000207,
+      "p95Ms": 5.194095999999945,
+      "maxMs": 9.61353600000001,
+      "entityCount": 177,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "toy-islands",
+      "chunks": 100,
+      "medianMs": 4.461182000000008,
+      "p95Ms": 7.855129999999917,
+      "maxMs": 9.117569999999887,
+      "entityCount": 360,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "mountain-island",
+      "chunks": 100,
+      "medianMs": 4.886385999999902,
+      "p95Ms": 7.018043999999918,
+      "maxMs": 8.611799000000019,
+      "entityCount": 107,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "desert-island",
+      "chunks": 100,
+      "medianMs": 4.475693000000319,
+      "p95Ms": 6.7464370000000145,
+      "maxMs": 9.382630000000063,
+      "entityCount": 184,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "snow-island",
+      "chunks": 100,
+      "medianMs": 4.604644999999891,
+      "p95Ms": 6.602335999999923,
+      "maxMs": 7.90568200000007,
+      "entityCount": 123,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "race-island",
+      "chunks": 100,
+      "medianMs": 4.535800000000108,
+      "p95Ms": 6.495856000000003,
+      "maxMs": 7.82116300000007,
+      "entityCount": 168,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "alpine-village",
+      "chunks": 100,
+      "medianMs": 8.22785500000009,
+      "p95Ms": 25.879046000000017,
+      "maxMs": 37.20353800000021,
+      "entityCount": 2802,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    }
+  ],
+  "uniqueAssetCount": 59,
+  "uniqueRuntimeFileCount": 25,
+  "totalLogicalReferences": 119
+}

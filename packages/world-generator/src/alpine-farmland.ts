@@ -1,3 +1,4 @@
+import { alpineNoise } from "./alpine-landscape";
 import type { WorldDesign } from "../../project-schema/src/index";
 
 /** 内陸ワールドだけに適用する景観定義。既存Schemaの拡張は不要。 */
@@ -9,9 +10,15 @@ export const alpineFields = [
     crop: "wheat",
     points: [
       [-150, 35],
+      [-110, 26],
+      [-65, 25],
       [-35, 20],
-      [-22, 130],
+      [-27, 62],
+      [-22, 110],
+      [-33, 139],
+      [-98, 153],
       [-175, 160],
+      [-164, 95],
     ],
   },
   {
@@ -19,9 +26,14 @@ export const alpineFields = [
     crop: "wheat",
     points: [
       [35, -5],
+      [83, -22],
       [145, -30],
+      [158, 10],
       [170, 55],
+      [128, 69],
+      [87, 73],
       [50, 85],
+      [43, 45],
     ],
   },
   {
@@ -75,14 +87,15 @@ export function alpineSurfaceColor(
   z: number,
   height: number,
   fallback: string,
+  cache?: Map<string, number>,
 ) {
   const field = alpineFieldAt(x, z);
   if (field) {
-    const stripe = Math.floor((x + z * 0.18) / 2) % 2 === 0;
+    const stripe = Math.sin((x + z * 0.18) * Math.PI) > 0;
     return field.crop === "wheat"
       ? stripe
-        ? "#d5bf6d"
-        : "#b5a358"
+        ? "#bcaa65"
+        : "#b7a460"
       : field.crop === "stubble"
         ? stripe
           ? "#b39b67"
@@ -93,6 +106,15 @@ export function alpineSurfaceColor(
             : "#675339"
           : "#9ab76d";
   }
-  if (height < 65) return "#789756";
-  return height > 145 ? "#c3ccce" : height > 75 ? "#95a3a2" : fallback;
+  const variation = alpineNoise(x, z, 55, 42, cache);
+  if (height < 65)
+    return variation > 0.15
+      ? "#718b45"
+      : variation < -0.2
+        ? "#839750"
+        : "#7c914b";
+  if (height > 210 + variation * 25) return "#dedfd7";
+  if (height > 130 + variation * 30)
+    return variation > 0 ? "#9b9c90" : "#878d80";
+  return height > 80 ? "#778568" : fallback;
 }

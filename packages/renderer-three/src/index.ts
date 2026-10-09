@@ -1,4 +1,9 @@
-import { addAlpineTerrainSkirt } from "./alpine-terrain";
+import { semanticContext } from "../../world-generator/src/design-generation";
+import { alpineSurfaceMaterial } from "./alpine-surface";
+import {
+  addAlpineTerrainSkirt,
+  alignAlpineTerrainBoundary,
+} from "./alpine-terrain";
 import { alpineRenderChunk } from "./alpine-ready";
 import { alpineClouds, alpineChimneySmoke } from "./alpine-atmosphere";
 import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
@@ -738,6 +743,14 @@ export class ThreeRenderer implements RendererAdapter {
       ? null
       : new THREE.FogExp2(p.world.environment.sky, p.world.environment.fog);
     this.sun.intensity = p.world.lighting.intensity;
+    const alpineLighting =
+      p.world.source.kind === "procedural" &&
+      p.world.source.design &&
+      isAlpineVillage(p.world.source.design);
+    for (const light of this.scene.children) {
+      if (light instanceof THREE.HemisphereLight)
+        light.intensity = alpineLighting ? 1.1 : 2;
+    }
     this.updateShadowFollow([0, 0, 0]);
     const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
     grid.position.y = 0.015;
@@ -916,14 +929,37 @@ export class ThreeRenderer implements RendererAdapter {
             new THREE.BufferAttribute(prepared.colors, 3),
           );
           geo.setIndex(new THREE.BufferAttribute(prepared.indices, 1));
-          if (alpineWorld) addAlpineTerrainSkirt(geo, prepared.resolution);
+          if (
+            alpineWorld &&
+            p.world.source.kind === "procedural" &&
+            p.world.source.design
+          ) {
+            const layers = semanticContext(
+              p.world.source.design,
+              p.world.source.seed,
+            );
+            alignAlpineTerrainBoundary(
+              geo,
+              prepared.resolution,
+              prepared.size,
+              prepared.chunkX * prepared.size,
+              prepared.chunkZ * prepared.size,
+              (x, z) => layers.sampleHeight(x, z),
+            );
+            addAlpineTerrainSkirt(geo, prepared.resolution);
+          }
           // Main Thread では Terrain Normal / Color を再計算しない。
           const mesh = new THREE.Mesh(
             geo,
-            new THREE.MeshStandardMaterial({
-              vertexColors: true,
-              roughness: 1,
-            }),
+            alpineWorld
+              ? alpineSurfaceMaterial(
+                  prepared.chunkX * prepared.size,
+                  prepared.chunkZ * prepared.size,
+                )
+              : new THREE.MeshStandardMaterial({
+                  vertexColors: true,
+                  roughness: 1,
+                }),
           );
           mesh.userData.vfxTerrain = true;
           mesh.receiveShadow = true;
@@ -1180,15 +1216,29 @@ export class ThreeRenderer implements RendererAdapter {
   }
   private updateShadowFollow(focus: Vec3) {
     const timeOfDay = this.project?.world.lighting.timeOfDay ?? 14;
-    const pose = sunFollowPose(focus, timeOfDay);
+    const source = this.project?.world.source;
+    const landscapeView =
+      (this.inspectionView || this.editWorkspace) &&
+      source?.kind === "procedural" &&
+      source.design &&
+      isAlpineVillage(source.design);
+    const extent = landscapeView ? 220 : SHADOW_EXTENT_M;
+    const target = landscapeView
+      ? ((this.worldRuntime?.toSimulation([0, 15, -20]) ?? [
+          0, 15, -20,
+        ]) as Vec3)
+      : focus;
+    const pose = landscapeView
+      ? sunFollowPose(target, timeOfDay, 440)
+      : sunFollowPose(focus, timeOfDay);
     this.sun.position.set(...pose.position);
     this.sun.target.position.set(...pose.target);
-    this.sun.shadow.camera.left = -SHADOW_EXTENT_M;
-    this.sun.shadow.camera.right = SHADOW_EXTENT_M;
-    this.sun.shadow.camera.top = SHADOW_EXTENT_M;
-    this.sun.shadow.camera.bottom = -SHADOW_EXTENT_M;
+    this.sun.shadow.camera.left = -extent;
+    this.sun.shadow.camera.right = extent;
+    this.sun.shadow.camera.top = extent;
+    this.sun.shadow.camera.bottom = -extent;
     this.sun.shadow.camera.near = 0.5;
-    this.sun.shadow.camera.far = SHADOW_EXTENT_M * 3;
+    this.sun.shadow.camera.far = extent * 3;
     this.sun.shadow.camera.updateProjectionMatrix();
     this.sun.target.updateMatrixWorld();
     this.sun.updateMatrixWorld();

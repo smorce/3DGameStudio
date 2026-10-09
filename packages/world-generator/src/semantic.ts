@@ -1,4 +1,9 @@
-import { isAlpineVillage } from "./alpine-farmland";
+import {
+  alpineMountainHeight,
+  alpineNoise,
+  alpineForestDensity,
+} from "./alpine-landscape";
+import { isAlpineVillage, alpineSurfaceColor } from "./alpine-farmland";
 import type {
   RoadDefinition,
   Vec3,
@@ -59,6 +64,7 @@ function detail(x: number, z: number, seed: number) {
 export class SemanticLayers {
   readonly roads: { road: RoadDefinition; points: Vec3[]; bounds: number[] }[];
   private readonly terrainSeed: number;
+  private readonly alpineNoiseCache = new Map<string, number>();
   private readonly roadGrid = new Map<
     string,
     { roadIndex: number; pointIndex: number }[]
@@ -155,21 +161,13 @@ export class SemanticLayers {
         (island.radius - distance(x, z, island.center)) / island.coastWidth,
       );
       if (!mask) continue;
-      let mountain = 0;
+      let mountain = isAlpineVillage(this.design)
+        ? alpineMountainHeight(x, z, this.terrainSeed, this.alpineNoiseCache)
+        : 0;
       for (const m of island.mountains) {
+        if (isAlpineVillage(this.design) && m.height > 100) continue;
         const radial = distance(x, z, m.center) / m.radius;
-        const angle = Math.atan2(z - m.center[2], x - m.center[0]);
-        mountain +=
-          m.height *
-          (isAlpineVillage(this.design) && m.height > 100
-            ? Math.pow(
-                Math.max(
-                  0,
-                  1 - radial * (1 + Math.sin(angle * 7 + m.center[0]) * 0.12),
-                ),
-                m.falloff,
-              )
-            : Math.pow(smooth(1 - radial), m.falloff));
+        mountain += m.height * Math.pow(smooth(1 - radial), m.falloff);
       }
       height = Math.max(
         height,
@@ -177,11 +175,31 @@ export class SemanticLayers {
           (8 +
             island.baseHeight +
             mountain +
-            detail(x, z, this.terrainSeed) * 0.8) *
+            detail(x, z, this.terrainSeed) * 0.8 +
+            (isAlpineVillage(this.design)
+              ? alpineNoise(
+                  x,
+                  z,
+                  90,
+                  this.terrainSeed + 29,
+                  this.alpineNoiseCache,
+                ) * 2.2
+              : 0)) *
             mask,
       );
     }
     return height;
+  }
+  sampleAlpineForestDensity(x: number, z: number, height: number) {
+    return alpineForestDensity(x, z, height, this.seed, this.alpineNoiseCache);
+  }
+  sampleAlpineSurfaceColor(
+    x: number,
+    z: number,
+    height: number,
+    fallback: string,
+  ) {
+    return alpineSurfaceColor(x, z, height, fallback, this.alpineNoiseCache);
   }
   sampleBiome(x: number, z: number) {
     return (

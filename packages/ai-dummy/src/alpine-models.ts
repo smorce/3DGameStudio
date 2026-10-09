@@ -66,7 +66,7 @@ export async function alpineModelGlb(slot: string, variant = 0, level = 0) {
       );
     }
   } else if (slot.includes(".wall")) {
-    if (level > 0) box(3, 0.7, 0.6, "#a4a393");
+    if (level > 0) box(3, 0.7, 0.6, "#c9c4af");
     else
       for (let row = 0; row < 3; row++)
         for (let i = 0; i < 5; i++) {
@@ -74,7 +74,7 @@ export async function alpineModelGlb(slot: string, variant = 0, level = 0) {
           g.scale(0.79, 0.45, 0.7);
           add(
             g,
-            row % 2 ? "#929386" : "#b0ae9b",
+            row % 2 ? "#afa995" : "#d0cbb7",
             -1.2 + i * 0.6 + (row % 2 ? 0.12 : 0),
             0.16 + row * 0.25,
             ((i % 2) - 0.5) * 0.07,
@@ -82,14 +82,30 @@ export async function alpineModelGlb(slot: string, variant = 0, level = 0) {
         }
   } else if (slot.includes(".wheat")) {
     // 4m四方に畝と穂の小群を作り、近景で立体感を保つ。
-    const count = level > 1 ? 1 : level ? 2 : 4;
+    const count = level > 1 ? 1 : level ? 3 : 7;
     for (let x = 0; x < count; x++)
       for (let z = 0; z < count; z++) {
-        const px = count === 1 ? 0 : -1.5 + (x * 3) / (count - 1),
-          pz = count === 1 ? 0 : -1.5 + (z * 3) / (count - 1);
-        const h = 0.48 + ((x * 13 + z * 7) % 5) * 0.04;
-        add(new ConeGeometry(0.08, h, 3), "#bba357", px, h / 2, pz);
-        add(new IcosahedronGeometry(0.12, 0), "#ddc77a", px + 0.02, h, pz);
+        const px =
+            count === 1
+              ? 0
+              : -1.75 +
+                (x * 3.5) / (count - 1) +
+                Math.sin(x * 17 + z * 9) * 0.12,
+          pz =
+            count === 1
+              ? 0
+              : -1.75 +
+                (z * 3.5) / (count - 1) +
+                Math.cos(x * 13 + z * 7) * 0.12;
+        const h = 0.75 + ((x * 13 + z * 7) % 5) * 0.06;
+        add(new ConeGeometry(0.025, h, 3), "#bba357", px, h / 2, pz);
+        add(
+          new IcosahedronGeometry(0.12, 0).scale(0.55, 1.65, 0.55),
+          "#ddc77a",
+          px + 0.02,
+          h,
+          pz,
+        );
       }
   } else if (slot.includes(".windmill")) {
     add(new CylinderGeometry(2.5, 3.6, 12, 12), stone, 0, 6);

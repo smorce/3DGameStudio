@@ -128,10 +128,12 @@ describe("Alpine Village", () => {
     });
     const before = structuredClone(runtime.getChunk("-2,1")!);
     runtime.maybeRebase([450, 14, 400]);
-    for (const e of before.entities)
-      expect(runtime.toGlobal(runtime.toSimulation(e.position))).toEqual(
-        e.position,
+    for (const e of before.entities) {
+      const restored = runtime.toGlobal(runtime.toSimulation(e.position));
+      e.position.forEach((value, axis) =>
+        expect(restored[axis]).toBeCloseTo(value, 10),
       );
+    }
     expect(runtime.getChunk("-2,1")).toEqual(before);
     runtime.dispose();
     const reloaded = new WorldRuntime(p.world, {
@@ -276,4 +278,114 @@ it("追加GLBは頂点色を保持した1素材で、金属度とテクスチャ
       for (const primitive of mesh.listPrimitives())
         expect(primitive.getAttribute("COLOR_0")).not.toBeNull();
   }
+});
+
+it("改修山脈のChunk境界は連続し、遠景も同じ高さ関数を使う", async () => {
+  const { buildIslandProxies } =
+    await import("../../packages/world-generator/src/far-proxy");
+  const s = source(),
+    layers = new SemanticLayers(s.design, s.seed);
+  for (let z = -1100; z <= 200; z += 32)
+    for (let x = -1000; x <= 1000; x += 64) {
+      const h = layers.sampleHeight(x, z);
+      expect(Number.isFinite(h)).toBe(true);
+      expect(
+        Math.abs(
+          layers.sampleHeight(x - 0.001, z) - layers.sampleHeight(x + 0.001, z),
+        ),
+      ).toBeLessThan(0.01);
+    }
+  const left = generateChunk({ ...s, chunkX: 0, chunkZ: -12 });
+  const right = generateChunk({ ...s, chunkX: 1, chunkZ: -12 });
+  for (let z = 0; z < left.resolution; z++) {
+    expect(left.heights[z * left.resolution + left.resolution - 1]).toBe(
+      right.heights[z * right.resolution],
+    );
+  }
+  const proxy = buildIslandProxies(s.design, s.seed, s.chunkSize)[0];
+  for (let i = 0; i < proxy.positions.length; i += 291) {
+    const [x, y, z] = proxy.positions.slice(i, i + 3);
+    expect(y).toBeCloseTo(layers.sampleHeight(x, z) - 0.08, 3);
+  }
+  expect(proxy.cellKeys.length * 6).toBe(proxy.indices.length);
+}, 30000);
+
+it("森林密度に群落・空き地・樹木限界がありSeedで再現する", async () => {
+  const { alpineForestDensity } =
+    await import("../../packages/world-generator/src/alpine-landscape");
+  const values = [],
+    otherSeedValues = [];
+  for (let z = -600; z < -200; z += 25)
+    for (let x = -600; x < 600; x += 25) {
+      const density = alpineForestDensity(x, z, 40, 42);
+      expect(density).toBe(alpineForestDensity(x, z, 40, 42));
+      expect(density).toBeGreaterThanOrEqual(0);
+      expect(density).toBeLessThanOrEqual(1);
+      values.push(density);
+      otherSeedValues.push(alpineForestDensity(x, z, 40, 79));
+    }
+  expect(Math.max(...values) - Math.min(...values)).toBeGreaterThan(0.7);
+  expect(alpineForestDensity(100, -500, 151, 42)).toBe(0);
+  expect(values).not.toEqual(otherSeedValues);
+});
+
+it("LOD接続は描画外周だけを補間し、物理Bufferと内部の地形を保持する", async () => {
+  const THREE = await import("three");
+  const { prepareChunk } =
+    await import("../../packages/world-generator/src/prepare");
+  const { alignAlpineTerrainBoundary } =
+    await import("../../packages/renderer-three/src/alpine-terrain");
+  const s = source(),
+    data = prepareChunk({ ...s, chunkX: 0, chunkZ: -12 });
+  const layers = new SemanticLayers(s.design, s.seed);
+  const before = data.positions.slice();
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(data.positions, 3),
+  );
+  alignAlpineTerrainBoundary(
+    geometry,
+    data.resolution,
+    data.size,
+    0,
+    -12 * data.size,
+    (x, z) => layers.sampleHeight(x, z),
+  );
+  expect(data.positions).toEqual(before);
+  const position = geometry.getAttribute("position");
+  expect([...position.array].every(Number.isFinite)).toBe(true);
+  for (let i = 0; i < data.resolution; i += 8) {
+    expect(position.getY(i)).toBeCloseTo(
+      layers.sampleHeight(position.getX(i), -12 * data.size),
+      3,
+    );
+  }
+  const middle = Math.floor(data.resolution / 2) * (data.resolution + 1);
+  expect(position.getY(middle)).toBe(before[middle * 3 + 1]);
+  geometry.dispose();
+});
+
+it("ノイズ値の再利用とキャッシュ上限によって景観の値が変わらない", async () => {
+  const { alpineNoise, alpineMountainHeight, alpineForestDensity } =
+    await import("../../packages/world-generator/src/alpine-landscape");
+  const cache = new Map(
+    Array.from({ length: 32768 }, (_, i) => [`old:${i}`, 1] as const),
+  );
+  for (const [x, z] of [
+    [-83.2, -360.5],
+    [128, -840],
+    [0, 0],
+    [1024, -135],
+  ]) {
+    expect(alpineNoise(x, z, 55, 42, cache)).toBe(alpineNoise(x, z, 55, 42));
+    expect(alpineMountainHeight(x, z, 42, cache)).toBe(
+      alpineMountainHeight(x, z, 42),
+    );
+    expect(alpineForestDensity(x, z, 40, 42, cache)).toBe(
+      alpineForestDensity(x, z, 40, 42),
+    );
+  }
+  expect(cache.size).toBeLessThan(32768);
+  expect(cache.has("old:0")).toBe(false);
 });

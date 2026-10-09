@@ -1,4 +1,4 @@
-import { isAlpineVillage, alpineSurfaceColor } from "./alpine-farmland";
+import { isAlpineVillage } from "./alpine-farmland";
 import { biomeSurfaceColor } from "./biome-surface";
 import { semanticContext, generateDesignEntities } from "./design-generation";
 import { toyIslandsDesign } from "./toy-islands";
@@ -371,7 +371,7 @@ export function generateChunk(input: GeneratorInput): GeneratedChunk {
           )
         : colorFor(input.preset, height, x, z, input.seed);
       if (design && isAlpineVillage(design))
-        colors[k] = alpineSurfaceColor(x, z, height, colors[k]);
+        colors[k] = layers!.sampleAlpineSurfaceColor(x, z, height, colors[k]);
       if (
         layers &&
         (terrain!.roadInfluence.distance <= 0 || layers.sampleRunwayMask(x, z))

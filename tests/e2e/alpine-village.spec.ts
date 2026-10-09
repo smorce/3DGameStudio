@@ -4,6 +4,7 @@ import type { MachineStudioAgentApi } from "../../packages/engine-core/src/agent
 import type { Vec3 } from "../../packages/project-schema/src/index";
 
 const views: { name: string; position: Vec3; target: Vec3 }[] = [
+  { name: "reference", position: [-85, 68, 290], target: [-20, 40, -340] },
   { name: "overview", position: [20, 105, 450], target: [-30, 35, -220] },
   { name: "village", position: [-150, 58, 190], target: [-95, 22, -65] },
   { name: "farmland", position: [-112, 24, 150], target: [-85, 13, 57] },
@@ -14,7 +15,7 @@ const views: { name: string; position: Vec3; target: Vec3 }[] = [
 test("Alpine Village: 景観・再読込・車の移動と同条件の描画性能", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(300000);
+  test.setTimeout(420000);
   await mkdir(testInfo.outputDir, { recursive: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   const runs = [];
@@ -189,7 +190,7 @@ test("Alpine Village: 景観・再読込・車の移動と同条件の描画性�
       (
         window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
       ).__MACHINE_STUDIO_AGENT__.setInspectionView(view.position, view.target),
-    views[0],
+    views.find((view) => view.name === "overview")!,
   );
   await page.waitForTimeout(1500);
   await page
@@ -244,5 +245,97 @@ test("Alpine Village: 景観・再読込・車の移動と同条件の描画性�
       null,
       2,
     ),
+  );
+  // 性能の採取後、同じAlpineの車を道路上で走らせて実際のRebaseを検証する。
+  await page.evaluate(
+    (view) =>
+      (
+        window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+      ).__MACHINE_STUDIO_AGENT__.setInspectionView(view.position, view.target),
+    views.find((view) => view.name === "reference")!,
+  );
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+            }
+          ).__MACHINE_STUDIO_AGENT__.getRenderedEntityPosition(
+            "gen:2:42:landmark:alpine-windmill",
+          ),
+        ),
+      { timeout: 30000 },
+    )
+    .toBeDefined();
+  const beforeRebase = await page.evaluate(() => {
+    const api = (
+      window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+    ).__MACHINE_STUDIO_AGENT__;
+    return {
+      state: api.getState(),
+      mill: api.getRenderedEntityPosition("gen:2:42:landmark:alpine-windmill")!,
+    };
+  });
+  await page
+    .locator("canvas")
+    .first()
+    .screenshot({
+      path: testInfo.outputPath("before-rebase.png"),
+      style:
+        "body * { visibility: hidden !important; } canvas { visibility: visible !important; }",
+    });
+  await page.keyboard.down("w");
+  try {
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (
+                window as unknown as {
+                  __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+                }
+              ).__MACHINE_STUDIO_AGENT__.getState().world.rebaseCount ?? 0,
+          ),
+        { timeout: 90000 },
+      )
+      .toBeGreaterThan(beforeRebase.state.world.rebaseCount ?? 0);
+  } finally {
+    await page.keyboard.up("w");
+  }
+  await page.waitForTimeout(1500);
+  const afterRebase = await page.evaluate(() => {
+    const api = (
+      window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+    ).__MACHINE_STUDIO_AGENT__;
+    return {
+      state: api.getState(),
+      mill: api.getRenderedEntityPosition("gen:2:42:landmark:alpine-windmill"),
+      events: api
+        .getEvents()
+        .filter(
+          (event) =>
+            event.name.includes("rebase") || event.name === "world.chunk.ready",
+        ),
+    };
+  });
+  expect(afterRebase.mill).toBeDefined();
+  beforeRebase.mill.forEach((value, axis) =>
+    expect(afterRebase.mill![axis]).toBeCloseTo(value, 3),
+  );
+  expect(afterRebase.state.machine.position!.every(Number.isFinite)).toBe(true);
+  await page
+    .locator("canvas")
+    .first()
+    .screenshot({
+      path: testInfo.outputPath("after-rebase.png"),
+      style:
+        "body * { visibility: hidden !important; } canvas { visibility: visible !important; }",
+    });
+  await writeFile(
+    testInfo.outputPath("rebase.json"),
+    JSON.stringify({ beforeRebase, afterRebase }, null, 2),
   );
 });
