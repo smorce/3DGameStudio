@@ -1,0 +1,78 @@
+{
+  "baselineCommit": "44dff8baed69b8fadfb670ae424152e1281e2e62",
+  "worlds": [
+    {
+      "file": "demos/worlds/starter-grassland.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 0,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 0,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/toy-islands.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 25,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 44,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/race-island.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 9,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 17,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/desert-island.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 14,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 25,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/airfield.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 0,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 0,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/tropical-archipelago.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 16,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 27,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/snow-island.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 11,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 20,
+      "missingFiles": [],
+      "differentFiles": []
+    },
+    {
+      "file": "demos/worlds/mountain-island.json",
+      "identicalToBaseline": true,
+      "runtimeGLBReferences": 11,
+      "runtimeGLBsIdenticalToBaseline": true,
+      "allFileReferences": 20,
+      "missingFiles": [],
+      "differentFiles": []
+    }
+  ],
+  "vegetationAreaOnlyInAlpineVillage": true
+}

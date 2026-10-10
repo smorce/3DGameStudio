@@ -63,6 +63,7 @@ export function vegetationPlacements(options: {
   height: (x: number, z: number) => number;
   allowed: (x: number, z: number) => boolean;
   roadside?: (x: number, z: number) => boolean;
+  roadDistance?: (x: number, z: number) => number;
   spacing?: number;
 }) {
   const { seed, bounds, area, height, allowed, spacing = 1.2 } = options;
@@ -94,10 +95,20 @@ export function vegetationPlacements(options: {
         continue;
       const y = height(x, z);
       if (!Number.isFinite(y)) continue;
+      const distance = options.roadDistance?.(x, z);
+      // 道路外側へ株の覆いを集中し、森林内部は同じ候補セルから間引く。
+      if (
+        distance !== undefined &&
+        distance > 6 &&
+        seedUnit(seed, "grass-cover", id) < 0.22
+      )
+        continue;
       result.push({
         position: [x, y, z],
         yaw: seedUnit(seed, "grass-yaw", id) * Math.PI * 2,
-        scale: 0.65 + seedUnit(seed, "grass-scale", id) * 0.65,
+        scale:
+          (0.65 + seedUnit(seed, "grass-scale", id) * 0.65) *
+          (distance !== undefined && distance < 2.5 ? 0.65 : 1),
         kind: options.roadside?.(x, z)
           ? 4
           : Math.floor(seedUnit(seed, "grass-kind", id) * 4),

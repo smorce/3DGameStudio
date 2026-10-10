@@ -1,3 +1,5 @@
+import { insideEnvironmentPlaza } from "./environment-plaza";
+import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
 import type { BufferGeometry } from "three";
 import type {
   Project,
@@ -24,6 +26,7 @@ export function worldVegetationChunk(
   landCoverAllowed: (x: number, z: number) => boolean = () => true,
 ) {
   if (!source.design) return;
+  const alpinePlaza = isAlpineVillage(source.design);
   const area = vegetationArea(source.parameters?.vegetationArea);
   const originX = prepared.chunkX * prepared.size,
     originZ = prepared.chunkZ * prepared.size;
@@ -90,7 +93,7 @@ export function worldVegetationChunk(
         layers,
       ),
       source.parameters?.environmentAssets,
-    ).map((b) => footprint(b, 0.7));
+    ).map((b) => footprint(b, 0.35));
     const obstacles = [
       ...buildings,
       ...source.design.landmarks
@@ -122,6 +125,7 @@ export function worldVegetationChunk(
           x - originX,
           z - originZ,
         ),
+      roadDistance: (x, z) => layers.sampleRoadInfluence(x, z, true).distance,
       roadside: (x, z) => layers.sampleRoadInfluence(x, z, true).distance < 6,
       allowed: (x, z) =>
         layers.sampleRoadInfluence(x, z, true).distance > 1 &&
@@ -145,6 +149,7 @@ export function worldVegetationChunk(
         ) &&
         !layers.sampleRunwayMask(x, z) &&
         landCoverAllowed(x, z) &&
+        !(alpinePlaza && insideEnvironmentPlaza(x, z)) &&
         !obstacles.some((o) => o.contains(x, z)),
     });
   }

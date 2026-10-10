@@ -1,3 +1,4 @@
+import { environmentPlazaShader } from "./environment-plaza";
 import * as THREE from "three";
 import { alpineFields } from "../../world-generator/src/alpine-farmland";
 import { groundDetailFunctions, groundDetailShader } from "./ground-detail";
@@ -8,11 +9,13 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
     vertexColors: true,
     roughness: 1,
   });
+  material.userData.groundDetailsUniform = { value: 1 };
   material.onBeforeCompile = (shader) => {
     const detail = groundDetailShader(
       "alpineXZ",
-      "road * (1.0 - smoothstep(60.0, 80.0, length(alpineXZ - vec2(0.0, -83.0))))",
+      "max(environmentPlaza, road * (1.0 - smoothstep(60.0, 80.0, length(alpineXZ - vec2(0.0, -83.0)))))",
     );
+    shader.uniforms.groundDetails = material.userData.groundDetailsUniform;
     shader.uniforms.alpineOffset = {
       value: new THREE.Vector2(originX, originZ),
     };
@@ -46,7 +49,7 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
       .join("\n");
     // 道路の既存頂点色（#a6a28e）を保持し、畑の色で舗装を塗り潰さない。
     shader.fragmentShader =
-      "varying vec2 alpineXZ;\n" +
+      "varying vec2 alpineXZ;\nuniform float groundDetails;\n" +
       groundDetailFunctions +
       shader.fragmentShader.replace(
         "#include <color_fragment>",
@@ -56,20 +59,28 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
       vec3 terrainColor = diffuseColor.rgb;
       float road = smoothstep(0.55, 0.67, vColor.b / max(vColor.r, 0.0001));
       float crop = 0.0;
+      ${environmentPlazaShader}
       ${fields}
       diffuseColor.rgb = mix(diffuseColor.rgb, terrainColor, road);
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(${new THREE.Color("#98957d").toArray().join(",")}), environmentPlaza * (1.0 - road));
       float broad = sin(p.x * 0.09 + sin(p.y * 0.05)) * sin(p.y * 0.07);
       float rowCoord = p.x + p.y * 0.18;
       float rows = sin(rowCoord * 7.0) * exp(-fwidth(rowCoord) * 2.0);
       diffuseColor.rgb *= 0.95 + broad * 0.045 + rows * crop * (1.0 - road) * 0.065;
+      vec3 environmentBaseColor = diffuseColor.rgb;
       ${detail.color}
+      float houseFoot = 1.0 - smoothstep(5.0, 10.0, length(p - vec2(-19.6, -83.6)));
+      diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.91, 0.84, 0.7), houseFoot * (1.0 - road) * 0.22);
+      diffuseColor.rgb = mix(environmentBaseColor, diffuseColor.rgb, groundDetails);
     `,
       );
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <normal_fragment_maps>",
-      "#include <normal_fragment_maps>\n" + detail.normal,
+      "#include <normal_fragment_maps>\nif (groundDetails > 0.5) {" +
+        detail.normal +
+        "}",
     );
   };
-  material.customProgramCacheKey = () => "alpine-surface-v2";
+  material.customProgramCacheKey = () => "alpine-surface-v4";
   return material;
 }

@@ -1,0 +1,683 @@
+{
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "antialias": true,
+    "msaaSamples": 4,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "sampleWindowMs": 10000,
+  "method": "Distinct rendered frames; nearest-rank median/p95/min/max. Three consecutive 10-second windows per view; not independent cold loads. CPU renderMs is submission time. Initial view state is a loading snapshot, not a load-duration distribution.",
+  "loading": [
+    {
+      "view": "house-detail",
+      "state": {
+        "engine": {
+          "mode": "PLAY",
+          "frame": 13
+        },
+        "machine": {
+          "id": "sample-alpine-village-machine",
+          "physicsStep": 76,
+          "position": [
+            6,
+            11.951764106750488,
+            60
+          ],
+          "simulationPosition": [
+            6,
+            11.951764106750488,
+            60
+          ],
+          "worldOrigin": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            9.191572850064667e-12,
+            0,
+            0,
+            1
+          ],
+          "velocity": [
+            0,
+            -0.0667409747838974,
+            7.350912752308349e-15
+          ],
+          "speed": 0.0667409747838974,
+          "groundedWheelCount": 4,
+          "controls": {
+            "throttle": 0,
+            "steering": 0
+          }
+        },
+        "camera": {
+          "position": [
+            -30.03343694800744,
+            17.236383436954466,
+            -66.94662948683427
+          ],
+          "target": [
+            -19.6,
+            16,
+            -83.6
+          ],
+          "followMode": "instant"
+        },
+        "world": {
+          "currentChunk": "0,0",
+          "loadedRenderChunks": 169,
+          "loadedPhysicsChunks": 49,
+          "readyQueues": {
+            "render": 11,
+            "physics": 0
+          },
+          "generationQueue": 138,
+          "workerQueued": 138,
+          "workerInFlight": 4,
+          "cacheHitRate": 0.8181818181818182,
+          "rebaseCount": 0
+        },
+        "renderer": {
+          "activeVaporParticles": 0,
+          "activeGroundSmokeParticles": 0,
+          "vaporEmitters": 0,
+          "groundSmokeEmitters": 4,
+          "drawCalls": 47,
+          "triangles": 231819,
+          "geometries": 63,
+          "textures": 18,
+          "gpuTimingMs": 173.140942
+        },
+        "frame": {
+          "rafMs": 183.30000000000018,
+          "cpuWorkMs": 37.400000005960464,
+          "physicsMs": 9.900000005960464,
+          "renderMs": 27.099999994039536,
+          "streamingRequestMs": 0,
+          "streamingCommitMs": 0
+        }
+      }
+    },
+    {
+      "view": "village-eye",
+      "state": {
+        "engine": {
+          "mode": "PLAY",
+          "frame": 323
+        },
+        "machine": {
+          "id": "sample-alpine-village-machine",
+          "physicsStep": 1927,
+          "position": [
+            6,
+            11.950977325439453,
+            60
+          ],
+          "simulationPosition": [
+            6,
+            11.950977325439453,
+            60
+          ],
+          "worldOrigin": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            9.191572850064667e-12,
+            0,
+            0,
+            1
+          ],
+          "velocity": [
+            0,
+            -0.061257995665073395,
+            3.1065761844653e-16
+          ],
+          "speed": 0.061257995665073395,
+          "groundedWheelCount": 4,
+          "controls": {
+            "throttle": 0,
+            "steering": 0
+          }
+        },
+        "camera": {
+          "position": [
+            38.99659198471117,
+            16.70364048672879,
+            -7.073272328709848
+          ],
+          "target": [
+            37,
+            14,
+            -50
+          ],
+          "followMode": "instant"
+        },
+        "world": {
+          "currentChunk": "0,0",
+          "loadedRenderChunks": 194,
+          "loadedPhysicsChunks": 49,
+          "readyQueues": {
+            "render": 32,
+            "physics": 0
+          },
+          "generationQueue": 0,
+          "workerQueued": 0,
+          "workerInFlight": 0,
+          "cacheHitRate": 0.13043478260869565,
+          "rebaseCount": 0
+        },
+        "renderer": {
+          "activeVaporParticles": 0,
+          "activeGroundSmokeParticles": 0,
+          "vaporEmitters": 0,
+          "groundSmokeEmitters": 4,
+          "drawCalls": 375,
+          "triangles": 458464,
+          "geometries": 161,
+          "textures": 19,
+          "gpuTimingMs": 327.956132
+        },
+        "frame": {
+          "rafMs": 33.30000000000291,
+          "cpuWorkMs": 13.5,
+          "physicsMs": 1,
+          "renderMs": 12.299999997019768,
+          "streamingRequestMs": 0,
+          "streamingCommitMs": 0
+        }
+      }
+    }
+  ],
+  "views": [
+    {
+      "view": "house-detail",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 31,
+        "median": 298,
+        "p95": 298,
+        "min": 298,
+        "max": 298
+      },
+      "triangles": {
+        "samples": 31,
+        "median": 400065,
+        "p95": 400065,
+        "min": 400065,
+        "max": 400065
+      },
+      "geometries": {
+        "samples": 31,
+        "median": 134,
+        "p95": 134,
+        "min": 134,
+        "max": 134
+      },
+      "textures": {
+        "samples": 31,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 31,
+        "median": 307.032093,
+        "p95": 337.799674,
+        "min": 295.594758,
+        "max": 394.293472
+      },
+      "rafMs": {
+        "samples": 31,
+        "median": 316.6999999999971,
+        "p95": 350,
+        "min": 300.09999999999854,
+        "max": 416.6999999999971
+      },
+      "renderMs": {
+        "samples": 31,
+        "median": 5.199999988079071,
+        "p95": 7.700000002980232,
+        "min": 3.5999999940395355,
+        "max": 9
+      },
+      "streamingRequestMs": {
+        "samples": 31,
+        "median": 0,
+        "p95": 0.10000000894069672,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 31,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 201429974,
+        "totalJSHeapSize": 242554486,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 329,
+        "geometries": 341,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 21
+      }
+    },
+    {
+      "view": "house-detail",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 30,
+        "median": 298,
+        "p95": 298,
+        "min": 298,
+        "max": 298
+      },
+      "triangles": {
+        "samples": 30,
+        "median": 400065,
+        "p95": 400065,
+        "min": 400065,
+        "max": 400065
+      },
+      "geometries": {
+        "samples": 30,
+        "median": 134,
+        "p95": 134,
+        "min": 134,
+        "max": 134
+      },
+      "textures": {
+        "samples": 30,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 30,
+        "median": 313.749475,
+        "p95": 385.180283,
+        "min": 303.822035,
+        "max": 584.069588
+      },
+      "rafMs": {
+        "samples": 30,
+        "median": 333.29999999999563,
+        "p95": 383.3000000000029,
+        "min": 316.59999999999127,
+        "max": 600
+      },
+      "renderMs": {
+        "samples": 30,
+        "median": 5.399999991059303,
+        "p95": 9,
+        "min": 3.7999999970197678,
+        "max": 13.700000002980232
+      },
+      "streamingRequestMs": {
+        "samples": 30,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 30,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 180940105,
+        "totalJSHeapSize": 242816681,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 329,
+        "geometries": 341,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 21
+      }
+    },
+    {
+      "view": "house-detail",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 31,
+        "median": 298,
+        "p95": 298,
+        "min": 298,
+        "max": 298
+      },
+      "triangles": {
+        "samples": 31,
+        "median": 400065,
+        "p95": 400065,
+        "min": 400065,
+        "max": 400065
+      },
+      "geometries": {
+        "samples": 31,
+        "median": 134,
+        "p95": 134,
+        "min": 134,
+        "max": 134
+      },
+      "textures": {
+        "samples": 31,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 31,
+        "median": 308.368892,
+        "p95": 337.398432,
+        "min": 303.361769,
+        "max": 362.645929
+      },
+      "rafMs": {
+        "samples": 31,
+        "median": 316.70000000001164,
+        "p95": 350,
+        "min": 299.90000000000873,
+        "max": 383.3999999999942
+      },
+      "renderMs": {
+        "samples": 31,
+        "median": 5.700000002980232,
+        "p95": 8.299999997019768,
+        "min": 3.5,
+        "max": 8.600000008940697
+      },
+      "streamingRequestMs": {
+        "samples": 31,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 31,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 193674794,
+        "totalJSHeapSize": 243078874,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 329,
+        "geometries": 341,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 21
+      }
+    },
+    {
+      "view": "village-eye",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 24,
+        "median": 369,
+        "p95": 369,
+        "min": 369,
+        "max": 369
+      },
+      "triangles": {
+        "samples": 24,
+        "median": 435564,
+        "p95": 435564,
+        "min": 435564,
+        "max": 435564
+      },
+      "geometries": {
+        "samples": 24,
+        "median": 172,
+        "p95": 172,
+        "min": 172,
+        "max": 172
+      },
+      "textures": {
+        "samples": 24,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 24,
+        "median": 412.83688,
+        "p95": 455.513115,
+        "min": 403.559489,
+        "max": 484.448904
+      },
+      "rafMs": {
+        "samples": 24,
+        "median": 416.70000000001164,
+        "p95": 466.6000000000058,
+        "min": 416.5999999999767,
+        "max": 500
+      },
+      "renderMs": {
+        "samples": 24,
+        "median": 7,
+        "p95": 8.5,
+        "min": 4.200000002980232,
+        "max": 10.200000002980232
+      },
+      "streamingRequestMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 207129726,
+        "totalJSHeapSize": 254646854,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 364,
+        "geometries": 379,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 16
+      }
+    },
+    {
+      "view": "village-eye",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 24,
+        "median": 369,
+        "p95": 369,
+        "min": 369,
+        "max": 369
+      },
+      "triangles": {
+        "samples": 24,
+        "median": 435564,
+        "p95": 435564,
+        "min": 435564,
+        "max": 435564
+      },
+      "geometries": {
+        "samples": 24,
+        "median": 172,
+        "p95": 172,
+        "min": 172,
+        "max": 172
+      },
+      "textures": {
+        "samples": 24,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 24,
+        "median": 410.388048,
+        "p95": 436.523086,
+        "min": 394.69877,
+        "max": 437.036422
+      },
+      "rafMs": {
+        "samples": 24,
+        "median": 416.70000000001164,
+        "p95": 450,
+        "min": 399.8999999999942,
+        "max": 450
+      },
+      "renderMs": {
+        "samples": 24,
+        "median": 5.700000002980232,
+        "p95": 9.200000002980232,
+        "min": 4.200000002980232,
+        "max": 10.700000002980232
+      },
+      "streamingRequestMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 210331725,
+        "totalJSHeapSize": 254646905,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 364,
+        "geometries": 379,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 16
+      }
+    },
+    {
+      "view": "village-eye",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 24,
+        "median": 369,
+        "p95": 369,
+        "min": 369,
+        "max": 369
+      },
+      "triangles": {
+        "samples": 24,
+        "median": 435564,
+        "p95": 435564,
+        "min": 435564,
+        "max": 435564
+      },
+      "geometries": {
+        "samples": 24,
+        "median": 172,
+        "p95": 172,
+        "min": 172,
+        "max": 172
+      },
+      "textures": {
+        "samples": 24,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 24,
+        "median": 408.777576,
+        "p95": 423.113599,
+        "min": 399.262119,
+        "max": 435.938471
+      },
+      "rafMs": {
+        "samples": 24,
+        "median": 416.70000000001164,
+        "p95": 433.4000000000233,
+        "min": 400,
+        "max": 450
+      },
+      "renderMs": {
+        "samples": 24,
+        "median": 5.9000000059604645,
+        "p95": 8,
+        "min": 4.299999997019768,
+        "max": 8.200000002980232
+      },
+      "streamingRequestMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 186051367,
+        "totalJSHeapSize": 245570695,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 364,
+        "geometries": 379,
+        "textures": 18,
+        "grassInstances": 120814,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 16
+      }
+    }
+  ],
+  "diagnostics": []
+}

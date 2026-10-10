@@ -1,0 +1,61 @@
+{
+  "branch": "feat/environment-fidelity-optimization",
+  "baselineCommit": "44dff8baed69b8fadfb670ae424152e1281e2e62",
+  "checks": {
+    "typecheck": "passed",
+    "lintAndCycles": "passed",
+    "tests": {
+      "status": "passed",
+      "files": 49,
+      "tests": 388,
+      "unitFiles": 34,
+      "unitTests": 300,
+      "integrationFiles": 15,
+      "integrationTests": 88
+    },
+    "build": "passed; final standalone Studio/Player/Server build",
+    "sampleWorldsPrepare": "passed",
+    "sampleWorldsValidate": {
+      "status": "passed",
+      "worlds": 9,
+      "chunksPerWorld": 100
+    },
+    "fullE2E": {
+      "status": "passed",
+      "tests": 50,
+      "durationMinutes": 19.9
+    },
+    "exactEyeBrowser": {
+      "baseline": "passed",
+      "final": "passed",
+      "heightAboveGroundMeters": 1.7117723133990328
+    },
+    "alphaBrowser": {
+      "status": "passed",
+      "tests": 4,
+      "durationMinutes": 5.5,
+      "cutoffs": [
+        0.4,
+        0.5,
+        0.6
+      ],
+      "verifiedMSAASamples": [
+        4,
+        0
+      ]
+    }
+  },
+  "initialE2EAttempt": {
+    "status": "interrupted by agent to correct eye-level observation",
+    "passed": 10,
+    "interrupted": 1,
+    "notRun": 39
+  },
+  "hardwareGPU": "unverified; ANGLE SwiftShader software backend",
+  "logs": "verification/",
+  "legacyEvidenceCleanup": {
+    "restoredTrackedFiles": 38,
+    "relocatedUntrackedFiles": 2,
+    "output": "test-results/full-e2e-legacy-artifacts/"
+  }
+}

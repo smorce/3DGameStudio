@@ -13,7 +13,7 @@ export type EnvironmentSurface =
   | "glass";
 
 /** 外部画像を使わない、版固定の決定的な素材レシピ。色画像だけがsRGB。 */
-export const environmentRecipeVersion = 1;
+export const environmentRecipeVersion = 2;
 export function surfacePixels(surface: EnvironmentSurface, size = 128) {
   const color = new Uint8Array(size * size * 4);
   const normal = new Uint8Array(size * size * 4);
@@ -35,6 +35,8 @@ export function surfacePixels(surface: EnvironmentSurface, size = 128) {
     const grain = Math.sin(u * Math.PI * 32 + Math.sin(v * Math.PI * 4) * 1.5);
     if (surface === "bark" || surface === "wood")
       return grain * 0.6 + Math.sin(u * Math.PI * 76) * 0.15;
+    if (surface === "glass")
+      return 0.12 * Math.exp(-(((u + v - 0.85) * 5) ** 2)) - v * 0.06;
     if (surface === "plaster") return Math.sin(x * 9.3 + y * 17.7) * 0.025;
     if (surface === "stone" || surface === "roof") {
       const rows = surface === "stone" ? 4 : 8;
@@ -49,22 +51,36 @@ export function surfacePixels(surface: EnvironmentSurface, size = 128) {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4,
         h = height(x, y);
-      const noise = (Math.sin(x * 127.1 + y * 311.7) * 43758.5453) % 1;
+      const hash = (a: number, b: number) => {
+        const n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+        return n - Math.floor(n);
+      };
+      const noise = hash(x, y) - 0.5;
+      const row = Math.floor((y / size) * (surface === "roof" ? 8 : 4));
+      const cell = Math.floor((x / size) * 4 + (row % 2) * 0.5);
+      const variation =
+        surface === "stone" || surface === "roof"
+          ? (hash(cell, row) - 0.5) * 0.28
+          : Math.sin((x / size) * 7 + Math.sin((y / size) * 5)) * 0.055;
       let alpha = 255;
       if (surface === "leaf" || surface === "needle" || surface === "grass") {
         alpha = 0;
         // 葉の小群を一枚のカードに収め、透明な余白を抑える。
-        const count = surface === "grass" ? 8 : 22;
+        const count = surface === "grass" ? 8 : surface === "leaf" ? 62 : 22;
         for (let k = 0; k < count; k++) {
           const cx = 0.12 + ((k * 0.61803398875) % 1) * 0.76;
           const cy =
-            surface === "grass" ? 0.58 : 0.12 + ((k * 0.381966) % 1) * 0.76;
+            surface === "grass"
+              ? 0.58
+              : 0.12 +
+                ((k * (surface === "leaf" ? 0.754877666 : 0.381966)) % 1) *
+                  0.76;
           const dx = x / size - cx,
             dy = y / size - cy;
           const rx =
-            surface === "grass" ? 0.02 : surface === "needle" ? 0.035 : 0.1;
+            surface === "grass" ? 0.02 : surface === "needle" ? 0.035 : 0.058;
           const ry =
-            surface === "grass" ? 0.41 : surface === "needle" ? 0.22 : 0.075;
+            surface === "grass" ? 0.41 : surface === "needle" ? 0.22 : 0.042;
           if (
             (dx + dy * Math.sin(k * 2.4) * 0.5) ** 2 / rx ** 2 +
               dy ** 2 / ry ** 2 <
@@ -76,11 +92,16 @@ export function surfacePixels(surface: EnvironmentSurface, size = 128) {
       for (let c = 0; c < 3; c++)
         color[i + c] = Math.max(
           0,
-          Math.min(255, palette[surface][c] * (0.92 + h * 0.18 + noise * 0.06)),
+          Math.min(
+            255,
+            palette[surface][c] * (0.96 + h * 0.18 + noise * 0.09 + variation),
+          ),
         );
       color[i + 3] = alpha;
-      const dx = (height(x + 1, y) - height(x - 1, y)) * 0.65;
-      const dy = (height(x, y + 1) - height(x, y - 1)) * 0.65;
+      const dx =
+        surface === "glass" ? 0 : (height(x + 1, y) - height(x - 1, y)) * 0.65;
+      const dy =
+        surface === "glass" ? 0 : (height(x, y + 1) - height(x, y - 1)) * 0.65;
       const len = Math.hypot(dx, dy, 1);
       normal.set(
         [128 - (dx / len) * 127, 128 - (dy / len) * 127, 128 + 127 / len, 255],

@@ -1,0 +1,686 @@
+{
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "sampleWindowMs": 10000,
+  "method": "Distinct rendered frames; nearest-rank median/p95/min/max. Three consecutive 10-second windows per view; not independent cold loads. CPU renderMs is submission time. Initial view state is a loading snapshot, not a load-duration distribution.",
+  "loading": [
+    {
+      "view": "forest-path",
+      "state": {
+        "engine": {
+          "mode": "PLAY",
+          "frame": 13
+        },
+        "machine": {
+          "id": "sample-alpine-village-machine",
+          "physicsStep": 74,
+          "position": [
+            6,
+            11.951921463012695,
+            60
+          ],
+          "simulationPosition": [
+            6,
+            11.951921463012695,
+            60
+          ],
+          "worldOrigin": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            9.191572850064667e-12,
+            0,
+            0,
+            1
+          ],
+          "velocity": [
+            0,
+            -0.06271861493587494,
+            7.376056078314645e-15
+          ],
+          "speed": 0.06271861493587494,
+          "groundedWheelCount": 4,
+          "controls": {
+            "throttle": 0,
+            "steering": 0
+          }
+        },
+        "camera": {
+          "position": [
+            72.09866357858641,
+            19.296352770661777,
+            -137.03157234514765
+          ],
+          "target": [
+            122,
+            15.999999999999996,
+            -153
+          ],
+          "followMode": "instant"
+        },
+        "world": {
+          "currentChunk": "0,0",
+          "loadedRenderChunks": 169,
+          "loadedPhysicsChunks": 49,
+          "readyQueues": {
+            "render": 13,
+            "physics": 0
+          },
+          "generationQueue": 147,
+          "workerQueued": 147,
+          "workerInFlight": 4,
+          "cacheHitRate": 0.8571428571428571,
+          "rebaseCount": 0
+        },
+        "renderer": {
+          "activeVaporParticles": 0,
+          "activeGroundSmokeParticles": 0,
+          "vaporEmitters": 0,
+          "groundSmokeEmitters": 4,
+          "drawCalls": 37,
+          "triangles": 237457,
+          "geometries": 64,
+          "textures": 5,
+          "gpuTimingMs": 125.555238
+        },
+        "frame": {
+          "rafMs": 150.00000000000045,
+          "cpuWorkMs": 77.40000000596046,
+          "physicsMs": 60.900000005960464,
+          "renderMs": 15.599999994039536,
+          "streamingRequestMs": 0,
+          "streamingCommitMs": 0
+        }
+      }
+    }
+  ],
+  "views": [
+    {
+      "view": "forest-path",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 27,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 27,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 27,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 27,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 27,
+        "median": 364.216282,
+        "p95": 401.063926,
+        "min": 356.892032,
+        "max": 452.022575
+      },
+      "rafMs": {
+        "samples": 27,
+        "median": 383.29999999999563,
+        "p95": 399.8999999999942,
+        "min": 366.59999999999127,
+        "max": 466.70000000001164
+      },
+      "renderMs": {
+        "samples": 27,
+        "median": 5.200000002980232,
+        "p95": 7.399999991059303,
+        "min": 3.7999999970197678,
+        "max": 7.399999991059303
+      },
+      "streamingRequestMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0.10000000894069672,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 197683479,
+        "totalJSHeapSize": 243333535,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 337,
+        "geometries": 347,
+        "textures": 19,
+        "grassInstances": 121168,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 22
+      }
+    },
+    {
+      "view": "forest-path",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 26,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 26,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 368.358517,
+        "p95": 426.8346,
+        "min": 349.546536,
+        "max": 484.046987
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 383.3999999999942,
+        "p95": 450,
+        "min": 349.8999999999942,
+        "max": 483.3000000000029
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.5999999940395355,
+        "p95": 7.799999997019768,
+        "min": 3.7000000029802322,
+        "max": 9
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 202719693,
+        "totalJSHeapSize": 243595733,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 337,
+        "geometries": 347,
+        "textures": 19,
+        "grassInstances": 121168,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 22
+      }
+    },
+    {
+      "view": "forest-path",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 26,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 26,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 372.900734,
+        "p95": 413.032149,
+        "min": 357.033862,
+        "max": 418.610172
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 383.3000000000029,
+        "p95": 433.3000000000029,
+        "min": 366.59999999999127,
+        "max": 433.3999999999942
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.200000002980232,
+        "p95": 7.5,
+        "min": 3.699999988079071,
+        "max": 8.699999988079071
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": {
+        "usedJSHeapSize": 172216782,
+        "totalJSHeapSize": 243595774,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "resources": {
+        "materials": 337,
+        "geometries": 347,
+        "textures": 19,
+        "grassInstances": 121168,
+        "grassPatches": 1026,
+        "visibleGrassPatches": 22
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "view": "forest-path",
+      "disabled": "trees",
+      "drawCalls": {
+        "samples": 45,
+        "median": 85,
+        "p95": 85,
+        "min": 85,
+        "max": 85
+      },
+      "triangles": {
+        "samples": 45,
+        "median": 308103,
+        "p95": 308103,
+        "min": 308103,
+        "max": 308103
+      },
+      "geometries": {
+        "samples": 45,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 45,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 45,
+        "median": 212.752944,
+        "p95": 229.513163,
+        "min": 204.963765,
+        "max": 233.918758
+      },
+      "rafMs": {
+        "samples": 45,
+        "median": 216.70000000001164,
+        "p95": 250,
+        "min": 216.5,
+        "max": 250
+      },
+      "renderMs": {
+        "samples": 45,
+        "median": 4.299999997019768,
+        "p95": 5.700000002980232,
+        "min": 3.4000000059604645,
+        "max": 6.100000008940697
+      },
+      "streamingRequestMs": {
+        "samples": 45,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 45,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "view": "forest-path",
+      "disabled": "grass",
+      "drawCalls": {
+        "samples": 29,
+        "median": 251,
+        "p95": 251,
+        "min": 251,
+        "max": 251
+      },
+      "triangles": {
+        "samples": 29,
+        "median": 379988,
+        "p95": 379988,
+        "min": 379988,
+        "max": 379988
+      },
+      "geometries": {
+        "samples": 29,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 29,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 29,
+        "median": 341.020474,
+        "p95": 349.362617,
+        "min": 331.016016,
+        "max": 349.469252
+      },
+      "rafMs": {
+        "samples": 29,
+        "median": 350,
+        "p95": 366.70000000001164,
+        "min": 333.1999999999971,
+        "max": 366.70000000001164
+      },
+      "renderMs": {
+        "samples": 29,
+        "median": 5.5,
+        "p95": 8,
+        "min": 4,
+        "max": 8.100000008940697
+      },
+      "streamingRequestMs": {
+        "samples": 29,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 29,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "view": "forest-path",
+      "disabled": "buildingDetails",
+      "drawCalls": {
+        "samples": 27,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 27,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 27,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 27,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 27,
+        "median": 366.576074,
+        "p95": 385.983853,
+        "min": 353.75037,
+        "max": 406.266969
+      },
+      "rafMs": {
+        "samples": 27,
+        "median": 383.29999999998836,
+        "p95": 400,
+        "min": 366.5999999999767,
+        "max": 416.70000000001164
+      },
+      "renderMs": {
+        "samples": 27,
+        "median": 5.699999988079071,
+        "p95": 8.400000005960464,
+        "min": 4.200000002980232,
+        "max": 9.900000005960464
+      },
+      "streamingRequestMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "view": "forest-path",
+      "disabled": "groundDetails",
+      "drawCalls": {
+        "samples": 27,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 27,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 27,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 27,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 27,
+        "median": 369.637026,
+        "p95": 392.122835,
+        "min": 359.643529,
+        "max": 419.248148
+      },
+      "rafMs": {
+        "samples": 27,
+        "median": 383.29999999998836,
+        "p95": 400.1000000000058,
+        "min": 366.6000000000058,
+        "max": 433.29999999998836
+      },
+      "renderMs": {
+        "samples": 27,
+        "median": 5.5999999940395355,
+        "p95": 8.400000005960464,
+        "min": 4,
+        "max": 8.799999997019768
+      },
+      "streamingRequestMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "view": "forest-path",
+      "disabled": "shadows",
+      "drawCalls": {
+        "samples": 37,
+        "median": 273,
+        "p95": 273,
+        "min": 273,
+        "max": 273
+      },
+      "triangles": {
+        "samples": 37,
+        "median": 424483,
+        "p95": 424483,
+        "min": 424483,
+        "max": 424483
+      },
+      "geometries": {
+        "samples": 37,
+        "median": 144,
+        "p95": 144,
+        "min": 144,
+        "max": 144
+      },
+      "textures": {
+        "samples": 37,
+        "median": 6,
+        "p95": 6,
+        "min": 6,
+        "max": 6
+      },
+      "gpuTimingMs": {
+        "samples": 37,
+        "median": 264.018837,
+        "p95": 283.730676,
+        "min": 257.769729,
+        "max": 284.701481
+      },
+      "rafMs": {
+        "samples": 37,
+        "median": 266.70000000001164,
+        "p95": 299.8999999999942,
+        "min": 266.5999999999767,
+        "max": 300
+      },
+      "renderMs": {
+        "samples": 37,
+        "median": 5.299999997019768,
+        "p95": 8,
+        "min": 3.5,
+        "max": 8
+      },
+      "streamingRequestMs": {
+        "samples": 37,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 37,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      }
+    }
+  ]
+}

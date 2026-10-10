@@ -12,17 +12,35 @@ const cameras: { name: string; position: Vec3; target: Vec3 }[] = [
 test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較する", async ({
   page,
 }, info) => {
-  test.setTimeout(240000);
+  const fidelity = process.env.FIDELITY_CAPTURE === "1";
+  test.setTimeout(fidelity ? 1200000 : 240000);
+  const sampleWindowMs = fidelity ? 10000 : 2000;
+  const repetitions = fidelity ? 3 : 1;
   const phase = process.env.QUALITY_PHASE ?? "phase4";
+  const extraCameras: typeof cameras = [
+    {
+      name: "house-detail",
+      position: [-30, 14, -67],
+      target: [-19.6, 16, -83.6],
+    },
+    { name: "village-eye", position: [39, 13, -7], target: [37, 14, -50] },
+  ];
   const selected =
     phase === "phase1"
       ? cameras.slice(0, 1)
       : phase === "phase2"
         ? cameras.slice(1, 2)
         : phase === "phase3"
-          ? cameras.slice(2)
+          ? fidelity
+            ? []
+            : cameras.slice(2)
           : cameras;
   const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error" && /shader|WebGL/i.test(message.text()))
+      errors.push(message.text());
+  });
   page.on("response", (response) => {
     if (response.url().endsWith(".glb") && !response.ok())
       errors.push(`${response.status()} ${response.url()}`);
@@ -33,6 +51,24 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
   await expect(page.getByTestId("runtime-position")).toBeVisible();
   const states = [];
+  const loading = [];
+  const diagnostics = [];
+  if (fidelity && phase !== "phase1") selected.push(...extraCameras);
+  if (process.env.FIDELITY_FOREST_ONLY === "1")
+    selected.splice(0, selected.length, cameras[0], ...extraCameras);
+  if (process.env.FIDELITY_EXTRA_ONLY === "1") {
+    selected.splice(0, selected.length, ...extraCameras);
+  }
+  if (
+    fidelity &&
+    phase === "phase4" &&
+    process.env.FIDELITY_EXTRA_ONLY !== "1" &&
+    process.env.FIDELITY_FOREST_ONLY !== "1"
+  )
+    selected.push(
+      { name: "overview", position: [0, 170, 300], target: [0, 15, -100] },
+      { name: "aerial", position: [0, 450, 0], target: [0, 12, -80] },
+    );
   for (const view of selected) {
     await page.evaluate(
       (view) =>
@@ -60,40 +96,156 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
         { timeout: 30000 },
       )
       .toBeGreaterThan(0);
-    await page.waitForTimeout(3500);
-    const samples = await page.evaluate(async () => {
-      const api = (
-        window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
-      ).__MACHINE_STUDIO_AGENT__;
-      const samples = [],
-        deadline = performance.now() + 2000;
-      while (performance.now() < deadline) {
-        await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => resolve()),
-        );
-        samples.push(api.getState());
-      }
-      return samples;
-    });
-    const memory = await page.evaluate(() => {
-      const memory = (
-        performance as Performance & {
-          memory?: {
-            usedJSHeapSize: number;
-            totalJSHeapSize: number;
-            jsHeapSizeLimit: number;
-          };
-        }
-      ).memory;
-      return memory
-        ? {
-            usedJSHeapSize: memory.usedJSHeapSize,
-            totalJSHeapSize: memory.totalJSHeapSize,
-            jsHeapSizeLimit: memory.jsHeapSizeLimit,
+    loading.push({
+      view: view.name,
+      state: await page.evaluate(() =>
+        (
+          window as unknown as {
+            __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
           }
-        : null;
+        ).__MACHINE_STUDIO_AGENT__.getState(),
+      ),
     });
-    states.push({ view: view.name, samples, memory });
+    await page.waitForTimeout(fidelity ? 10000 : 3500);
+    if (fidelity) {
+      let previous = "",
+        stable = 0;
+      await expect
+        .poll(
+          async () => {
+            const status = await page.evaluate(() => {
+              const api = (
+                window as unknown as {
+                  __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+                }
+              ).__MACHINE_STUDIO_AGENT__;
+              const state = api.getState();
+              const debug = api.getWorldDesignDebug() as {
+                renderPending: number;
+              };
+              return {
+                pending: debug.renderPending,
+                chunks: state.world.loadedRenderChunks,
+                calls: state.renderer.drawCalls,
+                textures: state.renderer.textures,
+                queue: state.world.generationQueue,
+                workers: state.world.workerInFlight,
+              };
+            });
+            const signature = JSON.stringify(status);
+            stable =
+              status.pending === 0 &&
+              status.queue === 0 &&
+              status.workers === 0 &&
+              signature === previous
+                ? stable + 1
+                : 0;
+            previous = signature;
+            return stable;
+          },
+          { timeout: 180000, intervals: [2000] },
+        )
+        .toBeGreaterThanOrEqual(5);
+    }
+    for (let repetition = 0; repetition < repetitions; repetition++) {
+      const samples = await page.evaluate(async (sampleWindowMs) => {
+        const api = (
+          window as unknown as {
+            __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+          }
+        ).__MACHINE_STUDIO_AGENT__;
+        const samples = [],
+          deadline = performance.now() + sampleWindowMs;
+        while (performance.now() < deadline) {
+          await new Promise<void>((resolve) =>
+            requestAnimationFrame(() => resolve()),
+          );
+          samples.push(api.getState());
+        }
+        return samples;
+      }, sampleWindowMs);
+      const memory = await page.evaluate(() => {
+        const memory = (
+          performance as Performance & {
+            memory?: {
+              usedJSHeapSize: number;
+              totalJSHeapSize: number;
+              jsHeapSizeLimit: number;
+            };
+          }
+        ).memory;
+        return memory
+          ? {
+              usedJSHeapSize: memory.usedJSHeapSize,
+              totalJSHeapSize: memory.totalJSHeapSize,
+              jsHeapSizeLimit: memory.jsHeapSizeLimit,
+            }
+          : null;
+      });
+      const resources = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+            }
+          ).__MACHINE_STUDIO_AGENT__.getEnvironmentResources?.() ?? null,
+      );
+      states.push({ view: view.name, repetition, samples, memory, resources });
+    }
+    if (
+      fidelity &&
+      ["forest-path", "house-close", "village-square"].includes(view.name)
+    ) {
+      for (const category of [
+        "trees",
+        "grass",
+        "buildingDetails",
+        "groundDetails",
+        "shadows",
+      ] as const) {
+        await page.evaluate(
+          (category) =>
+            (
+              window as unknown as {
+                __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+              }
+            ).__MACHINE_STUDIO_AGENT__.setEnvironmentDiagnostics({
+              [category]: false,
+            }),
+          category,
+        );
+        await page.waitForTimeout(2000);
+        const samples = await page.evaluate(async () => {
+          const api = (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+            }
+          ).__MACHINE_STUDIO_AGENT__;
+          const samples = [],
+            deadline = performance.now() + 10000;
+          while (performance.now() < deadline) {
+            await new Promise<void>((resolve) =>
+              requestAnimationFrame(() => resolve()),
+            );
+            samples.push(api.getState());
+          }
+          return samples;
+        });
+        diagnostics.push({ view: view.name, disabled: category, samples });
+        await page.evaluate(
+          (category) =>
+            (
+              window as unknown as {
+                __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+              }
+            ).__MACHINE_STUDIO_AGENT__.setEnvironmentDiagnostics({
+              [category]: true,
+            }),
+          category,
+        );
+      }
+      await page.waitForTimeout(2000);
+    }
     await page
       .locator("canvas")
       .first()
@@ -102,6 +254,7 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
         style:
           "body * { visibility: hidden !important; } canvas { visibility: visible !important; }",
       });
+    console.log(`Captured ${view.name}`);
   }
   expect(errors).toEqual([]);
   const environment = await page.evaluate(() => {
@@ -111,6 +264,8 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       userAgent: navigator.userAgent,
       viewport: [innerWidth, innerHeight],
       pixelRatio: devicePixelRatio,
+      antialias: gl?.getContextAttributes()?.antialias ?? null,
+      msaaSamples: gl?.getParameter(gl.SAMPLES) ?? null,
       renderer: debug
         ? gl?.getParameter(debug.UNMASKED_RENDERER_WEBGL)
         : "unavailable",
@@ -123,7 +278,9 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
         phase,
         environment,
         backend: "Chromium ANGLE SwiftShader (software)",
-        sampleWindowMs: 2000,
+        sampleWindowMs,
+        loading,
+        diagnostics,
         runs: [{ id: "alpine-village", states }],
       },
       null,

@@ -1206,7 +1206,7 @@
     }
   },
   {
-    "id": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+    "id": "factory-e153d2bd08a7c76805a7d5fa9056c79e",
     "name": "building.quality.house (Environment procedural 0)",
     "type": "model",
     "source": {
@@ -1224,8 +1224,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/4b41d5cdbf853abef743ab00d30372bee2b4cb1c8829aaf7113a085807536e78.glb",
-      "runtime": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+      "original": "/api/files/sample-worlds/97d764e4d55c2e9ec811deb89fa4028744dfa8f405a43fb705f167874b826a73.glb",
+      "runtime": "/api/files/sample-worlds/2ec0e1e3df2a9633e5cfe0bc942e8ae725f6bd31e97d0710ac3d0fe3985cbec0.glb",
       "thumbnail": "/api/files/sample-worlds/4fc975a4f00406510f145b91618e91d174d3dad3b8bbbce58e9895e7489c6081.svg"
     },
     "processing": {
@@ -1258,9 +1258,9 @@
       "colliderBytes": 125961,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 217264,
-        "runtimeBytes": 62656,
-        "textureBytes": 1223339,
+        "sourceBytes": 215924,
+        "runtimeBytes": 57588,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
@@ -1271,24 +1271,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+          "file": "/api/files/sample-worlds/2ec0e1e3df2a9633e5cfe0bc942e8ae725f6bd31e97d0710ac3d0fe3985cbec0.glb",
           "triangles": 722,
           "distance": 0,
-          "bytes": 62656
+          "bytes": 57588
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+          "file": "/api/files/sample-worlds/2ec0e1e3df2a9633e5cfe0bc942e8ae725f6bd31e97d0710ac3d0fe3985cbec0.glb",
           "distance": 45,
           "triangles": 722,
-          "bytes": 62656
+          "bytes": 57588
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/d80b2056425de4d2ac874485a705f9a7b973fb197e087eabb1b5ecfa00a1aecc.glb",
+          "file": "/api/files/sample-worlds/8c855edf2e337425d5eb98eafd4cc0af6ebb3fc3aeb150f98c221365656e4d05.glb",
           "distance": 110,
           "triangles": 482,
-          "bytes": 50756
+          "bytes": 48136
         }
       ]
     },
@@ -1308,12 +1308,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617",
+      "contentHash": "2ec0e1e3df2a9633e5cfe0bc942e8ae725f6bd31e97d0710ac3d0fe3985cbec0",
       "status": "ready"
     }
   },
   {
-    "id": "factory-f839f89dd2a5f392d0e00b24522e6b4b",
+    "id": "factory-bd188fec154d4d13e5df99748c00fcab",
     "name": "building.quality.house (Environment procedural 1)",
     "type": "model",
     "source": {
@@ -1331,8 +1331,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/3c558aa609cdb790a36451cf35d69f85c4cb51074ea1603e6bb3f4b491a7fb15.glb",
-      "runtime": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+      "original": "/api/files/sample-worlds/1b2f573e3d1c62782da83211ef6435b94ff449551b01d15d93e8098dffbf19ca.glb",
+      "runtime": "/api/files/sample-worlds/9875fd509ff6b04607d879117bf49569e1831720451d925d38555e81f711863c.glb",
       "thumbnail": "/api/files/sample-worlds/6323e2218d0befdba8906c921217622890eff80abf2cebdd4b811864e6a63631.svg"
     },
     "processing": {
@@ -1365,9 +1365,9 @@
       "colliderBytes": 126159,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 217264,
-        "runtimeBytes": 62620,
-        "textureBytes": 1223339,
+        "sourceBytes": 215924,
+        "runtimeBytes": 57552,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
@@ -1378,24 +1378,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+          "file": "/api/files/sample-worlds/9875fd509ff6b04607d879117bf49569e1831720451d925d38555e81f711863c.glb",
           "triangles": 722,
           "distance": 0,
-          "bytes": 62620
+          "bytes": 57552
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+          "file": "/api/files/sample-worlds/9875fd509ff6b04607d879117bf49569e1831720451d925d38555e81f711863c.glb",
           "distance": 45,
           "triangles": 722,
-          "bytes": 62620
+          "bytes": 57552
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/5e279365512114b457a6a16d98d129f9099288c26e367ced8f43a74b0b9df687.glb",
+          "file": "/api/files/sample-worlds/1d3cb1f41347bf9665ffe76ef5a92119033ad2f686ca2a8e8b549f9dc4d0ad19.glb",
           "distance": 110,
           "triangles": 482,
-          "bytes": 50720
+          "bytes": 48100
         }
       ]
     },
@@ -1415,12 +1415,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47",
+      "contentHash": "9875fd509ff6b04607d879117bf49569e1831720451d925d38555e81f711863c",
       "status": "ready"
     }
   },
   {
-    "id": "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+    "id": "factory-7d8bf4a4007c1f79b5bdf219681c38fe",
     "name": "building.quality.house (Environment procedural 2)",
     "type": "model",
     "source": {
@@ -1438,8 +1438,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/6104bb21e358a446fac4306cfd63bc2bbe5ea443aff1c248a73cbb02ef5f081b.glb",
-      "runtime": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+      "original": "/api/files/sample-worlds/e9aeaed746e7127bce6265500c447a1ec91d50b9945218107792b6da11306582.glb",
+      "runtime": "/api/files/sample-worlds/7e62495fb803507509f2860e2ab917ebabae464c1cba67828353f1ea98235c47.glb",
       "thumbnail": "/api/files/sample-worlds/6921ef35386eade86a8c88599bae28795f360a63974d2b91e18a658270f9bae2.svg"
     },
     "processing": {
@@ -1472,9 +1472,9 @@
       "colliderBytes": 125961,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 217264,
-        "runtimeBytes": 62656,
-        "textureBytes": 1223339,
+        "sourceBytes": 215924,
+        "runtimeBytes": 57588,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
@@ -1485,24 +1485,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+          "file": "/api/files/sample-worlds/7e62495fb803507509f2860e2ab917ebabae464c1cba67828353f1ea98235c47.glb",
           "triangles": 722,
           "distance": 0,
-          "bytes": 62656
+          "bytes": 57588
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+          "file": "/api/files/sample-worlds/7e62495fb803507509f2860e2ab917ebabae464c1cba67828353f1ea98235c47.glb",
           "distance": 45,
           "triangles": 722,
-          "bytes": 62656
+          "bytes": 57588
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/45bc8bda3e47ddcbf9b0ae4e3523c4ab90b3932df39927d1a0ce8eebf4ec9ea8.glb",
+          "file": "/api/files/sample-worlds/bf59490dcf6cbc416a2c2553c072f748902a0ecc30e36bae2fb170f9beab98a7.glb",
           "distance": 110,
           "triangles": 482,
-          "bytes": 50756
+          "bytes": 48136
         }
       ]
     },
@@ -1522,7 +1522,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763",
+      "contentHash": "7e62495fb803507509f2860e2ab917ebabae464c1cba67828353f1ea98235c47",
       "status": "ready"
     }
   },
@@ -4905,7 +4905,7 @@
     }
   },
   {
-    "id": "factory-903549c34981a65a6511f7a9a30db555",
+    "id": "factory-5db4efbd5a9cd79351a6e7e8232d785d",
     "name": "nature.tree.quality.oak (Environment procedural 0)",
     "type": "model",
     "source": {
@@ -4923,9 +4923,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/384d43a3e3a26fa98c5ec455b149c8b8adeb65c60d7e67f272fd3bf8a986e926.glb",
-      "runtime": "/api/files/sample-worlds/6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba.glb",
-      "thumbnail": "/api/files/sample-worlds/2b4c90265968775167b4def13020dadb4fd581b1f030b7f25738084c3f35e571.svg"
+      "original": "/api/files/sample-worlds/43ebb87acbc1f9192e5e55db3af377e9609d89fbf713009e71048088a930fc90.glb",
+      "runtime": "/api/files/sample-worlds/6d9fd83baaae6a934bd4a8f64c818d9d70e11f5580ab423b7c62cb7ed05c234f.glb",
+      "thumbnail": "/api/files/sample-worlds/b23332f8b22a44e02da5be9c6126a44c52fc30df002a175dbdab66936dc19db8.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -4941,24 +4941,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.031332969665527,
+          -4.417694568634033,
           -0.008868837729096413,
-          -4.447725772857666
+          -4.006772041320801
         ],
         "max": [
-          3.7146170139312744,
-          9.306020736694336,
-          4.282085418701172
+          3.396970272064209,
+          9.559276580810547,
+          3.875267744064331
         ]
       },
-      "triangles": 2008,
+      "triangles": 1800,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 255272,
-        "runtimeBytes": 79908,
+        "sourceBytes": 236064,
+        "runtimeBytes": 78328,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -4970,24 +4970,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba.glb",
-          "triangles": 2008,
+          "file": "/api/files/sample-worlds/6d9fd83baaae6a934bd4a8f64c818d9d70e11f5580ab423b7c62cb7ed05c234f.glb",
+          "triangles": 1800,
           "distance": 0,
-          "bytes": 79908
+          "bytes": 78328
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/568d06de4b21ae95b22062af2e3be1b83636ce960cfdbd68d792eeac8c6c9337.glb",
+          "file": "/api/files/sample-worlds/f101d1c83135983c24373f69e37b58d31bea3263e13c737ff679714cc7e4775a.glb",
           "distance": 45,
-          "triangles": 1176,
-          "bytes": 46464
+          "triangles": 1228,
+          "bytes": 51072
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/aec73ede1e5c93a45dd7078f8fb36dc8f74bc1b8c7943966ac6c401cd8c4f88b.glb",
+          "file": "/api/files/sample-worlds/5eff2536fbf6d109f5dbf6e4d2d22d5533ba189b9d5928bd834978f82ac5baff.glb",
           "distance": 110,
           "triangles": 200,
-          "bytes": 11760
+          "bytes": 11740
         }
       ]
     },
@@ -5008,12 +5008,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba",
+      "contentHash": "6d9fd83baaae6a934bd4a8f64c818d9d70e11f5580ab423b7c62cb7ed05c234f",
       "status": "ready"
     }
   },
   {
-    "id": "factory-30cac5e1ebccc2fb3bef2f291a79b65d",
+    "id": "factory-ce5662bb21abdb620fafda9129901633",
     "name": "nature.tree.quality.oak (Environment procedural 1)",
     "type": "model",
     "source": {
@@ -5031,9 +5031,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/ad6541eb4cde276728fbedd535502b2e8c17f1dc7512888128aa655d1f89adce.glb",
-      "runtime": "/api/files/sample-worlds/9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f.glb",
-      "thumbnail": "/api/files/sample-worlds/6503c5d51ed2cffb05ac7e1ef2e7384cf6846caca5cf2b1ea2e7699b90abcad3.svg"
+      "original": "/api/files/sample-worlds/679fa49e6381fa2ab3b511783e96350ef9df920b385f2d59bbd50174eae47cc1.glb",
+      "runtime": "/api/files/sample-worlds/44b5184339ea77c80776dc8e67169b4e3bcc9e05e05d27904be05796ec1a013d.glb",
+      "thumbnail": "/api/files/sample-worlds/90bf3ac96990e6f17e905319c59938602b1ce4470154ff2cce637f02010cb141.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5049,24 +5049,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.218510150909424,
+          -4.2923903465271,
           -0.008868837729096413,
-          -4.066379070281982
+          -3.7211544513702393
         ],
         "max": [
-          4.453939914703369,
-          9.563530921936035,
-          4.127503395080566
+          4.344952583312988,
+          9.485105514526367,
+          3.8865973949432373
         ]
       },
-      "triangles": 2008,
+      "triangles": 1800,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 255272,
-        "runtimeBytes": 79828,
+        "sourceBytes": 236060,
+        "runtimeBytes": 78268,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5078,24 +5078,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f.glb",
-          "triangles": 2008,
+          "file": "/api/files/sample-worlds/44b5184339ea77c80776dc8e67169b4e3bcc9e05e05d27904be05796ec1a013d.glb",
+          "triangles": 1800,
           "distance": 0,
-          "bytes": 79828
+          "bytes": 78268
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/958b8877239557d5d9b5339a77a94eb7dd19fb55e828bdaf100a0a7c37f67f8d.glb",
+          "file": "/api/files/sample-worlds/11725703578b697a71a3de9e9a7c5941a25bbb1555f5a9edc01d354f99f678ae.glb",
           "distance": 45,
-          "triangles": 1176,
-          "bytes": 46416
+          "triangles": 1228,
+          "bytes": 51004
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/9c2c15aecc24254d629549ea73437822e2918966027c0a21e898d9d3bbc37ee8.glb",
+          "file": "/api/files/sample-worlds/82751d75d0336834b7945455fda83adf7b5e01755e471ecae01848a7ce088e23.glb",
           "distance": 110,
           "triangles": 200,
-          "bytes": 11752
+          "bytes": 11724
         }
       ]
     },
@@ -5116,12 +5116,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f",
+      "contentHash": "44b5184339ea77c80776dc8e67169b4e3bcc9e05e05d27904be05796ec1a013d",
       "status": "ready"
     }
   },
   {
-    "id": "factory-797402eb1c6219bf3ad0aa49873c0631",
+    "id": "factory-20b104bd775f07f4bb1ffeb1ace7999a",
     "name": "nature.tree.quality.oak (Environment procedural 2)",
     "type": "model",
     "source": {
@@ -5139,9 +5139,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/f922a577510862cb0cca388dfa2f5c28af831181d79feeb3e88499aea97723c9.glb",
-      "runtime": "/api/files/sample-worlds/ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307.glb",
-      "thumbnail": "/api/files/sample-worlds/6a2183f7bb280b8b3518edb5e219084d3e72fe17418c91886d8579908efa0ad0.svg"
+      "original": "/api/files/sample-worlds/84cd2d746405a4a387dda35714ac7ebb1b87dcf11ba8e5b35536e54bd8c75c76.glb",
+      "runtime": "/api/files/sample-worlds/b76e73cf2ec9066cec1c1f708c88bd797b5be4f4175fbf341410ed5288e4e5ca.glb",
+      "thumbnail": "/api/files/sample-worlds/9f8c13470d27163e0f6e568e57379456e87b49759a53def6e07b32489705c9cf.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5157,24 +5157,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.9074196815490723,
+          -3.853151798248291,
           -0.008868837729096413,
-          -3.9036850929260254
+          -3.6027538776397705
         ],
         "max": [
-          4.121160507202148,
-          9.021073341369629,
-          4.083071708679199
+          3.985546588897705,
+          9.26829719543457,
+          3.867314577102661
         ]
       },
-      "triangles": 2008,
+      "triangles": 1800,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 255272,
-        "runtimeBytes": 79856,
+        "sourceBytes": 236064,
+        "runtimeBytes": 78344,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5186,24 +5186,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307.glb",
-          "triangles": 2008,
+          "file": "/api/files/sample-worlds/b76e73cf2ec9066cec1c1f708c88bd797b5be4f4175fbf341410ed5288e4e5ca.glb",
+          "triangles": 1800,
           "distance": 0,
-          "bytes": 79856
+          "bytes": 78344
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/e0841e9fc0cde1c850fa55c0358cb55e758a9b0f130b03bd09927792884f844a.glb",
+          "file": "/api/files/sample-worlds/4486732b4ffd7553b877a2beec8cce98a30ce1734a07608de8f46e0893b633ee.glb",
           "distance": 45,
-          "triangles": 1176,
-          "bytes": 46456
+          "triangles": 1228,
+          "bytes": 51060
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/ae8118866a640ed1f58ef94fc878c0d7b1f70bac802da81d6847b7a359abda02.glb",
+          "file": "/api/files/sample-worlds/0e45b6694bab054fa360be67b52c92fb9e8d9a11df8cfd2bed9870895b4ba461.glb",
           "distance": 110,
           "triangles": 200,
-          "bytes": 11768
+          "bytes": 11716
         }
       ]
     },
@@ -5224,12 +5224,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307",
+      "contentHash": "b76e73cf2ec9066cec1c1f708c88bd797b5be4f4175fbf341410ed5288e4e5ca",
       "status": "ready"
     }
   },
   {
-    "id": "factory-f0d0159a325c7cdab6ecbebf00a4eba6",
+    "id": "factory-bcd364088c6198c29002e581959bb418",
     "name": "nature.tree.quality.pine (Environment procedural 0)",
     "type": "model",
     "source": {
@@ -5247,9 +5247,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/6ac50d3ba80f984bd5d47f19695d5a43037f457cf131cc9ce87b8285eb24a201.glb",
-      "runtime": "/api/files/sample-worlds/d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb.glb",
-      "thumbnail": "/api/files/sample-worlds/431f2a692f49741e8a75b100e3c4db085b090032022f040808936c337d6ba774.svg"
+      "original": "/api/files/sample-worlds/e5e080c4efbeb953bcc508e038c449209712f001c4e902fee3298289769d39fe.glb",
+      "runtime": "/api/files/sample-worlds/e9baba6d15520411ed86e391736747b6cb0aa5d8c9b453d97472897f0df24546.glb",
+      "thumbnail": "/api/files/sample-worlds/728187289c6624b16b3dc62cbffa6fec766a972ac6c670d1de8885580e779cc0.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5265,24 +5265,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.733739137649536,
+          -3.5256829261779785,
           -0.004878044128417969,
-          -3.8532938957214355
+          -3.7606215476989746
         ],
         "max": [
-          4.168191909790039,
-          10.325285911560059,
-          3.9417760372161865
+          4.175290107727051,
+          10.414097785949707,
+          3.7020456790924072
         ]
       },
-      "triangles": 2208,
+      "triangles": 1952,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 273356,
-        "runtimeBytes": 85436,
+        "sourceBytes": 249348,
+        "runtimeBytes": 81456,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5294,21 +5294,21 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb.glb",
-          "triangles": 2208,
+          "file": "/api/files/sample-worlds/e9baba6d15520411ed86e391736747b6cb0aa5d8c9b453d97472897f0df24546.glb",
+          "triangles": 1952,
           "distance": 0,
-          "bytes": 85436
+          "bytes": 81456
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/29c297ec1f00fb957aec014d358f3684b077f435cc217e392ed2bf472d183e13.glb",
+          "file": "/api/files/sample-worlds/7eabfce3c008ea7aa64fa1be8b444d7c100605cf162d39456f087f81f8c522db.glb",
           "distance": 45,
-          "triangles": 1824,
-          "bytes": 70076
+          "triangles": 1568,
+          "bytes": 62960
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/5a3a5559443fd3fc04906e2e5189b21db5c0359e0dd0962205a28a6bfbb8c90d.glb",
+          "file": "/api/files/sample-worlds/35ad78a84ffbc43109fd2f8c55e1f49a29e4ebe82bc23e16ca36c881d0395427.glb",
           "distance": 110,
           "triangles": 180,
           "bytes": 10900
@@ -5332,12 +5332,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb",
+      "contentHash": "e9baba6d15520411ed86e391736747b6cb0aa5d8c9b453d97472897f0df24546",
       "status": "ready"
     }
   },
   {
-    "id": "factory-96a6157308f1f6cb825e09e03dd40a3f",
+    "id": "factory-3a09ed95f02d679e9950ce604fe741b2",
     "name": "nature.tree.quality.pine (Environment procedural 1)",
     "type": "model",
     "source": {
@@ -5355,9 +5355,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/4afbbf79c68b5ccc6df8aca2b0ada688e2f9cef38340823c5b098312131d3968.glb",
-      "runtime": "/api/files/sample-worlds/8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4.glb",
-      "thumbnail": "/api/files/sample-worlds/3150499bf288009bedde9bc73f5c564c0e90118a366237218c73ebc2fe637b33.svg"
+      "original": "/api/files/sample-worlds/2b23a2c17cb56d2fca3b4122437a28c1148efe4d700af36fbdfd8c0a6b0a21d3.glb",
+      "runtime": "/api/files/sample-worlds/fb95a91b85e6c38f2fd44d63a304e2750f24d529d5b8ec3da8f0c7bacf78707c.glb",
+      "thumbnail": "/api/files/sample-worlds/957dfdc0cdfe60be183754dfa235260e0bcb2de881651407a64373ec6455b9ce.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5373,24 +5373,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.8924877643585205,
+          -4.309234142303467,
           -0.004878044128417969,
-          -3.9702885150909424
+          -3.7996718883514404
         ],
         "max": [
-          4.435155868530273,
-          10.453313827514648,
-          3.999394655227661
+          3.7477777004241943,
+          10.25996208190918,
+          3.8434629440307617
         ]
       },
-      "triangles": 2208,
+      "triangles": 1952,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 273356,
-        "runtimeBytes": 85412,
+        "sourceBytes": 249344,
+        "runtimeBytes": 81444,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5402,21 +5402,21 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4.glb",
-          "triangles": 2208,
+          "file": "/api/files/sample-worlds/fb95a91b85e6c38f2fd44d63a304e2750f24d529d5b8ec3da8f0c7bacf78707c.glb",
+          "triangles": 1952,
           "distance": 0,
-          "bytes": 85412
+          "bytes": 81444
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/05c4b55cf1aa22c7f8cc96907d73477f5d0343c19d8567a76566fd6f927d6e9d.glb",
+          "file": "/api/files/sample-worlds/25deb87510370b4e1c76d568d0a8417983c90b54c81b9d918c5a429d2644c8fe.glb",
           "distance": 45,
-          "triangles": 1824,
-          "bytes": 70112
+          "triangles": 1568,
+          "bytes": 62924
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/cf9f012eaa7fd1cde87c7d3b3fc66b9bb64e816ed5ae9af3ac5842dc3d17f59f.glb",
+          "file": "/api/files/sample-worlds/4f719d34b68cec10cfd040373d6f4f0e2f79554fee98f5f55dc2b8f48c995785.glb",
           "distance": 110,
           "triangles": 180,
           "bytes": 10900
@@ -5440,12 +5440,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4",
+      "contentHash": "fb95a91b85e6c38f2fd44d63a304e2750f24d529d5b8ec3da8f0c7bacf78707c",
       "status": "ready"
     }
   },
   {
-    "id": "factory-a0afb02cb082fc6c56022fd65e212909",
+    "id": "factory-6898a29376c1701ed9aad4504aab0963",
     "name": "nature.tree.quality.pine (Environment procedural 2)",
     "type": "model",
     "source": {
@@ -5463,9 +5463,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/96dfbc9a8e5917a58fdddd4f4aa6eb951f4fea7f36d4bf1141c2c7a7b12de6e7.glb",
-      "runtime": "/api/files/sample-worlds/22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec.glb",
-      "thumbnail": "/api/files/sample-worlds/a5b4bab9f406eb272860614df83d9c6aa8421813b5c1f63eecb28da1afd663db.svg"
+      "original": "/api/files/sample-worlds/da707eaca1479bb9c4243829018ceb4e11566f6693b72fbd06c1b9dbcb869c99.glb",
+      "runtime": "/api/files/sample-worlds/138eb60ce689848a162f704f0a0b244262bb7000d0e00077cbd63371dcad6016.glb",
+      "thumbnail": "/api/files/sample-worlds/449435f503cbc001ef6310bc7ca099f5549ffe23e59dd7f0b8e78c9ed5ee656a.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5481,24 +5481,24 @@
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.216467380523682,
+          -3.5719423294067383,
           -0.004878044128417969,
-          -3.526337146759033
+          -3.8294999599456787
         ],
         "max": [
-          4.3688530921936035,
-          10.365582466125488,
-          4.123183250427246
+          3.9217660427093506,
+          10.37142276763916,
+          4.162570476531982
         ]
       },
-      "triangles": 2208,
+      "triangles": 1952,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 273356,
-        "runtimeBytes": 85448,
+        "sourceBytes": 249348,
+        "runtimeBytes": 81440,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5510,21 +5510,21 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec.glb",
-          "triangles": 2208,
+          "file": "/api/files/sample-worlds/138eb60ce689848a162f704f0a0b244262bb7000d0e00077cbd63371dcad6016.glb",
+          "triangles": 1952,
           "distance": 0,
-          "bytes": 85448
+          "bytes": 81440
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/63dc7b5af3c3935f15b13e671b7e6f5263ded369e6338b0a1f28be94407f7e42.glb",
+          "file": "/api/files/sample-worlds/9493f7a6ff1b4c30f0b4b126d8f552e09e8ddff24b4526c4e05f42d8442c449a.glb",
           "distance": 45,
-          "triangles": 1824,
-          "bytes": 70076
+          "triangles": 1568,
+          "bytes": 63004
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/5357b6c48ef1bdb2382b5da5e3738c2ae28364e6b26e103b09a34aa576a32039.glb",
+          "file": "/api/files/sample-worlds/e56c1d52d3ac16219ca6f450b7ef2b9027cd1367f9efe95eb4b977e8ae778c34.glb",
           "distance": 110,
           "triangles": 180,
           "bytes": 10920
@@ -5548,7 +5548,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec",
+      "contentHash": "138eb60ce689848a162f704f0a0b244262bb7000d0e00077cbd63371dcad6016",
       "status": "ready"
     }
   },
@@ -6583,7 +6583,7 @@
     }
   },
   {
-    "id": "factory-0d4b6b1333713d7e83d5313c251a4903",
+    "id": "factory-b637f967fd67d7c91e854cf48dfc98d7",
     "name": "prop.quality.market (Environment procedural 0)",
     "type": "model",
     "source": {
@@ -6601,8 +6601,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/78402d11a3ce63e1421784aa60fc0e982dd85a1962e3fcb97c0bf706da780883.glb",
-      "runtime": "/api/files/sample-worlds/39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0.glb",
+      "original": "/api/files/sample-worlds/bb39ca641a73d3c1bd2ddeca10bb08c7a2c7f188883de33d512f34b7d23e4708.glb",
+      "runtime": "/api/files/sample-worlds/c5797f8113aa8413c0ddf10b04f8d3e31898024a0d39d2a21ae3350fb9b22cb0.glb",
       "thumbnail": "/api/files/sample-worlds/ddeb906a4fdf9e6e4d1dab96f1f343ad6f314016776d7ede5220722c5fbff40d.svg"
     },
     "processing": {
@@ -6635,8 +6635,8 @@
       "colliderBytes": 30302,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 84564,
-        "runtimeBytes": 25172,
+        "sourceBytes": 86380,
+        "runtimeBytes": 23564,
         "textureBytes": 524288,
         "warnings": []
       },
@@ -6648,24 +6648,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0.glb",
+          "file": "/api/files/sample-worlds/c5797f8113aa8413c0ddf10b04f8d3e31898024a0d39d2a21ae3350fb9b22cb0.glb",
           "triangles": 168,
           "distance": 0,
-          "bytes": 25172
+          "bytes": 23564
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/4e4f58fc3f3ba0dd2e2b05f446dec2d02b284d1c3a56f6613a3d1b5e5a3bd798.glb",
+          "file": "/api/files/sample-worlds/eb8a981bf14590ee872b1bfe672d0a1f8c2d355bf796acf2a42ae5332ea1315b.glb",
           "distance": 45,
           "triangles": 144,
-          "bytes": 24644
+          "bytes": 23036
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/62e6c54b87efaf28d6aba0bf46caece8edc298a39da447a513e2f6050388a9bc.glb",
+          "file": "/api/files/sample-worlds/3bc0ff17e0d6814bb2d381a16acec236a2ad84c259db2a9684175aa4ddc8594c.glb",
           "distance": 110,
           "triangles": 72,
-          "bytes": 22844
+          "bytes": 21236
         }
       ]
     },
@@ -6685,7 +6685,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "prop.quality.market",
-      "contentHash": "39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0",
+      "contentHash": "c5797f8113aa8413c0ddf10b04f8d3e31898024a0d39d2a21ae3350fb9b22cb0",
       "status": "ready"
     }
   },

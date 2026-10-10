@@ -16,6 +16,7 @@ import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import {
   EnvironmentMaterials,
   type EnvironmentSurface,
+  environmentRecipeVersion,
 } from "./environment-materials";
 
 export type EnvironmentModel = "oak" | "pine" | "house" | "grass" | "market";
@@ -99,7 +100,14 @@ export async function environmentModelGlb(
     width: number,
     height: number,
   ) => {
-    const g = new PlaneGeometry(width, height);
+    const g = new PlaneGeometry(
+      width * (0.8 + random() * 0.4),
+      height * (0.85 + random() * 0.3),
+    );
+    const vertices = g.getAttribute("position");
+    vertices.setZ(0, width * 0.08);
+    vertices.setZ(3, -width * 0.06);
+    g.computeVertexNormals();
     g.rotateX((random() - 0.5) * 1.9);
     g.rotateY(random() * Math.PI * 2);
     g.rotateZ((random() - 0.5) * 0.7);
@@ -119,9 +127,9 @@ export async function environmentModelGlb(
         g.scale(radius, pine ? 0.95 : 1.4, radius * 0.85);
         g.rotateY(angle);
         g.translate(
-          pine ? Math.cos(angle) * 0.24 : Math.cos(angle) * 1.65,
-          pine ? 2.4 + i * 0.92 : 5.1 + (i % 3) * 0.9,
-          pine ? Math.sin(angle) * 0.24 : Math.sin(angle) * 1.65,
+          pine ? Math.cos(angle) * 0.24 : Math.cos(angle) * 1.95,
+          pine ? 2.4 + i * 0.92 : 5.2 + (i % 3) * 1.05,
+          pine ? Math.sin(angle) * 0.24 : Math.sin(angle) * 1.95,
         );
         add(pine ? "needle" : "leaf", g);
       }
@@ -144,7 +152,17 @@ export async function environmentModelGlb(
         if (level < 2) branch(a, b, pine ? 0.085 : 0.12);
         if (pine && level === 2 && i % 2) continue;
         const cards =
-          level === 2 ? (pine ? 3 : 5) : level === 1 ? 12 : pine ? 18 : 44;
+          level === 2
+            ? pine
+              ? 3
+              : 5
+            : level === 1
+              ? pine
+                ? 8
+                : 14
+              : pine
+                ? 14
+                : 36;
         for (let j = 0; j < cards; j++) {
           const t = 0.45 + random() * 0.55;
           const p = a
@@ -153,15 +171,15 @@ export async function environmentModelGlb(
             .add(
               new Vector3(
                 (random() - 0.5) * 1.6,
-                random() * (pine ? 0.8 : 1.7),
+                random() * (pine ? 0.8 : 1.9),
                 (random() - 0.5) * 1.6,
               ),
             );
           card(
             pine ? "needle" : "leaf",
             p,
-            (pine ? 1.7 : 1.9) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
-            (pine ? 0.85 : 1.5) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
+            (pine ? 1.7 : 1.55) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
+            (pine ? 0.85 : 1.25) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
           );
         }
         if (!pine && level < 2)
@@ -213,10 +231,14 @@ export async function environmentModelGlb(
       angle = 0,
     ) => {
       const g = new BoxGeometry(w, h, d);
-      if (surface === "roof") {
+      if (["roof", "stone", "wood"].includes(surface)) {
         const uv = g.getAttribute("uv");
         for (let i = 0; i < uv.count; i++)
-          uv.setXY(i, uv.getX(i) * 3, uv.getY(i) * 3);
+          uv.setXY(
+            i,
+            uv.getX(i) * (surface === "roof" ? 3 : surface === "stone" ? 2 : 1),
+            uv.getY(i) * (surface === "roof" ? 3 : surface === "stone" ? 2 : 1),
+          );
       }
       g.rotateZ(angle);
       g.translate(x, y, z);
@@ -275,7 +297,7 @@ export async function environmentModelGlb(
     buffer = doc.createBuffer(),
     scene = doc
       .createScene()
-      .setExtras({ environmentRecipeVersion: 1, environmentSeed: seed }),
+      .setExtras({ environmentRecipeVersion, environmentSeed: seed }),
     materials = new EnvironmentMaterials(doc);
   for (const [surface, list] of parts) {
     const geometry = mergeGeometries(list)!;

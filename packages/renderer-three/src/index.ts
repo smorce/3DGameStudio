@@ -1,3 +1,4 @@
+import { alpineEnvironmentAccents } from "./environment-accents";
 import { semanticContext } from "../../world-generator/src/design-generation";
 import { alpineSurfaceMaterial } from "./alpine-surface";
 import { worldVegetationChunk } from "./world-vegetation";
@@ -414,10 +415,20 @@ export class ThreeRenderer implements RendererAdapter {
     canvas.addEventListener("pointercancel", this.pointerCancel);
   }
   /** 観測API用。絶対座標をSimulation座標へ変換して全景を検証する。 */
-  setInspectionView(position: Vec3, target: Vec3) {
+  setInspectionView(
+    position: Vec3,
+    target: Vec3,
+    options?: { exactPose?: boolean },
+  ) {
     if (![...position, ...target].every(Number.isFinite))
       throw new Error("Camera coordinates must be finite");
     this.inspectionView = true;
+    // 目線の証跡は角度制限による座標補正を避け、通常の観測は既存制限を使う。
+    this.controls.maxPolarAngle = options?.exactPose
+      ? Math.PI
+      : this.editWorkspace
+        ? EDIT_MAX_POLAR_ANGLE
+        : PLAY_MAX_POLAR_ANGLE;
     this.camera.position.fromArray(
       this.worldRuntime?.toSimulation(position) ?? position,
     );
@@ -484,6 +495,83 @@ export class ThreeRenderer implements RendererAdapter {
       );
       this.resize();
     }
+  }
+
+  /** 診断だけに使う描画除外。Projectには保存せず、非同期LODにも毎描画で適用する。 */
+  private environmentDiagnostics: {
+    trees?: boolean;
+    grass?: boolean;
+    buildingDetails?: boolean;
+    groundDetails?: boolean;
+  } = {};
+  setEnvironmentDiagnostics(options: {
+    trees?: boolean;
+    grass?: boolean;
+    buildingDetails?: boolean;
+    groundDetails?: boolean;
+    shadows?: boolean;
+  }) {
+    Object.assign(this.environmentDiagnostics, options);
+    this.applyDiagnosticsQuality(options);
+  }
+  /** 高コストなリソース走査は測定時のみ要求する。 */
+  getEnvironmentResources() {
+    const materials = new Set<THREE.Material>();
+    const geometries = new Set<THREE.BufferGeometry>();
+    const textures = new Set<THREE.Texture>();
+    let grassInstances = 0,
+      grassPatches = 0,
+      visibleGrassPatches = 0;
+    this.root.traverse((object) => {
+      if (object.userData.environmentCategory === "grass") {
+        object.traverse((child) => {
+          if (child instanceof THREE.InstancedMesh) {
+            grassInstances += child.count;
+            grassPatches++;
+            if (object.visible && child.visible) visibleGrassPatches++;
+          }
+        });
+      }
+      if (object instanceof THREE.Mesh) {
+        geometries.add(object.geometry);
+        for (const material of Array.isArray(object.material)
+          ? object.material
+          : [object.material]) {
+          materials.add(material);
+          for (const value of Object.values(material))
+            if (value instanceof THREE.Texture) textures.add(value);
+        }
+      }
+    });
+    return {
+      materials: materials.size,
+      geometries: geometries.size,
+      textures: textures.size,
+      grassInstances,
+      grassPatches,
+      visibleGrassPatches,
+    };
+  }
+
+  private applyEnvironmentDiagnostics() {
+    if (!Object.keys(this.environmentDiagnostics).length) return;
+    this.root.traverse((object) => {
+      const category = object.userData.environmentCategory as
+        "trees" | "grass" | "buildingDetails" | undefined;
+      if (category)
+        object.visible = this.environmentDiagnostics[category] !== false;
+      if (object instanceof THREE.Mesh) {
+        const materials = Array.isArray(object.material)
+          ? object.material
+          : [object.material];
+        for (const material of materials) {
+          const uniform = material.userData.groundDetailsUniform;
+          if (uniform)
+            uniform.value =
+              this.environmentDiagnostics.groundDetails === false ? 0 : 1;
+        }
+      }
+    });
   }
 
   applyMotionDiagnostics(options: {
@@ -661,6 +749,7 @@ export class ThreeRenderer implements RendererAdapter {
         if (first) this.snapCameraFollow(first.position);
       }
       await this.renderer.compileAsync(this.scene, this.camera);
+      this.applyEnvironmentDiagnostics();
       this.renderer.render(this.scene, this.camera);
     } finally {
       this.effects.clear();
@@ -753,7 +842,7 @@ export class ThreeRenderer implements RendererAdapter {
       isAlpineVillage(p.world.source.design);
     for (const light of this.scene.children) {
       if (light instanceof THREE.HemisphereLight)
-        light.intensity = alpineLighting ? 1.1 : 2;
+        light.intensity = alpineLighting ? 0.9 : 2;
     }
     this.updateShadowFollow([0, 0, 0]);
     const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
@@ -1024,7 +1113,7 @@ export class ThreeRenderer implements RendererAdapter {
             group.add(mesh);
           }
         }
-        const generated =
+        const generatedBase =
           (alpineWorld && this.worldRuntime
             ? alpineRenderChunk(this.worldRuntime, key)
             : this.worldRuntime?.peekChunk(key)
@@ -1032,6 +1121,20 @@ export class ThreeRenderer implements RendererAdapter {
           (this.worldRuntime?.isPlayHotPath
             ? []
             : (this.worldRuntime?.getChunk(key)?.entities ?? []));
+        // 景観用の樹木だけを描画Entityへ追加し、World/Collider/Manifestを変えない。
+        const accents =
+          alpineWorld &&
+          p.world.source.kind === "procedural" &&
+          p.world.source.design
+            ? alpineEnvironmentAccents(
+                p.world.source.design,
+                p.world.source.seed,
+                p.assets,
+                key,
+                this.worldRuntime!.chunkSize,
+              )
+            : [];
+        const generated = [...generatedBase, ...accents];
         if (
           p.world.source.kind === "procedural" &&
           p.world.source.design &&
@@ -1593,6 +1696,7 @@ export class ThreeRenderer implements RendererAdapter {
       clouds.position.set(-origin[0], -origin[1], -origin[2]);
     }
     this.gpuTimer.begin(this.gpuTimerMeta);
+    this.applyEnvironmentDiagnostics();
     this.renderer.render(this.scene, this.camera);
     this.gpuTimer.end();
     if (this.onCandidateScreens) {

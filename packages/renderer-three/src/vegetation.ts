@@ -8,19 +8,33 @@ export function grassGeometry(blades: number) {
     colors: number[] = [];
   for (let i = 0; i < blades; i++) {
     const a = i * 2.4,
-      x = Math.cos(a) * 0.23,
-      z = Math.sin(a) * 0.23;
+      x = Math.cos(a) * (0.32 + (i % 3) * 0.06),
+      z = Math.sin(a) * (0.32 + (i % 3) * 0.06);
     const h = 0.35 + (i % 4) * 0.11,
-      w = 0.04;
+      w = 0.055 + (i % 3) * 0.008;
+    const wx = Math.cos(a + Math.PI / 2) * w,
+      wz = Math.sin(a + Math.PI / 2) * w;
+    const left = [x - wx, 0, z - wz],
+      right = [x + wx, 0, z + wz];
+    const middleLeft = [
+      x + Math.cos(a) * 0.16 - wx * 0.4,
+      h * 0.65,
+      z + Math.sin(a) * 0.16 - wz * 0.4,
+    ];
+    const middleRight = [
+      x + Math.cos(a) * 0.16 + wx * 0.4,
+      h * 0.65,
+      z + Math.sin(a) * 0.16 + wz * 0.4,
+    ];
     const points = [
-      [x - w, 0, z],
-      [x + w, 0, z],
-      [x + Math.cos(a) * 0.16 + w * 0.4, h * 0.65, z + Math.sin(a) * 0.16],
-      [x - w, 0, z],
-      [x + Math.cos(a) * 0.16 + w * 0.4, h * 0.65, z + Math.sin(a) * 0.16],
-      [x + Math.cos(a) * 0.16 - w * 0.4, h * 0.65, z + Math.sin(a) * 0.16],
-      [x + Math.cos(a) * 0.16 - w * 0.4, h * 0.65, z + Math.sin(a) * 0.16],
-      [x + Math.cos(a) * 0.16 + w * 0.4, h * 0.65, z + Math.sin(a) * 0.16],
+      left,
+      right,
+      middleRight,
+      left,
+      middleRight,
+      middleLeft,
+      middleLeft,
+      middleRight,
       [x + Math.cos(a) * 0.27, h, z + Math.sin(a) * 0.27],
     ];
     for (const p of points) {
@@ -41,6 +55,29 @@ export function grassGeometry(blades: number) {
   return g;
 }
 
+/** 全Chunkで同じ草形状と材質を共有し、最後のChunk解放時に破棄する。 */
+let sharedVegetationResources:
+  | {
+      geometries: THREE.BufferGeometry[];
+      material: THREE.MeshStandardMaterial;
+      references: number;
+    }
+  | undefined;
+function acquireVegetationResources() {
+  if (!sharedVegetationResources)
+    sharedVegetationResources = {
+      geometries: [grassGeometry(8), grassGeometry(3)],
+      material: new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        roughness: 1,
+        side: THREE.DoubleSide,
+      }),
+      references: 0,
+    };
+  sharedVegetationResources.references++;
+  return sharedVegetationResources;
+}
+
 /** Chunkが所有する草。親Chunkの移動に従うのでRebase仕様を変更しない。 */
 export function createVegetationChunk(
   options: Parameters<typeof vegetationPlacements>[0] & {
@@ -49,13 +86,10 @@ export function createVegetationChunk(
   },
 ) {
   const group = new THREE.Group();
-  const material = new THREE.MeshStandardMaterial({
-    vertexColors: true,
-    roughness: 1,
-    side: THREE.DoubleSide,
-  });
-  const geometries = [grassGeometry(10), grassGeometry(3)];
+  group.userData.environmentCategory = "grass";
   const placements = vegetationPlacements(options);
+  const resources = acquireVegetationResources();
+  const { material, geometries } = resources;
   const patches = new Map<string, typeof placements>();
   for (const p of placements) {
     const key = `${Math.floor(p.position[0] / 16)},${Math.floor(p.position[2] / 16)}`;
@@ -80,9 +114,9 @@ export function createVegetationChunk(
       );
       dummy.rotation.set(0, p.yaw, 0);
       dummy.scale.set(
-        p.scale,
-        p.scale * [0.55, 1.3, 0.85, 0.8, 1.1][p.kind],
-        p.scale,
+        p.scale * (p.kind === 4 ? 1.55 : 1.15),
+        p.scale * [0.5, 1.15, 0.7, 0.75, 1.15][p.kind],
+        p.scale * (p.kind === 4 ? 1.55 : 1.15),
       );
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
@@ -96,11 +130,27 @@ export function createVegetationChunk(
     group.add(mesh);
   }
   const world = new THREE.Vector3();
+  const frustum = new THREE.Frustum(),
+    projection = new THREE.Matrix4();
+  const sphere = new THREE.Sphere();
   group.userData.updateVegetation = (
     camera: THREE.PerspectiveCamera,
     viewportHeight: number,
   ) => {
+    group.updateWorldMatrix(true, false);
+    camera.updateMatrixWorld();
+    frustum.setFromProjectionMatrix(
+      projection.multiplyMatrices(
+        camera.projectionMatrix,
+        camera.matrixWorldInverse,
+      ),
+    );
     for (const mesh of meshes) {
+      sphere.copy(mesh.boundingSphere!).applyMatrix4(group.matrixWorld);
+      if (!frustum.intersectsSphere(sphere)) {
+        mesh.visible = false;
+        continue;
+      }
       world.copy(mesh.userData.center);
       group.localToWorld(world);
       // 0.5mの草丈が画面で何pxかを用い、解像度/FOVにも追従させる。
@@ -110,8 +160,8 @@ export function createVegetationChunk(
           Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
           Math.max(1, camera.position.distanceTo(world)));
       const level = mesh.userData.level as number;
-      mesh.visible = pixels > (mesh.visible ? 4.5 : 5.5);
-      const next = pixels > (level === 0 ? 9 : 11) ? 0 : 1;
+      mesh.visible = pixels > (mesh.visible ? 6.5 : 7.5);
+      const next = pixels > (level === 0 ? 12 : 14) ? 0 : 1;
       if (level !== next) {
         mesh.geometry = geometries[next];
         mesh.userData.level = next;
@@ -122,8 +172,12 @@ export function createVegetationChunk(
   group.userData.release = () => {
     if (released) return;
     released = true;
-    geometries.forEach((g) => g.dispose());
-    material.dispose();
+    resources.references--;
+    if (resources.references === 0) {
+      geometries.forEach((g) => g.dispose());
+      material.dispose();
+      sharedVegetationResources = undefined;
+    }
   };
   return group;
 }

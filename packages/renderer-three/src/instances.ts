@@ -157,6 +157,16 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
     mesh.userData.entityIds = entities.map((e) => e.id);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    const foliage =
+      [1, 2].includes(template.userData.environmentRecipeVersion) &&
+      o.material instanceof THREE.MeshStandardMaterial &&
+      ["leaf", "needle"].includes(o.material.name);
+    if (foliage) {
+      o.material.alphaToCoverage = true;
+      // 葉の裏面の過度な黒さを抑える。透過MASKとMSAAを維持する。
+      o.material.emissive.set("#243612");
+      o.material.emissiveIntensity = 0.12;
+    }
     for (let i = 0; i < entities.length; i++)
       mesh.setMatrixAt(
         i,
@@ -222,7 +232,7 @@ export class EnvironmentTexturePool {
   private held = new WeakMap<THREE.Object3D, Set<string>>();
   acquire(template: THREE.Object3D) {
     if (
-      template.userData.environmentRecipeVersion !== 1 ||
+      ![1, 2].includes(template.userData.environmentRecipeVersion) ||
       this.held.has(template)
     )
       return;
@@ -236,7 +246,7 @@ export class EnvironmentTexturePool {
         for (const [property, value] of Object.entries(properties)) {
           if (
             !(value instanceof THREE.Texture) ||
-            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v1$/.test(
+            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v[12]$/.test(
               value.name,
             )
           )
@@ -336,6 +346,13 @@ export class WorldAssetBatch {
           { level: 1, distance: 60 },
         ];
     this.group.userData.assetId = asset?.id;
+    this.group.userData.environmentCategory = asset?.catalog?.slots.some((s) =>
+      s.startsWith("nature.tree."),
+    )
+      ? "trees"
+      : asset?.catalog?.slots.some((s) => s.startsWith("building."))
+        ? "buildingDetails"
+        : undefined;
     this.group.userData.release = () => this.dispose();
     this.group.userData.updateLod = (camera: THREE.Vector3) =>
       this.update(camera);
@@ -356,8 +373,28 @@ export class WorldAssetBatch {
     this.group.children[0]?.userData.updateAlpineRotor?.(
       performance.now() / 1000,
     );
+    const distance = Math.max(0, camera.distanceTo(this.center) - this.radius);
+    // 品質樹木の中遠景だけ影への参加を止める。近景と他Worldの素材は維持する。
+    if (
+      this.asset?.catalog?.slots.some((slot) =>
+        slot.startsWith("nature.tree.quality."),
+      )
+    ) {
+      const wasCasting = this.group.userData.castingEnvironmentShadow !== false;
+      const casting = distance < (wasCasting ? 90 : 80);
+      if (
+        casting !== wasCasting ||
+        this.group.userData.shadowLod !== this.current
+      ) {
+        this.group.traverse((object) => {
+          if (object instanceof THREE.Mesh) object.castShadow = casting;
+        });
+        this.group.userData.castingEnvironmentShadow = casting;
+        this.group.userData.shadowLod = this.current;
+      }
+    }
     const target = chooseLod(
-      Math.max(0, camera.distanceTo(this.center) - this.radius),
+      distance,
       this.levels.map((l) => l.distance),
       Math.max(0, this.requested),
     );

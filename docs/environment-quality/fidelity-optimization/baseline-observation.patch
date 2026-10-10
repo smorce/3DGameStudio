@@ -1,0 +1,50 @@
+diff --git a/packages/engine-core/src/agent-observation.ts b/packages/engine-core/src/agent-observation.ts
+index 1f4ce96..b4cfdc7 100644
+--- a/packages/engine-core/src/agent-observation.ts
++++ b/packages/engine-core/src/agent-observation.ts
+@@ -77,7 +77,7 @@ export interface AgentGameState {
+ export interface MachineStudioAgentApi {
+   version: 1;
+   getState(): AgentGameState;
+-  setInspectionView(position: Vec3, target: Vec3): void;
++  setInspectionView(position: Vec3, target: Vec3, options?: { exactPose?: boolean }): void;
+   getRenderedEntityPosition(entityId: string): Vec3 | undefined;
+   getWorldDesignDebug(x?: number, z?: number): unknown;
+   getPhysicsStep(): number;
+@@ -133,7 +133,7 @@ export interface EngineObservationHost {
+     };
+   };
+   renderer: {
+-    setInspectionView?(position: Vec3, target: Vec3): void;
++    setInspectionView?(position: Vec3, target: Vec3, options?: { exactPose?: boolean }): void;
+     getRenderedEntityPosition?(entityId: string): Vec3 | undefined;
+     fastStats: Record<string, number>;
+     useDampedCameraFollow: boolean;
+@@ -176,8 +176,8 @@ export function createAgentObservationApi(
+ ): MachineStudioAgentApi {
+   return {
+     version: 1,
+-    setInspectionView(position, target) {
+-      engine.renderer.setInspectionView?.(position, target);
++    setInspectionView(position, target, options) {
++      engine.renderer.setInspectionView?.(position, target, options);
+     },
+     getRenderedEntityPosition(entityId) {
+       return engine.renderer.getRenderedEntityPosition?.(entityId);
+diff --git a/packages/renderer-three/src/index.ts b/packages/renderer-three/src/index.ts
+index aab05c7..02b040a 100644
+--- a/packages/renderer-three/src/index.ts
++++ b/packages/renderer-three/src/index.ts
+@@ -414,10 +414,11 @@ export class ThreeRenderer implements RendererAdapter {
+     canvas.addEventListener("pointercancel", this.pointerCancel);
+   }
+   /** 観測API用。絶対座標をSimulation座標へ変換して全景を検証する。 */
+-  setInspectionView(position: Vec3, target: Vec3) {
++  setInspectionView(position: Vec3, target: Vec3, options?: { exactPose?: boolean }) {
+     if (![...position, ...target].every(Number.isFinite))
+       throw new Error("Camera coordinates must be finite");
+     this.inspectionView = true;
++    this.controls.maxPolarAngle = options?.exactPose ? Math.PI : this.editWorkspace ? EDIT_MAX_POLAR_ANGLE : PLAY_MAX_POLAR_ANGLE;
+     this.camera.position.fromArray(
+       this.worldRuntime?.toSimulation(position) ?? position,
+     );

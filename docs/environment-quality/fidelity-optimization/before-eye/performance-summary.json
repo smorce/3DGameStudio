@@ -1,0 +1,319 @@
+{
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "antialias": true,
+    "msaaSamples": 4,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "sampleWindowMs": 10000,
+  "method": "Distinct rendered frames; nearest-rank median/p95/min/max. Three consecutive 10-second windows per view; not independent cold loads. CPU renderMs is submission time. Initial view state is a loading snapshot, not a load-duration distribution.",
+  "loading": [
+    {
+      "view": "village-eye-exact",
+      "state": {
+        "engine": {
+          "mode": "PLAY",
+          "frame": 10
+        },
+        "machine": {
+          "id": "sample-alpine-village-machine",
+          "physicsStep": 57,
+          "position": [
+            6,
+            11.928101539611816,
+            60
+          ],
+          "simulationPosition": [
+            6,
+            11.928101539611816,
+            60
+          ],
+          "worldOrigin": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            9.191572850064667e-12,
+            0,
+            0,
+            1
+          ],
+          "velocity": [
+            0,
+            0.2535553574562073,
+            7.598222655984081e-15
+          ],
+          "speed": 0.2535553574562073,
+          "groundedWheelCount": 4,
+          "controls": {
+            "throttle": 0,
+            "steering": 0
+          }
+        },
+        "camera": {
+          "position": [
+            39,
+            12.999999999999998,
+            -7
+          ],
+          "target": [
+            37,
+            14,
+            -50
+          ],
+          "followMode": "instant"
+        },
+        "world": {
+          "currentChunk": "0,0",
+          "loadedRenderChunks": 182,
+          "loadedPhysicsChunks": 49,
+          "readyQueues": {
+            "render": 6,
+            "physics": 0
+          },
+          "generationQueue": 122,
+          "workerQueued": 122,
+          "workerInFlight": 4,
+          "cacheHitRate": 0.8571428571428571,
+          "rebaseCount": 0
+        },
+        "renderer": {
+          "activeVaporParticles": 0,
+          "activeGroundSmokeParticles": 0,
+          "vaporEmitters": 0,
+          "groundSmokeEmitters": 4,
+          "drawCalls": 58,
+          "triangles": 283891,
+          "geometries": 59,
+          "textures": 1,
+          "gpuTimingMs": 187.186386
+        },
+        "frame": {
+          "rafMs": 199.9000000000001,
+          "cpuWorkMs": 28.600000008940697,
+          "physicsMs": 14.200000002980232,
+          "renderMs": 14,
+          "streamingRequestMs": 0,
+          "streamingCommitMs": 0
+        }
+      }
+    }
+  ],
+  "views": [
+    {
+      "view": "village-eye-exact",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 26,
+        "median": 337,
+        "p95": 337,
+        "min": 337,
+        "max": 337
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 457897,
+        "p95": 457897,
+        "min": 457897,
+        "max": 457897
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 149,
+        "p95": 149,
+        "min": 149,
+        "max": 149
+      },
+      "textures": {
+        "samples": 26,
+        "median": 20,
+        "p95": 20,
+        "min": 20,
+        "max": 20
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 379.689701,
+        "p95": 392.79534,
+        "min": 369.279314,
+        "max": 400.632396
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 383.3000000000029,
+        "p95": 400,
+        "min": 383.29999999998836,
+        "max": 416.70000000000437
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.100000008940697,
+        "p95": 7.0999999940395355,
+        "min": 3.7000000029802322,
+        "max": 7.299999997019768
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 24,
+        "median": 337,
+        "p95": 337,
+        "min": 337,
+        "max": 337
+      },
+      "triangles": {
+        "samples": 24,
+        "median": 457897,
+        "p95": 457897,
+        "min": 457897,
+        "max": 457897
+      },
+      "geometries": {
+        "samples": 24,
+        "median": 149,
+        "p95": 149,
+        "min": 149,
+        "max": 149
+      },
+      "textures": {
+        "samples": 24,
+        "median": 20,
+        "p95": 20,
+        "min": 20,
+        "max": 20
+      },
+      "gpuTimingMs": {
+        "samples": 24,
+        "median": 395.275927,
+        "p95": 508.643525,
+        "min": 376.999784,
+        "max": 577.380487
+      },
+      "rafMs": {
+        "samples": 24,
+        "median": 416.5,
+        "p95": 533.3000000000029,
+        "min": 383.29999999998836,
+        "max": 583.3000000000029
+      },
+      "renderMs": {
+        "samples": 24,
+        "median": 5.200000002980232,
+        "p95": 8.200000002980232,
+        "min": 3.4000000059604645,
+        "max": 9.399999991059303
+      },
+      "streamingRequestMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 26,
+        "median": 337,
+        "p95": 337,
+        "min": 337,
+        "max": 337
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 457897,
+        "p95": 457897,
+        "min": 457897,
+        "max": 457897
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 149,
+        "p95": 149,
+        "min": 149,
+        "max": 149
+      },
+      "textures": {
+        "samples": 26,
+        "median": 20,
+        "p95": 20,
+        "min": 20,
+        "max": 20
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 384.348373,
+        "p95": 397.864491,
+        "min": 374.075276,
+        "max": 404.984481
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 399.90000000000873,
+        "p95": 416.6000000000058,
+        "min": 383.29999999998836,
+        "max": 416.6999999999971
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.5,
+        "p95": 6.5,
+        "min": 4,
+        "max": 7.200000002980232
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "jsHeap": null,
+      "resources": null
+    }
+  ],
+  "diagnostics": []
+}

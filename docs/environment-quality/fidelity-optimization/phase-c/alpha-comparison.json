@@ -1,0 +1,196 @@
+{
+  "baselineCommit": "44dff8baed69b8fadfb670ae424152e1281e2e62",
+  "method": "CPU 2x2 box alpha mipmaps rounded to 8-bit; fraction of texels with alpha >= cutoff. Not a render benchmark. Excludes projection, trilinear filtering, derivatives and MSAA coverage. Actual browser confirms 4x MSAA; production keeps MASK cutoff 0.5 and enables alpha-to-coverage.",
+  "measurements": [
+    {
+      "label": "before",
+      "assetId": "factory-903549c34981a65a6511f7a9a30db555",
+      "file": "demos/sample-worlds/assets/6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba.glb",
+      "levels": [
+        {
+          "level": 0,
+          "width": 128,
+          "height": 128,
+          "meanAlpha": 0.22589111328125,
+          "coverage": {
+            "0.4": 0.22589111328125,
+            "0.5": 0.22589111328125,
+            "0.6": 0.22589111328125
+          }
+        },
+        {
+          "level": 1,
+          "width": 64,
+          "height": 64,
+          "meanAlpha": 0.22590954350490197,
+          "coverage": {
+            "0.4": 0.229736328125,
+            "0.5": 0.229736328125,
+            "0.6": 0.22119140625
+          }
+        },
+        {
+          "level": 2,
+          "width": 32,
+          "height": 32,
+          "meanAlpha": 0.22593826593137256,
+          "coverage": {
+            "0.4": 0.2294921875,
+            "0.5": 0.2265625,
+            "0.6": 0.2197265625
+          }
+        },
+        {
+          "level": 3,
+          "width": 16,
+          "height": 16,
+          "meanAlpha": 0.2260110294117647,
+          "coverage": {
+            "0.4": 0.23046875,
+            "0.5": 0.21484375,
+            "0.6": 0.20703125
+          }
+        },
+        {
+          "level": 4,
+          "width": 8,
+          "height": 8,
+          "meanAlpha": 0.22622549019607843,
+          "coverage": {
+            "0.4": 0.25,
+            "0.5": 0.171875,
+            "0.6": 0.125
+          }
+        },
+        {
+          "level": 5,
+          "width": 4,
+          "height": 4,
+          "meanAlpha": 0.2267156862745098,
+          "coverage": {
+            "0.4": 0.25,
+            "0.5": 0.1875,
+            "0.6": 0.125
+          }
+        },
+        {
+          "level": 6,
+          "width": 2,
+          "height": 2,
+          "meanAlpha": 0.22745098039215686,
+          "coverage": {
+            "0.4": 0.25,
+            "0.5": 0,
+            "0.6": 0
+          }
+        },
+        {
+          "level": 7,
+          "width": 1,
+          "height": 1,
+          "meanAlpha": 0.22745098039215686,
+          "coverage": {
+            "0.4": 0,
+            "0.5": 0,
+            "0.6": 0
+          }
+        }
+      ]
+    },
+    {
+      "label": "after",
+      "assetId": "factory-5db4efbd5a9cd79351a6e7e8232d785d",
+      "file": "demos/sample-worlds/assets/6d9fd83baaae6a934bd4a8f64c818d9d70e11f5580ab423b7c62cb7ed05c234f.glb",
+      "levels": [
+        {
+          "level": 0,
+          "width": 128,
+          "height": 128,
+          "meanAlpha": 0.333251953125,
+          "coverage": {
+            "0.4": 0.333251953125,
+            "0.5": 0.333251953125,
+            "0.6": 0.333251953125
+          }
+        },
+        {
+          "level": 1,
+          "width": 64,
+          "height": 64,
+          "meanAlpha": 0.33331035539215687,
+          "coverage": {
+            "0.4": 0.347412109375,
+            "0.5": 0.347412109375,
+            "0.6": 0.318359375
+          }
+        },
+        {
+          "level": 2,
+          "width": 32,
+          "height": 32,
+          "meanAlpha": 0.3334214154411765,
+          "coverage": {
+            "0.4": 0.35546875,
+            "0.5": 0.33984375,
+            "0.6": 0.3125
+          }
+        },
+        {
+          "level": 3,
+          "width": 16,
+          "height": 16,
+          "meanAlpha": 0.3336397058823529,
+          "coverage": {
+            "0.4": 0.38671875,
+            "0.5": 0.33203125,
+            "0.6": 0.27734375
+          }
+        },
+        {
+          "level": 4,
+          "width": 8,
+          "height": 8,
+          "meanAlpha": 0.3338235294117647,
+          "coverage": {
+            "0.4": 0.359375,
+            "0.5": 0.3125,
+            "0.6": 0.28125
+          }
+        },
+        {
+          "level": 5,
+          "width": 4,
+          "height": 4,
+          "meanAlpha": 0.3348039215686274,
+          "coverage": {
+            "0.4": 0.375,
+            "0.5": 0.1875,
+            "0.6": 0.0625
+          }
+        },
+        {
+          "level": 6,
+          "width": 2,
+          "height": 2,
+          "meanAlpha": 0.3352941176470588,
+          "coverage": {
+            "0.4": 0,
+            "0.5": 0,
+            "0.6": 0
+          }
+        },
+        {
+          "level": 7,
+          "width": 1,
+          "height": 1,
+          "meanAlpha": 0.33725490196078434,
+          "coverage": {
+            "0.4": 0,
+            "0.5": 0,
+            "0.6": 0
+          }
+        }
+      ]
+    }
+  ]
+}

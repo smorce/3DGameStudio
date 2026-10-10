@@ -77,7 +77,19 @@ export interface AgentGameState {
 export interface MachineStudioAgentApi {
   version: 1;
   getState(): AgentGameState;
-  setInspectionView(position: Vec3, target: Vec3): void;
+  setInspectionView(
+    position: Vec3,
+    target: Vec3,
+    options?: { exactPose?: boolean },
+  ): void;
+  setEnvironmentDiagnostics(options: {
+    trees?: boolean;
+    grass?: boolean;
+    buildingDetails?: boolean;
+    groundDetails?: boolean;
+    shadows?: boolean;
+  }): void;
+  getEnvironmentResources(): Record<string, number> | null;
   getRenderedEntityPosition(entityId: string): Vec3 | undefined;
   getWorldDesignDebug(x?: number, z?: number): unknown;
   getPhysicsStep(): number;
@@ -133,7 +145,19 @@ export interface EngineObservationHost {
     };
   };
   renderer: {
-    setInspectionView?(position: Vec3, target: Vec3): void;
+    setInspectionView?(
+      position: Vec3,
+      target: Vec3,
+      options?: { exactPose?: boolean },
+    ): void;
+    setEnvironmentDiagnostics?(options: {
+      trees?: boolean;
+      grass?: boolean;
+      buildingDetails?: boolean;
+      groundDetails?: boolean;
+      shadows?: boolean;
+    }): void;
+    getEnvironmentResources?(): Record<string, number>;
     getRenderedEntityPosition?(entityId: string): Vec3 | undefined;
     fastStats: Record<string, number>;
     useDampedCameraFollow: boolean;
@@ -176,8 +200,14 @@ export function createAgentObservationApi(
 ): MachineStudioAgentApi {
   return {
     version: 1,
-    setInspectionView(position, target) {
-      engine.renderer.setInspectionView?.(position, target);
+    setEnvironmentDiagnostics(options) {
+      engine.renderer.setEnvironmentDiagnostics?.(options);
+    },
+    setInspectionView(position, target, options) {
+      engine.renderer.setInspectionView?.(position, target, options);
+    },
+    getEnvironmentResources() {
+      return engine.renderer.getEnvironmentResources?.() ?? null;
     },
     getRenderedEntityPosition(entityId) {
       return engine.renderer.getRenderedEntityPosition?.(entityId);

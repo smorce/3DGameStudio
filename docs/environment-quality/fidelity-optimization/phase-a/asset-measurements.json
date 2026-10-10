@@ -1,0 +1,348 @@
+{
+  "assets": [
+    {
+      "slot": "building.quality.house",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 59360,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 59360,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 48220,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "building.quality.house",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 59324,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 59324,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 48184,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "building.quality.house",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 59360,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 59360,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14,
+          "leafCards": 0
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 48220,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 78328,
+          "triangles": 1800,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 468
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 51072,
+          "triangles": 1228,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 182
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11760,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 78268,
+          "triangles": 1800,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 468
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 51004,
+          "triangles": 1228,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 182
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11752,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 78344,
+          "triangles": 1800,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 468
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 51060,
+          "triangles": 1228,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 182
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11768,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 81456,
+          "triangles": 1952,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 448
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 62960,
+          "triangles": 1568,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 256
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10900,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 81444,
+          "triangles": 1952,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 448
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 62924,
+          "triangles": 1568,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 256
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10900,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 81440,
+          "triangles": 1952,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 448
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 63004,
+          "triangles": 1568,
+          "materials": 2,
+          "textures": 4,
+          "leafCards": 256
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10920,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0,
+          "leafCards": 0
+        }
+      ]
+    },
+    {
+      "slot": "prop.quality.market",
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 23564,
+          "triangles": 168,
+          "materials": 2,
+          "textures": 6,
+          "leafCards": 0
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 23036,
+          "triangles": 144,
+          "materials": 2,
+          "textures": 6,
+          "leafCards": 0
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 21236,
+          "triangles": 72,
+          "materials": 2,
+          "textures": 6,
+          "leafCards": 0
+        }
+      ]
+    }
+  ],
+  "chunkGenerationMs": [
+    {
+      "samples": 100,
+      "median": 8.224748999999974,
+      "p95": 24.762717000000066,
+      "min": 6.310755999999856,
+      "max": 32.79372599999999
+    },
+    {
+      "samples": 100,
+      "median": 7.8145479999998315,
+      "p95": 23.259907999999996,
+      "min": 6.208768999999847,
+      "max": 26.228521
+    },
+    {
+      "samples": 100,
+      "median": 7.808879000000161,
+      "p95": 25.353991999999835,
+      "min": 6.41070099999979,
+      "max": 28.85735199999999
+    }
+  ],
+  "limitation": "Generator CPU measurement excludes Renderer grass setup, GLB loads and GPU upload; browser may be concurrently rendering."
+}

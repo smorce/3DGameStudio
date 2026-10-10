@@ -1,0 +1,33 @@
+{
+  "phase": "phase3",
+  "views": [
+    {
+      "name": "house-detail",
+      "position": [
+        -30,
+        14,
+        -67
+      ],
+      "target": [
+        -19.6,
+        16,
+        -83.6
+      ]
+    },
+    {
+      "name": "village-eye",
+      "position": [
+        39,
+        13,
+        -7
+      ],
+      "target": [
+        37,
+        14,
+        -50
+      ]
+    }
+  ],
+  "glbDownloadErrors": [],
+  "completed": true
+}

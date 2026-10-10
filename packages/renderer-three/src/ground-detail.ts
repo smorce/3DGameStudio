@@ -16,14 +16,15 @@ float environmentCobble(vec2 p) {
 const groundDetailColor = `
 float groundGrain = environmentNoise(environmentXZ * 12.0);
 float groundPatch = environmentNoise(environmentXZ * 0.7);
+float pebble = smoothstep(0.72, 0.88, groundGrain);
 float detailFade = 1.0 - smoothstep(0.04, 0.25, length(fwidth(environmentXZ)));
-diffuseColor.rgb *= 1.0 + (groundGrain - 0.5) * 0.13 * detailFade + (groundPatch - 0.5) * 0.07;
+diffuseColor.rgb *= 1.0 + (groundGrain - 0.5) * 0.13 * detailFade + (groundPatch - 0.5) * 0.16 + pebble * 0.09 * detailFade;
 float environmentPaving = PAVING_MASK;
 float cobble = environmentCobble(environmentXZ);
 diffuseColor.rgb *= 1.0 - environmentPaving * (1.0 - cobble) * 0.32 * detailFade;
 `;
 const groundDetailNormal = `
-float microHeight = environmentNoise(environmentXZ * 12.0) * 0.006 + environmentPaving * cobble * 0.018;
+float microHeight = environmentNoise(environmentXZ * 12.0) * 0.009 + pebble * 0.005 + environmentPaving * cobble * 0.018;
 float normalFade = 1.0 - smoothstep(0.04, 0.25, length(fwidth(environmentXZ)));
 vec3 groundDx = dFdx(-vViewPosition), groundDy = dFdy(-vViewPosition);
 vec3 groundR1 = cross(groundDy, normal), groundR2 = cross(normal, groundDx);

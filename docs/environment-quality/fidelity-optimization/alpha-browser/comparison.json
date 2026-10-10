@@ -1,0 +1,339 @@
+{
+  "method": "Same final world/camera/viewport; each variant is one independent load followed by stable counters and one 10-second window. GLB route replacement affects MASK leaf/needle cutoff only. MSAA-off overrides WebGL context attributes before startup. Static crops are not temporal flicker measurements. Software GPU timings are not hardware performance.",
+  "order": [
+    "cutoff-04-msaa4",
+    "cutoff-05-msaa4",
+    "cutoff-06-msaa4",
+    "cutoff-05-no-msaa"
+  ],
+  "variants": [
+    {
+      "name": "cutoff-04-msaa4",
+      "cutoff": 0.4,
+      "antialias": true,
+      "replacedGLBs": 62,
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "completed": true,
+      "environment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pixelRatio": 1,
+        "antialias": true,
+        "msaaSamples": 4,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "metrics": {
+        "drawCalls": {
+          "samples": 27,
+          "median": 273,
+          "p95": 273,
+          "min": 273,
+          "max": 273
+        },
+        "triangles": {
+          "samples": 27,
+          "median": 424483,
+          "p95": 424483,
+          "min": 424483,
+          "max": 424483
+        },
+        "gpuTimingMs": {
+          "samples": 27,
+          "median": 367.385753,
+          "p95": 389.906118,
+          "min": 359.398672,
+          "max": 418.475152
+        },
+        "textures": {
+          "samples": 27,
+          "median": 6,
+          "p95": 6,
+          "min": 6,
+          "max": 6
+        },
+        "geometries": {
+          "samples": 27,
+          "median": 134,
+          "p95": 134,
+          "min": 134,
+          "max": 134
+        },
+        "rafMs": {
+          "samples": 27,
+          "median": 383.3000000000029,
+          "p95": 400,
+          "min": 366.59999999999127,
+          "max": 433.1999999999971
+        },
+        "renderMs": {
+          "samples": 27,
+          "median": 5,
+          "p95": 7.200000002980232,
+          "min": 3.2999999970197678,
+          "max": 7.5
+        }
+      }
+    },
+    {
+      "name": "cutoff-05-msaa4",
+      "cutoff": 0.5,
+      "antialias": true,
+      "replacedGLBs": 64,
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "completed": true,
+      "environment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pixelRatio": 1,
+        "antialias": true,
+        "msaaSamples": 4,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "metrics": {
+        "drawCalls": {
+          "samples": 28,
+          "median": 273,
+          "p95": 273,
+          "min": 273,
+          "max": 273
+        },
+        "triangles": {
+          "samples": 28,
+          "median": 424483,
+          "p95": 424483,
+          "min": 424483,
+          "max": 424483
+        },
+        "gpuTimingMs": {
+          "samples": 28,
+          "median": 351.508944,
+          "p95": 384.184383,
+          "min": 329.772794,
+          "max": 388.720897
+        },
+        "textures": {
+          "samples": 28,
+          "median": 6,
+          "p95": 6,
+          "min": 6,
+          "max": 6
+        },
+        "geometries": {
+          "samples": 28,
+          "median": 134,
+          "p95": 134,
+          "min": 134,
+          "max": 134
+        },
+        "rafMs": {
+          "samples": 28,
+          "median": 366.5,
+          "p95": 400,
+          "min": 333.3000000000029,
+          "max": 400.1000000000058
+        },
+        "renderMs": {
+          "samples": 28,
+          "median": 5.299999997019768,
+          "p95": 6.899999991059303,
+          "min": 3.2999999970197678,
+          "max": 6.9000000059604645
+        }
+      }
+    },
+    {
+      "name": "cutoff-06-msaa4",
+      "cutoff": 0.6,
+      "antialias": true,
+      "replacedGLBs": 70,
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "completed": true,
+      "environment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pixelRatio": 1,
+        "antialias": true,
+        "msaaSamples": 4,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "metrics": {
+        "drawCalls": {
+          "samples": 27,
+          "median": 273,
+          "p95": 273,
+          "min": 273,
+          "max": 273
+        },
+        "triangles": {
+          "samples": 27,
+          "median": 424483,
+          "p95": 424483,
+          "min": 424483,
+          "max": 424483
+        },
+        "gpuTimingMs": {
+          "samples": 27,
+          "median": 367.143411,
+          "p95": 417.946509,
+          "min": 355.018786,
+          "max": 424.061193
+        },
+        "textures": {
+          "samples": 27,
+          "median": 6,
+          "p95": 6,
+          "min": 6,
+          "max": 6
+        },
+        "geometries": {
+          "samples": 27,
+          "median": 134,
+          "p95": 134,
+          "min": 134,
+          "max": 134
+        },
+        "rafMs": {
+          "samples": 27,
+          "median": 383.3000000000029,
+          "p95": 416.59999999999127,
+          "min": 366.59999999999127,
+          "max": 433.40000000000146
+        },
+        "renderMs": {
+          "samples": 27,
+          "median": 5.200000002980232,
+          "p95": 7.700000002980232,
+          "min": 3.7000000029802322,
+          "max": 9.800000011920929
+        }
+      }
+    },
+    {
+      "name": "cutoff-05-no-msaa",
+      "cutoff": 0.5,
+      "antialias": false,
+      "replacedGLBs": 70,
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "completed": true,
+      "environment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "viewport": [
+          1440,
+          1000
+        ],
+        "pixelRatio": 1,
+        "antialias": false,
+        "msaaSamples": 0,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "metrics": {
+        "drawCalls": {
+          "samples": 37,
+          "median": 273,
+          "p95": 273,
+          "min": 273,
+          "max": 273
+        },
+        "triangles": {
+          "samples": 37,
+          "median": 424483,
+          "p95": 424483,
+          "min": 424483,
+          "max": 424483
+        },
+        "gpuTimingMs": {
+          "samples": 37,
+          "median": 263.03101,
+          "p95": 278.28942,
+          "min": 252.036045,
+          "max": 281.592268
+        },
+        "textures": {
+          "samples": 37,
+          "median": 6,
+          "p95": 6,
+          "min": 6,
+          "max": 6
+        },
+        "geometries": {
+          "samples": 37,
+          "median": 134,
+          "p95": 134,
+          "min": 134,
+          "max": 134
+        },
+        "rafMs": {
+          "samples": 37,
+          "median": 266.6999999999971,
+          "p95": 283.40000000000146,
+          "min": 250,
+          "max": 300
+        },
+        "renderMs": {
+          "samples": 37,
+          "median": 5.299999997019768,
+          "p95": 8.200000002980232,
+          "min": 3.6000000089406967,
+          "max": 8.5
+        }
+      }
+    }
+  ]
+}

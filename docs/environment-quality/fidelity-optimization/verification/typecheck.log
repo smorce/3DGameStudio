@@ -1,0 +1,4 @@
+
+> machine-studio@ typecheck /home/smorce/env2/work/3DGameStudio
+> tsc --noEmit
+

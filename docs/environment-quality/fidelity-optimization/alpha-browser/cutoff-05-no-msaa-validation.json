@@ -1,0 +1,20 @@
+{
+  "name": "cutoff-05-no-msaa",
+  "cutoff": 0.5,
+  "antialias": false,
+  "replacedGLBs": 70,
+  "camera": {
+    "position": [
+      72.09866357858641,
+      19.296352770661777,
+      -137.03157234514765
+    ],
+    "target": [
+      122,
+      15.999999999999996,
+      -153
+    ],
+    "followMode": "instant"
+  },
+  "completed": true
+}

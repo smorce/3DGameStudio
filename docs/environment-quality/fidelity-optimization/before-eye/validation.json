@@ -1,0 +1,361 @@
+{
+  "requestedPosition": [
+    39,
+    13,
+    -7
+  ],
+  "requestedTarget": [
+    37,
+    14,
+    -50
+  ],
+  "exactPose": true,
+  "camera": {
+    "position": [
+      39,
+      12.999999999999998,
+      -7
+    ],
+    "target": [
+      37,
+      14,
+      -50
+    ],
+    "followMode": "instant"
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "temperate",
+      "road": {
+        "distance": 46.45277343333018,
+        "weight": 0,
+        "height": 12,
+        "roadId": "village-lane"
+      },
+      "noSpawn": false,
+      "height": 11.288227686600965,
+      "chunkKey": "0,-1",
+      "chunkBounds": [
+        0,
+        -64,
+        64,
+        0
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:landmark:quality-market-2",
+          "position": [
+            32,
+            11.247912653241311,
+            -15
+          ],
+          "assetSlot": "prop.quality.market",
+          "assetId": "factory-0d4b6b1333713d7e83d5313c251a4903",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-0",
+          "position": [
+            36.411764705882355,
+            10.981029299961667,
+            -5.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-1",
+          "position": [
+            39.23529411764706,
+            11.150178637929349,
+            -6.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-2",
+          "position": [
+            42.05882352941177,
+            11.411160861742564,
+            -7.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-3",
+          "position": [
+            44.88235294117647,
+            11.674341041551072,
+            -8.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-4",
+          "position": [
+            47.705882352941174,
+            11.838398393168466,
+            -9.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-5",
+          "position": [
+            50.529411764705884,
+            11.826107696454441,
+            -10.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-6",
+          "position": [
+            53.35294117647059,
+            11.67196399749261,
+            -11.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-7",
+          "position": [
+            56.17647058823529,
+            11.471201577016371,
+            -12.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-8",
+          "position": [
+            59,
+            11.32538330677861,
+            -13.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-0-9",
+          "position": [
+            61.82352941176471,
+            11.292766004453023,
+            -14.5
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-8-15",
+          "position": [
+            35.705882352941174,
+            10.76117047938635,
+            -0.588235294117645
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:landmark:wheat-east-wall-8-16",
+          "position": [
+            35.23529411764706,
+            10.859145871567685,
+            -3.529411764705884
+          ],
+          "assetSlot": "landscape.alpine-village.wall",
+          "assetId": "factory-ee1d3791bf482d85934df8062d0ba979",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:alpine-mainland:nature.tree.alpine-village.oak:1:2:-4",
+          "position": [
+            23.516523751895875,
+            11.98312995875199,
+            -30.1105524469167
+          ],
+          "assetSlot": "nature.tree.quality.oak",
+          "assetId": "factory-903549c34981a65a6511f7a9a30db555",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:settlement:alpine-village:building.alpine-village.barn:2:0:2",
+          "position": [
+            0.39861474106460815,
+            12,
+            -43.11020409865677
+          ],
+          "assetSlot": "building.alpine-village.barn",
+          "assetId": "factory-bf5c8379f4e36f58c316e5388e257cf7",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:settlement:alpine-village:building.alpine-village.barn:2:1:2",
+          "position": [
+            20.25803958420083,
+            12,
+            -43.12596870781108
+          ],
+          "assetSlot": "building.alpine-village.barn",
+          "assetId": "factory-cb511ceda2644b227baccea431ef50af",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:settlement:alpine-village:building.alpine-village.stone:0:2:1",
+          "position": [
+            38.97220071095601,
+            12,
+            -63.00202995829657
+          ],
+          "assetSlot": "building.quality.house",
+          "assetId": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:settlement:alpine-village:building.alpine-village.timber:1:1:1",
+          "position": [
+            20.192310279015455,
+            12,
+            -63.613766153518114
+          ],
+          "assetSlot": "building.quality.house",
+          "assetId": "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:settlement:alpine-village:building.alpine-village.timber:1:2:2",
+          "position": [
+            40.36949596424773,
+            12,
+            -42.785677848476915
+          ],
+          "assetSlot": "building.quality.house",
+          "assetId": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:40:-4",
+          "position": [
+            39.967574168369175,
+            11.036264018201736,
+            -4.095741730835289
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:44:-4",
+          "position": [
+            43.93159325327724,
+            11.297928727662176,
+            -4.027086476329714
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:48:-4",
+          "position": [
+            48.018247212469575,
+            11.445608484360323,
+            -4.095387225877493
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:52:-4",
+          "position": [
+            52.011748424777764,
+            11.4987901894879,
+            -4.043242570618167
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:52:-8",
+          "position": [
+            51.99031756003387,
+            11.679312706293802,
+            -7.971810504840687
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:56:-4",
+          "position": [
+            55.938380721258,
+            11.584760128549336,
+            -3.9820717242080717
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:56:-8",
+          "position": [
+            56.00884475396015,
+            11.534949973499065,
+            -8.091758109861985
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:60:-4",
+          "position": [
+            59.9138899394311,
+            11.63690029189519,
+            -4.042964663729071
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:wheat:60:-8",
+          "position": [
+            59.92357392301783,
+            11.462603202087438,
+            -8.0526486473158
+          ],
+          "assetSlot": "landscape.alpine-village.wheat",
+          "assetId": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 1,
+    "renderPending": 0,
+    "renderedChunks": 169
+  },
+  "completed": true
+}
