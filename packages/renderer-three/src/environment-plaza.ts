@@ -1,20 +1,18 @@
-/** 代表広場の描画用舗装。地形高さ・道路・物理素材は変更しない。 */
+/** 中央の広場と道路へ伸びる通路。木陰と外周には草地を残す。 */
 export function insideEnvironmentPlaza(x: number, z: number) {
-  return (
-    x > 0.5 &&
-    x < 41.5 &&
-    z > -35.5 &&
-    z < -10.5 &&
-    Math.hypot(x - 30, z + 25) > 5.5
+  const edge = Math.max(
+    1 - Math.hypot((x - 32) / 4.5, (z + 15) / 3.5),
+    1 - Math.hypot((x - 20) / 15, (z + 23) / 10),
+    Math.min(3 - Math.abs(z + 23), Math.min(x - 1, 41 - x)) / 3,
   );
+  return edge > 0.07 && Math.hypot(x - 30, z + 25) > 5.5;
 }
 
-/** 草の除外と同じ絶対座標を使い、樹木の足元には草の島を残す。 */
+/** 草除外と同じ絶対座標の楕円・通路を使い、境界だけをノイズで崩す。 */
 export const environmentPlazaShader = `
-float plazaEdge = min(min(p.x, 42.0 - p.x), min(p.y + 36.0, -10.0 - p.y));
-float environmentPlaza = 0.0;
-if (plazaEdge > -1.0) {
-  environmentPlaza = smoothstep(0.0, 1.0, plazaEdge + environmentNoise(p * 2.0) * 0.4)
-    * smoothstep(4.5, 5.5, length(p - vec2(30.0, -25.0)));
-}
+float plazaEdge = max(1.0 - length((p - vec2(20.0, -23.0)) / vec2(15.0, 10.0)),
+  min(3.0 - abs(p.y + 23.0), min(p.x - 1.0, 41.0 - p.x)) / 3.0);
+plazaEdge = max(plazaEdge, 1.0 - length((p - vec2(32.0, -15.0)) / vec2(4.5, 3.5)));
+float environmentPlaza = smoothstep(0.0, 0.07, plazaEdge + environmentNoise(p * 2.0) * 0.025)
+  * smoothstep(4.5, 5.5, length(p - vec2(30.0, -25.0)));
 `;

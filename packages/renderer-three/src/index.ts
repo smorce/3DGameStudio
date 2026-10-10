@@ -1,4 +1,3 @@
-import { alpineEnvironmentAccents } from "./environment-accents";
 import { semanticContext } from "../../world-generator/src/design-generation";
 import { alpineSurfaceMaterial } from "./alpine-surface";
 import { worldVegetationChunk } from "./world-vegetation";
@@ -1121,20 +1120,7 @@ export class ThreeRenderer implements RendererAdapter {
           (this.worldRuntime?.isPlayHotPath
             ? []
             : (this.worldRuntime?.getChunk(key)?.entities ?? []));
-        // 景観用の樹木だけを描画Entityへ追加し、World/Collider/Manifestを変えない。
-        const accents =
-          alpineWorld &&
-          p.world.source.kind === "procedural" &&
-          p.world.source.design
-            ? alpineEnvironmentAccents(
-                p.world.source.design,
-                p.world.source.seed,
-                p.assets,
-                key,
-                this.worldRuntime!.chunkSize,
-              )
-            : [];
-        const generated = [...generatedBase, ...accents];
+        const generated = generatedBase;
         if (
           p.world.source.kind === "procedural" &&
           p.world.source.design &&

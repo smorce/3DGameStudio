@@ -1,0 +1,126 @@
+{
+  "passed": true,
+  "tolerance": 0.000001,
+  "views": [
+    {
+      "view": "forest-path",
+      "before": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "after": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0
+    },
+    {
+      "view": "house-detail",
+      "before": {
+        "position": [
+          -30.03343694800744,
+          17.236383436954466,
+          -66.94662948683427
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ],
+        "followMode": "instant"
+      },
+      "after": {
+        "position": [
+          -30.03343694800744,
+          17.236383436954466,
+          -66.94662948683427
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0
+    },
+    {
+      "view": "village",
+      "before": {
+        "position": [
+          -150,
+          58,
+          190.00000000000003
+        ],
+        "target": [
+          -95,
+          22,
+          -65
+        ],
+        "followMode": "instant"
+      },
+      "after": {
+        "position": [
+          -150,
+          58,
+          190.00000000000003
+        ],
+        "target": [
+          -95,
+          22,
+          -65
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0
+    },
+    {
+      "view": "village-eye-exact",
+      "before": {
+        "position": [
+          39,
+          12.999999999999998,
+          -7
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "after": {
+        "position": [
+          39,
+          12.999999999999998,
+          -7
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0
+    }
+  ]
+}

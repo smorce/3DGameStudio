@@ -1,0 +1,10 @@
+{
+  "unit": {
+    "files": 35,
+    "tests": 306
+  },
+  "integration": {
+    "files": 16,
+    "tests": 90
+  }
+}

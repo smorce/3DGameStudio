@@ -1,0 +1,1026 @@
+{
+  "date": "2026-10-10T08:13:14.172Z",
+  "branch": "feat/environment-geometry-and-performance",
+  "files": [
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/0e45b6694bab054fa360be67b52c92fb9e8d9a11df8cfd2bed9870895b4ba461.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/11725703578b697a71a3de9e9a7c5941a25bbb1555f5a9edc01d354f99f678ae.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/138eb60ce689848a162f704f0a0b244262bb7000d0e00077cbd63371dcad6016.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/1b2f573e3d1c62782da83211ef6435b94ff449551b01d15d93e8098dffbf19ca.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/1d3cb1f41347bf9665ffe76ef5a92119033ad2f686ca2a8e8b549f9dc4d0ad19.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/25deb87510370b4e1c76d568d0a8417983c90b54c81b9d918c5a429d2644c8fe.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/2b23a2c17cb56d2fca3b4122437a28c1148efe4d700af36fbdfd8c0a6b0a21d3.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/2ec0e1e3df2a9633e5cfe0bc942e8ae725f6bd31e97d0710ac3d0fe3985cbec0.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/35ad78a84ffbc43109fd2f8c55e1f49a29e4ebe82bc23e16ca36c881d0395427.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/3bc0ff17e0d6814bb2d381a16acec236a2ad84c259db2a9684175aa4ddc8594c.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/43ebb87acbc1f9192e5e55db3af377e9609d89fbf713009e71048088a930fc90.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/4486732b4ffd7553b877a2beec8cce98a30ce1734a07608de8f46e0893b633ee.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/449435f503cbc001ef6310bc7ca099f5549ffe23e59dd7f0b8e78c9ed5ee656a.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/44b5184339ea77c80776dc8e67169b4e3bcc9e05e05d27904be05796ec1a013d.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/4f719d34b68cec10cfd040373d6f4f0e2f79554fee98f5f55dc2b8f48c995785.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/4fc975a4f00406510f145b91618e91d174d3dad3b8bbbce58e9895e7489c6081.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/5eff2536fbf6d109f5dbf6e4d2d22d5533ba189b9d5928bd834978f82ac5baff.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/6323e2218d0befdba8906c921217622890eff80abf2cebdd4b811864e6a63631.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/679fa49e6381fa2ab3b511783e96350ef9df920b385f2d59bbd50174eae47cc1.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/6921ef35386eade86a8c88599bae28795f360a63974d2b91e18a658270f9bae2.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/6d9fd83baaae6a934bd4a8f64c818d9d70e11f5580ab423b7c62cb7ed05c234f.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/728187289c6624b16b3dc62cbffa6fec766a972ac6c670d1de8885580e779cc0.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/7e62495fb803507509f2860e2ab917ebabae464c1cba67828353f1ea98235c47.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/7eabfce3c008ea7aa64fa1be8b444d7c100605cf162d39456f087f81f8c522db.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/82751d75d0336834b7945455fda83adf7b5e01755e471ecae01848a7ce088e23.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/84cd2d746405a4a387dda35714ac7ebb1b87dcf11ba8e5b35536e54bd8c75c76.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/8c855edf2e337425d5eb98eafd4cc0af6ebb3fc3aeb150f98c221365656e4d05.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/90bf3ac96990e6f17e905319c59938602b1ce4470154ff2cce637f02010cb141.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/9493f7a6ff1b4c30f0b4b126d8f552e09e8ddff24b4526c4e05f42d8442c449a.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/957dfdc0cdfe60be183754dfa235260e0bcb2de881651407a64373ec6455b9ce.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/97d764e4d55c2e9ec811deb89fa4028744dfa8f405a43fb705f167874b826a73.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/9875fd509ff6b04607d879117bf49569e1831720451d925d38555e81f711863c.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/9f8c13470d27163e0f6e568e57379456e87b49759a53def6e07b32489705c9cf.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/add1ac75ed88dcad239a607ad8f5f959993a12a78221a696777719f96876323c.json"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/b23332f8b22a44e02da5be9c6126a44c52fc30df002a175dbdab66936dc19db8.svg"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/b76e73cf2ec9066cec1c1f708c88bd797b5be4f4175fbf341410ed5288e4e5ca.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/bb39ca641a73d3c1bd2ddeca10bb08c7a2c7f188883de33d512f34b7d23e4708.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/bb5c6053c973671abdd7b0124c56e43252e8c907708c854fab3d67923fb51a1f.json"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/bf59490dcf6cbc416a2c2553c072f748902a0ecc30e36bae2fb170f9beab98a7.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/c5797f8113aa8413c0ddf10b04f8d3e31898024a0d39d2a21ae3350fb9b22cb0.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/da707eaca1479bb9c4243829018ceb4e11566f6693b72fbd06c1b9dbcb869c99.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/e2e40606c9ad77e0f16255f18ee015bbf7b925bd36de710f62b1359ae8387788.json"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/e56c1d52d3ac16219ca6f450b7ef2b9027cd1367f9efe95eb4b977e8ae778c34.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/e5e080c4efbeb953bcc508e038c449209712f001c4e902fee3298289769d39fe.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/e9aeaed746e7127bce6265500c447a1ec91d50b9945218107792b6da11306582.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/e9baba6d15520411ed86e391736747b6cb0aa5d8c9b453d97472897f0df24546.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/eb8a981bf14590ee872b1bfe672d0a1f8c2d355bf796acf2a42ae5332ea1315b.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/f101d1c83135983c24373f69e37b58d31bea3263e13c737ff679714cc7e4775a.glb"
+    },
+    {
+      "status": "D",
+      "path": "demos/sample-worlds/assets/fb95a91b85e6c38f2fd44d63a304e2750f24d529d5b8ec3da8f0c7bacf78707c.glb"
+    },
+    {
+      "status": "M",
+      "path": "demos/sample-worlds/library.json"
+    },
+    {
+      "status": "M",
+      "path": "demos/worlds/alpine-village.json"
+    },
+    {
+      "status": "M",
+      "path": "packages/ai-dummy/src/environment-materials.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/ai-dummy/src/environment-models.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/environment-accents.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/environment-plaza.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/ground-detail.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/index.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/instances.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/renderer-three/src/vegetation.ts"
+    },
+    {
+      "status": "M",
+      "path": "packages/world-generator/src/design-generation.ts"
+    },
+    {
+      "status": "M",
+      "path": "playwright.environment.config.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/e2e/alpine-village.spec.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/e2e/environment-quality.spec.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/unit/alpine-village.test.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/unit/environment-quality.test.ts"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/01c8f635107e69e2ab1ed6df193748312b5b63da663a714052e1fcbcb3c72fdf.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/038d6d32f489e414273ec963d8c8ca16ee7c01a7d84a9d4766350479e25b725d.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/120fd79a22c1489fc550be74504ae28f5bf516a33a179ec3e57cf4f15493e4db.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/1cb64171b274df946fcd70557b214c7dab6db4ec997a420f500f5f85a04f6221.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/225452bff2742285f1e4b9512b0b046eba31a9fcb6879a5d75cdb25f2fb6843a.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/270cd4857bd616bda0ca26f33928f98a6726f5af31e87ed8af17e1ebda6ed571.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/2b2e1ac426058513cf1fd73359cbad9ffb6093a248f720da63c2fcbc88eb4ae8.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/2c964318b919975970e9020877857bbcbea78e9002e2f10fbdfd827cef54430b.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/31c3efc05df4ab378ff0604906449500d2cbd3b35ca5572b1b3388024d4e4f8c.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/3abb7eb9332810c44f930e964bd7b20fcab9757ac01654cd52f63aab1fac5fce.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/4193c654a429fb87a178cc8d00a9999289aa939de247eb98a2771bef01786f56.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/5820e3fa9e4be7586cd96e8efdfb3ebae19dceeae4399ae94f1702907c014638.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/624bddad670455f74391d494b5ef7b9b1eba35b849de26ccc75598b90eb62734.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/64fc60309e0becdd3c8e3435341af8910ba0f0056154034e147b0b3c5124af50.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/6ea69e7473e0e108219989ab0cf068bdea2b62f94f0cff58cea056a5d2a68036.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/7a180de68008822f189cf5225be31390fa2e3cbaa55859fbd6cec7e001ca4d56.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/7c0cf6270048cbba56d738a7db4e248103b7b6c1a16cea505dda2f1c33f5ed09.json"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/941256d87d8dddfab26af847c81ecd1466876dbc0ea6c66641afd90dae928260.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/954fc48062df574d606c4c93e99149aeb86c7889fa16f883b1b5eb34fe5e0032.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/9d502e8e4b000884884b46e008cf129bf70ea1a6cf0657be0d40402293fb1367.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ab237f18c86fd1c4d4151585c0734107cefc0313ca467c0c8fa98a3fe2251c5c.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ab77c91968410723a02c6a0b61f1c3766efe07d9bcaf89cfd6435a3bd1c5590e.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ac11f641bfa6b2e6f3de445a9ff88d8d76c08d508a045f4ff073462e4fa07c28.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ae42effd2d664cc5e62cd22edd72fc290033aa5bdf822d6c8253ca8c754434bb.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/af41dfcd96baf2a187d1277a6fe0ae4432a1ef75cb4f0ca2efd111a08742c2dc.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/af698d76071b4647fbb88b381d4f109beb471f7275b32d0a9e2b53664bbbb218.json"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/b0ec853263f1de7c81de2c5591d80b17da45b49e46faffd7dce06630f69d4ec9.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/b41a8b4a0c836d7fbdcb5e8f03f44265f4429af7200c1c0ea4e67e279cdb60a6.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/b8ce8a7fcb967a4767504f35a1c07f25fc245ee2afd23f4576313800115ce06e.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/bc4dc1f5bf696e1732d8e67cbcd2c62f6ea237aab89d9408bfcc45a552b937c4.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/be6350b4f6682e7ad0bcebefbe2bd65c7d434a1a1788fb732760c134c74ba18e.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/bfaae9baf8336825ae5f25e714cce53045588e8c8df546c3e4ae698c0bd0ef67.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/c33bb0939dfdc9ace88659430d5c51d413b924e3222b03c1fdb432cd0b9f7c59.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/c869a5edb9e07acacaa3c35997541ce336074906863ceadb6a9f970127684cbb.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/cc27518161e7fe985210635ca66919a0609d8e11453815ad0fd6cd51fa16f164.json"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/cdba712b2febb21c7cca6020347143a833c80b130fae8b10d06cedf37d6a0437.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/d18d6731341208c78f60d54f5363a43ac3b4d4102fb084749352d33d70b33d01.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/d7e50ea9784b9f1edfa82d92ea80df494937233c799aaaee2cd7af5f6cc64e9e.svg"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/df0854fb75ffbdb77c43f2aec3da5f143efb0371f44682325cf4f7b5cf08c98b.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/dfc45aeb0ddb039477a9725a80c16ee78fface9650bfa2530fde0b99dcb52eec.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/e08135d969a50356e6f63bea22da5a38d43e27f114be5ce00a5263639b6b7526.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/e6f3e852a7430aa7780055d5d66f5739baa6ae1221b2a0f46005702a75dfc2a9.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/e74b7276a98760d756f6cdd4692ae048f1200c42471c45a52b0bbc3fdf2318ee.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ed21800ccad6e69ddbb78c4ddfd70a2e171179045b4399225b83aad6dc85b16e.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/ee42d3b3a541a4ec80f548d5577f57c4bf97409fa0b7fa4b9ff905ff73a71bfe.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/f2ad40c7b7881ec0c99246524296cd7d5aa36ba3f16880de608e6f04cfd94747.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/f56a000b386530a4b2f3f076f78848af24464f8744e786c7b9e7c5459af56434.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/fcccb7b1e5ea4d9fbdbee6b3542185559155a2da7e2570e8e506be96b7774840.glb"
+    },
+    {
+      "status": "??",
+      "path": "demos/sample-worlds/assets/feda61269dc04d4a0e3502b95b9c90a2719cae60b972c1e9de77d88d820551a9.svg"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after-eye/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after-eye/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after-eye/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after-eye/village-eye-exact.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/aerial.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/house-close.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/overview.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/village-eye.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/village-square.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/after/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/asset-measurements-after.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/asset-measurements-before.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before-eye/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before-eye/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before-eye/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before-eye/village-eye-exact.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/aerial.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/house-close.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/overview.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/village-eye.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/village-square.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/before/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/changed-files.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/evidence-validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/factory-repeat-validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/village-eye-exact.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-after/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/village-eye-exact.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-before/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-camera-comparison.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/gpu-performance-comparison.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/hardware-d3d12-probe.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/hardware-probe.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/after.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/before.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/closeup.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/comparison.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/details-performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/details-validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/front.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-after.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-before.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-reference.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/reference.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase1/side.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase2/comparison.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-after.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-before.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-reference.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase2/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase3/comparison.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase3/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-after.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-before.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-reference.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/actual-camera-comparison.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/aerial.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/house-close.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/overview.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/performance-comparison.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/phase4/village-square.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/provenance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/aerial.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/house-close.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/overview.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/village-eye.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/village-square.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/budget-restored/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/forest-open-canopy.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/aerial.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/forest-path.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/house-close.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/house-detail.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/overview.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/performance-summary.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/performance.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/validation.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/village-eye.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/village-square.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/trials/over-budget/village.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/validation-results.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/after.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/alpine-rebase/after-rebase.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/alpine-rebase/before-rebase.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/alpine-rebase/rebase.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/before.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/build.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/details.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-final.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-first-failure.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-first.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-last-run.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-rebase-timeout.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-rebase-timeout.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/e2e-rebase-timeout.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/eye-after.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/eye-before.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/gpu-after.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/gpu-before.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/lint.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/physics.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/prepare.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/test-counts.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/tests-concurrent.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/tests.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/typecheck.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/verification/validate.log"
+    },
+    {
+      "status": "??",
+      "path": "docs/environment-quality/geometry-upgrade/world-definition-validation.json"
+    },
+    {
+      "status": "??",
+      "path": "packages/world-generator/src/environment-accents.ts"
+    },
+    {
+      "status": "??",
+      "path": "scripts/environment-geometry-evidence.ts"
+    },
+    {
+      "status": "??",
+      "path": "tests/integration/environment-accent-physics.test.ts"
+    },
+    {
+      "status": "??",
+      "path": "tests/unit/environment-geometry.test.ts"
+    }
+  ]
+}

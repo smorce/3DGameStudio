@@ -5,8 +5,24 @@ import base from "./playwright.config";
 export default defineConfig({
   ...base,
   testMatch: "environment-quality.spec.ts",
-  outputDir: "test-results/environment-quality",
-  use: { ...base.use, baseURL: "http://127.0.0.1:8791" },
+  outputDir: process.env.GEOMETRY_OUTPUT ?? "test-results/environment-quality",
+  use: {
+    ...base.use,
+    baseURL: "http://127.0.0.1:8791",
+    ...(process.env.GEOMETRY_GPU_CAPTURE === "1"
+      ? {
+          headless: false,
+          launchOptions: {
+            args: [
+              "--use-gl=angle",
+              "--use-angle=gl",
+              "--ignore-gpu-blocklist",
+              "--disable-software-rasterizer",
+            ],
+          },
+        }
+      : {}),
+  },
   webServer: {
     command:
       process.env.FIDELITY_EXISTING_BUILD === "1"

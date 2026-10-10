@@ -76,7 +76,9 @@ describe("Alpine Village", () => {
       expect(reversed.get(`${chunk.chunkX},${chunk.chunkZ}`)).toEqual(chunk);
     const entities = chunks.flatMap((c) => c.entities);
     expect(new Set(entities.map((e) => e.id)).size).toBe(entities.length);
-    expect(entities.filter((e) => e.settlementId)).toHaveLength(14);
+    expect(
+      entities.filter((e) => e.settlementId && e.kind === "building"),
+    ).toHaveLength(14);
     expect(entities.some((e) => e.assetSlot?.endsWith(".windmill"))).toBe(true);
     expect(entities.some((e) => e.assetSlot?.endsWith(".wheat"))).toBe(true);
     expect(entities.some((e) => e.assetSlot?.endsWith(".wall"))).toBe(true);

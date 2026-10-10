@@ -1,0 +1,151 @@
+{
+  "date": "2026-10-10T07:40:31.489Z",
+  "passed": true,
+  "files": [
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/reference.png",
+      "exists": true,
+      "bytes": 920155
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/before.png",
+      "exists": true,
+      "bytes": 1159441
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/after.png",
+      "exists": true,
+      "bytes": 1137258
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/comparison.png",
+      "exists": true,
+      "bytes": 2763752
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/front.png",
+      "exists": true,
+      "bytes": 947142
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/side.png",
+      "exists": true,
+      "bytes": 990640
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/closeup.png",
+      "exists": true,
+      "bytes": 839696
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-reference.png",
+      "exists": true,
+      "bytes": 920155
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-before.png",
+      "exists": true,
+      "bytes": 1159441
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/house-after.png",
+      "exists": true,
+      "bytes": 1137258
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase1/performance.json",
+      "exists": true,
+      "bytes": 13441
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-reference.png",
+      "exists": true,
+      "bytes": 871814
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-before.png",
+      "exists": true,
+      "bytes": 1419553
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase2/forest-after.png",
+      "exists": true,
+      "bytes": 1388363
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase2/comparison.png",
+      "exists": true,
+      "bytes": 3267098
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase2/performance.json",
+      "exists": true,
+      "bytes": 13409
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-reference.png",
+      "exists": true,
+      "bytes": 850212
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-before.png",
+      "exists": true,
+      "bytes": 1192195
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase3/village-after.png",
+      "exists": true,
+      "bytes": 1180548
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase3/comparison.png",
+      "exists": true,
+      "bytes": 2770407
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase3/performance.json",
+      "exists": true,
+      "bytes": 11584
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/overview.png",
+      "exists": true,
+      "bytes": 1330790
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/aerial.png",
+      "exists": true,
+      "bytes": 1058320
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/forest-path.png",
+      "exists": true,
+      "bytes": 1388363
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/house-close.png",
+      "exists": true,
+      "bytes": 914786
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/village-square.png",
+      "exists": true,
+      "bytes": 1180548
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/performance-comparison.json",
+      "exists": true,
+      "bytes": 231586
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/validation.json",
+      "exists": true,
+      "bytes": 1441
+    },
+    {
+      "path": "docs/environment-quality/geometry-upgrade/phase4/actual-camera-comparison.json",
+      "exists": true,
+      "bytes": 6429
+    }
+  ]
+}

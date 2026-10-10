@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-10T07:49:59.460Z",
+  "branch": "feat/environment-geometry-and-performance",
+  "baselineCommit": "7761de6a15b6f1357a2607bbc8038748784adef1",
+  "sourceState": "Working tree with environment geometry changes; no commit created",
+  "sourceHashes": {
+    "packages/ai-dummy/src/environment-materials.ts": "e3ae560d694bb1048d2e137765923cac75ef9446bb661a2d023b9eb270667800",
+    "packages/ai-dummy/src/environment-models.ts": "2c3ed0d1080bc1918cef6308c7ecea9827d4bc9aeb75b4359970598f21940b60",
+    "packages/renderer-three/src/environment-accents.ts": "df723c485f3373f0929501e072c15925d664a706a9a8ffd97813722ddbf569c2",
+    "packages/renderer-three/src/environment-plaza.ts": "e4b7895255fc77850d625db77b98adb77a452a0051d6d14e317867b5dbce94cc",
+    "packages/renderer-three/src/ground-detail.ts": "8e36221a48765ef2c7907fd7bc4012df760015f693d3e3feecf3b83937e744ae",
+    "packages/renderer-three/src/index.ts": "b14c40b7d2994e262c0d637f47a2b472c41fb6ee55d475e410bf2a0426645880",
+    "packages/renderer-three/src/instances.ts": "fb258ad719e776b0baa82f6ee559f01edda0c6f61397d72cf10ee9cf5a5fe211",
+    "packages/renderer-three/src/vegetation.ts": "00794420847ead69e1fa1652774af92f88d159d795da96aa9e7b673d55ac23fb",
+    "packages/world-generator/src/design-generation.ts": "17df779dbbfde11deae964bbaf943d955fa99e08b63de76fece733671b20ea8b",
+    "playwright.environment.config.ts": "c1c36091fba54fe00b9ba7e41e5596e6b21e0dbc87a20aba0aba4b1065306081",
+    "tests/e2e/alpine-village.spec.ts": "adc9209935ee37c87fabffc5b09f0d6f60d3d56ca702905a30b8f86d63deeeae",
+    "tests/e2e/environment-quality.spec.ts": "5f71a28623e8a3bd117673e9dfa5029f6e80783384424d6b5f0a4575ca2d7267",
+    "tests/unit/alpine-village.test.ts": "78e173fa49d2eac8a22e14425d394513089d8a421b4ab27248c7fa02fff89706",
+    "tests/unit/environment-quality.test.ts": "dfe253b614850c3ce33052ef0b526f81dd6a4a87b058700a90a49268e65bc1e7",
+    "packages/world-generator/src/environment-accents.ts": "353c8323228f865da9e8cf42257a1986276e05541d1ae9a602f14998995cabab",
+    "tests/integration/environment-accent-physics.test.ts": "a6731c2523f2cbfaaef7ce1b6a144fb49ba39aa876333b3ce65711eb3c86f7d5",
+    "tests/unit/environment-geometry.test.ts": "e53275b906dcef0856b7c07600280f23a3e73142cff4176bfd053bdd0e17a239",
+    "scripts/environment-geometry-evidence.ts": "e1949ab7f820b85091e3b5d76d5289c40349d9b8ee4a744643d84906f0d1f10b"
+  },
+  "browser": "Chromium 153.0.8010.12",
+  "worldSeed": 42,
+  "viewport": [
+    1440,
+    1000
+  ],
+  "pixelRatio": 1,
+  "fov": 45,
+  "antialias": true,
+  "msaaSamples": 4,
+  "baselineGpuSource": "Detached worktree at baseline commit; only capture spec and Playwright config copied from final worktree",
+  "gpuCaptureSpecIdentical": true,
+  "gpuCaptureConfigIdentical": true,
+  "launches": {
+    "softwareMain": 1,
+    "softwareExactEye": 1,
+    "hardwareSupplement": 1
+  },
+  "repetitionsPerView": 3,
+  "sampleWindowMs": 10000,
+  "limitations": [
+    "Consecutive windows are not independent cold launches",
+    "Initial loading states are snapshots, not measured load durations",
+    "GPU queries include the full render, not a separate shadow-only timer"
+  ]
+}

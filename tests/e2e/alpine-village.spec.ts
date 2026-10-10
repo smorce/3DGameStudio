@@ -18,7 +18,8 @@ const views: { name: string; position: Vec3; target: Vec3 }[] = [
 test("Alpine Village: 景観・再読込・車の移動と同条件の描画性能", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(420000);
+  // SwiftShaderの画像採取後も、車移動とRebaseを最後まで観測する時間を確保する。
+  test.setTimeout(600000);
   await mkdir(testInfo.outputDir, { recursive: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   const runs = [];
@@ -309,7 +310,8 @@ test("Alpine Village: 景観・再読込・車の移動と同条件の描画性�
                 }
               ).__MACHINE_STUDIO_AGENT__.getState().world.rebaseCount ?? 0,
           ),
-        { timeout: 90000 },
+        // 低FPSでも物理時間を進めて192mのRebase境界へ実走で到達する。
+        { timeout: 180000 },
       )
       .toBeGreaterThan(beforeRebase.state.world.rebaseCount ?? 0);
   } finally {

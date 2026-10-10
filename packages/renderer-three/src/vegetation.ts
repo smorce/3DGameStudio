@@ -11,20 +11,20 @@ export function grassGeometry(blades: number) {
       x = Math.cos(a) * (0.32 + (i % 3) * 0.06),
       z = Math.sin(a) * (0.32 + (i % 3) * 0.06);
     const h = 0.35 + (i % 4) * 0.11,
-      w = 0.055 + (i % 3) * 0.008;
+      w = 0.026 + (i % 3) * 0.006;
     const wx = Math.cos(a + Math.PI / 2) * w,
       wz = Math.sin(a + Math.PI / 2) * w;
     const left = [x - wx, 0, z - wz],
       right = [x + wx, 0, z + wz];
     const middleLeft = [
-      x + Math.cos(a) * 0.16 - wx * 0.4,
-      h * 0.65,
-      z + Math.sin(a) * 0.16 - wz * 0.4,
+      x + Math.cos(a) * 0.16 - wx * 0.32,
+      h * 0.74,
+      z + Math.sin(a) * 0.16 - wz * 0.32,
     ];
     const middleRight = [
-      x + Math.cos(a) * 0.16 + wx * 0.4,
-      h * 0.65,
-      z + Math.sin(a) * 0.16 + wz * 0.4,
+      x + Math.cos(a) * 0.16 + wx * 0.32,
+      h * 0.74,
+      z + Math.sin(a) * 0.16 + wz * 0.32,
     ];
     const points = [
       left,
@@ -35,7 +35,11 @@ export function grassGeometry(blades: number) {
       middleLeft,
       middleLeft,
       middleRight,
-      [x + Math.cos(a) * 0.27, h, z + Math.sin(a) * 0.27],
+      [
+        x + Math.cos(a) * (0.21 + (i % 3) * 0.055),
+        h,
+        z + Math.sin(a) * (0.21 + (i % 3) * 0.055),
+      ],
     ];
     for (const p of points) {
       positions.push(...p);

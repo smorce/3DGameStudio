@@ -1,0 +1,546 @@
+{
+  "before": [
+    {
+      "view": "village-eye-exact",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 26,
+        "median": 322,
+        "p95": 322,
+        "min": 322,
+        "max": 322
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 402057,
+        "p95": 402057,
+        "min": 402057,
+        "max": 402057
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 140,
+        "p95": 140,
+        "min": 140,
+        "max": 140
+      },
+      "textures": {
+        "samples": 26,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 377.642726,
+        "p95": 408.409117,
+        "min": 367.160881,
+        "max": 433.065347
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 383.3000000000029,
+        "p95": 433.29999999998836,
+        "min": 366.59999999999127,
+        "max": 433.40000000000873
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 4.899999991059303,
+        "p95": 7.699999988079071,
+        "min": 3.7000000029802322,
+        "max": 8
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 26,
+        "median": 322,
+        "p95": 322,
+        "min": 322,
+        "max": 322
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 402057,
+        "p95": 402057,
+        "min": 402057,
+        "max": 402057
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 140,
+        "p95": 140,
+        "min": 140,
+        "max": 140
+      },
+      "textures": {
+        "samples": 26,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 381.294516,
+        "p95": 405.029183,
+        "min": 372.569608,
+        "max": 421.668163
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 399.8999999999942,
+        "p95": 416.70000000001164,
+        "min": 366.6999999999971,
+        "max": 433.3999999999942
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.700000002980232,
+        "p95": 7.200000002980232,
+        "min": 3.9000000059604645,
+        "max": 9
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 26,
+        "median": 322,
+        "p95": 322,
+        "min": 322,
+        "max": 322
+      },
+      "triangles": {
+        "samples": 26,
+        "median": 402057,
+        "p95": 402057,
+        "min": 402057,
+        "max": 402057
+      },
+      "geometries": {
+        "samples": 26,
+        "median": 140,
+        "p95": 140,
+        "min": 140,
+        "max": 140
+      },
+      "textures": {
+        "samples": 26,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 26,
+        "median": 376.012431,
+        "p95": 402.924491,
+        "min": 367.772293,
+        "max": 436.909538
+      },
+      "rafMs": {
+        "samples": 26,
+        "median": 383.3999999999942,
+        "p95": 416.6999999999971,
+        "min": 366.70000000001164,
+        "max": 450.09999999999127
+      },
+      "renderMs": {
+        "samples": 26,
+        "median": 5.399999991059303,
+        "p95": 7.0999999940395355,
+        "min": 3.5,
+        "max": 8.099999994039536
+      },
+      "streamingRequestMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 26,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    }
+  ],
+  "after": [
+    {
+      "view": "village-eye-exact",
+      "repetition": 0,
+      "drawCalls": {
+        "samples": 24,
+        "median": 323,
+        "p95": 323,
+        "min": 323,
+        "max": 323
+      },
+      "triangles": {
+        "samples": 24,
+        "median": 414811,
+        "p95": 414811,
+        "min": 414811,
+        "max": 414811
+      },
+      "geometries": {
+        "samples": 24,
+        "median": 142,
+        "p95": 142,
+        "min": 142,
+        "max": 142
+      },
+      "textures": {
+        "samples": 24,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 24,
+        "median": 396.7915,
+        "p95": 474.151508,
+        "min": 349.665761,
+        "max": 552.412602
+      },
+      "rafMs": {
+        "samples": 24,
+        "median": 400,
+        "p95": 566.6999999999971,
+        "min": 350,
+        "max": 750.0000000000073
+      },
+      "renderMs": {
+        "samples": 24,
+        "median": 6.200000002980232,
+        "p95": 8.199999988079071,
+        "min": 3.8999999910593033,
+        "max": 8.400000005960464
+      },
+      "streamingRequestMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 24,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 1,
+      "drawCalls": {
+        "samples": 25,
+        "median": 323,
+        "p95": 323,
+        "min": 323,
+        "max": 323
+      },
+      "triangles": {
+        "samples": 25,
+        "median": 414811,
+        "p95": 414811,
+        "min": 414811,
+        "max": 414811
+      },
+      "geometries": {
+        "samples": 25,
+        "median": 142,
+        "p95": 142,
+        "min": 142,
+        "max": 142
+      },
+      "textures": {
+        "samples": 25,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 25,
+        "median": 401.451246,
+        "p95": 459.759273,
+        "min": 369.195742,
+        "max": 459.813273
+      },
+      "rafMs": {
+        "samples": 25,
+        "median": 416.59999999999127,
+        "p95": 466.70000000001164,
+        "min": 366.6999999999971,
+        "max": 483.3000000000029
+      },
+      "renderMs": {
+        "samples": 25,
+        "median": 6.4000000059604645,
+        "p95": 8.400000005960464,
+        "min": 4.200000002980232,
+        "max": 8.5
+      },
+      "streamingRequestMs": {
+        "samples": 25,
+        "median": 0,
+        "p95": 0.09999999403953552,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "streamingCommitMs": {
+        "samples": 25,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.10000000894069672
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    },
+    {
+      "view": "village-eye-exact",
+      "repetition": 2,
+      "drawCalls": {
+        "samples": 27,
+        "median": 323,
+        "p95": 323,
+        "min": 323,
+        "max": 323
+      },
+      "triangles": {
+        "samples": 27,
+        "median": 414811,
+        "p95": 414811,
+        "min": 414811,
+        "max": 414811
+      },
+      "geometries": {
+        "samples": 27,
+        "median": 142,
+        "p95": 142,
+        "min": 142,
+        "max": 142
+      },
+      "textures": {
+        "samples": 27,
+        "median": 19,
+        "p95": 19,
+        "min": 19,
+        "max": 19
+      },
+      "gpuTimingMs": {
+        "samples": 27,
+        "median": 371.313936,
+        "p95": 420.83145,
+        "min": 340.892911,
+        "max": 428.118769
+      },
+      "rafMs": {
+        "samples": 27,
+        "median": 383.3000000000029,
+        "p95": 433.3000000000029,
+        "min": 349.8999999999942,
+        "max": 433.3000000000029
+      },
+      "renderMs": {
+        "samples": 27,
+        "median": 5.9000000059604645,
+        "p95": 8,
+        "min": 3.9000000059604645,
+        "max": 8.5
+      },
+      "streamingRequestMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 27,
+        "median": 0,
+        "p95": 0,
+        "min": 0,
+        "max": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "maxGenerationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null,
+        "min": null,
+        "max": null
+      },
+      "jsHeap": null,
+      "resources": null
+    }
+  ]
+}

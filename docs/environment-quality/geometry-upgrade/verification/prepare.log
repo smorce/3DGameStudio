@@ -1,0 +1,161 @@
+
+> machine-studio@ sample-worlds:prepare /home/smorce/env2/work/3DGameStudio
+> tsx scripts/sample-worlds.ts prepare
+
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (1), Accessor (1)
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (1), Accessor (1)
+prune: Removed types... Texture (2)
+prune: Removed types... Texture (1), Accessor (1)
+prune: Removed types... Accessor (1)
+prune: Removed types... Accessor (1)
+prune: Removed types... Accessor (1)
+prune: Removed types... Accessor (1)
+prune: Removed types... Accessor (1)
+prune: Removed types... Accessor (1)
+{
+  "worlds": [
+    {
+      "id": "starter-grassland",
+      "chunks": 100,
+      "medianMs": 0.21522600000025705,
+      "p95Ms": 0.6698110000002089,
+      "maxMs": 3.641740000000027,
+      "entityCount": 135,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "legacy-world",
+          "message": "World Design validation is not applicable"
+        }
+      ]
+    },
+    {
+      "id": "airfield",
+      "chunks": 100,
+      "medianMs": 0.1489440000000286,
+      "p95Ms": 0.49510700000018915,
+      "maxMs": 0.7348210000000108,
+      "entityCount": 8,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "legacy-world",
+          "message": "World Design validation is not applicable"
+        }
+      ]
+    },
+    {
+      "id": "tropical-archipelago",
+      "chunks": 100,
+      "medianMs": 3.7039850000001024,
+      "p95Ms": 6.681721999999809,
+      "maxMs": 11.042810999999801,
+      "entityCount": 177,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "toy-islands",
+      "chunks": 100,
+      "medianMs": 4.446452000000136,
+      "p95Ms": 7.659225000000333,
+      "maxMs": 10.256642000000284,
+      "entityCount": 360,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "mountain-island",
+      "chunks": 100,
+      "medianMs": 5.281447000000298,
+      "p95Ms": 8.561378000000332,
+      "maxMs": 10.207368999999744,
+      "entityCount": 107,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "desert-island",
+      "chunks": 100,
+      "medianMs": 4.665110999999342,
+      "p95Ms": 7.939981000000444,
+      "maxMs": 11.155291000000034,
+      "entityCount": 184,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "snow-island",
+      "chunks": 100,
+      "medianMs": 4.5778190000000905,
+      "p95Ms": 7.406678999999713,
+      "maxMs": 10.491203000000496,
+      "entityCount": 123,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "race-island",
+      "chunks": 100,
+      "medianMs": 4.582619999999224,
+      "p95Ms": 8.189049999999952,
+      "maxMs": 11.05540800000017,
+      "entityCount": 168,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    },
+    {
+      "id": "alpine-village",
+      "chunks": 100,
+      "medianMs": 9.440748999999414,
+      "p95Ms": 27.949443999999858,
+      "maxMs": 43.996172000000115,
+      "entityCount": 2807,
+      "issues": [
+        {
+          "severity": "info",
+          "code": "world-valid",
+          "message": "World validation passed"
+        }
+      ]
+    }
+  ],
+  "uniqueAssetCount": 69,
+  "uniqueRuntimeFileCount": 35,
+  "totalLogicalReferences": 129
+}

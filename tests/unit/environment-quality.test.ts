@@ -211,32 +211,35 @@ describe("環境品質の素材基盤", () => {
     disposeTemplate(b.g, pool.release(b.g));
     expect(disposed).toHaveBeenCalledTimes(1);
   });
-  it("異なる素材レシピ版のTextureを混同せず、v2も最後の参照で解放する", () => {
-    const pool = new EnvironmentTexturePool();
-    const make = (version: number) => {
-      const group = new Group();
-      group.userData.environmentRecipeVersion = version;
-      const texture = new Texture();
-      texture.name = `leaf-color-v${version}`;
-      const material = new MeshStandardMaterial({ map: texture });
-      group.add(new Mesh(new PlaneGeometry(), material));
-      return { group, material, texture };
-    };
-    const old = make(1),
-      first = make(2),
-      second = make(2);
-    pool.acquire(old.group);
-    pool.acquire(first.group);
-    pool.acquire(second.group);
-    expect(first.material.map).not.toBe(old.material.map);
-    expect(first.material.map).toBe(second.material.map);
-    const disposed = vi.spyOn(first.texture, "dispose");
-    disposeTemplate(first.group, pool.release(first.group));
-    expect(disposed).not.toHaveBeenCalled();
-    disposeTemplate(second.group, pool.release(second.group));
-    expect(disposed).toHaveBeenCalledTimes(1);
-    disposeTemplate(old.group, pool.release(old.group));
-  });
+  it.each([2, 3])(
+    "素材レシピv%iのTextureを混同せず最後の参照で解放する",
+    (version) => {
+      const pool = new EnvironmentTexturePool();
+      const make = (version: number) => {
+        const group = new Group();
+        group.userData.environmentRecipeVersion = version;
+        const texture = new Texture();
+        texture.name = `leaf-color-v${version}`;
+        const material = new MeshStandardMaterial({ map: texture });
+        group.add(new Mesh(new PlaneGeometry(), material));
+        return { group, material, texture };
+      };
+      const old = make(1),
+        first = make(version),
+        second = make(version);
+      pool.acquire(old.group);
+      pool.acquire(first.group);
+      pool.acquire(second.group);
+      expect(first.material.map).not.toBe(old.material.map);
+      expect(first.material.map).toBe(second.material.map);
+      const disposed = vi.spyOn(first.texture, "dispose");
+      disposeTemplate(first.group, pool.release(first.group));
+      expect(disposed).not.toHaveBeenCalled();
+      disposeTemplate(second.group, pool.release(second.group));
+      expect(disposed).toHaveBeenCalledTimes(1);
+      disposeTemplate(old.group, pool.release(old.group));
+    },
+  );
   it("インスタンスはGeometry/Materialを共有し、草はRebase後も親Chunk座標に従う", () => {
     const template = new Group(),
       geometry = new PlaneGeometry(),

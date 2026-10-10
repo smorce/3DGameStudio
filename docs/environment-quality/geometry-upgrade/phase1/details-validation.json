@@ -1,0 +1,46 @@
+{
+  "phase": "phase4",
+  "views": [
+    {
+      "name": "front",
+      "position": [
+        -5,
+        17,
+        -72
+      ],
+      "target": [
+        -19.6,
+        16,
+        -83.6
+      ]
+    },
+    {
+      "name": "side",
+      "position": [
+        -5,
+        17,
+        -102
+      ],
+      "target": [
+        -19.6,
+        16,
+        -83.6
+      ]
+    },
+    {
+      "name": "closeup",
+      "position": [
+        -10,
+        16,
+        -76
+      ],
+      "target": [
+        -19.6,
+        16,
+        -83.6
+      ]
+    }
+  ],
+  "glbDownloadErrors": [],
+  "completed": true
+}

@@ -7,8 +7,9 @@ float environmentNoise(vec2 p) {
     mix(environmentHash(i + vec2(0,1)), environmentHash(i + vec2(1,1)), f.x), f.y);
 }
 float environmentCobble(vec2 p) {
-  vec2 q = p * vec2(2.4, 3.2);
+  vec2 q = p * vec2(3.2, 4.0);
   q.x += mod(floor(q.y), 2.0) * 0.5;
+  q.x += (environmentHash(floor(q)) - 0.5) * 0.12;
   vec2 f = fract(q), edge = min(f, 1.0 - f);
   return smoothstep(0.035, 0.11, min(edge.x, edge.y));
 }

@@ -3,7 +3,12 @@ import { writeFile } from "node:fs/promises";
 import type { MachineStudioAgentApi } from "../../packages/engine-core/src/agent-observation";
 import type { Vec3 } from "../../packages/project-schema/src/index";
 
-const cameras: { name: string; position: Vec3; target: Vec3 }[] = [
+const cameras: {
+  name: string;
+  position: Vec3;
+  target: Vec3;
+  exactPose?: boolean;
+}[] = [
   { name: "forest-path", position: [72, 16, -137], target: [122, 16, -153] },
   { name: "house-close", position: [-50, 17, -75], target: [-20, 16, -80] },
   { name: "village", position: [-150, 58, 190], target: [-95, 22, -65] },
@@ -35,6 +40,14 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
             ? []
             : cameras.slice(2)
           : cameras;
+  if (process.env.GEOMETRY_DETAILS_ONLY === "1")
+    selected.splice(
+      0,
+      selected.length,
+      { name: "front", position: [-5, 17, -72], target: [-19.6, 16, -83.6] },
+      { name: "side", position: [-5, 17, -102], target: [-19.6, 16, -83.6] },
+      { name: "closeup", position: [-10, 16, -76], target: [-19.6, 16, -83.6] },
+    );
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -69,6 +82,21 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       { name: "overview", position: [0, 170, 300], target: [0, 15, -100] },
       { name: "aerial", position: [0, 450, 0], target: [0, 12, -80] },
     );
+  // 実GPUは代表4視点を同じSeed・画角・10秒×3回で補助測定する。
+  if (process.env.GEOMETRY_GPU_CAPTURE === "1")
+    selected.splice(
+      0,
+      selected.length,
+      cameras[0],
+      extraCameras[0],
+      cameras[2],
+      {
+        name: "village-eye-exact",
+        position: [39, 13, -7],
+        target: [37, 14, -50],
+        exactPose: true,
+      },
+    );
   for (const view of selected) {
     await page.evaluate(
       (view) =>
@@ -79,6 +107,7 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
         ).__MACHINE_STUDIO_AGENT__.setInspectionView(
           view.position,
           view.target,
+          view.exactPose ? { exactPose: true } : undefined,
         ),
       view,
     );
@@ -107,7 +136,7 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       ),
     });
     await page.waitForTimeout(fidelity ? 10000 : 3500);
-    if (fidelity) {
+    if (fidelity || process.env.GEOMETRY_DETAILS_ONLY === "1") {
       let previous = "",
         stable = 0;
       await expect
@@ -146,6 +175,20 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
           { timeout: 180000, intervals: [2000] },
         )
         .toBeGreaterThanOrEqual(5);
+    }
+    if (view.exactPose) {
+      const camera = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+            }
+          ).__MACHINE_STUDIO_AGENT__.getState().camera,
+      );
+      for (const [i, coordinate] of view.position.entries())
+        expect(camera.position?.[i]).toBeCloseTo(coordinate, 2);
+      for (const [i, coordinate] of view.target.entries())
+        expect(camera.target?.[i]).toBeCloseTo(coordinate, 2);
     }
     for (let repetition = 0; repetition < repetitions; repetition++) {
       const samples = await page.evaluate(async (sampleWindowMs) => {
@@ -277,7 +320,10 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       {
         phase,
         environment,
-        backend: "Chromium ANGLE SwiftShader (software)",
+        backend:
+          process.env.GEOMETRY_GPU_CAPTURE === "1"
+            ? environment.renderer
+            : "Chromium ANGLE SwiftShader (software)",
         sampleWindowMs,
         loading,
         diagnostics,

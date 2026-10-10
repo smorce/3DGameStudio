@@ -158,7 +158,7 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     const foliage =
-      [1, 2].includes(template.userData.environmentRecipeVersion) &&
+      [1, 2, 3].includes(template.userData.environmentRecipeVersion) &&
       o.material instanceof THREE.MeshStandardMaterial &&
       ["leaf", "needle"].includes(o.material.name);
     if (foliage) {
@@ -232,7 +232,7 @@ export class EnvironmentTexturePool {
   private held = new WeakMap<THREE.Object3D, Set<string>>();
   acquire(template: THREE.Object3D) {
     if (
-      ![1, 2].includes(template.userData.environmentRecipeVersion) ||
+      ![1, 2, 3].includes(template.userData.environmentRecipeVersion) ||
       this.held.has(template)
     )
       return;
@@ -246,7 +246,7 @@ export class EnvironmentTexturePool {
         for (const [property, value] of Object.entries(properties)) {
           if (
             !(value instanceof THREE.Texture) ||
-            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v[12]$/.test(
+            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v[123]$/.test(
               value.name,
             )
           )
@@ -307,6 +307,36 @@ export function chooseLod(
   while (level > 0 && distance < distances[level] * (1 - hysteresis)) level--;
   return level;
 }
+/** Shadow Passだけで遠い個体を退避し、近い木と同じChunkの遠い木のラスタライズを省く。 */
+export function environmentShadowMaterial(
+  source: THREE.Material,
+  camera: THREE.Vector3,
+) {
+  const foliage = source as THREE.MeshStandardMaterial;
+  const material = new THREE.MeshDepthMaterial({
+    depthPacking: THREE.RGBADepthPacking,
+    map: foliage.map ?? null,
+    alphaMap: foliage.alphaMap ?? null,
+    alphaTest: foliage.alphaTest ?? 0,
+    side: source.side,
+  });
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.environmentShadowCamera = { value: camera };
+    shader.vertexShader =
+      "uniform vec3 environmentShadowCamera;\n" +
+      shader.vertexShader.replace(
+        "#include <project_vertex>",
+        `#include <project_vertex>
+      #ifdef USE_INSTANCING
+        vec3 treeOrigin = (modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+        if (distance(treeOrigin, environmentShadowCamera) > 85.0) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+      #endif`,
+      );
+  };
+  material.customProgramCacheKey = () => "environment-shadow-distance-v1";
+  return material;
+}
+
 export class WorldAssetBatch {
   readonly group = new THREE.Group();
   private disposed = false;
@@ -318,6 +348,8 @@ export class WorldAssetBatch {
   private pendingRelease?: () => void;
   private center = new THREE.Vector3();
   private radius = 0;
+  private shadowCamera = new THREE.Vector3();
+  private shadowMaterials: THREE.Material[] = [];
   private levels: {
     level: number;
     file?: string;
@@ -370,6 +402,7 @@ export class WorldAssetBatch {
   }
   update(camera: THREE.Vector3) {
     if (this.disposed) return;
+    this.shadowCamera.copy(camera);
     this.group.children[0]?.userData.updateAlpineRotor?.(
       performance.now() / 1000,
     );
@@ -430,6 +463,8 @@ export class WorldAssetBatch {
         this.group.traverse((o) => {
           if (o instanceof THREE.InstancedMesh) o.dispose();
         });
+        this.shadowMaterials.forEach((material) => material.dispose());
+        this.shadowMaterials = [];
         this.group.clear();
         this.release?.();
         this.release = entry.release;
@@ -441,6 +476,25 @@ export class WorldAssetBatch {
         ) {
           instances.traverse((object) => {
             if (object instanceof THREE.Mesh) object.castShadow = false;
+          });
+        }
+        if (
+          this.asset?.catalog?.slots.some((slot) =>
+            slot.startsWith("nature.tree.quality."),
+          )
+        ) {
+          instances.traverse((object) => {
+            if (
+              !(object instanceof THREE.Mesh) ||
+              Array.isArray(object.material)
+            )
+              return;
+            const depth = environmentShadowMaterial(
+              object.material,
+              this.shadowCamera,
+            );
+            object.customDepthMaterial = depth;
+            this.shadowMaterials.push(depth);
           });
         }
         this.group.add(instances);
@@ -466,6 +520,11 @@ export class WorldAssetBatch {
     if (this.disposed) return;
     this.disposed = true;
     this.pendingRelease?.();
+    this.shadowMaterials.forEach((material) => material.dispose());
+    this.shadowMaterials = [];
+    this.group.traverse((object) => {
+      if (object instanceof THREE.InstancedMesh) object.dispose();
+    });
     this.release?.();
   }
 }

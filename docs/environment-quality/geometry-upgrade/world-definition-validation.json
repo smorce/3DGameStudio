@@ -1,0 +1,21 @@
+{
+  "schemaBefore": 7,
+  "schemaAfter": 7,
+  "worldSourceUnchanged": true,
+  "worldEntitiesUnchanged": true,
+  "machinesUnchanged": true,
+  "otherWorldDefinitionsUnchanged": true,
+  "validatedWorldIds": [
+    "starter-grassland",
+    "airfield",
+    "tropical-archipelago",
+    "toy-islands",
+    "mountain-island",
+    "desert-island",
+    "snow-island",
+    "race-island",
+    "alpine-village"
+  ],
+  "validatedWorldCount": 9,
+  "preservedPreAlpineWorldCount": 8
+}

@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-10T07:32:09.929Z",
+  "command": "pnpm sample-worlds:prepare",
+  "catalogByteIdentical": true,
+  "catalogSha256": "d8e5377fb05363957c92d984f742ba9b37c5f27df32c8ed006f77b584a4a38b7",
+  "assetCount": 69,
+  "fileCount": 158,
+  "contentAddressedFileNamesValid": true
+}

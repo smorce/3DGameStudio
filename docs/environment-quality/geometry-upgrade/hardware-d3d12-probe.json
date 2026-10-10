@@ -1,0 +1,13 @@
+[
+  {
+    "mode": "d3d12",
+    "headless": true,
+    "available": false
+  },
+  {
+    "mode": "d3d12",
+    "headless": false,
+    "available": true,
+    "renderer": "ANGLE (Microsoft Corporation, D3D12 (NVIDIA GeForce RTX 4090), OpenGL 4.6)"
+  }
+]

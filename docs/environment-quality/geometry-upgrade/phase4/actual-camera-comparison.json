@@ -1,0 +1,366 @@
+{
+  "tolerance": 0.000001,
+  "passed": true,
+  "views": [
+    {
+      "view": "forest-path",
+      "beforeCamera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "house-close",
+      "beforeCamera": {
+        "position": [
+          -49.95698169831593,
+          17.910731088195504,
+          -75.00716971694735
+        ],
+        "target": [
+          -20,
+          16,
+          -80
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          -49.95698169831593,
+          17.910731088195504,
+          -75.00716971694735
+        ],
+        "target": [
+          -20,
+          16,
+          -80
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "village",
+      "beforeCamera": {
+        "position": [
+          -150,
+          58,
+          190.00000000000003
+        ],
+        "target": [
+          -95,
+          22,
+          -65
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          -150,
+          58,
+          190.00000000000003
+        ],
+        "target": [
+          -95,
+          22,
+          -65
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "village-square",
+      "beforeCamera": {
+        "position": [
+          38.99659198471117,
+          17.70364048672879,
+          -7.073272328709848
+        ],
+        "target": [
+          37,
+          15,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          38.99659198471117,
+          17.70364048672879,
+          -7.073272328709848
+        ],
+        "target": [
+          37,
+          15,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "house-detail",
+      "beforeCamera": {
+        "position": [
+          -30.03343694800744,
+          17.236383436954466,
+          -66.94662948683427
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          -30.03343694800744,
+          17.236383436954466,
+          -66.94662948683427
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "village-eye",
+      "beforeCamera": {
+        "position": [
+          38.99659198471117,
+          16.70364048672879,
+          -7.073272328709848
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          38.99659198471117,
+          16.70364048672879,
+          -7.073272328709848
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "overview",
+      "beforeCamera": {
+        "position": [
+          0,
+          170.00000000000003,
+          300
+        ],
+        "target": [
+          0,
+          15.000000000000004,
+          -100.00000000000001
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          0,
+          170.00000000000003,
+          300
+        ],
+        "target": [
+          0,
+          15.000000000000004,
+          -100.00000000000001
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "aerial",
+      "beforeCamera": {
+        "position": [
+          0,
+          450,
+          3.694822225952521e-13
+        ],
+        "target": [
+          0,
+          11.999999999999996,
+          -80
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          0,
+          450,
+          3.694822225952521e-13
+        ],
+        "target": [
+          0,
+          11.999999999999996,
+          -80
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "view": "village-eye-exact",
+      "beforeCamera": {
+        "position": [
+          39,
+          12.999999999999998,
+          -7
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "afterCamera": {
+        "position": [
+          39,
+          12.999999999999998,
+          -7
+        ],
+        "target": [
+          37,
+          14,
+          -50
+        ],
+        "followMode": "instant"
+      },
+      "maxCoordinateDelta": 0,
+      "beforeOrigin": [
+        0,
+        0,
+        0
+      ],
+      "afterOrigin": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "completedAt": "2026-10-10T08:13:14.156Z",
+  "branch": "feat/environment-geometry-and-performance",
+  "baselineCommit": "7761de6",
+  "checks": {
+    "typecheck": {
+      "status": "passed",
+      "log": "docs/environment-quality/geometry-upgrade/verification/typecheck.log"
+    },
+    "lint": {
+      "status": "passed",
+      "circularDependencies": false,
+      "log": "docs/environment-quality/geometry-upgrade/verification/lint.log"
+    },
+    "unit": {
+      "status": "passed",
+      "files": 35,
+      "tests": 306,
+      "log": "docs/environment-quality/geometry-upgrade/verification/tests.log"
+    },
+    "integration": {
+      "status": "passed",
+      "files": 16,
+      "tests": 90,
+      "log": "docs/environment-quality/geometry-upgrade/verification/tests.log"
+    },
+    "build": {
+      "status": "passed",
+      "targets": [
+        "studio",
+        "player",
+        "server"
+      ],
+      "log": "docs/environment-quality/geometry-upgrade/verification/build.log"
+    },
+    "sampleWorldsPrepare": {
+      "status": "passed",
+      "catalogRepeatIdentical": true,
+      "log": "docs/environment-quality/geometry-upgrade/verification/prepare.log"
+    },
+    "sampleWorldsValidate": {
+      "status": "passed",
+      "worlds": 9,
+      "log": "docs/environment-quality/geometry-upgrade/verification/validate.log"
+    },
+    "e2e": {
+      "status": "passed",
+      "tests": 50,
+      "failed": 0,
+      "durationMinutes": 20.4,
+      "log": "docs/environment-quality/geometry-upgrade/verification/e2e-final.log"
+    }
+  },
+  "browserComparisons": {
+    "softwareViews": 9,
+    "hardwareViews": 4,
+    "secondsPerWindow": 10,
+    "windowsPerView": 3,
+    "hardwareRenderer": "ANGLE (Microsoft Corporation, D3D12 (NVIDIA GeForce RTX 4090), OpenGL 4.6)",
+    "softwareCameraPositionsMatch": true,
+    "hardwareCameraPositionsMatch": true,
+    "requiredEvidenceFiles": 29,
+    "evidenceFilesValid": true
+  },
+  "physics": {
+    "actualVehicleContactsTreeTrunk": true,
+    "canopyExcludedFromCollider": true,
+    "trunkReleaseReloadSingleReference": true,
+    "trunkOriginRebaseVerified": true,
+    "actualVehicleContactsPreparedHouseTrimesh": true,
+    "houseColliderEntityPositionsMatch": true,
+    "realDrivingRebase": {
+      "originBefore": [
+        0,
+        0,
+        0
+      ],
+      "originAfter": [
+        0,
+        0,
+        192
+      ],
+      "landmarkAbsolutePositionUnchanged": true,
+      "evidence": "docs/environment-quality/geometry-upgrade/verification/alpine-rebase/rebase.json"
+    }
+  },
+  "worldDefinition": {
+    "schemaBefore": 7,
+    "schemaAfter": 7,
+    "worldSourceUnchanged": true,
+    "worldEntitiesUnchanged": true,
+    "machinesUnchanged": true,
+    "otherWorldDefinitionsUnchanged": true,
+    "validatedWorldIds": [
+      "starter-grassland",
+      "airfield",
+      "tropical-archipelago",
+      "toy-islands",
+      "mountain-island",
+      "desert-island",
+      "snow-island",
+      "race-island",
+      "alpine-village"
+    ],
+    "validatedWorldCount": 9,
+    "preservedPreAlpineWorldCount": 8
+  },
+  "limitations": {
+    "referenceQualityEquivalent": false,
+    "overallPerformanceImprovement": false,
+    "independentColdLoadDurationMeasured": false,
+    "shadowOnlyGpuTimerMeasured": false,
+    "hardwareNativeProfilerUsed": false
+  },
+  "excludedTestOutputsBackup": "/tmp/geometry-test-output-vMKZug",
+  "committed": false,
+  "pushed": false
+}

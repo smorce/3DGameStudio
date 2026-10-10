@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /home/smorce/env2/work/3DGameStudio
+
+stderr | tests/integration/environment-accent-physics.test.ts > 景観樹木の幹は既存Rapier経路で衝突し、Rebase・解放・再読込でも重複しない
+using deprecated parameters for the initialization function; pass a single object instead
+
+ ✓ tests/integration/environment-accent-physics.test.ts (2 tests) 7426ms
+   ✓ 景観樹木の幹は既存Rapier経路で衝突し、Rebase・解放・再読込でも重複しない  5688ms
+   ✓ 最終生成された住宅のTrimeshは配置と一致し、実車両が壁を通り抜けない  1735ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  16:42:53
+   Duration  8.33s (transform 384ms, setup 0ms, collect 555ms, tests 7.43s, environment 0ms, prepare 102ms)
+

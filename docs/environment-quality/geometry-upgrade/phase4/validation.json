@@ -1,0 +1,204 @@
+{
+  "phase": "phase4",
+  "views": [
+    {
+      "name": "forest-path",
+      "position": [
+        72,
+        16,
+        -137
+      ],
+      "target": [
+        122,
+        16,
+        -153
+      ]
+    },
+    {
+      "name": "house-close",
+      "position": [
+        -50,
+        17,
+        -75
+      ],
+      "target": [
+        -20,
+        16,
+        -80
+      ]
+    },
+    {
+      "name": "village",
+      "position": [
+        -150,
+        58,
+        190
+      ],
+      "target": [
+        -95,
+        22,
+        -65
+      ]
+    },
+    {
+      "name": "village-square",
+      "position": [
+        39,
+        16,
+        -7
+      ],
+      "target": [
+        37,
+        15,
+        -50
+      ]
+    },
+    {
+      "name": "house-detail",
+      "position": [
+        -30,
+        14,
+        -67
+      ],
+      "target": [
+        -19.6,
+        16,
+        -83.6
+      ]
+    },
+    {
+      "name": "village-eye",
+      "position": [
+        39,
+        13,
+        -7
+      ],
+      "target": [
+        37,
+        14,
+        -50
+      ]
+    },
+    {
+      "name": "overview",
+      "position": [
+        0,
+        170,
+        300
+      ],
+      "target": [
+        0,
+        15,
+        -100
+      ]
+    },
+    {
+      "name": "aerial",
+      "position": [
+        0,
+        450,
+        0
+      ],
+      "target": [
+        0,
+        12,
+        -80
+      ]
+    }
+  ],
+  "glbDownloadErrors": [],
+  "completed": true,
+  "finalChecks": {
+    "typecheck": {
+      "status": "passed",
+      "log": "docs/environment-quality/geometry-upgrade/verification/typecheck.log"
+    },
+    "lint": {
+      "status": "passed",
+      "circularDependencies": false,
+      "log": "docs/environment-quality/geometry-upgrade/verification/lint.log"
+    },
+    "unit": {
+      "status": "passed",
+      "files": 35,
+      "tests": 306,
+      "log": "docs/environment-quality/geometry-upgrade/verification/tests.log"
+    },
+    "integration": {
+      "status": "passed",
+      "files": 16,
+      "tests": 90,
+      "log": "docs/environment-quality/geometry-upgrade/verification/tests.log"
+    },
+    "build": {
+      "status": "passed",
+      "targets": [
+        "studio",
+        "player",
+        "server"
+      ],
+      "log": "docs/environment-quality/geometry-upgrade/verification/build.log"
+    },
+    "sampleWorldsPrepare": {
+      "status": "passed",
+      "catalogRepeatIdentical": true,
+      "log": "docs/environment-quality/geometry-upgrade/verification/prepare.log"
+    },
+    "sampleWorldsValidate": {
+      "status": "passed",
+      "worlds": 9,
+      "log": "docs/environment-quality/geometry-upgrade/verification/validate.log"
+    },
+    "e2e": {
+      "status": "passed",
+      "tests": 50,
+      "failed": 0,
+      "durationMinutes": 20.4,
+      "log": "docs/environment-quality/geometry-upgrade/verification/e2e-final.log"
+    }
+  },
+  "actualCameraComparison": "actual-camera-comparison.json",
+  "physics": {
+    "actualVehicleContactsTreeTrunk": true,
+    "canopyExcludedFromCollider": true,
+    "trunkReleaseReloadSingleReference": true,
+    "trunkOriginRebaseVerified": true,
+    "actualVehicleContactsPreparedHouseTrimesh": true,
+    "houseColliderEntityPositionsMatch": true,
+    "realDrivingRebase": {
+      "originBefore": [
+        0,
+        0,
+        0
+      ],
+      "originAfter": [
+        0,
+        0,
+        192
+      ],
+      "landmarkAbsolutePositionUnchanged": true,
+      "evidence": "docs/environment-quality/geometry-upgrade/verification/alpine-rebase/rebase.json"
+    }
+  },
+  "worldDefinition": {
+    "schemaBefore": 7,
+    "schemaAfter": 7,
+    "worldSourceUnchanged": true,
+    "worldEntitiesUnchanged": true,
+    "machinesUnchanged": true,
+    "otherWorldDefinitionsUnchanged": true,
+    "validatedWorldIds": [
+      "starter-grassland",
+      "airfield",
+      "tropical-archipelago",
+      "toy-islands",
+      "mountain-island",
+      "desert-island",
+      "snow-island",
+      "race-island",
+      "alpine-village"
+    ],
+    "validatedWorldCount": 9,
+    "preservedPreAlpineWorldCount": 8
+  }
+}

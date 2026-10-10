@@ -1,3 +1,4 @@
+import { alpineEnvironmentAccentEntities } from "./environment-accents";
 import { isAlpineVillage, alpineFieldAt } from "./alpine-farmland";
 import { settlementEntities } from "./settlement-generation";
 import type {
@@ -111,7 +112,10 @@ export function generateDesignEntities(
       }
     }
   }
-  const result: GeneratedEntity[] = [];
+  const result: GeneratedEntity[] = alpineEnvironmentAccentEntities(
+    input,
+    () => layers,
+  );
   for (const p of candidates) {
     if (
       p.x < originX ||

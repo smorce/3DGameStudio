@@ -13,7 +13,7 @@ export type EnvironmentSurface =
   | "glass";
 
 /** 外部画像を使わない、版固定の決定的な素材レシピ。色画像だけがsRGB。 */
-export const environmentRecipeVersion = 2;
+export const environmentRecipeVersion = 3;
 export function surfacePixels(surface: EnvironmentSurface, size = 128) {
   const color = new Uint8Array(size * size * 4);
   const normal = new Uint8Array(size * size * 4);
