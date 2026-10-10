@@ -1,4 +1,5 @@
 import { prepareAlpineLods } from "../packages/sample-worlds/src/alpine-prepare";
+import { prepareEnvironmentAssets } from "../packages/ai-dummy/src/environment-prepare";
 import { assertPreparedSampleCurrent } from "../packages/sample-worlds/src/freshness";
 import {
   mkdir,
@@ -44,7 +45,16 @@ if (process.argv[2] === "prepare") {
   if (result.errors.length || result.missing.length)
     throw new Error(JSON.stringify(result));
   await prepareAlpineLods(library.assets, new LocalAssetStorage(temp));
+  await prepareEnvironmentAssets(library.assets, new LocalAssetStorage(temp));
   for (const asset of library.assets) {
+    if (asset.catalog?.slots.some((slot) => slot.includes(".quality."))) {
+      asset.name = asset.name.replace("Dummy", "Environment procedural");
+      asset.source.sourceUrl =
+        "repository:packages/ai-dummy/src/environment-models.ts";
+      asset.license.attributionText =
+        "3DGameStudio: original procedural geometry and textures (project-owned)";
+      continue;
+    }
     if (!asset.catalog?.slots.some((slot) => slot.includes("alpine-village")))
       continue;
     // オフライン生成器の汎用ラベルを、実際の素材出自へ置き換える。

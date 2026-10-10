@@ -1,0 +1,70 @@
+{
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "method": "Distinct rendered frames, nearest-rank median/p95. CPU renderMs is submission time; RAF includes scheduling and software GPU time. Unavailable GPU timings remain null.",
+  "runs": [
+    {
+      "id": "alpine-village",
+      "views": [
+        {
+          "view": "forest-path",
+          "frameIntervalMs": {
+            "samples": 7,
+            "median": 300,
+            "p95": 333.3000000000002,
+            "max": 333.3000000000002
+          },
+          "cpuRenderMs": {
+            "samples": 7,
+            "median": 8.399999998509884,
+            "p95": 10.700000002980232,
+            "max": 10.700000002980232
+          },
+          "gpuMs": {
+            "samples": 7,
+            "median": 286.124002,
+            "p95": 334.993631,
+            "max": 334.993631
+          },
+          "drawCalls": {
+            "samples": 7,
+            "median": 101,
+            "p95": 107,
+            "max": 107
+          },
+          "triangles": {
+            "samples": 7,
+            "median": 325162,
+            "p95": 328816,
+            "max": 328816
+          },
+          "geometries": {
+            "samples": 7,
+            "median": 90,
+            "p95": 94,
+            "max": 94
+          },
+          "textures": {
+            "samples": 7,
+            "median": 6,
+            "p95": 6,
+            "max": 6
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 195986578,
+            "totalJSHeapSize": 240911486,
+            "jsHeapSizeLimit": 4395630592
+          }
+        }
+      ]
+    }
+  ]
+}

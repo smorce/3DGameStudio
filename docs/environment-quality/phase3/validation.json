@@ -1,0 +1,20 @@
+{
+  "phase": "phase3",
+  "views": [
+    {
+      "name": "village",
+      "position": [
+        -150,
+        58,
+        190
+      ],
+      "target": [
+        -95,
+        22,
+        -65
+      ]
+    }
+  ],
+  "glbDownloadErrors": [],
+  "completed": true
+}

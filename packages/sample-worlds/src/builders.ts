@@ -129,6 +129,26 @@ function build(definition: Definition): Project {
     p.world.water = { enabled: definition.id !== "alpine-village", height: 0 };
   if (definition.id === "alpine-village") {
     source.chunkSize = p.world.chunkSize = 64;
+    source.parameters = {
+      ...source.parameters,
+      vegetationArea: { minX: -270, minZ: -320, maxX: 260, maxZ: 210 },
+      environmentAssets: [
+        {
+          area: { minX: -1800, minZ: -1800, maxX: 1800, maxZ: 1800 },
+          slots: {
+            "nature.tree.alpine-village.oak": "nature.tree.quality.oak",
+            "nature.tree.alpine-village.pine": "nature.tree.quality.pine",
+          },
+        },
+        {
+          area: { minX: -80, minZ: -160, maxX: 80, maxZ: -20 },
+          slots: {
+            "building.alpine-village.stone": "building.quality.house",
+            "building.alpine-village.timber": "building.quality.house",
+          },
+        },
+      ],
+    };
     p.world.environment.fog = 0.00048;
   }
   p.world.lighting = definition.lighting ?? { intensity: 2, timeOfDay: 14 };

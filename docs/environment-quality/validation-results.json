@@ -1,0 +1,57 @@
+{
+  "baselineCommit": "f72cf94",
+  "branch": "feat/high-quality-environment-assets",
+  "commands": {
+    "pnpm typecheck": {
+      "status": "passed"
+    },
+    "pnpm lint": {
+      "status": "passed"
+    },
+    "pnpm test": {
+      "status": "passed",
+      "files": 49,
+      "tests": 381
+    },
+    "pnpm build": {
+      "status": "passed",
+      "via": "Playwright webServer startup; Studio, Player, Server"
+    },
+    "pnpm sample-worlds:prepare": {
+      "status": "passed"
+    },
+    "pnpm sample-worlds:validate": {
+      "status": "passed",
+      "worlds": 9,
+      "chunksPerWorld": 100
+    },
+    "pnpm test:e2e": {
+      "status": "passed",
+      "tests": 50,
+      "reportedDuration": "20.2m",
+      "lastRun": {
+        "status": "passed",
+        "failedTests": []
+      }
+    }
+  },
+  "priorRuns": [
+    {
+      "status": "interrupted",
+      "testsInterrupted": 1,
+      "testsNotRun": 49,
+      "reason": "Performance optimization"
+    },
+    {
+      "status": "failed",
+      "passed": 49,
+      "failed": 1,
+      "reason": "Alpine 2.5-second wall-time driving observed 0.993m; changed observation interval to 150 physics steps without physics changes"
+    }
+  ],
+  "limitations": [
+    "SwiftShader software GPU only; real GPU performance unverified",
+    "Reference-equivalent visual fidelity not achieved",
+    "Short performance sample windows"
+  ]
+}

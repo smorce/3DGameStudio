@@ -9,8 +9,9 @@ export function alpineChimneySmoke(
 ) {
   const houses = entities.filter(
     (e) =>
-      e.assetSlot?.startsWith("building.alpine-village.") &&
-      !e.assetSlot.endsWith("barn"),
+      (e.assetSlot?.startsWith("building.alpine-village.") &&
+        !e.assetSlot.endsWith("barn")) ||
+      e.assetSlot === "building.quality.house",
   );
   if (!houses.length) return undefined;
   const mesh = new THREE.InstancedMesh(

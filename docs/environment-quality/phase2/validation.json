@@ -1,0 +1,20 @@
+{
+  "phase": "phase2",
+  "views": [
+    {
+      "name": "house-close",
+      "position": [
+        -50,
+        17,
+        -75
+      ],
+      "target": [
+        -20,
+        16,
+        -80
+      ]
+    }
+  ],
+  "glbDownloadErrors": [],
+  "completed": true
+}

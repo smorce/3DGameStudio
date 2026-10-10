@@ -1,0 +1,324 @@
+import { Accessor, Document, NodeIO } from "@gltf-transform/core";
+import {
+  BoxGeometry,
+  CylinderGeometry,
+  PlaneGeometry,
+  Vector3,
+  Quaternion,
+  Shape,
+  ShapeGeometry,
+  IcosahedronGeometry,
+  Color,
+  Float32BufferAttribute,
+  type BufferGeometry,
+} from "three";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import {
+  EnvironmentMaterials,
+  type EnvironmentSurface,
+} from "./environment-materials";
+
+export type EnvironmentModel = "oak" | "pine" | "house" | "grass" | "market";
+export function qualityModelKind(slot: string): EnvironmentModel | undefined {
+  if (slot === "nature.tree.quality.oak") return "oak";
+  if (slot === "nature.tree.quality.pine") return "pine";
+  if (slot === "building.quality.house") return "house";
+  if (slot === "nature.grass.quality.grass") return "grass";
+  if (slot === "prop.quality.market") return "market";
+}
+/** 葉や樹冠でプレイヤーを遮らず、幹だけを既存Collider経路へ渡す。 */
+export function environmentTreeCollider(kind: "oak" | "pine") {
+  const geometry = new CylinderGeometry(
+    kind === "pine" ? 0.14 : 0.2,
+    kind === "pine" ? 0.3 : 0.42,
+    kind === "pine" ? 10 : 7.7,
+    8,
+  );
+  geometry.translate(0.065, kind === "pine" ? 5 : 3.85, 0.05);
+  const collider = {
+    version: 1,
+    vertices: Array.from(geometry.getAttribute("position").array),
+    indices: Array.from(geometry.index!.array),
+  };
+  geometry.dispose();
+  return new TextEncoder().encode(JSON.stringify(collider));
+}
+/** メートル単位。Seedと明示LODから再生成でき、Alpineの地形には依存しない。 */
+export async function environmentModelGlb(
+  kind: EnvironmentModel,
+  seed = 0,
+  level = 0,
+) {
+  const parts = new Map<EnvironmentSurface, BufferGeometry[]>();
+  const farTree = level === 2 && (kind === "oak" || kind === "pine");
+  let state = (seed + 1) >>> 0;
+  const random = () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+  const add = (surface: EnvironmentSurface, geometry: BufferGeometry) => {
+    const flat = geometry.index ? geometry.toNonIndexed() : geometry;
+    if (flat !== geometry) geometry.dispose();
+    if (farTree) {
+      const rgb = new Color(
+        surface === "bark"
+          ? "#675339"
+          : surface === "needle"
+            ? "#3a683d"
+            : "#638b30",
+      ).toArray();
+      const colors = new Float32Array(flat.getAttribute("position").count * 3);
+      for (let i = 0; i < colors.length; i += 3) colors.set(rgb, i);
+      flat.setAttribute("color", new Float32BufferAttribute(colors, 3));
+    }
+    const key = farTree ? "leaf" : surface;
+    const list = parts.get(key) ?? [];
+    list.push(flat);
+    parts.set(key, list);
+  };
+  const branch = (a: Vector3, b: Vector3, radius: number) => {
+    const delta = b.clone().sub(a);
+    const geometry = new CylinderGeometry(
+      radius * 0.48,
+      radius,
+      delta.length(),
+      level === 2 ? 5 : 8,
+    );
+    geometry.applyQuaternion(
+      new Quaternion().setFromUnitVectors(
+        new Vector3(0, 1, 0),
+        delta.normalize(),
+      ),
+    );
+    geometry.translate(...a.clone().add(b).multiplyScalar(0.5).toArray());
+    add("bark", geometry);
+  };
+  const card = (
+    surface: EnvironmentSurface,
+    p: Vector3,
+    width: number,
+    height: number,
+  ) => {
+    const g = new PlaneGeometry(width, height);
+    g.rotateX((random() - 0.5) * 1.9);
+    g.rotateY(random() * Math.PI * 2);
+    g.rotateZ((random() - 0.5) * 0.7);
+    g.translate(...p.toArray());
+    add(surface, g);
+  };
+  if (kind === "oak" || kind === "pine") {
+    const pine = kind === "pine",
+      top = pine ? 10 : 7.7;
+    branch(new Vector3(), new Vector3(0.13, top, 0.1), pine ? 0.3 : 0.42);
+    if (farTree) {
+      // 遠景は不透明な1素材にまとめ、葉の透過と枝のShadow Passを減らす。
+      for (let i = 0; i < (pine ? 8 : 9); i++) {
+        const angle = i * 2.4 + random() * 0.5;
+        const radius = pine ? 2.65 - i * 0.27 : 1.45 + random() * 0.45;
+        const g = new IcosahedronGeometry(1, 0);
+        g.scale(radius, pine ? 0.95 : 1.4, radius * 0.85);
+        g.rotateY(angle);
+        g.translate(
+          pine ? Math.cos(angle) * 0.24 : Math.cos(angle) * 1.65,
+          pine ? 2.4 + i * 0.92 : 5.1 + (i % 3) * 0.9,
+          pine ? Math.sin(angle) * 0.24 : Math.sin(angle) * 1.65,
+        );
+        add(pine ? "needle" : "leaf", g);
+      }
+    } else {
+      const count = pine ? 32 : 13;
+      for (let i = 0; i < count; i++) {
+        // 枝の骨格はLODを跨いでも同じSeedから生成する。
+        state =
+          (Math.imul(seed + 1, 2654435761) + Math.imul(i + 1, 2246822519)) >>>
+          0;
+        const angle = i * 2.399963 + random() * 0.55;
+        const y = pine ? 1.9 + (i / count) * 7.4 : 2.8 + random() * 3.4;
+        const radius = pine ? (1 - i / count) * 3 + 0.3 : 1.8 + random() * 1.5;
+        const a = new Vector3(0.05, y, 0),
+          b = new Vector3(
+            Math.cos(angle) * radius,
+            y + (pine ? 0.1 : 1.0),
+            Math.sin(angle) * radius,
+          );
+        if (level < 2) branch(a, b, pine ? 0.085 : 0.12);
+        if (pine && level === 2 && i % 2) continue;
+        const cards =
+          level === 2 ? (pine ? 3 : 5) : level === 1 ? 12 : pine ? 18 : 44;
+        for (let j = 0; j < cards; j++) {
+          const t = 0.45 + random() * 0.55;
+          const p = a
+            .clone()
+            .lerp(b, t)
+            .add(
+              new Vector3(
+                (random() - 0.5) * 1.6,
+                random() * (pine ? 0.8 : 1.7),
+                (random() - 0.5) * 1.6,
+              ),
+            );
+          card(
+            pine ? "needle" : "leaf",
+            p,
+            (pine ? 1.7 : 1.9) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
+            (pine ? 0.85 : 1.5) * (level === 2 ? 1.65 : level === 1 ? 1.3 : 1),
+          );
+        }
+        if (!pine && level < 2)
+          branch(
+            b.clone().lerp(a, 0.3),
+            b.clone().add(new Vector3(0.3, 1.1, -0.3)),
+            0.045,
+          );
+      }
+    }
+  } else if (kind === "grass") {
+    for (let i = 0; i < (level === 2 ? 1 : level === 1 ? 4 : 10); i++)
+      card(
+        "grass",
+        new Vector3((random() - 0.5) * 1.1, 0.35, (random() - 0.5) * 1.1),
+        0.6,
+        0.7,
+      );
+  } else if (kind === "market") {
+    const box = (
+      w: number,
+      h: number,
+      d: number,
+      x: number,
+      y: number,
+      z: number,
+      surface: EnvironmentSurface = "wood",
+    ) => add(surface, new BoxGeometry(w, h, d).translate(x, y, z));
+    box(2.6, 0.16, 1.25, 0, 1.0, 0);
+    for (const x of [-1.15, 1.15])
+      for (const z of [-0.5, 0.5]) box(0.12, 2.4, 0.12, x, 1.2, z);
+    box(2.9, 0.12, 1.7, 0, 2.4, 0, "roof");
+    if (level < 2) {
+      for (const x of [-0.75, 0, 0.75]) box(0.58, 0.3, 0.62, x, 1.2, 0);
+      const barrel = new CylinderGeometry(0.4, 0.36, 0.85, level ? 6 : 12);
+      barrel.translate(1.9, 0.425, 0);
+      add("wood", barrel);
+      box(1.3, 0.7, 0.85, -1.9, 0.35, 0.2);
+    }
+  } else {
+    const box = (
+      surface: EnvironmentSurface,
+      w: number,
+      h: number,
+      d: number,
+      x: number,
+      y: number,
+      z: number,
+      angle = 0,
+    ) => {
+      const g = new BoxGeometry(w, h, d);
+      if (surface === "roof") {
+        const uv = g.getAttribute("uv");
+        for (let i = 0; i < uv.count; i++)
+          uv.setXY(i, uv.getX(i) * 3, uv.getY(i) * 3);
+      }
+      g.rotateZ(angle);
+      g.translate(x, y, z);
+      add(surface, g);
+    };
+    box("stone", 6.8, 2.6, 5.7, 0, 1.3, 0);
+    box("plaster", 6.8, 2.6, 5.7, 0, 3.9, 0);
+    const shape = new Shape();
+    shape.moveTo(-3.9, 0);
+    shape.lineTo(0, 2.4);
+    shape.lineTo(3.9, 0);
+    shape.closePath();
+    const slope = Math.atan2(2.4, 3.9);
+    for (const side of [-1, 1]) {
+      box(
+        "roof",
+        Math.hypot(3.9, 2.4),
+        0.16,
+        6.7,
+        side * 1.95,
+        6.4,
+        0,
+        -side * slope,
+      );
+      const gable = new ShapeGeometry(shape);
+      if (side < 0) gable.rotateY(Math.PI);
+      gable.translate(0, 5.2, side * 2.87);
+      add("plaster", gable);
+      box("wood", 0.16, 2.4, 0.2, 0, 6.4, side * 2.9);
+      box("wood", 7.2, 0.16, 0.24, 0, 5.22, side * 2.9);
+    }
+    for (const side of [-1, 1]) {
+      for (const x of [-3.4, -1.7, 0, 1.7, 3.4])
+        box("wood", 0.18, 5.2, 0.2, x, 2.6, side * 2.87);
+      for (const y of [0.25, 2.6, 5.1])
+        box("wood", 6.9, 0.18, 0.22, 0, y, side * 2.89);
+      if (level < 2)
+        for (const x of [-2.55, 2.55]) {
+          box("wood", 0.16, 2.85, 0.2, x, 3.85, side * 2.9, x > 0 ? -0.6 : 0.6);
+          box("wood", 1.2, 1.45, 0.26, x, 1.65, side * 2.9);
+          box("glass", 0.8, 1.05, 0.29, x, 1.65, side * 2.94);
+          box("wood", 0.08, 1.1, 0.32, x, 1.65, side * 2.97);
+          box("wood", 1.35, 0.1, 0.45, x, 0.9, side * 3);
+        }
+    }
+    for (const side of [-1, 1]) {
+      for (const z of [-2.85, -1.4, 0, 1.4, 2.85])
+        box("wood", 0.22, 2.6, 0.18, side * 3.42, 3.9, z);
+      for (const y of [2.6, 5.1])
+        box("wood", 0.22, 0.18, 5.8, side * 3.42, y, 0);
+    }
+    box("wood", 1.15, 2.25, 0.2, ((seed % 3) - 1) * 0.3, 1.125, 2.98);
+    box("stone", 0.8, 3, 0.8, 1.83, 6.2, 0);
+  }
+  const doc = new Document(),
+    buffer = doc.createBuffer(),
+    scene = doc
+      .createScene()
+      .setExtras({ environmentRecipeVersion: 1, environmentSeed: seed }),
+    materials = new EnvironmentMaterials(doc);
+  for (const [surface, list] of parts) {
+    const geometry = mergeGeometries(list)!;
+    const primitive = doc
+      .createPrimitive()
+      .setMaterial(
+        farTree
+          ? doc
+              .createMaterial("environment-far")
+              .setBaseColorFactor([1, 1, 1, 1])
+              .setRoughnessFactor(1)
+              .setMetallicFactor(0)
+          : await materials.get(surface),
+      );
+    for (const [name, semantic, type] of [
+      ["position", "POSITION", Accessor.Type.VEC3],
+      ["normal", "NORMAL", Accessor.Type.VEC3],
+      ["uv", "TEXCOORD_0", Accessor.Type.VEC2],
+    ] as const)
+      primitive.setAttribute(
+        semantic,
+        doc
+          .createAccessor()
+          .setType(type)
+          .setArray(new Float32Array(geometry.getAttribute(name).array))
+          .setBuffer(buffer),
+      );
+    if (farTree)
+      primitive.setAttribute(
+        "COLOR_0",
+        doc
+          .createAccessor()
+          .setType(Accessor.Type.VEC3)
+          .setArray(new Float32Array(geometry.getAttribute("color").array))
+          .setBuffer(buffer),
+      );
+    scene.addChild(
+      doc
+        .createNode(`${kind}-${surface}`)
+        .setMesh(doc.createMesh().addPrimitive(primitive)),
+    );
+    geometry.dispose();
+    list.forEach((g) => g.dispose());
+  }
+  return new NodeIO().writeBinary(doc);
+}

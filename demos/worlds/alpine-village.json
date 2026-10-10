@@ -12,7 +12,40 @@
       "preset": "designed-world",
       "chunkSize": 64,
       "chunkResolution": 33,
-      "parameters": {},
+      "parameters": {
+        "vegetationArea": {
+          "minX": -270,
+          "minZ": -320,
+          "maxX": 260,
+          "maxZ": 210
+        },
+        "environmentAssets": [
+          {
+            "area": {
+              "minX": -1800,
+              "minZ": -1800,
+              "maxX": 1800,
+              "maxZ": 1800
+            },
+            "slots": {
+              "nature.tree.alpine-village.oak": "nature.tree.quality.oak",
+              "nature.tree.alpine-village.pine": "nature.tree.quality.pine"
+            }
+          },
+          {
+            "area": {
+              "minX": -80,
+              "minZ": -160,
+              "maxX": 80,
+              "maxZ": -20
+            },
+            "slots": {
+              "building.alpine-village.stone": "building.quality.house",
+              "building.alpine-village.timber": "building.quality.house"
+            }
+          }
+        ]
+      },
       "design": {
         "version": 2,
         "islands": [
@@ -203,6 +236,57 @@
                 "density": 0.74,
                 "altitudeMin": 3,
                 "altitudeMax": 80,
+                "slopeMax": 37,
+                "minDistanceFromRoad": 5,
+                "minDistanceFromWater": 10,
+                "minDistanceFromLandmark": 4,
+                "minSpacing": 9,
+                "scaleRange": [
+                  0.85,
+                  1.9
+                ],
+                "rotationMode": "yaw"
+              },
+              {
+                "assetSlot": "nature.tree.quality.oak",
+                "biome": "temperate",
+                "density": 0,
+                "altitudeMin": 3,
+                "altitudeMax": 80,
+                "slopeMax": 37,
+                "minDistanceFromRoad": 5,
+                "minDistanceFromWater": 10,
+                "minDistanceFromLandmark": 4,
+                "minSpacing": 9,
+                "scaleRange": [
+                  0.85,
+                  1.9
+                ],
+                "rotationMode": "yaw"
+              },
+              {
+                "assetSlot": "nature.tree.quality.pine",
+                "biome": "temperate",
+                "density": 0,
+                "altitudeMin": 3,
+                "altitudeMax": 150,
+                "slopeMax": 37,
+                "minDistanceFromRoad": 5,
+                "minDistanceFromWater": 10,
+                "minDistanceFromLandmark": 4,
+                "minSpacing": 9,
+                "scaleRange": [
+                  0.85,
+                  1.9
+                ],
+                "rotationMode": "yaw"
+              },
+              {
+                "assetSlot": "building.quality.house",
+                "biome": "temperate",
+                "density": 0,
+                "altitudeMin": 3,
+                "altitudeMax": 150,
                 "slopeMax": 37,
                 "minDistanceFromRoad": 5,
                 "minDistanceFromWater": 10,
@@ -13939,6 +14023,66 @@
               1.7
             ],
             "snapToTerrain": true
+          },
+          {
+            "id": "quality-market-0",
+            "assetSlot": "prop.quality.market",
+            "position": [
+              65,
+              0,
+              -80
+            ],
+            "rotation": [
+              0,
+              -0.4,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "snapToTerrain": true
+          },
+          {
+            "id": "quality-market-1",
+            "assetSlot": "prop.quality.market",
+            "position": [
+              65,
+              0,
+              -50
+            ],
+            "rotation": [
+              0,
+              -0.4,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "snapToTerrain": true
+          },
+          {
+            "id": "quality-market-2",
+            "assetSlot": "prop.quality.market",
+            "position": [
+              32,
+              0,
+              -15
+            ],
+            "rotation": [
+              0,
+              -0.4,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ],
+            "snapToTerrain": true
           }
         ],
         "biomeRegions": [],
@@ -13982,13 +14126,23 @@
       "worldId": "alpine-village",
       "seed": 42,
       "generatorVersion": 2,
-      "assetCatalogFingerprint": "7f82fae7f8039bcb",
-      "worldFingerprint": "20a4e458f3250eec",
+      "assetCatalogFingerprint": "db03b64d3ddd1fb9",
+      "worldFingerprint": "75165468453f4554",
       "requiredAssets": [
+        {
+          "id": "factory-0d4b6b1333713d7e83d5313c251a4903",
+          "contentHash": "39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0",
+          "metadataHash": "2f7d8e0ab42f462e"
+        },
         {
           "id": "factory-0ecaf65573e0b376a6fa82b05f77aedb",
           "contentHash": "d7895eb9b86cde9efb09e88dd4abe4ae00fe753a9e8be4a976af4c7f176c526f",
           "metadataHash": "ac8693663ee3a6fe"
+        },
+        {
+          "id": "factory-30cac5e1ebccc2fb3bef2f291a79b65d",
+          "contentHash": "9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f",
+          "metadataHash": "42c34b5bf5741593"
         },
         {
           "id": "factory-4223a26ff5c8289e9a95f87112bfa28e",
@@ -14011,9 +14165,34 @@
           "metadataHash": "7031a692b8d52cfe"
         },
         {
+          "id": "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+          "contentHash": "d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763",
+          "metadataHash": "198060a54deb8d69"
+        },
+        {
           "id": "factory-79643a1c1ac1ae1c5d138d22d2dff862",
           "contentHash": "e2e35ec26d5c451000acf113979d11210897ea157be4f32a7494125b29674319",
           "metadataHash": "b6e949a783744c2b"
+        },
+        {
+          "id": "factory-797402eb1c6219bf3ad0aa49873c0631",
+          "contentHash": "ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307",
+          "metadataHash": "4d6fe7d321561a0b"
+        },
+        {
+          "id": "factory-903549c34981a65a6511f7a9a30db555",
+          "contentHash": "6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba",
+          "metadataHash": "46b495b5e951dd41"
+        },
+        {
+          "id": "factory-96a6157308f1f6cb825e09e03dd40a3f",
+          "contentHash": "8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4",
+          "metadataHash": "7da6ebac687ac32c"
+        },
+        {
+          "id": "factory-a0afb02cb082fc6c56022fd65e212909",
+          "contentHash": "22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec",
+          "metadataHash": "534a3448ea9415f0"
         },
         {
           "id": "factory-b93c8b0e9af047a21b9ad85ffa33a469",
@@ -14029,6 +14208,11 @@
           "id": "factory-bf5c8379f4e36f58c316e5388e257cf7",
           "contentHash": "7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd",
           "metadataHash": "350defb40ed4d774"
+        },
+        {
+          "id": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+          "contentHash": "cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617",
+          "metadataHash": "d2c35b2da9059679"
         },
         {
           "id": "factory-cb511ceda2644b227baccea431ef50af",
@@ -14054,6 +14238,16 @@
           "id": "factory-ee1d3791bf482d85934df8062d0ba979",
           "contentHash": "c210bbf81dd1157f00a117dffb059cd93535b44b5e2234a1856ca942b65b1b4b",
           "metadataHash": "0f7433f0f30d09c0"
+        },
+        {
+          "id": "factory-f0d0159a325c7cdab6ecbebf00a4eba6",
+          "contentHash": "d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb",
+          "metadataHash": "b52a11240ec990e4"
+        },
+        {
+          "id": "factory-f839f89dd2a5f392d0e00b24522e6b4b",
+          "contentHash": "2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47",
+          "metadataHash": "bd49eebdc13cf051"
         }
       ],
       "resolvedSlots": {
@@ -14072,6 +14266,11 @@
           "factory-b93c8b0e9af047a21b9ad85ffa33a469",
           "factory-cd5a875fb3591cd1cca41d1953ef083d"
         ],
+        "building.quality.house": [
+          "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+          "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+          "factory-f839f89dd2a5f392d0e00b24522e6b4b"
+        ],
         "landmark.alpine-village.windmill": [
           "factory-430be2a6f4845122f4d331f6acbd09ab"
         ],
@@ -14086,6 +14285,19 @@
         ],
         "nature.tree.alpine-village.pine": [
           "factory-bbfda6d015c28793a3dfe3012d16d4fc"
+        ],
+        "nature.tree.quality.oak": [
+          "factory-30cac5e1ebccc2fb3bef2f291a79b65d",
+          "factory-797402eb1c6219bf3ad0aa49873c0631",
+          "factory-903549c34981a65a6511f7a9a30db555"
+        ],
+        "nature.tree.quality.pine": [
+          "factory-96a6157308f1f6cb825e09e03dd40a3f",
+          "factory-a0afb02cb082fc6c56022fd65e212909",
+          "factory-f0d0159a325c7cdab6ecbebf00a4eba6"
+        ],
+        "prop.quality.market": [
+          "factory-0d4b6b1333713d7e83d5313c251a4903"
         ]
       }
     },
@@ -21968,6 +22180,327 @@
       }
     },
     {
+      "id": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+      "name": "building.quality.house (Environment procedural 0)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/4b41d5cdbf853abef743ab00d30372bee2b4cb1c8829aaf7113a085807536e78.glb",
+        "runtime": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+        "thumbnail": "/api/files/sample-worlds/4fc975a4f00406510f145b91618e91d174d3dad3b8bbbce58e9895e7489c6081.svg"
+      },
+      "catalog": {
+        "slots": [
+          "building.quality.house"
+        ],
+        "tags": [
+          "building",
+          "quality",
+          "house"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "building.quality.house",
+        "contentHash": "cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.941927909851074,
+            0,
+            -3.3499999046325684
+          ],
+          "max": [
+            3.941927909851074,
+            7.699999809265137,
+            3.3499999046325684
+          ]
+        },
+        "triangles": 722,
+        "collider": "trimesh",
+        "colliderFile": "/api/files/sample-worlds/e2e40606c9ad77e0f16255f18ee015bbf7b925bd36de710f62b1359ae8387788.json",
+        "colliderBytes": 125961,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+            "triangles": 722,
+            "distance": 0,
+            "bytes": 62656
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/cd02dee047262761976c3e7975b63fd33d5dba64d3d6cb711c6cf7915d396617.glb",
+            "triangles": 722,
+            "distance": 45,
+            "bytes": 62656
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/d80b2056425de4d2ac874485a705f9a7b973fb197e087eabb1b5ecfa00a1aecc.glb",
+            "triangles": 482,
+            "distance": 110,
+            "bytes": 50756
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 217264,
+          "runtimeBytes": 62656,
+          "textureBytes": 1223339,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd",
+        "generationId": "e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd"
+      }
+    },
+    {
+      "id": "factory-f839f89dd2a5f392d0e00b24522e6b4b",
+      "name": "building.quality.house (Environment procedural 1)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/3c558aa609cdb790a36451cf35d69f85c4cb51074ea1603e6bb3f4b491a7fb15.glb",
+        "runtime": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+        "thumbnail": "/api/files/sample-worlds/6323e2218d0befdba8906c921217622890eff80abf2cebdd4b811864e6a63631.svg"
+      },
+      "catalog": {
+        "slots": [
+          "building.quality.house"
+        ],
+        "tags": [
+          "building",
+          "quality",
+          "house"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "building.quality.house",
+        "contentHash": "2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.941927909851074,
+            0,
+            -3.3499999046325684
+          ],
+          "max": [
+            3.941927909851074,
+            7.699999809265137,
+            3.3499999046325684
+          ]
+        },
+        "triangles": 722,
+        "collider": "trimesh",
+        "colliderFile": "/api/files/sample-worlds/add1ac75ed88dcad239a607ad8f5f959993a12a78221a696777719f96876323c.json",
+        "colliderBytes": 126159,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+            "triangles": 722,
+            "distance": 0,
+            "bytes": 62620
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/2d593b6c8fb08d53c24adea53ddfbf2d53ac7f701a2c74a7170ed904447b6a47.glb",
+            "triangles": 722,
+            "distance": 45,
+            "bytes": 62620
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/5e279365512114b457a6a16d98d129f9099288c26e367ced8f43a74b0b9df687.glb",
+            "triangles": 482,
+            "distance": 110,
+            "bytes": 50720
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 217264,
+          "runtimeBytes": 62620,
+          "textureBytes": 1223339,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b",
+        "generationId": "394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b"
+      }
+    },
+    {
+      "id": "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+      "name": "building.quality.house (Environment procedural 2)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/6104bb21e358a446fac4306cfd63bc2bbe5ea443aff1c248a73cbb02ef5f081b.glb",
+        "runtime": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+        "thumbnail": "/api/files/sample-worlds/6921ef35386eade86a8c88599bae28795f360a63974d2b91e18a658270f9bae2.svg"
+      },
+      "catalog": {
+        "slots": [
+          "building.quality.house"
+        ],
+        "tags": [
+          "building",
+          "quality",
+          "house"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "building.quality.house",
+        "contentHash": "d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.941927909851074,
+            0,
+            -3.3499999046325684
+          ],
+          "max": [
+            3.941927909851074,
+            7.699999809265137,
+            3.3499999046325684
+          ]
+        },
+        "triangles": 722,
+        "collider": "trimesh",
+        "colliderFile": "/api/files/sample-worlds/bb5c6053c973671abdd7b0124c56e43252e8c907708c854fab3d67923fb51a1f.json",
+        "colliderBytes": 125961,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+            "triangles": 722,
+            "distance": 0,
+            "bytes": 62656
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/d7f89de828d9ca8a63f35154085242a73370c3acf8ef3daa521935dcc72ba763.glb",
+            "triangles": 722,
+            "distance": 45,
+            "bytes": 62656
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/45bc8bda3e47ddcbf9b0ae4e3523c4ab90b3932df39927d1a0ce8eebf4ec9ea8.glb",
+            "triangles": 482,
+            "distance": 110,
+            "bytes": 50756
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 217264,
+          "runtimeBytes": 62656,
+          "textureBytes": 1223339,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6",
+        "generationId": "ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6"
+      }
+    },
+    {
       "id": "factory-430be2a6f4845122f4d331f6acbd09ab",
       "name": "landmark.alpine-village.windmill (Alpine procedural 0)",
       "type": "model",
@@ -22502,6 +23035,761 @@
         "model": "dummy",
         "promptHash": "ce93b5514ce91954bee76497815a2fffeb4e648b4940f5e6bf9bf361de0978d6",
         "generationId": "ce93b5514ce91954bee76497815a2fffeb4e648b4940f5e6bf9bf361de0978d6"
+      }
+    },
+    {
+      "id": "factory-903549c34981a65a6511f7a9a30db555",
+      "name": "nature.tree.quality.oak (Environment procedural 0)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/384d43a3e3a26fa98c5ec455b149c8b8adeb65c60d7e67f272fd3bf8a986e926.glb",
+        "runtime": "/api/files/sample-worlds/6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba.glb",
+        "thumbnail": "/api/files/sample-worlds/2b4c90265968775167b4def13020dadb4fd581b1f030b7f25738084c3f35e571.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.oak"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "oak"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.oak",
+        "contentHash": "6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -4.031332969665527,
+            -0.008868837729096413,
+            -4.447725772857666
+          ],
+          "max": [
+            3.7146170139312744,
+            9.306020736694336,
+            4.282085418701172
+          ]
+        },
+        "triangles": 2008,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
+        "colliderBytes": 3332,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/6bf4b3e835b8b7afb2c524a69bef3ea4c67b5a154fa25773f5ae1a410bf55dba.glb",
+            "triangles": 2008,
+            "distance": 0,
+            "bytes": 79908
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/568d06de4b21ae95b22062af2e3be1b83636ce960cfdbd68d792eeac8c6c9337.glb",
+            "triangles": 1176,
+            "distance": 45,
+            "bytes": 46464
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/aec73ede1e5c93a45dd7078f8fb36dc8f74bc1b8c7943966ac6c401cd8c4f88b.glb",
+            "triangles": 200,
+            "distance": 110,
+            "bytes": 11760
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 255272,
+          "runtimeBytes": 79908,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e",
+        "generationId": "d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e"
+      }
+    },
+    {
+      "id": "factory-30cac5e1ebccc2fb3bef2f291a79b65d",
+      "name": "nature.tree.quality.oak (Environment procedural 1)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/ad6541eb4cde276728fbedd535502b2e8c17f1dc7512888128aa655d1f89adce.glb",
+        "runtime": "/api/files/sample-worlds/9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f.glb",
+        "thumbnail": "/api/files/sample-worlds/6503c5d51ed2cffb05ac7e1ef2e7384cf6846caca5cf2b1ea2e7699b90abcad3.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.oak"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "oak"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.oak",
+        "contentHash": "9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -4.218510150909424,
+            -0.008868837729096413,
+            -4.066379070281982
+          ],
+          "max": [
+            4.453939914703369,
+            9.563530921936035,
+            4.127503395080566
+          ]
+        },
+        "triangles": 2008,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
+        "colliderBytes": 3332,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/9b127a7d65a88cbbe596fc21fb370c40e3ecbc1b89f0b507877ac103c8633a4f.glb",
+            "triangles": 2008,
+            "distance": 0,
+            "bytes": 79828
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/958b8877239557d5d9b5339a77a94eb7dd19fb55e828bdaf100a0a7c37f67f8d.glb",
+            "triangles": 1176,
+            "distance": 45,
+            "bytes": 46416
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/9c2c15aecc24254d629549ea73437822e2918966027c0a21e898d9d3bbc37ee8.glb",
+            "triangles": 200,
+            "distance": 110,
+            "bytes": 11752
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 255272,
+          "runtimeBytes": 79828,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d",
+        "generationId": "03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d"
+      }
+    },
+    {
+      "id": "factory-797402eb1c6219bf3ad0aa49873c0631",
+      "name": "nature.tree.quality.oak (Environment procedural 2)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/f922a577510862cb0cca388dfa2f5c28af831181d79feeb3e88499aea97723c9.glb",
+        "runtime": "/api/files/sample-worlds/ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307.glb",
+        "thumbnail": "/api/files/sample-worlds/6a2183f7bb280b8b3518edb5e219084d3e72fe17418c91886d8579908efa0ad0.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.oak"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "oak"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.oak",
+        "contentHash": "ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.9074196815490723,
+            -0.008868837729096413,
+            -3.9036850929260254
+          ],
+          "max": [
+            4.121160507202148,
+            9.021073341369629,
+            4.083071708679199
+          ]
+        },
+        "triangles": 2008,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
+        "colliderBytes": 3332,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/ea8c57a0032f1bde5f24a2d2ce1c93b8da69b06cfc69bc0e94481dbd5f738307.glb",
+            "triangles": 2008,
+            "distance": 0,
+            "bytes": 79856
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/e0841e9fc0cde1c850fa55c0358cb55e758a9b0f130b03bd09927792884f844a.glb",
+            "triangles": 1176,
+            "distance": 45,
+            "bytes": 46456
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/ae8118866a640ed1f58ef94fc878c0d7b1f70bac802da81d6847b7a359abda02.glb",
+            "triangles": 200,
+            "distance": 110,
+            "bytes": 11768
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 255272,
+          "runtimeBytes": 79856,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9",
+        "generationId": "d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9"
+      }
+    },
+    {
+      "id": "factory-f0d0159a325c7cdab6ecbebf00a4eba6",
+      "name": "nature.tree.quality.pine (Environment procedural 0)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/6ac50d3ba80f984bd5d47f19695d5a43037f457cf131cc9ce87b8285eb24a201.glb",
+        "runtime": "/api/files/sample-worlds/d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb.glb",
+        "thumbnail": "/api/files/sample-worlds/431f2a692f49741e8a75b100e3c4db085b090032022f040808936c337d6ba774.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.pine"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "pine"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.pine",
+        "contentHash": "d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.733739137649536,
+            -0.004878044128417969,
+            -3.8532938957214355
+          ],
+          "max": [
+            4.168191909790039,
+            10.325285911560059,
+            3.9417760372161865
+          ]
+        },
+        "triangles": 2208,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
+        "colliderBytes": 2488,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/d8777bc7aa5203d5e90a4f2fbea0eeef72584d2e792b1f4a2d0390f52c3cdedb.glb",
+            "triangles": 2208,
+            "distance": 0,
+            "bytes": 85436
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/29c297ec1f00fb957aec014d358f3684b077f435cc217e392ed2bf472d183e13.glb",
+            "triangles": 1824,
+            "distance": 45,
+            "bytes": 70076
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/5a3a5559443fd3fc04906e2e5189b21db5c0359e0dd0962205a28a6bfbb8c90d.glb",
+            "triangles": 180,
+            "distance": 110,
+            "bytes": 10900
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 273356,
+          "runtimeBytes": 85436,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6",
+        "generationId": "9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6"
+      }
+    },
+    {
+      "id": "factory-96a6157308f1f6cb825e09e03dd40a3f",
+      "name": "nature.tree.quality.pine (Environment procedural 1)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/4afbbf79c68b5ccc6df8aca2b0ada688e2f9cef38340823c5b098312131d3968.glb",
+        "runtime": "/api/files/sample-worlds/8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4.glb",
+        "thumbnail": "/api/files/sample-worlds/3150499bf288009bedde9bc73f5c564c0e90118a366237218c73ebc2fe637b33.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.pine"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "pine"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.pine",
+        "contentHash": "8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -3.8924877643585205,
+            -0.004878044128417969,
+            -3.9702885150909424
+          ],
+          "max": [
+            4.435155868530273,
+            10.453313827514648,
+            3.999394655227661
+          ]
+        },
+        "triangles": 2208,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
+        "colliderBytes": 2488,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/8179be27dd983c5e5333dc2d70f3abfa49e9d680cb10a43145e69c02aea1e7f4.glb",
+            "triangles": 2208,
+            "distance": 0,
+            "bytes": 85412
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/05c4b55cf1aa22c7f8cc96907d73477f5d0343c19d8567a76566fd6f927d6e9d.glb",
+            "triangles": 1824,
+            "distance": 45,
+            "bytes": 70112
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/cf9f012eaa7fd1cde87c7d3b3fc66b9bb64e816ed5ae9af3ac5842dc3d17f59f.glb",
+            "triangles": 180,
+            "distance": 110,
+            "bytes": 10900
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 273356,
+          "runtimeBytes": 85412,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6",
+        "generationId": "e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6"
+      }
+    },
+    {
+      "id": "factory-a0afb02cb082fc6c56022fd65e212909",
+      "name": "nature.tree.quality.pine (Environment procedural 2)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/96dfbc9a8e5917a58fdddd4f4aa6eb951f4fea7f36d4bf1141c2c7a7b12de6e7.glb",
+        "runtime": "/api/files/sample-worlds/22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec.glb",
+        "thumbnail": "/api/files/sample-worlds/a5b4bab9f406eb272860614df83d9c6aa8421813b5c1f63eecb28da1afd663db.svg"
+      },
+      "catalog": {
+        "slots": [
+          "nature.tree.quality.pine"
+        ],
+        "tags": [
+          "nature",
+          "tree",
+          "quality",
+          "pine"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "nature.tree.quality.pine",
+        "contentHash": "22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -4.216467380523682,
+            -0.004878044128417969,
+            -3.526337146759033
+          ],
+          "max": [
+            4.3688530921936035,
+            10.365582466125488,
+            4.123183250427246
+          ]
+        },
+        "triangles": 2208,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
+        "colliderBytes": 2488,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/22599bb26dbe82e80d8cab6b03819f1a58c17d2a0d6ec3b68dd1ff7a72873aec.glb",
+            "triangles": 2208,
+            "distance": 0,
+            "bytes": 85448
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/63dc7b5af3c3935f15b13e671b7e6f5263ded369e6338b0a1f28be94407f7e42.glb",
+            "triangles": 1824,
+            "distance": 45,
+            "bytes": 70076
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/5357b6c48ef1bdb2382b5da5e3738c2ae28364e6b26e103b09a34aa576a32039.glb",
+            "triangles": 180,
+            "distance": 110,
+            "bytes": 10920
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 273356,
+          "runtimeBytes": 85448,
+          "textureBytes": 349526,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330",
+        "generationId": "bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330"
+      }
+    },
+    {
+      "id": "factory-0d4b6b1333713d7e83d5313c251a4903",
+      "name": "prop.quality.market (Environment procedural 0)",
+      "type": "model",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "files": {
+        "original": "/api/files/sample-worlds/78402d11a3ce63e1421784aa60fc0e982dd85a1962e3fcb97c0bf706da780883.glb",
+        "runtime": "/api/files/sample-worlds/39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0.glb",
+        "thumbnail": "/api/files/sample-worlds/ddeb906a4fdf9e6e4d1dab96f1f343ad6f314016776d7ede5220722c5fbff40d.svg"
+      },
+      "catalog": {
+        "slots": [
+          "prop.quality.market"
+        ],
+        "tags": [
+          "prop",
+          "quality",
+          "market"
+        ],
+        "biomes": [
+          "temperate"
+        ],
+        "style": "stylized-low-poly",
+        "requestedStyle": "stylized-low-poly",
+        "styleAssessment": "dummy",
+        "variantGroup": "prop.quality.market",
+        "contentHash": "39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0",
+        "status": "ready"
+      },
+      "processing": {
+        "importedAt": "2026-01-01T00:00:00.000Z",
+        "optimizedAt": "2026-01-01T00:00:00.000Z",
+        "pipelineVersion": "2"
+      },
+      "runtimeInfo": {
+        "bounds": {
+          "min": [
+            -2.549999952316284,
+            -4.7683716530855236e-8,
+            -0.8500000238418579
+          ],
+          "max": [
+            2.299999952316284,
+            2.4600000381469727,
+            0.8500000238418579
+          ]
+        },
+        "triangles": 168,
+        "collider": "convexHull",
+        "colliderFile": "/api/files/sample-worlds/2df628a74a942b13f83c985cb327887ee8829ac4dd6b33138fd8041ee9129980.json",
+        "colliderBytes": 30302,
+        "lods": [
+          {
+            "level": 0,
+            "file": "/api/files/sample-worlds/39327866a3a79c9d1f400e728c4cfd3bd3f736915d2691fb41f8beca66dda2c0.glb",
+            "triangles": 168,
+            "distance": 0,
+            "bytes": 25172
+          },
+          {
+            "level": 1,
+            "file": "/api/files/sample-worlds/4e4f58fc3f3ba0dd2e2b05f446dec2d02b284d1c3a56f6613a3d1b5e5a3bd798.glb",
+            "triangles": 144,
+            "distance": 45,
+            "bytes": 24644
+          },
+          {
+            "level": 2,
+            "file": "/api/files/sample-worlds/62e6c54b87efaf28d6aba0bf46caece8edc298a39da447a513e2f6050388a9bc.glb",
+            "triangles": 72,
+            "distance": 110,
+            "bytes": 22844
+          }
+        ],
+        "optimization": {
+          "profile": "balanced",
+          "sourceBytes": 84564,
+          "runtimeBytes": 25172,
+          "textureBytes": 524288,
+          "warnings": []
+        },
+        "lodLevels": [
+          0,
+          1,
+          2
+        ]
+      },
+      "ai": {
+        "provider": "dummy-astra",
+        "model": "dummy",
+        "promptHash": "9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb",
+        "generationId": "9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb"
       }
     }
   ],

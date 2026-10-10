@@ -13,7 +13,10 @@ import {
   isBuiltinEntityKind,
 } from "../../world-system/src/entities";
 export type Entity = Project["world"]["entities"][number];
-export function disposeTemplate(group: THREE.Object3D) {
+export function disposeTemplate(
+  group: THREE.Object3D,
+  retainedTextures = new Set<THREE.Texture>(),
+) {
   const geometries = new Set<THREE.BufferGeometry>(),
     materials = new Set<THREE.Material>(),
     textures = new Set<THREE.Texture>();
@@ -31,7 +34,9 @@ export function disposeTemplate(group: THREE.Object3D) {
       if (value instanceof THREE.Texture) textures.add(value);
     m.dispose();
   });
-  textures.forEach((t) => t.dispose());
+  textures.forEach((t) => {
+    if (!retainedTextures.has(t)) t.dispose();
+  });
   geometries.forEach((g) => g.dispose());
 }
 export function builtinTemplate(kind: Entity["kind"], level = 0) {
@@ -172,6 +177,7 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
   return group;
 }
 export class AssetTemplates {
+  private texturePool = new EnvironmentTexturePool();
   private entries = new Map<
     string,
     { refs: number; promise: Promise<THREE.Object3D> }
@@ -179,7 +185,13 @@ export class AssetTemplates {
   acquire(key: string, load: () => Promise<THREE.Object3D>) {
     let entry = this.entries.get(key);
     if (!entry) {
-      entry = { refs: 0, promise: load() };
+      entry = {
+        refs: 0,
+        promise: load().then((template) => {
+          this.texturePool.acquire(template);
+          return template;
+        }),
+      };
       this.entries.set(key, entry);
     }
     entry.refs++;
@@ -192,10 +204,82 @@ export class AssetTemplates {
         released = true;
         if (--held.refs === 0) {
           this.entries.delete(key);
-          void held.promise.then(disposeTemplate).catch(() => {});
+          void held.promise
+            .then((template) => {
+              const pooled = this.texturePool.release(template);
+              disposeTemplate(template, pooled);
+            })
+            .catch(() => {});
         }
       },
     };
+  }
+}
+
+/** 独自レシピの同一画像だけをGLB間で共有し、最後のTemplate解放時に破棄する。 */
+export class EnvironmentTexturePool {
+  private entries = new Map<string, { texture: THREE.Texture; refs: number }>();
+  private held = new WeakMap<THREE.Object3D, Set<string>>();
+  acquire(template: THREE.Object3D) {
+    if (
+      template.userData.environmentRecipeVersion !== 1 ||
+      this.held.has(template)
+    )
+      return;
+    const keys = new Set<string>();
+    template.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      for (const material of Array.isArray(object.material)
+        ? object.material
+        : [object.material]) {
+        const properties = material as unknown as Record<string, unknown>;
+        for (const [property, value] of Object.entries(properties)) {
+          if (
+            !(value instanceof THREE.Texture) ||
+            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v1$/.test(
+              value.name,
+            )
+          )
+            continue;
+          const key = JSON.stringify([
+            value.name,
+            value.colorSpace,
+            value.wrapS,
+            value.wrapT,
+            value.magFilter,
+            value.minFilter,
+            value.flipY,
+            value.channel,
+          ]);
+          let entry = this.entries.get(key);
+          if (!entry) {
+            entry = { texture: value, refs: 0 };
+            this.entries.set(key, entry);
+          } else if (entry.texture !== value) {
+            value.dispose();
+            properties[property] = entry.texture;
+          }
+          if (!keys.has(key)) {
+            entry.refs++;
+            keys.add(key);
+          }
+        }
+      }
+    });
+    this.held.set(template, keys);
+  }
+  release(template: THREE.Object3D) {
+    const retained = new Set<THREE.Texture>();
+    for (const key of this.held.get(template) ?? []) {
+      const entry = this.entries.get(key)!;
+      retained.add(entry.texture);
+      if (--entry.refs === 0) {
+        entry.texture.dispose();
+        this.entries.delete(key);
+      }
+    }
+    this.held.delete(template);
+    return retained;
   }
 }
 export function chooseLod(
@@ -223,6 +307,7 @@ export class WorldAssetBatch {
   private release?: () => void;
   private pendingRelease?: () => void;
   private center = new THREE.Vector3();
+  private radius = 0;
   private levels: {
     level: number;
     file?: string;
@@ -233,7 +318,7 @@ export class WorldAssetBatch {
     private entities: Entity[],
     private asset: AssetRecord | undefined,
     private cache: AssetTemplates,
-    options?: { lodCenter?: [number, number, number] },
+    options?: { lodCenter?: [number, number, number]; lodRadius?: number },
   ) {
     if (options?.lodCenter) this.center.set(...options.lodCenter);
     else {
@@ -241,6 +326,7 @@ export class WorldAssetBatch {
         this.center.add(new THREE.Vector3(...e.transform.position));
       this.center.divideScalar(Math.max(1, entities.length));
     }
+    this.radius = Math.max(0, options?.lodRadius ?? 0);
     this.levels = asset
       ? asset.runtimeInfo?.lods?.length
         ? [...asset.runtimeInfo.lods].sort((a, b) => a.distance - b.distance)
@@ -271,7 +357,7 @@ export class WorldAssetBatch {
       performance.now() / 1000,
     );
     const target = chooseLod(
-      camera.distanceTo(this.center),
+      Math.max(0, camera.distanceTo(this.center) - this.radius),
       this.levels.map((l) => l.distance),
       Math.max(0, this.requested),
     );

@@ -5,6 +5,7 @@ import type {
   Vec3,
 } from "../../project-schema/src/index";
 import { alpineFields } from "../../world-generator/src/alpine-farmland";
+import { settlementEntities } from "../../world-generator/src/settlement-generation";
 
 /** 大きな陸地の内側を活動範囲にし、既存の島生成を内陸景観へ再利用する。 */
 export function alpineVillageDesign(): WorldDesign {
@@ -122,6 +123,10 @@ export function alpineVillageDesign(): WorldDesign {
     ],
   };
   const layers = new SemanticLayers(d, 42);
+  // 密度0で必要Slotだけを宣言し、樹木の既存配置を品質エリア内で再利用する。
+  for (const kind of ["oak", "pine"])
+    d.islands[0].propRules.push(tree(`nature.tree.quality.${kind}`, 0));
+  d.islands[0].propRules.push(tree("building.quality.house", 0));
   for (const field of alpineFields) {
     field.points.forEach((a, i) => {
       const b = field.points[(i + 1) % field.points.length];
@@ -148,5 +153,48 @@ export function alpineVillageDesign(): WorldDesign {
     ...tree("landscape.alpine-village.wheat", 0),
     scaleRange: [1, 1],
   });
+  const buildings = settlementEntities(
+    {
+      seed: 42,
+      generatorVersion: 2,
+      preset: "designed-world",
+      chunkX: 0,
+      chunkZ: 0,
+      chunkSize: 64,
+      chunkResolution: 17,
+      design: d,
+    },
+    layers,
+  );
+  let market = 0;
+  for (const [x, z] of [
+    [-42, -112],
+    [38, -110],
+    [-35, -70],
+    [32, -53],
+    [-38, -95],
+    [42, -80],
+    [65, -80],
+    [65, -50],
+    [32, -15],
+    [-70, -100],
+  ]) {
+    if (
+      market >= 3 ||
+      layers.sampleRoadInfluence(x, z, true).distance < 5 ||
+      buildings.some(
+        (b) => Math.hypot(x - b.position[0], z - b.position[2]) < 21,
+      )
+    )
+      continue;
+    d.landmarks.push({
+      id: `quality-market-${market++}`,
+      assetSlot: "prop.quality.market",
+      position: [x, 0, z],
+      rotation: [0, x < 0 ? 0.3 : -0.4, 0],
+      scale: [1, 1, 1],
+      snapToTerrain: true,
+    });
+  }
   return d;
 }

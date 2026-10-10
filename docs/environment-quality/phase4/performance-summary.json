@@ -1,0 +1,1229 @@
+{
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "memory": {
+      "usedJSHeapSize": 195716270
+    }
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "method": "Distinct rendered frames, nearest-rank median/p95. CPU renderMs is submission time; RAF includes scheduling and software GPU time. Unavailable GPU timings remain null.",
+  "runs": [
+    {
+      "id": "starter-grassland",
+      "views": [
+        {
+          "view": "initial",
+          "frameIntervalMs": {
+            "samples": 37,
+            "median": 50,
+            "p95": 66.70000000000073,
+            "max": 83.40000000000009
+          },
+          "cpuRenderMs": {
+            "samples": 37,
+            "median": 1.5999999940395355,
+            "p95": 2.6999999955296516,
+            "max": 3.399999998509884
+          },
+          "gpuMs": {
+            "samples": 37,
+            "median": 47.227644,
+            "p95": 50.628928,
+            "max": 58.659826
+          },
+          "drawCalls": {
+            "samples": 37,
+            "median": 88,
+            "p95": 89,
+            "max": 89
+          },
+          "triangles": {
+            "samples": 37,
+            "median": 87652,
+            "p95": 89700,
+            "max": 89700
+          },
+          "geometries": {
+            "samples": 37,
+            "median": 71,
+            "p95": 72,
+            "max": 72
+          },
+          "textures": {
+            "samples": 37,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 44117766,
+            "totalJSHeapSize": 76417362,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "forest-path",
+          "frameIntervalMs": {
+            "samples": 37,
+            "median": 50,
+            "p95": 66.70000000000073,
+            "max": 66.79999999999927
+          },
+          "cpuRenderMs": {
+            "samples": 37,
+            "median": 1.2000000029802322,
+            "p95": 1.8000000044703484,
+            "max": 2.399999998509884
+          },
+          "gpuMs": {
+            "samples": 37,
+            "median": 46.241518,
+            "p95": 49.662092,
+            "max": 53.653688
+          },
+          "drawCalls": {
+            "samples": 37,
+            "median": 60,
+            "p95": 60,
+            "max": 60
+          },
+          "triangles": {
+            "samples": 37,
+            "median": 120832,
+            "p95": 120832,
+            "max": 120832
+          },
+          "geometries": {
+            "samples": 37,
+            "median": 119,
+            "p95": 119,
+            "max": 119
+          },
+          "textures": {
+            "samples": 37,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 84206063,
+            "totalJSHeapSize": 103190991,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "house-close",
+          "frameIntervalMs": {
+            "samples": 31,
+            "median": 66.69999999999891,
+            "p95": 66.79999999999927,
+            "max": 83.39999999999964
+          },
+          "cpuRenderMs": {
+            "samples": 31,
+            "median": 1.6000000014901161,
+            "p95": 2.899999998509884,
+            "max": 3.2999999970197678
+          },
+          "gpuMs": {
+            "samples": 31,
+            "median": 54.799478,
+            "p95": 57.569637,
+            "max": 84.518302
+          },
+          "drawCalls": {
+            "samples": 31,
+            "median": 99,
+            "p95": 99,
+            "max": 99
+          },
+          "triangles": {
+            "samples": 31,
+            "median": 154652,
+            "p95": 154652,
+            "max": 154652
+          },
+          "geometries": {
+            "samples": 31,
+            "median": 125,
+            "p95": 125,
+            "max": 125
+          },
+          "textures": {
+            "samples": 31,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 75838174,
+            "totalJSHeapSize": 114537118,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "reference",
+          "frameIntervalMs": {
+            "samples": 16,
+            "median": 133.29999999999927,
+            "p95": 133.40000000000146,
+            "max": 133.40000000000146
+          },
+          "cpuRenderMs": {
+            "samples": 16,
+            "median": 1.8999999985098839,
+            "p95": 3.899999998509884,
+            "max": 3.899999998509884
+          },
+          "gpuMs": {
+            "samples": 16,
+            "median": 116.849298,
+            "p95": 126.634662,
+            "max": 126.634662
+          },
+          "drawCalls": {
+            "samples": 16,
+            "median": 194,
+            "p95": 210,
+            "max": 210
+          },
+          "triangles": {
+            "samples": 16,
+            "median": 328840,
+            "p95": 361608,
+            "max": 361608
+          },
+          "geometries": {
+            "samples": 16,
+            "median": 189,
+            "p95": 205,
+            "max": 205
+          },
+          "textures": {
+            "samples": 16,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 63538052,
+            "totalJSHeapSize": 131139592,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "overview",
+          "frameIntervalMs": {
+            "samples": 14,
+            "median": 150,
+            "p95": 166.70000000000073,
+            "max": 166.70000000000073
+          },
+          "cpuRenderMs": {
+            "samples": 14,
+            "median": 2.100000001490116,
+            "p95": 3.2999999970197678,
+            "max": 3.2999999970197678
+          },
+          "gpuMs": {
+            "samples": 14,
+            "median": 140.796279,
+            "p95": 157.17885,
+            "max": 157.17885
+          },
+          "drawCalls": {
+            "samples": 14,
+            "median": 279,
+            "p95": 279,
+            "max": 279
+          },
+          "triangles": {
+            "samples": 14,
+            "median": 390472,
+            "p95": 390472,
+            "max": 390472
+          },
+          "geometries": {
+            "samples": 14,
+            "median": 218,
+            "p95": 218,
+            "max": 218
+          },
+          "textures": {
+            "samples": 14,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 83784053,
+            "totalJSHeapSize": 132979981,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "village",
+          "frameIntervalMs": {
+            "samples": 15,
+            "median": 133.39999999999782,
+            "p95": 150.09999999999854,
+            "max": 150.09999999999854
+          },
+          "cpuRenderMs": {
+            "samples": 15,
+            "median": 2.2000000029802322,
+            "p95": 4.799999997019768,
+            "max": 4.799999997019768
+          },
+          "gpuMs": {
+            "samples": 15,
+            "median": 127.699124,
+            "p95": 145.735777,
+            "max": 145.735777
+          },
+          "drawCalls": {
+            "samples": 15,
+            "median": 312,
+            "p95": 316,
+            "max": 316
+          },
+          "triangles": {
+            "samples": 15,
+            "median": 350772,
+            "p95": 358964,
+            "max": 358964
+          },
+          "geometries": {
+            "samples": 15,
+            "median": 199,
+            "p95": 203,
+            "max": 203
+          },
+          "textures": {
+            "samples": 15,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 81663978,
+            "totalJSHeapSize": 135543618,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "farmland",
+          "frameIntervalMs": {
+            "samples": 20,
+            "median": 100,
+            "p95": 100.09999999999854,
+            "max": 100.09999999999854
+          },
+          "cpuRenderMs": {
+            "samples": 20,
+            "median": 2,
+            "p95": 2.600000001490116,
+            "max": 3.3000000044703484
+          },
+          "gpuMs": {
+            "samples": 20,
+            "median": 91.114687,
+            "p95": 93.618082,
+            "max": 94.723849
+          },
+          "drawCalls": {
+            "samples": 20,
+            "median": 246,
+            "p95": 246,
+            "max": 246
+          },
+          "triangles": {
+            "samples": 20,
+            "median": 215604,
+            "p95": 215604,
+            "max": 215604
+          },
+          "geometries": {
+            "samples": 20,
+            "median": 151,
+            "p95": 151,
+            "max": 151
+          },
+          "textures": {
+            "samples": 20,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 81188610,
+            "totalJSHeapSize": 139926622,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "aerial",
+          "frameIntervalMs": {
+            "samples": 16,
+            "median": 116.69999999999709,
+            "p95": 133.40000000000146,
+            "max": 133.40000000000146
+          },
+          "cpuRenderMs": {
+            "samples": 16,
+            "median": 2.399999998509884,
+            "p95": 3.1999999955296516,
+            "max": 3.1999999955296516
+          },
+          "gpuMs": {
+            "samples": 16,
+            "median": 114.251363,
+            "p95": 122.535365,
+            "max": 122.535365
+          },
+          "drawCalls": {
+            "samples": 16,
+            "median": 364,
+            "p95": 364,
+            "max": 364
+          },
+          "triangles": {
+            "samples": 16,
+            "median": 390872,
+            "p95": 390872,
+            "max": 390872
+          },
+          "geometries": {
+            "samples": 16,
+            "median": 217,
+            "p95": 217,
+            "max": 217
+          },
+          "textures": {
+            "samples": 16,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 73754446,
+            "totalJSHeapSize": 140714702,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "windmill",
+          "frameIntervalMs": {
+            "samples": 26,
+            "median": 83.29999999999563,
+            "p95": 83.40000000000146,
+            "max": 83.40000000000146
+          },
+          "cpuRenderMs": {
+            "samples": 26,
+            "median": 1.3999999985098839,
+            "p95": 2.3000000044703484,
+            "max": 2.399999998509884
+          },
+          "gpuMs": {
+            "samples": 26,
+            "median": 69.517863,
+            "p95": 82.027741,
+            "max": 86.125139
+          },
+          "drawCalls": {
+            "samples": 26,
+            "median": 76,
+            "p95": 76,
+            "max": 76
+          },
+          "triangles": {
+            "samples": 26,
+            "median": 143536,
+            "p95": 143536,
+            "max": 143536
+          },
+          "geometries": {
+            "samples": 26,
+            "median": 177,
+            "p95": 177,
+            "max": 177
+          },
+          "textures": {
+            "samples": 26,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 93595300,
+            "totalJSHeapSize": 144508816,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "forest",
+          "frameIntervalMs": {
+            "samples": 29,
+            "median": 66.69999999999709,
+            "p95": 83.40000000000146,
+            "max": 83.40000000000146
+          },
+          "cpuRenderMs": {
+            "samples": 29,
+            "median": 1.5,
+            "p95": 2.3000000044703484,
+            "max": 2.5
+          },
+          "gpuMs": {
+            "samples": 29,
+            "median": 61.162968,
+            "p95": 66.189962,
+            "max": 70.421395
+          },
+          "drawCalls": {
+            "samples": 29,
+            "median": 93,
+            "p95": 93,
+            "max": 93
+          },
+          "triangles": {
+            "samples": 29,
+            "median": 188416,
+            "p95": 188416,
+            "max": 188416
+          },
+          "geometries": {
+            "samples": 29,
+            "median": 159,
+            "p95": 159,
+            "max": 159
+          },
+          "textures": {
+            "samples": 29,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 74203564,
+            "totalJSHeapSize": 144782408,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "village-square",
+          "frameIntervalMs": {
+            "samples": 23,
+            "median": 83.30000000000291,
+            "p95": 100.09999999999854,
+            "max": 100.09999999999854
+          },
+          "cpuRenderMs": {
+            "samples": 23,
+            "median": 1.6000000014901161,
+            "p95": 2.2000000029802322,
+            "max": 3.5
+          },
+          "gpuMs": {
+            "samples": 23,
+            "median": 79.003734,
+            "p95": 87.782374,
+            "max": 88.989647
+          },
+          "drawCalls": {
+            "samples": 23,
+            "median": 97,
+            "p95": 97,
+            "max": 97
+          },
+          "triangles": {
+            "samples": 23,
+            "median": 154452,
+            "p95": 154452,
+            "max": 154452
+          },
+          "geometries": {
+            "samples": 23,
+            "median": 122,
+            "p95": 122,
+            "max": 122
+          },
+          "textures": {
+            "samples": 23,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 75578042,
+            "totalJSHeapSize": 144991754,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "driving",
+          "frameIntervalMs": {
+            "samples": 29,
+            "median": 83.30000000000291,
+            "p95": 100.10000000000582,
+            "max": 116.70000000000437
+          },
+          "cpuRenderMs": {
+            "samples": 29,
+            "median": 1.5,
+            "p95": 3.2000000029802322,
+            "max": 4.100000001490116
+          },
+          "gpuMs": {
+            "samples": 29,
+            "median": 77.368654,
+            "p95": 82.191509,
+            "max": 103.706196
+          },
+          "drawCalls": {
+            "samples": 29,
+            "median": 97,
+            "p95": 97,
+            "max": 97
+          },
+          "triangles": {
+            "samples": 29,
+            "median": 154452,
+            "p95": 154452,
+            "max": 154452
+          },
+          "geometries": {
+            "samples": 29,
+            "median": 122,
+            "p95": 122,
+            "max": 122
+          },
+          "textures": {
+            "samples": 29,
+            "median": 1,
+            "p95": 1,
+            "max": 1
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 87915877,
+            "totalJSHeapSize": 145293241,
+            "jsHeapSizeLimit": 4395630592
+          }
+        }
+      ]
+    },
+    {
+      "id": "alpine-village",
+      "views": [
+        {
+          "view": "initial",
+          "frameIntervalMs": {
+            "samples": 9,
+            "median": 250,
+            "p95": 283.1999999999971,
+            "max": 283.1999999999971
+          },
+          "cpuRenderMs": {
+            "samples": 9,
+            "median": 11.100000001490116,
+            "p95": 27.30000000447035,
+            "max": 27.30000000447035
+          },
+          "gpuMs": {
+            "samples": 9,
+            "median": 233.067587,
+            "p95": 270.742345,
+            "max": 270.742345
+          },
+          "drawCalls": {
+            "samples": 9,
+            "median": 158,
+            "p95": 163,
+            "max": 163
+          },
+          "triangles": {
+            "samples": 9,
+            "median": 448659,
+            "p95": 452447,
+            "max": 452447
+          },
+          "geometries": {
+            "samples": 9,
+            "median": 102,
+            "p95": 104,
+            "max": 104
+          },
+          "textures": {
+            "samples": 9,
+            "median": 17,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 206881762,
+            "totalJSHeapSize": 254548606,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "forest-path",
+          "frameIntervalMs": {
+            "samples": 5,
+            "median": 400,
+            "p95": 416.6000000000022,
+            "max": 416.6000000000022
+          },
+          "cpuRenderMs": {
+            "samples": 5,
+            "median": 11.099999994039536,
+            "p95": 12.799999997019768,
+            "max": 12.799999997019768
+          },
+          "gpuMs": {
+            "samples": 5,
+            "median": 389.197358,
+            "p95": 398.955488,
+            "max": 398.955488
+          },
+          "drawCalls": {
+            "samples": 5,
+            "median": 197,
+            "p95": 206,
+            "max": 206
+          },
+          "triangles": {
+            "samples": 5,
+            "median": 410108,
+            "p95": 412818,
+            "max": 412818
+          },
+          "geometries": {
+            "samples": 5,
+            "median": 171,
+            "p95": 172,
+            "max": 172
+          },
+          "textures": {
+            "samples": 5,
+            "median": 17,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 215347693,
+            "totalJSHeapSize": 272461721,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "house-close",
+          "frameIntervalMs": {
+            "samples": 6,
+            "median": 350,
+            "p95": 383.20000000000437,
+            "max": 383.20000000000437
+          },
+          "cpuRenderMs": {
+            "samples": 6,
+            "median": 8.800000004470348,
+            "p95": 10.600000001490116,
+            "max": 10.600000001490116
+          },
+          "gpuMs": {
+            "samples": 6,
+            "median": 334.267481,
+            "p95": 381.359057,
+            "max": 381.359057
+          },
+          "drawCalls": {
+            "samples": 6,
+            "median": 336,
+            "p95": 336,
+            "max": 336
+          },
+          "triangles": {
+            "samples": 6,
+            "median": 525352,
+            "p95": 527434,
+            "max": 527434
+          },
+          "geometries": {
+            "samples": 6,
+            "median": 190,
+            "p95": 190,
+            "max": 190
+          },
+          "textures": {
+            "samples": 6,
+            "median": 20,
+            "p95": 20,
+            "max": 20
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 231803670,
+            "totalJSHeapSize": 277292322,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "reference",
+          "frameIntervalMs": {
+            "samples": 5,
+            "median": 416.6000000000058,
+            "p95": 449.8999999999942,
+            "max": 449.8999999999942
+          },
+          "cpuRenderMs": {
+            "samples": 5,
+            "median": 15.400000005960464,
+            "p95": 16.100000001490116,
+            "max": 16.100000001490116
+          },
+          "gpuMs": {
+            "samples": 5,
+            "median": 412.805341,
+            "p95": 436.708604,
+            "max": 436.708604
+          },
+          "drawCalls": {
+            "samples": 5,
+            "median": 757,
+            "p95": 760,
+            "max": 760
+          },
+          "triangles": {
+            "samples": 5,
+            "median": 761432,
+            "p95": 781914,
+            "max": 781914
+          },
+          "geometries": {
+            "samples": 5,
+            "median": 243,
+            "p95": 244,
+            "max": 244
+          },
+          "textures": {
+            "samples": 5,
+            "median": 19,
+            "p95": 19,
+            "max": 19
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 217736301,
+            "totalJSHeapSize": 231397277,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "overview",
+          "frameIntervalMs": {
+            "samples": 5,
+            "median": 483.3000000000029,
+            "p95": 500,
+            "max": 500
+          },
+          "cpuRenderMs": {
+            "samples": 5,
+            "median": 11.399999998509884,
+            "p95": 20.299999997019768,
+            "max": 20.299999997019768
+          },
+          "gpuMs": {
+            "samples": 5,
+            "median": 471.144298,
+            "p95": 494.337654,
+            "max": 494.337654
+          },
+          "drawCalls": {
+            "samples": 5,
+            "median": 871,
+            "p95": 872,
+            "max": 872
+          },
+          "triangles": {
+            "samples": 5,
+            "median": 842662,
+            "p95": 845494,
+            "max": 845494
+          },
+          "geometries": {
+            "samples": 5,
+            "median": 266,
+            "p95": 267,
+            "max": 267
+          },
+          "textures": {
+            "samples": 5,
+            "median": 12,
+            "p95": 12,
+            "max": 12
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 215573041,
+            "totalJSHeapSize": 242791785,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "village",
+          "frameIntervalMs": {
+            "samples": 6,
+            "median": 383.3000000000029,
+            "p95": 416.6999999999971,
+            "max": 416.6999999999971
+          },
+          "cpuRenderMs": {
+            "samples": 6,
+            "median": 12.899999998509884,
+            "p95": 15.900000005960464,
+            "max": 15.900000005960464
+          },
+          "gpuMs": {
+            "samples": 6,
+            "median": 371.886082,
+            "p95": 395.432134,
+            "max": 395.432134
+          },
+          "drawCalls": {
+            "samples": 6,
+            "median": 627,
+            "p95": 628,
+            "max": 628
+          },
+          "triangles": {
+            "samples": 6,
+            "median": 677056,
+            "p95": 677888,
+            "max": 677888
+          },
+          "geometries": {
+            "samples": 6,
+            "median": 236,
+            "p95": 244,
+            "max": 244
+          },
+          "textures": {
+            "samples": 6,
+            "median": 16,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 237914311,
+            "totalJSHeapSize": 264593951,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "farmland",
+          "frameIntervalMs": {
+            "samples": 5,
+            "median": 400,
+            "p95": 416.6000000000058,
+            "max": 416.6000000000058
+          },
+          "cpuRenderMs": {
+            "samples": 5,
+            "median": 11.299999997019768,
+            "p95": 13.299999997019768,
+            "max": 13.299999997019768
+          },
+          "gpuMs": {
+            "samples": 5,
+            "median": 394.075205,
+            "p95": 397.096106,
+            "max": 397.096106
+          },
+          "drawCalls": {
+            "samples": 5,
+            "median": 468,
+            "p95": 468,
+            "max": 468
+          },
+          "triangles": {
+            "samples": 5,
+            "median": 762104,
+            "p95": 762200,
+            "max": 762200
+          },
+          "geometries": {
+            "samples": 5,
+            "median": 219,
+            "p95": 221,
+            "max": 221
+          },
+          "textures": {
+            "samples": 5,
+            "median": 17,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 220805399,
+            "totalJSHeapSize": 248247871,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "aerial",
+          "frameIntervalMs": {
+            "samples": 7,
+            "median": 300.1000000000058,
+            "p95": 316.6000000000058,
+            "max": 316.6000000000058
+          },
+          "cpuRenderMs": {
+            "samples": 7,
+            "median": 7.600000001490116,
+            "p95": 9.799999997019768,
+            "max": 9.799999997019768
+          },
+          "gpuMs": {
+            "samples": 7,
+            "median": 293.726991,
+            "p95": 301.501755,
+            "max": 301.501755
+          },
+          "drawCalls": {
+            "samples": 7,
+            "median": 655,
+            "p95": 655,
+            "max": 655
+          },
+          "triangles": {
+            "samples": 7,
+            "median": 687140,
+            "p95": 687140,
+            "max": 687140
+          },
+          "geometries": {
+            "samples": 7,
+            "median": 226,
+            "p95": 228,
+            "max": 228
+          },
+          "textures": {
+            "samples": 7,
+            "median": 12,
+            "p95": 16,
+            "max": 16
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 217775085,
+            "totalJSHeapSize": 247019693,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "windmill",
+          "frameIntervalMs": {
+            "samples": 7,
+            "median": 316.6000000000058,
+            "p95": 349.8999999999942,
+            "max": 349.8999999999942
+          },
+          "cpuRenderMs": {
+            "samples": 7,
+            "median": 10.399999998509884,
+            "p95": 12.100000001490116,
+            "max": 12.100000001490116
+          },
+          "gpuMs": {
+            "samples": 7,
+            "median": 302.525563,
+            "p95": 346.560279,
+            "max": 346.560279
+          },
+          "drawCalls": {
+            "samples": 7,
+            "median": 319,
+            "p95": 319,
+            "max": 319
+          },
+          "triangles": {
+            "samples": 7,
+            "median": 438372,
+            "p95": 438404,
+            "max": 438404
+          },
+          "geometries": {
+            "samples": 7,
+            "median": 235,
+            "p95": 237,
+            "max": 237
+          },
+          "textures": {
+            "samples": 7,
+            "median": 17,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 235767663,
+            "totalJSHeapSize": 275262995,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "forest",
+          "frameIntervalMs": {
+            "samples": 8,
+            "median": 250,
+            "p95": 283.29999999998836,
+            "max": 283.29999999998836
+          },
+          "cpuRenderMs": {
+            "samples": 8,
+            "median": 11.100000001490116,
+            "p95": 17.100000001490116,
+            "max": 17.100000001490116
+          },
+          "gpuMs": {
+            "samples": 8,
+            "median": 246.324862,
+            "p95": 262.713115,
+            "max": 262.713115
+          },
+          "drawCalls": {
+            "samples": 8,
+            "median": 302,
+            "p95": 311,
+            "max": 311
+          },
+          "triangles": {
+            "samples": 8,
+            "median": 395868,
+            "p95": 404440,
+            "max": 404440
+          },
+          "geometries": {
+            "samples": 8,
+            "median": 236,
+            "p95": 238,
+            "max": 238
+          },
+          "textures": {
+            "samples": 8,
+            "median": 17,
+            "p95": 17,
+            "max": 17
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 242900432,
+            "totalJSHeapSize": 293500600,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "village-square",
+          "frameIntervalMs": {
+            "samples": 6,
+            "median": 383.19999999998254,
+            "p95": 416.70000000001164,
+            "max": 416.70000000001164
+          },
+          "cpuRenderMs": {
+            "samples": 6,
+            "median": 10.699999995529652,
+            "p95": 11.100000001490116,
+            "max": 11.100000001490116
+          },
+          "gpuMs": {
+            "samples": 6,
+            "median": 369.76706,
+            "p95": 397.960394,
+            "max": 397.960394
+          },
+          "drawCalls": {
+            "samples": 6,
+            "median": 376,
+            "p95": 376,
+            "max": 376
+          },
+          "triangles": {
+            "samples": 6,
+            "median": 481529,
+            "p95": 481593,
+            "max": 481593
+          },
+          "geometries": {
+            "samples": 6,
+            "median": 241,
+            "p95": 241,
+            "max": 241
+          },
+          "textures": {
+            "samples": 6,
+            "median": 20,
+            "p95": 20,
+            "max": 20
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 244457908,
+            "totalJSHeapSize": 292503632,
+            "jsHeapSizeLimit": 4395630592
+          }
+        },
+        {
+          "view": "driving",
+          "frameIntervalMs": {
+            "samples": 25,
+            "median": 399.8999999999942,
+            "p95": 416.70000000001164,
+            "max": 433.3999999999942
+          },
+          "cpuRenderMs": {
+            "samples": 25,
+            "median": 6.199999995529652,
+            "p95": 8.600000001490116,
+            "max": 11.5
+          },
+          "gpuMs": {
+            "samples": 25,
+            "median": 381.514293,
+            "p95": 403.194719,
+            "max": 415.638897
+          },
+          "drawCalls": {
+            "samples": 25,
+            "median": 376,
+            "p95": 376,
+            "max": 376
+          },
+          "triangles": {
+            "samples": 25,
+            "median": 480825,
+            "p95": 480825,
+            "max": 480825
+          },
+          "geometries": {
+            "samples": 25,
+            "median": 241,
+            "p95": 241,
+            "max": 241
+          },
+          "textures": {
+            "samples": 25,
+            "median": 20,
+            "p95": 20,
+            "max": 20
+          },
+          "jsHeap": {
+            "usedJSHeapSize": 236097558,
+            "totalJSHeapSize": 281295562,
+            "jsHeapSizeLimit": 4395630592
+          }
+        }
+      ]
+    }
+  ]
+}

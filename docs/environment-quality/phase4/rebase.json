@@ -1,0 +1,193 @@
+{
+  "beforeRebase": {
+    "state": {
+      "engine": {
+        "mode": "PLAY",
+        "frame": 68
+      },
+      "machine": {
+        "id": "sample-alpine-village-machine",
+        "physicsStep": 392,
+        "position": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "simulationPosition": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "worldOrigin": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          9.191572850064667e-12,
+          0,
+          0,
+          1
+        ],
+        "velocity": [
+          0,
+          -0.0612579882144928,
+          4.283235550094078e-15
+        ],
+        "speed": 0.0612579882144928,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "camera": {
+        "position": [
+          -84.93510240250195,
+          79.80686190469893,
+          289.3709925165572
+        ],
+        "target": [
+          -20,
+          40,
+          -340.0000000000001
+        ],
+        "followMode": "instant"
+      },
+      "world": {
+        "currentChunk": "0,0",
+        "loadedRenderChunks": 169,
+        "loadedPhysicsChunks": 49,
+        "readyQueues": {
+          "render": 144,
+          "physics": 0
+        },
+        "generationQueue": 3,
+        "workerQueued": 3,
+        "workerInFlight": 4,
+        "cacheHitRate": 0.2647058823529412,
+        "rebaseCount": 0
+      },
+      "renderer": {
+        "activeVaporParticles": 0,
+        "activeGroundSmokeParticles": 0,
+        "vaporEmitters": 0,
+        "groundSmokeEmitters": 4,
+        "drawCalls": 445,
+        "triangles": 506042,
+        "geometries": 148,
+        "textures": 16,
+        "gpuTimingMs": 293.306799
+      },
+      "frame": {
+        "rafMs": 300.09999999999854,
+        "cpuWorkMs": 14.599999994039536,
+        "physicsMs": 3.0999999940395355,
+        "renderMs": 11.400000005960464,
+        "streamingRequestMs": 0,
+        "streamingCommitMs": 0
+      }
+    },
+    "mill": [
+      -205,
+      15.314640998840332,
+      -65
+    ]
+  },
+  "afterRebase": {
+    "state": {
+      "engine": {
+        "mode": "PLAY",
+        "frame": 306
+      },
+      "machine": {
+        "id": "sample-alpine-village-machine",
+        "physicsStep": 1807,
+        "position": [
+          6.000079154968262,
+          11.950760841369629,
+          201.75391006469727
+        ],
+        "simulationPosition": [
+          6.000079154968262,
+          11.950760841369629,
+          9.753910064697266
+        ],
+        "worldOrigin": [
+          0,
+          0,
+          192
+        ],
+        "rotation": [
+          8.10383493643485e-9,
+          0.0000013540548025048338,
+          -8.058515632569652e-9,
+          1
+        ],
+        "velocity": [
+          0.00002512175342417322,
+          -0.06144777312874794,
+          9.112832069396973
+        ],
+        "speed": 9.113039238063418,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "camera": {
+        "position": [
+          -84.93510240250195,
+          79.80686190469893,
+          97.37099251655718
+        ],
+        "target": [
+          -20,
+          40,
+          -532.0000000000001
+        ],
+        "followMode": "instant"
+      },
+      "world": {
+        "currentChunk": "0,3",
+        "loadedRenderChunks": 169,
+        "loadedPhysicsChunks": 49,
+        "readyQueues": {
+          "render": 39,
+          "physics": 0
+        },
+        "generationQueue": 0,
+        "workerQueued": 0,
+        "workerInFlight": 0,
+        "cacheHitRate": 0.11612903225806452,
+        "rebaseCount": 1
+      },
+      "renderer": {
+        "activeVaporParticles": 0,
+        "activeGroundSmokeParticles": 12,
+        "vaporEmitters": 0,
+        "groundSmokeEmitters": 4,
+        "drawCalls": 735,
+        "triangles": 765700,
+        "geometries": 231,
+        "textures": 12,
+        "gpuTimingMs": 402.618113
+      },
+      "frame": {
+        "rafMs": 416.6999999999971,
+        "cpuWorkMs": 13.899999998509884,
+        "physicsMs": 7.299999997019768,
+        "renderMs": 6.5,
+        "streamingRequestMs": 0.10000000149011612,
+        "streamingCommitMs": 0
+      }
+    },
+    "mill": [
+      -205,
+      15.314640998840332,
+      -65
+    ],
+    "events": []
+  }
+}

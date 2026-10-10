@@ -5,7 +5,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./asset-generator": "./src/asset-generator.ts"
+    "./asset-generator": "./src/asset-generator.ts",
+    "./environment-models": "./src/environment-models.ts",
+    "./environment-materials": "./src/environment-materials.ts",
+    "./environment-prepare": "./src/environment-prepare.ts"
   },
   "dependencies": {
     "@machine-studio/ai-core": "workspace:*",
@@ -15,6 +18,7 @@
     "@machine-studio/asset-core": "workspace:*",
     "@machine-studio/asset-pipeline": "workspace:*",
     "three": "^0.180.0",
-    "@gltf-transform/core": "^4.5.0"
+    "@gltf-transform/core": "^4.5.0",
+    "sharp": "0.35.4"
   }
 }

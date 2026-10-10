@@ -1,0 +1,1828 @@
+{
+  "baselineCommit": "f72cf94",
+  "beforeEnvironment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "memory": {
+      "usedJSHeapSize": 178802682
+    }
+  },
+  "afterEnvironment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "memory": {
+      "usedJSHeapSize": 195716270
+    }
+  },
+  "backend": "Chromium ANGLE SwiftShader (software)",
+  "limitation": "SwiftShader software GPU; not real hardware FPS. Camera and viewport matched for named views. Baseline geometry/texture counters were unavailable. Added village-square has no baseline camera. Short sampling windows limit p95 accuracy.",
+  "chunkGenerationMs": {
+    "before": {
+      "samples": 100,
+      "median": 8.257147000000032,
+      "p95": 26.572979000000032,
+      "max": 38.68365299999999
+    },
+    "after": {
+      "samples": 100,
+      "median": 8.214469000000008,
+      "p95": 25.632359999999835,
+      "max": 33.18451099999993
+    }
+  },
+  "assetMeasurements": [
+    {
+      "slot": "building.quality.house",
+      "assetId": "factory-c7d29bcdb941c58db5b8e53552f64cd1",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.941927909851074,
+          0,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.941927909851074,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "collider": "trimesh",
+      "textureMemoryEstimateBytes": 1223339,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 62656,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 62656,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 50756,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11
+        }
+      ]
+    },
+    {
+      "slot": "building.quality.house",
+      "assetId": "factory-f839f89dd2a5f392d0e00b24522e6b4b",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.941927909851074,
+          0,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.941927909851074,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "collider": "trimesh",
+      "textureMemoryEstimateBytes": 1223339,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 62620,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 62620,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 50720,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11
+        }
+      ]
+    },
+    {
+      "slot": "building.quality.house",
+      "assetId": "factory-72b33253d5fd1eb051b52bc8cf3f95ad",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.941927909851074,
+          0,
+          -3.3499999046325684
+        ],
+        "max": [
+          3.941927909851074,
+          7.699999809265137,
+          3.3499999046325684
+        ]
+      },
+      "collider": "trimesh",
+      "textureMemoryEstimateBytes": 1223339,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 62656,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 62656,
+          "triangles": 722,
+          "materials": 5,
+          "textures": 14
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 50756,
+          "triangles": 482,
+          "materials": 4,
+          "textures": 11
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "assetId": "factory-903549c34981a65a6511f7a9a30db555",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -4.031332969665527,
+          -0.008868837729096413,
+          -4.447725772857666
+        ],
+        "max": [
+          3.7146170139312744,
+          9.306020736694336,
+          4.282085418701172
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 79908,
+          "triangles": 2008,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 46464,
+          "triangles": 1176,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11760,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "assetId": "factory-30cac5e1ebccc2fb3bef2f291a79b65d",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -4.218510150909424,
+          -0.008868837729096413,
+          -4.066379070281982
+        ],
+        "max": [
+          4.453939914703369,
+          9.563530921936035,
+          4.127503395080566
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 79828,
+          "triangles": 2008,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 46416,
+          "triangles": 1176,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11752,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.oak",
+      "assetId": "factory-797402eb1c6219bf3ad0aa49873c0631",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.9074196815490723,
+          -0.008868837729096413,
+          -3.9036850929260254
+        ],
+        "max": [
+          4.121160507202148,
+          9.021073341369629,
+          4.083071708679199
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 79856,
+          "triangles": 2008,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 46456,
+          "triangles": 1176,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 11768,
+          "triangles": 200,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "assetId": "factory-f0d0159a325c7cdab6ecbebf00a4eba6",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.733739137649536,
+          -0.004878044128417969,
+          -3.8532938957214355
+        ],
+        "max": [
+          4.168191909790039,
+          10.325285911560059,
+          3.9417760372161865
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 85436,
+          "triangles": 2208,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 70076,
+          "triangles": 1824,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10900,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "assetId": "factory-96a6157308f1f6cb825e09e03dd40a3f",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -3.8924877643585205,
+          -0.004878044128417969,
+          -3.9702885150909424
+        ],
+        "max": [
+          4.435155868530273,
+          10.453313827514648,
+          3.999394655227661
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 85412,
+          "triangles": 2208,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 70112,
+          "triangles": 1824,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10900,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "nature.tree.quality.pine",
+      "assetId": "factory-a0afb02cb082fc6c56022fd65e212909",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -4.216467380523682,
+          -0.004878044128417969,
+          -3.526337146759033
+        ],
+        "max": [
+          4.3688530921936035,
+          10.365582466125488,
+          4.123183250427246
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 349526,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 85448,
+          "triangles": 2208,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 70076,
+          "triangles": 1824,
+          "materials": 2,
+          "textures": 4
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 10920,
+          "triangles": 180,
+          "materials": 1,
+          "textures": 0
+        }
+      ]
+    },
+    {
+      "slot": "prop.quality.market",
+      "assetId": "factory-0d4b6b1333713d7e83d5313c251a4903",
+      "source": {
+        "provider": "dummy-astra",
+        "sourceAssetId": "dummy-9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb",
+        "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
+        "author": "3DGameStudio",
+        "retrievedAt": "2026-01-01T00:00:00.000Z"
+      },
+      "license": {
+        "id": "project-owned",
+        "name": "project-owned",
+        "url": "",
+        "attributionRequired": true,
+        "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
+      },
+      "bounds": {
+        "min": [
+          -2.549999952316284,
+          -4.7683716530855236e-8,
+          -0.8500000238418579
+        ],
+        "max": [
+          2.299999952316284,
+          2.4600000381469727,
+          0.8500000238418579
+        ]
+      },
+      "collider": "convexHull",
+      "textureMemoryEstimateBytes": 524288,
+      "lods": [
+        {
+          "level": 0,
+          "distance": 0,
+          "bytes": 25172,
+          "triangles": 168,
+          "materials": 2,
+          "textures": 6
+        },
+        {
+          "level": 1,
+          "distance": 45,
+          "bytes": 24644,
+          "triangles": 144,
+          "materials": 2,
+          "textures": 6
+        },
+        {
+          "level": 2,
+          "distance": 110,
+          "bytes": 22844,
+          "triangles": 72,
+          "materials": 2,
+          "textures": 6
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "view": "initial",
+      "before": {
+        "view": "initial",
+        "frameIntervalMs": {
+          "samples": 11,
+          "median": 183.3000000000011,
+          "p95": 200,
+          "max": 200
+        },
+        "cpuRenderMs": {
+          "samples": 11,
+          "median": 6.800000004470348,
+          "p95": 7.300000004470348,
+          "max": 7.300000004470348
+        },
+        "gpuMs": {
+          "samples": 11,
+          "median": 171.607652,
+          "p95": 189.471034,
+          "max": 189.471034
+        },
+        "drawCalls": {
+          "samples": 11,
+          "median": 123,
+          "p95": 128,
+          "max": 128
+        },
+        "triangles": {
+          "samples": 11,
+          "median": 379680,
+          "p95": 384596,
+          "max": 384596
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 174697769,
+          "totalJSHeapSize": 242597029,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "initial",
+        "frameIntervalMs": {
+          "samples": 9,
+          "median": 250,
+          "p95": 283.1999999999971,
+          "max": 283.1999999999971
+        },
+        "cpuRenderMs": {
+          "samples": 9,
+          "median": 11.100000001490116,
+          "p95": 27.30000000447035,
+          "max": 27.30000000447035
+        },
+        "gpuMs": {
+          "samples": 9,
+          "median": 233.067587,
+          "p95": 270.742345,
+          "max": 270.742345
+        },
+        "drawCalls": {
+          "samples": 9,
+          "median": 158,
+          "p95": 163,
+          "max": 163
+        },
+        "triangles": {
+          "samples": 9,
+          "median": 448659,
+          "p95": 452447,
+          "max": 452447
+        },
+        "geometries": {
+          "samples": 9,
+          "median": 102,
+          "p95": 104,
+          "max": 104
+        },
+        "textures": {
+          "samples": 9,
+          "median": 17,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 206881762,
+          "totalJSHeapSize": 254548606,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "forest-path",
+      "before": {
+        "view": "forest-path",
+        "frameIntervalMs": {
+          "samples": 11,
+          "median": 183.40000000000146,
+          "p95": 200,
+          "max": 200
+        },
+        "cpuRenderMs": {
+          "samples": 11,
+          "median": 7.5,
+          "p95": 10.300000004470348,
+          "max": 10.300000004470348
+        },
+        "gpuMs": {
+          "samples": 11,
+          "median": 183.306536,
+          "p95": 187.788006,
+          "max": 187.788006
+        },
+        "drawCalls": {
+          "samples": 11,
+          "median": 123,
+          "p95": 135,
+          "max": 135
+        },
+        "triangles": {
+          "samples": 11,
+          "median": 279014,
+          "p95": 291042,
+          "max": 291042
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 198098565,
+          "totalJSHeapSize": 253125357,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "forest-path",
+        "frameIntervalMs": {
+          "samples": 5,
+          "median": 400,
+          "p95": 416.6000000000022,
+          "max": 416.6000000000022
+        },
+        "cpuRenderMs": {
+          "samples": 5,
+          "median": 11.099999994039536,
+          "p95": 12.799999997019768,
+          "max": 12.799999997019768
+        },
+        "gpuMs": {
+          "samples": 5,
+          "median": 389.197358,
+          "p95": 398.955488,
+          "max": 398.955488
+        },
+        "drawCalls": {
+          "samples": 5,
+          "median": 197,
+          "p95": 206,
+          "max": 206
+        },
+        "triangles": {
+          "samples": 5,
+          "median": 410108,
+          "p95": 412818,
+          "max": 412818
+        },
+        "geometries": {
+          "samples": 5,
+          "median": 171,
+          "p95": 172,
+          "max": 172
+        },
+        "textures": {
+          "samples": 5,
+          "median": 17,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 215347693,
+          "totalJSHeapSize": 272461721,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "house-close",
+      "before": {
+        "view": "house-close",
+        "frameIntervalMs": {
+          "samples": 8,
+          "median": 250,
+          "p95": 283.2999999999993,
+          "max": 283.2999999999993
+        },
+        "cpuRenderMs": {
+          "samples": 8,
+          "median": 3.5,
+          "p95": 6.399999998509884,
+          "max": 6.399999998509884
+        },
+        "gpuMs": {
+          "samples": 8,
+          "median": 243.707239,
+          "p95": 264.685616,
+          "max": 264.685616
+        },
+        "drawCalls": {
+          "samples": 8,
+          "median": 186,
+          "p95": 186,
+          "max": 186
+        },
+        "triangles": {
+          "samples": 8,
+          "median": 406656,
+          "p95": 406656,
+          "max": 406656
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 178983180,
+          "totalJSHeapSize": 247968172,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "house-close",
+        "frameIntervalMs": {
+          "samples": 6,
+          "median": 350,
+          "p95": 383.20000000000437,
+          "max": 383.20000000000437
+        },
+        "cpuRenderMs": {
+          "samples": 6,
+          "median": 8.800000004470348,
+          "p95": 10.600000001490116,
+          "max": 10.600000001490116
+        },
+        "gpuMs": {
+          "samples": 6,
+          "median": 334.267481,
+          "p95": 381.359057,
+          "max": 381.359057
+        },
+        "drawCalls": {
+          "samples": 6,
+          "median": 336,
+          "p95": 336,
+          "max": 336
+        },
+        "triangles": {
+          "samples": 6,
+          "median": 525352,
+          "p95": 527434,
+          "max": 527434
+        },
+        "geometries": {
+          "samples": 6,
+          "median": 190,
+          "p95": 190,
+          "max": 190
+        },
+        "textures": {
+          "samples": 6,
+          "median": 20,
+          "p95": 20,
+          "max": 20
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 231803670,
+          "totalJSHeapSize": 277292322,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "reference",
+      "before": {
+        "view": "reference",
+        "frameIntervalMs": {
+          "samples": 6,
+          "median": 349.90000000000146,
+          "p95": 366.6999999999971,
+          "max": 366.6999999999971
+        },
+        "cpuRenderMs": {
+          "samples": 6,
+          "median": 8.100000001490116,
+          "p95": 11.200000002980232,
+          "max": 11.200000002980232
+        },
+        "gpuMs": {
+          "samples": 6,
+          "median": 334.165931,
+          "p95": 350.52501,
+          "max": 350.52501
+        },
+        "drawCalls": {
+          "samples": 6,
+          "median": 452,
+          "p95": 460,
+          "max": 460
+        },
+        "triangles": {
+          "samples": 6,
+          "median": 622554,
+          "p95": 637444,
+          "max": 637444
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 199121368,
+          "totalJSHeapSize": 260626152,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "reference",
+        "frameIntervalMs": {
+          "samples": 5,
+          "median": 416.6000000000058,
+          "p95": 449.8999999999942,
+          "max": 449.8999999999942
+        },
+        "cpuRenderMs": {
+          "samples": 5,
+          "median": 15.400000005960464,
+          "p95": 16.100000001490116,
+          "max": 16.100000001490116
+        },
+        "gpuMs": {
+          "samples": 5,
+          "median": 412.805341,
+          "p95": 436.708604,
+          "max": 436.708604
+        },
+        "drawCalls": {
+          "samples": 5,
+          "median": 757,
+          "p95": 760,
+          "max": 760
+        },
+        "triangles": {
+          "samples": 5,
+          "median": 761432,
+          "p95": 781914,
+          "max": 781914
+        },
+        "geometries": {
+          "samples": 5,
+          "median": 243,
+          "p95": 244,
+          "max": 244
+        },
+        "textures": {
+          "samples": 5,
+          "median": 19,
+          "p95": 19,
+          "max": 19
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 217736301,
+          "totalJSHeapSize": 231397277,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "overview",
+      "before": {
+        "view": "overview",
+        "frameIntervalMs": {
+          "samples": 5,
+          "median": 399.90000000000146,
+          "p95": 416.59999999999854,
+          "max": 416.59999999999854
+        },
+        "cpuRenderMs": {
+          "samples": 5,
+          "median": 5.200000002980232,
+          "p95": 7.799999997019768,
+          "max": 7.799999997019768
+        },
+        "gpuMs": {
+          "samples": 5,
+          "median": 386.369112,
+          "p95": 392.774772,
+          "max": 392.774772
+        },
+        "drawCalls": {
+          "samples": 5,
+          "median": 539,
+          "p95": 539,
+          "max": 539
+        },
+        "triangles": {
+          "samples": 5,
+          "median": 708142,
+          "p95": 708142,
+          "max": 708142
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 173453005,
+          "totalJSHeapSize": 245680037,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "overview",
+        "frameIntervalMs": {
+          "samples": 5,
+          "median": 483.3000000000029,
+          "p95": 500,
+          "max": 500
+        },
+        "cpuRenderMs": {
+          "samples": 5,
+          "median": 11.399999998509884,
+          "p95": 20.299999997019768,
+          "max": 20.299999997019768
+        },
+        "gpuMs": {
+          "samples": 5,
+          "median": 471.144298,
+          "p95": 494.337654,
+          "max": 494.337654
+        },
+        "drawCalls": {
+          "samples": 5,
+          "median": 871,
+          "p95": 872,
+          "max": 872
+        },
+        "triangles": {
+          "samples": 5,
+          "median": 842662,
+          "p95": 845494,
+          "max": 845494
+        },
+        "geometries": {
+          "samples": 5,
+          "median": 266,
+          "p95": 267,
+          "max": 267
+        },
+        "textures": {
+          "samples": 5,
+          "median": 12,
+          "p95": 12,
+          "max": 12
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 215573041,
+          "totalJSHeapSize": 242791785,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "village",
+      "before": {
+        "view": "village",
+        "frameIntervalMs": {
+          "samples": 7,
+          "median": 316.6999999999971,
+          "p95": 333.40000000000873,
+          "max": 333.40000000000873
+        },
+        "cpuRenderMs": {
+          "samples": 7,
+          "median": 9.400000005960464,
+          "p95": 10.900000005960464,
+          "max": 10.900000005960464
+        },
+        "gpuMs": {
+          "samples": 7,
+          "median": 310.027401,
+          "p95": 319.924306,
+          "max": 319.924306
+        },
+        "drawCalls": {
+          "samples": 7,
+          "median": 373,
+          "p95": 374,
+          "max": 374
+        },
+        "triangles": {
+          "samples": 7,
+          "median": 573144,
+          "p95": 574656,
+          "max": 574656
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 192600307,
+          "totalJSHeapSize": 203607323,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "village",
+        "frameIntervalMs": {
+          "samples": 6,
+          "median": 383.3000000000029,
+          "p95": 416.6999999999971,
+          "max": 416.6999999999971
+        },
+        "cpuRenderMs": {
+          "samples": 6,
+          "median": 12.899999998509884,
+          "p95": 15.900000005960464,
+          "max": 15.900000005960464
+        },
+        "gpuMs": {
+          "samples": 6,
+          "median": 371.886082,
+          "p95": 395.432134,
+          "max": 395.432134
+        },
+        "drawCalls": {
+          "samples": 6,
+          "median": 627,
+          "p95": 628,
+          "max": 628
+        },
+        "triangles": {
+          "samples": 6,
+          "median": 677056,
+          "p95": 677888,
+          "max": 677888
+        },
+        "geometries": {
+          "samples": 6,
+          "median": 236,
+          "p95": 244,
+          "max": 244
+        },
+        "textures": {
+          "samples": 6,
+          "median": 16,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 237914311,
+          "totalJSHeapSize": 264593951,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "farmland",
+      "before": {
+        "view": "farmland",
+        "frameIntervalMs": {
+          "samples": 6,
+          "median": 366.6000000000058,
+          "p95": 383.3999999999942,
+          "max": 383.3999999999942
+        },
+        "cpuRenderMs": {
+          "samples": 6,
+          "median": 5.300000004470348,
+          "p95": 10.199999995529652,
+          "max": 10.199999995529652
+        },
+        "gpuMs": {
+          "samples": 6,
+          "median": 354.082781,
+          "p95": 367.48493,
+          "max": 367.48493
+        },
+        "drawCalls": {
+          "samples": 6,
+          "median": 275,
+          "p95": 275,
+          "max": 275
+        },
+        "triangles": {
+          "samples": 6,
+          "median": 687424,
+          "p95": 687552,
+          "max": 687552
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 179139372,
+          "totalJSHeapSize": 200230756,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "farmland",
+        "frameIntervalMs": {
+          "samples": 5,
+          "median": 400,
+          "p95": 416.6000000000058,
+          "max": 416.6000000000058
+        },
+        "cpuRenderMs": {
+          "samples": 5,
+          "median": 11.299999997019768,
+          "p95": 13.299999997019768,
+          "max": 13.299999997019768
+        },
+        "gpuMs": {
+          "samples": 5,
+          "median": 394.075205,
+          "p95": 397.096106,
+          "max": 397.096106
+        },
+        "drawCalls": {
+          "samples": 5,
+          "median": 468,
+          "p95": 468,
+          "max": 468
+        },
+        "triangles": {
+          "samples": 5,
+          "median": 762104,
+          "p95": 762200,
+          "max": 762200
+        },
+        "geometries": {
+          "samples": 5,
+          "median": 219,
+          "p95": 221,
+          "max": 221
+        },
+        "textures": {
+          "samples": 5,
+          "median": 17,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 220805399,
+          "totalJSHeapSize": 248247871,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "aerial",
+      "before": {
+        "view": "aerial",
+        "frameIntervalMs": {
+          "samples": 8,
+          "median": 283.3000000000029,
+          "p95": 300.09999999999127,
+          "max": 300.09999999999127
+        },
+        "cpuRenderMs": {
+          "samples": 8,
+          "median": 4.699999995529652,
+          "p95": 10,
+          "max": 10
+        },
+        "gpuMs": {
+          "samples": 8,
+          "median": 272.348872,
+          "p95": 280.380908,
+          "max": 280.380908
+        },
+        "drawCalls": {
+          "samples": 8,
+          "median": 423,
+          "p95": 423,
+          "max": 423
+        },
+        "triangles": {
+          "samples": 8,
+          "median": 593008,
+          "p95": 593008,
+          "max": 593008
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 186822713,
+          "totalJSHeapSize": 204996309,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "aerial",
+        "frameIntervalMs": {
+          "samples": 7,
+          "median": 300.1000000000058,
+          "p95": 316.6000000000058,
+          "max": 316.6000000000058
+        },
+        "cpuRenderMs": {
+          "samples": 7,
+          "median": 7.600000001490116,
+          "p95": 9.799999997019768,
+          "max": 9.799999997019768
+        },
+        "gpuMs": {
+          "samples": 7,
+          "median": 293.726991,
+          "p95": 301.501755,
+          "max": 301.501755
+        },
+        "drawCalls": {
+          "samples": 7,
+          "median": 655,
+          "p95": 655,
+          "max": 655
+        },
+        "triangles": {
+          "samples": 7,
+          "median": 687140,
+          "p95": 687140,
+          "max": 687140
+        },
+        "geometries": {
+          "samples": 7,
+          "median": 226,
+          "p95": 228,
+          "max": 228
+        },
+        "textures": {
+          "samples": 7,
+          "median": 12,
+          "p95": 16,
+          "max": 16
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 217775085,
+          "totalJSHeapSize": 247019693,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "windmill",
+      "before": {
+        "view": "windmill",
+        "frameIntervalMs": {
+          "samples": 9,
+          "median": 233.3000000000029,
+          "p95": 233.40000000000873,
+          "max": 233.40000000000873
+        },
+        "cpuRenderMs": {
+          "samples": 9,
+          "median": 4.5999999940395355,
+          "p95": 9.5,
+          "max": 9.5
+        },
+        "gpuMs": {
+          "samples": 9,
+          "median": 218.673286,
+          "p95": 225.814096,
+          "max": 225.814096
+        },
+        "drawCalls": {
+          "samples": 9,
+          "median": 170,
+          "p95": 170,
+          "max": 170
+        },
+        "triangles": {
+          "samples": 9,
+          "median": 328754,
+          "p95": 328802,
+          "max": 328802
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 187058241,
+          "totalJSHeapSize": 218754285,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "windmill",
+        "frameIntervalMs": {
+          "samples": 7,
+          "median": 316.6000000000058,
+          "p95": 349.8999999999942,
+          "max": 349.8999999999942
+        },
+        "cpuRenderMs": {
+          "samples": 7,
+          "median": 10.399999998509884,
+          "p95": 12.100000001490116,
+          "max": 12.100000001490116
+        },
+        "gpuMs": {
+          "samples": 7,
+          "median": 302.525563,
+          "p95": 346.560279,
+          "max": 346.560279
+        },
+        "drawCalls": {
+          "samples": 7,
+          "median": 319,
+          "p95": 319,
+          "max": 319
+        },
+        "triangles": {
+          "samples": 7,
+          "median": 438372,
+          "p95": 438404,
+          "max": 438404
+        },
+        "geometries": {
+          "samples": 7,
+          "median": 235,
+          "p95": 237,
+          "max": 237
+        },
+        "textures": {
+          "samples": 7,
+          "median": 17,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 235767663,
+          "totalJSHeapSize": 275262995,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "forest",
+      "before": {
+        "view": "forest",
+        "frameIntervalMs": {
+          "samples": 10,
+          "median": 200,
+          "p95": 266.69999999998254,
+          "max": 266.69999999998254
+        },
+        "cpuRenderMs": {
+          "samples": 10,
+          "median": 8.299999997019768,
+          "p95": 9.899999998509884,
+          "max": 9.899999998509884
+        },
+        "gpuMs": {
+          "samples": 10,
+          "median": 191.839046,
+          "p95": 244.036359,
+          "max": 244.036359
+        },
+        "drawCalls": {
+          "samples": 10,
+          "median": 171,
+          "p95": 180,
+          "max": 180
+        },
+        "triangles": {
+          "samples": 10,
+          "median": 323872,
+          "p95": 330446,
+          "max": 330446
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 206103568,
+          "totalJSHeapSize": 238103288,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "forest",
+        "frameIntervalMs": {
+          "samples": 8,
+          "median": 250,
+          "p95": 283.29999999998836,
+          "max": 283.29999999998836
+        },
+        "cpuRenderMs": {
+          "samples": 8,
+          "median": 11.100000001490116,
+          "p95": 17.100000001490116,
+          "max": 17.100000001490116
+        },
+        "gpuMs": {
+          "samples": 8,
+          "median": 246.324862,
+          "p95": 262.713115,
+          "max": 262.713115
+        },
+        "drawCalls": {
+          "samples": 8,
+          "median": 302,
+          "p95": 311,
+          "max": 311
+        },
+        "triangles": {
+          "samples": 8,
+          "median": 395868,
+          "p95": 404440,
+          "max": 404440
+        },
+        "geometries": {
+          "samples": 8,
+          "median": 236,
+          "p95": 238,
+          "max": 238
+        },
+        "textures": {
+          "samples": 8,
+          "median": 17,
+          "p95": 17,
+          "max": 17
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 242900432,
+          "totalJSHeapSize": 293500600,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": true
+    },
+    {
+      "view": "village-square",
+      "before": null,
+      "after": {
+        "view": "village-square",
+        "frameIntervalMs": {
+          "samples": 6,
+          "median": 383.19999999998254,
+          "p95": 416.70000000001164,
+          "max": 416.70000000001164
+        },
+        "cpuRenderMs": {
+          "samples": 6,
+          "median": 10.699999995529652,
+          "p95": 11.100000001490116,
+          "max": 11.100000001490116
+        },
+        "gpuMs": {
+          "samples": 6,
+          "median": 369.76706,
+          "p95": 397.960394,
+          "max": 397.960394
+        },
+        "drawCalls": {
+          "samples": 6,
+          "median": 376,
+          "p95": 376,
+          "max": 376
+        },
+        "triangles": {
+          "samples": 6,
+          "median": 481529,
+          "p95": 481593,
+          "max": 481593
+        },
+        "geometries": {
+          "samples": 6,
+          "median": 241,
+          "p95": 241,
+          "max": 241
+        },
+        "textures": {
+          "samples": 6,
+          "median": 20,
+          "p95": 20,
+          "max": 20
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 244457908,
+          "totalJSHeapSize": 292503632,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": false
+    },
+    {
+      "view": "driving",
+      "before": {
+        "view": "driving",
+        "frameIntervalMs": {
+          "samples": 13,
+          "median": 216.69999999998254,
+          "p95": 433.29999999998836,
+          "max": 433.29999999998836
+        },
+        "cpuRenderMs": {
+          "samples": 13,
+          "median": 3.600000001490116,
+          "p95": 4.199999995529652,
+          "max": 4.199999995529652
+        },
+        "gpuMs": {
+          "samples": 13,
+          "median": 199.614895,
+          "p95": 221.777817,
+          "max": 221.777817
+        },
+        "drawCalls": {
+          "samples": 13,
+          "median": 197,
+          "p95": 197,
+          "max": 197
+        },
+        "triangles": {
+          "samples": 13,
+          "median": 347812,
+          "p95": 347812,
+          "max": 347812
+        },
+        "geometries": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "textures": {
+          "samples": 0,
+          "median": null,
+          "p95": null,
+          "max": null
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 175809454,
+          "totalJSHeapSize": 211580638,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "after": {
+        "view": "driving",
+        "frameIntervalMs": {
+          "samples": 25,
+          "median": 399.8999999999942,
+          "p95": 416.70000000001164,
+          "max": 433.3999999999942
+        },
+        "cpuRenderMs": {
+          "samples": 25,
+          "median": 6.199999995529652,
+          "p95": 8.600000001490116,
+          "max": 11.5
+        },
+        "gpuMs": {
+          "samples": 25,
+          "median": 381.514293,
+          "p95": 403.194719,
+          "max": 415.638897
+        },
+        "drawCalls": {
+          "samples": 25,
+          "median": 376,
+          "p95": 376,
+          "max": 376
+        },
+        "triangles": {
+          "samples": 25,
+          "median": 480825,
+          "p95": 480825,
+          "max": 480825
+        },
+        "geometries": {
+          "samples": 25,
+          "median": 241,
+          "p95": 241,
+          "max": 241
+        },
+        "textures": {
+          "samples": 25,
+          "median": 20,
+          "p95": 20,
+          "max": 20
+        },
+        "jsHeap": {
+          "usedJSHeapSize": 236097558,
+          "totalJSHeapSize": 281295562,
+          "jsHeapSizeLimit": 4395630592
+        }
+      },
+      "comparable": false
+    }
+  ]
+}

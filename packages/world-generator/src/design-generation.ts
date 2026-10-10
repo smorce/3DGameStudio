@@ -249,5 +249,9 @@ export function generateDesignEntities(
         });
       }
   }
-  return result.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return remapEnvironmentAssets(
+    result,
+    input.parameters?.environmentAssets,
+  ).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 }
+import { remapEnvironmentAssets } from "./vegetation";

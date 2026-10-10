@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { alpineFields } from "../../world-generator/src/alpine-farmland";
+import { groundDetailFunctions, groundDetailShader } from "./ground-detail";
 
 /** 近景と遠景で同じ絶対座標の区画・畝を描き、粗い頂点色の反復を防ぐ。 */
 export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
@@ -8,6 +9,10 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
     roughness: 1,
   });
   material.onBeforeCompile = (shader) => {
+    const detail = groundDetailShader(
+      "alpineXZ",
+      "road * (1.0 - smoothstep(60.0, 80.0, length(alpineXZ - vec2(0.0, -83.0))))",
+    );
     shader.uniforms.alpineOffset = {
       value: new THREE.Vector2(originX, originZ),
     };
@@ -42,6 +47,7 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
     // 道路の既存頂点色（#a6a28e）を保持し、畑の色で舗装を塗り潰さない。
     shader.fragmentShader =
       "varying vec2 alpineXZ;\n" +
+      groundDetailFunctions +
       shader.fragmentShader.replace(
         "#include <color_fragment>",
         `
@@ -56,9 +62,14 @@ export function alpineSurfaceMaterial(originX = 0, originZ = 0) {
       float rowCoord = p.x + p.y * 0.18;
       float rows = sin(rowCoord * 7.0) * exp(-fwidth(rowCoord) * 2.0);
       diffuseColor.rgb *= 0.95 + broad * 0.045 + rows * crop * (1.0 - road) * 0.065;
+      ${detail.color}
     `,
       );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <normal_fragment_maps>",
+      "#include <normal_fragment_maps>\n" + detail.normal,
+    );
   };
-  material.customProgramCacheKey = () => "alpine-surface-v1";
+  material.customProgramCacheKey = () => "alpine-surface-v2";
   return material;
 }

@@ -4,6 +4,8 @@ import type { MachineStudioAgentApi } from "../../packages/engine-core/src/agent
 import type { Vec3 } from "../../packages/project-schema/src/index";
 
 const views: { name: string; position: Vec3; target: Vec3 }[] = [
+  { name: "forest-path", position: [72, 16, -137], target: [122, 16, -153] },
+  { name: "house-close", position: [-50, 17, -75], target: [-20, 16, -80] },
   { name: "reference", position: [-85, 68, 290], target: [-20, 40, -340] },
   { name: "overview", position: [20, 105, 450], target: [-30, 35, -220] },
   { name: "village", position: [-150, 58, 190], target: [-95, 22, -65] },
@@ -11,6 +13,7 @@ const views: { name: string; position: Vec3; target: Vec3 }[] = [
   { name: "aerial", position: [90, 390, 240], target: [-15, 12, -65] },
   { name: "windmill", position: [-205, 25, -20], target: [-205, 20, -65] },
   { name: "forest", position: [80, 75, -155], target: [0, 38, -270] },
+  { name: "village-square", position: [39, 16, -7], target: [37, 15, -50] },
 ];
 test("Alpine Village: 景観・再読込・車の移動と同条件の描画性能", async ({
   page,
@@ -136,13 +139,20 @@ test("Alpine Village: 景観・再読込・車の移動と同条件の描画性�
         window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
       ).__MACHINE_STUDIO_AGENT__;
       const samples = [];
-      const deadline = performance.now() + 2500;
-      while (performance.now() < deadline) {
+      // 低速なソフトウェアGPUでも同じ物理時間を走らせ、描画速度で移動距離を変えない。
+      const targetStep = api.getPhysicsStep() + 150;
+      const deadline = performance.now() + 30000;
+      while (
+        api.getPhysicsStep() < targetStep &&
+        performance.now() < deadline
+      ) {
         await new Promise<void>((resolve) =>
           requestAnimationFrame(() => resolve()),
         );
         samples.push(api.getState());
       }
+      if (api.getPhysicsStep() < targetStep)
+        throw new Error("Physics steps did not advance during driving");
       return samples;
     });
     states.push({

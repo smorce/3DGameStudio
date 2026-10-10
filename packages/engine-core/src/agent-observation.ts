@@ -251,8 +251,8 @@ export function createAgentObservationApi(
           groundSmokeEmitters: render.groundSmokeEmitters ?? 0,
           drawCalls: render.drawCalls ?? null,
           triangles: render.triangles ?? null,
-          geometries: render.geometries ?? null,
-          textures: render.textures ?? null,
+          geometries: render.geometryCount ?? render.geometries ?? null,
+          textures: render.textureCount ?? render.textures ?? null,
           gpuTimingMs: lastGpu?.gpuMs ?? null,
         },
         frame: {

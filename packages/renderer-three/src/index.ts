@@ -1,12 +1,16 @@
 import { semanticContext } from "../../world-generator/src/design-generation";
 import { alpineSurfaceMaterial } from "./alpine-surface";
+import { worldVegetationChunk } from "./world-vegetation";
 import {
   addAlpineTerrainSkirt,
   alignAlpineTerrainBoundary,
 } from "./alpine-terrain";
 import { alpineRenderChunk } from "./alpine-ready";
 import { alpineClouds, alpineChimneySmoke } from "./alpine-atmosphere";
-import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
+import {
+  isAlpineVillage,
+  alpineFieldAt,
+} from "../../world-generator/src/alpine-farmland";
 import { VisualEffects } from "./effects/visual-effects";
 import { FarWorldProxy } from "./far-proxy";
 import { evaluateRuntimeBudget } from "../../asset-core/src/profiles";
@@ -969,6 +973,21 @@ export class ThreeRenderer implements RendererAdapter {
             chunkLocalOrigin[1],
             chunkLocalOrigin[2],
           );
+          if (p.world.source.kind === "procedural") {
+            const vegetation = worldVegetationChunk(
+              p.world.source,
+              p.assets,
+              prepared,
+              geo,
+              p.world.water.height,
+              alpineWorld
+                ? (x, z) =>
+                    !alpineFieldAt(x, z) ||
+                    alpineFieldAt(x, z)?.crop === "grass"
+                : undefined,
+            );
+            if (vegetation) group.add(vegetation);
+          }
         } else {
           const data = this.worldRuntime?.meshFor(key);
           if (data) {
@@ -1058,11 +1077,38 @@ export class ThreeRenderer implements RendererAdapter {
                 },
               };
             });
+            const quality = asset?.catalog?.slots.some((slot) =>
+              slot.includes(".quality."),
+            );
+            const center = quality
+              ? entities
+                  .reduce(
+                    (v, entity) =>
+                      v.add(
+                        new THREE.Vector3(
+                          ...this.worldRuntime!.toSimulation(entity.position),
+                        ),
+                      ),
+                    new THREE.Vector3(),
+                  )
+                  .divideScalar(entities.length)
+              : group.position.clone();
+            const radius = quality
+              ? Math.max(
+                  ...entities.map((entity) =>
+                    center.distanceTo(
+                      new THREE.Vector3(
+                        ...this.worldRuntime!.toSimulation(entity.position),
+                      ),
+                    ),
+                  ),
+                )
+              : 0;
             const batch = new WorldAssetBatch(
               localEntities,
               asset,
               this.templates,
-              { lodCenter: group.position.toArray() as Vec3 },
+              { lodCenter: center.toArray() as Vec3, lodRadius: radius },
             );
             this.lodBatches.add(batch);
             batch.group.userData.release = () => {
@@ -1222,14 +1268,25 @@ export class ThreeRenderer implements RendererAdapter {
       source?.kind === "procedural" &&
       source.design &&
       isAlpineVillage(source.design);
-    const extent = landscapeView ? 220 : SHADOW_EXTENT_M;
-    const target = landscapeView
-      ? ((this.worldRuntime?.toSimulation([0, 15, -20]) ?? [
-          0, 15, -20,
-        ]) as Vec3)
-      : focus;
+    const closeInspection =
+      landscapeView &&
+      this.camera.position.distanceTo(this.controls.target) < 90;
+    const extent = landscapeView
+      ? closeInspection
+        ? Math.max(
+            SHADOW_EXTENT_M,
+            this.camera.position.distanceTo(this.controls.target) * 1.2,
+          )
+        : 220
+      : SHADOW_EXTENT_M;
+    const target =
+      landscapeView && !closeInspection
+        ? ((this.worldRuntime?.toSimulation([0, 15, -20]) ?? [
+            0, 15, -20,
+          ]) as Vec3)
+        : focus;
     const pose = landscapeView
-      ? sunFollowPose(target, timeOfDay, 440)
+      ? sunFollowPose(target, timeOfDay, extent * 2)
       : sunFollowPose(focus, timeOfDay);
     this.sun.position.set(...pose.position);
     this.sun.target.position.set(...pose.target);
@@ -1697,6 +1754,12 @@ export class ThreeRenderer implements RendererAdapter {
   private updateLodBatches() {
     this.lodFrameIndex++;
     const camera = this.camera.position;
+    for (const chunk of this.chunks.values())
+      for (const child of chunk.children)
+        child.userData.updateVegetation?.(
+          this.camera,
+          this.renderer.domElement.height,
+        );
     let index = 0;
     for (const batch of this.lodBatches) {
       if (index++ % 4 === this.lodFrameIndex % 4) batch.update(camera);
