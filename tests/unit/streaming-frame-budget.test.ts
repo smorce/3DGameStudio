@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   PrefetchDirectionState,
   visibleChunks,
@@ -74,7 +74,14 @@ describe("streaming frame budget", () => {
     runtime.acquire("renderer", keys);
     expect(runtime.stats().cachedChunks).toBe(0);
     expect(runtime.stats().pendingQueueCount).toBeGreaterThanOrEqual(13);
-    const built = runtime.pumpGeneration(50, 2);
+    // このケースは件数制限を検証する。並列実行のCPU競合を時刻条件へ混ぜない。
+    const timer = vi.spyOn(performance, "now").mockReturnValue(0);
+    let built: number;
+    try {
+      built = runtime.pumpGeneration(50, 2);
+    } finally {
+      timer.mockRestore();
+    }
     expect(built).toBe(2);
     expect(runtime.stats().cachedChunks).toBe(2);
     expect(runtime.stats().prefetchGenerationCount).toBe(2);
@@ -89,6 +96,42 @@ describe("streaming frame budget", () => {
     runtime.getChunk(chunkKey(9, 9));
     expect(runtime.stats().syncFallbackCount).toBe(1);
     runtime.dispose();
+  });
+
+  it("生成の時刻予算が尽きたら次のChunkを残す", () => {
+    const runtime = new WorldRuntime(
+      createStarterWorld({ preset: "airfield" }),
+      { forceSyncWorkers: true },
+    );
+    runtime.acquire("renderer", [
+      chunkKey(0, 0),
+      chunkKey(0, 1),
+      chunkKey(0, 2),
+    ]);
+    const pendingBefore = runtime.stats().pendingQueueCount;
+    let elapsed = 0;
+    const timer = vi
+      .spyOn(performance, "now")
+      .mockImplementation(() => elapsed);
+    const target = runtime as unknown as {
+      commitPreparedSync(key: string, purpose: string): void;
+    };
+    const original = target.commitPreparedSync.bind(target);
+    const work = vi
+      .spyOn(target, "commitPreparedSync")
+      .mockImplementation((...args) => {
+        original(...args);
+        elapsed += 60;
+      });
+    try {
+      expect(runtime.pumpGeneration(50, 3)).toBe(1);
+      expect(runtime.stats().cachedChunks).toBe(1);
+      expect(runtime.stats().pendingQueueCount).toBe(pendingBefore - 1);
+    } finally {
+      work.mockRestore();
+      timer.mockRestore();
+      runtime.dispose();
+    }
   });
 
   it("Z=50→80 と Z=305→335 で 1 frame に 13 create しない", () => {

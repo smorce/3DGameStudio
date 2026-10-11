@@ -260,14 +260,13 @@ it("地形の裾は上面と物理用の準備済みBufferを変えず、遠景�
   geometry.dispose();
 });
 
-it("既存の頂点色GLBは1素材・非金属・Textureなしを維持する", async () => {
+it("生成規則対象外の頂点色GLBは1素材・非金属・Textureなしを維持する", async () => {
   const { runtimeIO } =
     await import("../../packages/asset-pipeline/src/runtime");
   const { MeshoptDecoder } = await import("meshoptimizer");
   await MeshoptDecoder.ready;
-  const assets = project().assets.filter(
-    (asset) => !asset.catalog?.slots.some((slot) => slot.includes(".quality.")),
-  );
+  const assets = project().assets.filter((asset) => !asset.catalog?.generation);
+  expect(assets.length).toBeGreaterThan(1);
   const files = new Set(assets.map((a) => a.files.runtime));
   for (const file of files) {
     const doc = await runtimeIO().readBinary(

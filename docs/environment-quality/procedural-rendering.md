@@ -49,7 +49,7 @@ C1は選択時だけ画像を読み込み、GLBのTextureと同じpoolへ追加�
 
 ## Phase D：既存基盤への統合
 
-Asset Factory → Asset Pipeline → Asset Catalog → WorldBuildManifest → World Runtime → Three.jsの経路を維持した。生成規則はGLBのextrasとCatalogの任意のgeneration欄に保存する。形状規則のバージョンは4、既存Textureレシピのバージョンは3。Seed・パラメータ・Material名・LODファイル・内容ハッシュを追跡する。
+Asset Factory → Asset Pipeline → Asset Catalog → WorldBuildManifest → World Runtime → Three.jsの経路を維持した。生成規則はGLBのextrasとCatalogの任意のgeneration欄に保存する。形状規則のバージョンは5、既存Textureレシピのバージョンは3。Seed・パラメータ・Material名・LODファイル・内容ハッシュを追跡する。
 
 Factoryは生成版が古い素材を充足済みとして数えず、新版が準備できた後に古い生成素材をready候補から外す。旧Asset IDは削除せず、既存素材参照の形式を維持する。生成版をpromptHashに含め、Pipelineの内容ハッシュと併せて更新を識別する。新しい生成素材のmetadataHashにはRuntime情報も含め、LOD・影・画像の変更でBakeが古くなったことを検出する。再生成後にManifestを再Bakeする。
 

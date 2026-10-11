@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 
 /** GLBに保存する生成規則。配置Seedとは独立し、実行順序に依存しない。 */
-export const environmentGeometryVersion = 4;
+export const environmentGeometryVersion = 5;
 export interface TreeRules {
   kind: "oak" | "pine";
   seed: number;

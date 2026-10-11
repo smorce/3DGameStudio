@@ -33,7 +33,7 @@ import { writeSpikeFlightSummaryFromDisk } from "../../../scripts/spike-flight-s
 import { writeTurnMotionSummaryFromDisk } from "../../../scripts/turn-motion-summary";
 export async function createApp(
   dataDir = process.env.ASSET_DATA_DIR ?? ".data",
-  evidenceOutputDirectory = "docs/evidence",
+  evidenceOutputDirectory = process.env.EVIDENCE_DATA_DIR ?? "docs/evidence",
 ) {
   const app = express(),
     storage = new LocalAssetStorage(

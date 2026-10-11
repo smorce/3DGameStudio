@@ -417,3 +417,31 @@ it("異なるSeedのC1画像を誤って共有せず、中断した画像を破�
   expect(ready).not.toHaveBeenCalled();
   material.map!.dispose();
 });
+
+it("納屋は1階・大扉・煙突なしの規則を全LODで維持する", async () => {
+  const { barnRules } =
+    await import("../../packages/ai-dummy/src/environment-rules");
+  const rules = barnRules(0),
+    bounds = [];
+  expect(rules.floors).toBe(1);
+  expect(rules.upperFloorOverhang).toBe(0);
+  for (const level of [0, 1, 2]) {
+    const doc = await new NodeIO().readBinary(
+      await environmentModelGlb("house", 0, level, rules),
+    );
+    bounds.push(getBounds(doc.getRoot().listScenes()[0]));
+    expect(doc.getRoot().listScenes()[0].getExtras().environmentRules).toEqual(
+      rules,
+    );
+    expect(
+      doc
+        .getRoot()
+        .listMaterials()
+        .some((m) => m.getBaseColorTexture()),
+    ).toBe(true);
+  }
+  expect(bounds[1]).toEqual(bounds[0]);
+  expect(bounds[2]).toEqual(bounds[0]);
+  expect(bounds[0].max[1]).toBeLessThan(6.7);
+  expect(bounds[0].max[0] - bounds[0].min[0]).toBeGreaterThan(9.9);
+});

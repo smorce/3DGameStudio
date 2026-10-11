@@ -344,3 +344,111 @@ test("ハイブリッド環境: 同じページでWorld復帰と診断切替を�
     JSON.stringify({ snapshots }, null, 2),
   );
 });
+
+test("ハイブリッド環境: A3と影専用LODで実走しRebase後にWorldへ復帰する", async ({
+  page,
+}, info) => {
+  test.setTimeout(300000);
+  await page.goto("/?agent=1");
+  await page.getByTestId("sample-world-alpine-village").click();
+  await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+  await expect(page.getByTestId("runtime-position")).toBeVisible();
+  await page.evaluate(() => {
+    const api = (
+      window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+    ).__MACHINE_STUDIO_AGENT__;
+    api.setEnvironmentDiagnostics({
+      grassMode: "A3",
+      treeShadowMode: "B3",
+      buildingMaterialMode: "C1",
+      runtimeProfile: "balanced",
+    });
+    api.setInspectionView([72, 16, -137], [122, 16, -153]);
+  });
+  await settle(page);
+  const snapshot = () =>
+    page.evaluate(() => {
+      const api = (
+        window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+      ).__MACHINE_STUDIO_AGENT__;
+      return {
+        state: api.getState(),
+        mill: api.getRenderedEntityPosition(
+          "gen:2:42:landmark:alpine-windmill",
+        ),
+        resources: api.getEnvironmentResources(),
+        heap:
+          (performance as Performance & { memory?: { usedJSHeapSize: number } })
+            .memory?.usedJSHeapSize ?? null,
+      };
+    });
+  const before = await snapshot();
+  expect(before.mill).toBeDefined();
+  await page.keyboard.down("w");
+  try {
+    await expect
+      .poll(async () => (await state(page)).world.rebaseCount ?? 0, {
+        timeout: 180000,
+        intervals: [500],
+      })
+      .toBeGreaterThan(before.state.world.rebaseCount ?? 0);
+    await expect
+      .poll(
+        async () => {
+          const s = await state(page);
+          return Math.hypot(
+            s.machine.position![0] - before.state.machine.position![0],
+            s.machine.position![2] - before.state.machine.position![2],
+          );
+        },
+        { timeout: 90000, intervals: [500] },
+      )
+      .toBeGreaterThan(256);
+  } finally {
+    await page.keyboard.up("w");
+  }
+  const after = await snapshot();
+  expect(after.mill).toBeDefined();
+  for (let i = 0; i < 3; i++)
+    expect(after.mill![i] + after.state.machine.worldOrigin![i]).toBeCloseTo(
+      before.mill![i] + before.state.machine.worldOrigin![i],
+      2,
+    );
+  expect(after.state.machine.position!.every(Number.isFinite)).toBe(true);
+  expect(after.resources!.grassInstanceBytes).toBeLessThan(4 * 1024 * 1024);
+  for (const id of ["starter-grassland", "alpine-village"]) {
+    await page.getByRole("button", { name: "■ やめる", exact: true }).click();
+    await expect(
+      page.getByRole("button", { name: "▶ あそぶ", exact: true }),
+    ).toBeVisible();
+    await page
+      .getByRole("button", { name: "新しくつくる", exact: true })
+      .click();
+    await page.getByTestId(`sample-world-${id}`).click();
+    await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
+    await expect(page.getByTestId("runtime-position")).toBeVisible();
+  }
+  await page.evaluate(() => {
+    const api = (
+      window as unknown as { __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi }
+    ).__MACHINE_STUDIO_AGENT__;
+    api.setEnvironmentDiagnostics({
+      grassMode: "A0",
+      treeShadowMode: "B0",
+      buildingMaterialMode: "C0",
+      runtimeProfile: "balanced",
+    });
+    api.setInspectionView([72, 16, -137], [122, 16, -153]);
+  });
+  await settle(page);
+  const restored = await snapshot();
+  expect(restored.resources!.grassCoverageBytes).toBe(0);
+  expect(restored.resources!.textures).toBeLessThanOrEqual(
+    before.resources!.textures,
+  );
+  expect(restored.state.world.rebaseCount).toBe(0);
+  await writeFile(
+    info.outputPath("hybrid-rebase.json"),
+    JSON.stringify({ before, after, restored }, null, 2),
+  );
+});

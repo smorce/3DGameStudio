@@ -26,8 +26,8 @@ export default defineConfig({
   webServer: {
     command:
       process.env.FIDELITY_EXISTING_BUILD === "1"
-        ? "PORT=8791 ASSET_DATA_DIR=.data/environment-e2e pnpm start:server"
-        : "pnpm build && PORT=8791 ASSET_DATA_DIR=.data/environment-e2e pnpm start:server",
+        ? "PORT=8791 ASSET_DATA_DIR=.data/environment-e2e EVIDENCE_DATA_DIR=test-results/generated-evidence pnpm start:server"
+        : "pnpm build && PORT=8791 ASSET_DATA_DIR=.data/environment-e2e EVIDENCE_DATA_DIR=test-results/generated-evidence pnpm start:server",
     url: "http://127.0.0.1:8791/api/health",
     reuseExistingServer: false,
     timeout: 120000,

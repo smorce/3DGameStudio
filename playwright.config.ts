@@ -33,7 +33,7 @@ export default defineConfig({
       ],
   webServer: {
     command:
-      "pnpm build && PORT=8788 ASSET_DATA_DIR=.data/e2e pnpm start:server",
+      "pnpm build && PORT=8788 ASSET_DATA_DIR=.data/e2e EVIDENCE_DATA_DIR=test-results/generated-evidence pnpm start:server",
     url: "http://127.0.0.1:8788/api/health",
     reuseExistingServer: false,
     timeout: 60000,
