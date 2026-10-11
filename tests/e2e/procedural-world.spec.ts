@@ -1,8 +1,9 @@
+import { evidencePath } from "./fixtures";
 import { test, expect } from "./fixtures";
 import { mkdir } from "node:fs/promises";
 
 test("Starter 3種は同じProcedural World Runtimeを使う", async ({ page }) => {
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   for (const [label, preset, generatorVersion] of [
     ["くるま", "grassland", 1],
     ["ひこうき", "airfield", 1],
@@ -26,7 +27,7 @@ test("Starter 3種は同じProcedural World Runtimeを使う", async ({ page }) 
       expect(project.world.source.design.islands[0].biome).toBe("tropical");
     }
     await page.screenshot({
-      path: `docs/screenshots/procedural-${preset}.png`,
+      path: evidencePath(`docs/screenshots/procedural-${preset}.png`),
       fullPage: true,
     });
   }

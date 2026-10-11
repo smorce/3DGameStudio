@@ -1,3 +1,4 @@
+import { evidencePath } from "./fixtures";
 import { test, expect } from "./fixtures";
 import { mkdir, writeFile } from "node:fs/promises";
 import { emptyProject } from "../../packages/project-schema/src/index";
@@ -139,9 +140,9 @@ test("toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smo
       ).__MACHINE_STUDIO_AGENT__.getState().machine.position[1],
   );
   expect(altitude).toBeGreaterThan(4);
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   await page.screenshot({
-    path: "docs/screenshots/toy-islands.png",
+    path: evidencePath("docs/screenshots/toy-islands.png"),
     fullPage: true,
   });
   const debug = await page.evaluate(() => {
@@ -156,7 +157,7 @@ test("toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smo
     return { state: api.getState(), design: api.getWorldDesignDebug(64, 64) };
   });
   await writeFile(
-    "docs/evidence/toy-islands-browser.json",
+    evidencePath("docs/evidence/toy-islands-browser.json"),
     JSON.stringify(debug, null, 2) + "\n",
   );
   await page.mouse.move(700, 290);
@@ -165,7 +166,7 @@ test("toy-islandsを保存済みCatalogから読み込みWorkerで遊べる @smo
     await page.waitForTimeout(30);
   }
   await page.screenshot({
-    path: "docs/screenshots/toy-islands-far.png",
+    path: evidencePath("docs/screenshots/toy-islands-far.png"),
     fullPage: true,
   });
   expect(requests.some((url) => /worker-entry/.test(url))).toBe(true);

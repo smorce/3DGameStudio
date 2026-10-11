@@ -1,11 +1,12 @@
+import { evidencePath } from "./fixtures";
 import { test, expect, type Page } from "./fixtures";
 import { pickCandidate, startPanel } from "./placement-helpers";
 import { mkdir } from "node:fs/promises";
 
 async function screenshot(page: Page, name: string) {
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   await page.screenshot({
-    path: `docs/screenshots/${name}.png`,
+    path: evidencePath(`docs/screenshots/${name}.png`),
     fullPage: true,
   });
 }

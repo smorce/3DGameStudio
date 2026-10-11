@@ -1206,12 +1206,12 @@
     }
   },
   {
-    "id": "factory-76b08fb9927d231adbb31ee0a47ee94f",
+    "id": "factory-885f43d3cd1feecfb6bdfd016c3e8970",
     "name": "building.quality.house (Environment procedural 0)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd",
+      "sourceAssetId": "dummy-db2aa9b59a9af87addc012440126ab0643b58aac54c47846c9436a31ac367435",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -1224,9 +1224,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/038d6d32f489e414273ec963d8c8ca16ee7c01a7d84a9d4766350479e25b725d.glb",
-      "runtime": "/api/files/sample-worlds/dfc45aeb0ddb039477a9725a80c16ee78fface9650bfa2530fde0b99dcb52eec.glb",
-      "thumbnail": "/api/files/sample-worlds/feda61269dc04d4a0e3502b95b9c90a2719cae60b972c1e9de77d88d820551a9.svg"
+      "original": "/api/files/sample-worlds/a8320ac6a3cababbcd247088bb304388a615f4c752676490f7f08188e30ce56b.glb",
+      "runtime": "/api/files/sample-worlds/63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d.glb",
+      "thumbnail": "/api/files/sample-worlds/ff200b2d9ee1c38f197c218df204174fda1441b46a5d81bcbfed4298f67e8684.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -1236,30 +1236,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd",
-      "generationId": "e1921e0ef350d49652231fadfdcf350b7bf900cab08459cd2451688af5cdc7dd"
+      "promptHash": "db2aa9b59a9af87addc012440126ab0643b58aac54c47846c9436a31ac367435",
+      "generationId": "db2aa9b59a9af87addc012440126ab0643b58aac54c47846c9436a31ac367435"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.990000009536743,
+          -4.269999980926514,
           0,
-          -3.549999952316284
+          -3.680000066757202
         ],
         "max": [
-          3.990000009536743,
-          7.699999809265137,
-          3.549999952316284
+          4.269999980926514,
+          7.742655277252197,
+          3.680000066757202
         ]
       },
-      "triangles": 1854,
+      "triangles": 2258,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/7c0cf6270048cbba56d738a7db4e248103b7b6c1a16cea505dda2f1c33f5ed09.json",
-      "colliderBytes": 329661,
+      "colliderFile": "/api/files/sample-worlds/addffa9c935f18f528d5662e52c74e8f02e7f95d447e4b3ddd793550572dc6d7.json",
+      "colliderBytes": 414227,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 324620,
-        "runtimeBytes": 88800,
+        "sourceBytes": 363696,
+        "runtimeBytes": 98024,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1271,28 +1271,61 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/dfc45aeb0ddb039477a9725a80c16ee78fface9650bfa2530fde0b99dcb52eec.glb",
-          "triangles": 1854,
+          "file": "/api/files/sample-worlds/63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d.glb",
+          "triangles": 2258,
           "distance": 0,
-          "bytes": 88800
+          "bytes": 98024
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/dfc45aeb0ddb039477a9725a80c16ee78fface9650bfa2530fde0b99dcb52eec.glb",
+          "file": "/api/files/sample-worlds/c9b19105f0093ba0574c7e8dd5b25831ee2b976589ea15b20f0e07d097fa8b0e.glb",
           "distance": 45,
-          "triangles": 1854,
-          "bytes": 88800
+          "triangles": 1874,
+          "bytes": 87908
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/ab77c91968410723a02c6a0b61f1c3766efe07d9bcaf89cfd6435a3bd1c5590e.glb",
+          "file": "/api/files/sample-worlds/de3ad84a5b9f6ef4537eba4c6adae5343d14d3757b85a52e0d20891121177834.glb",
           "distance": 110,
-          "triangles": 1518,
-          "bytes": 61164
+          "triangles": 434,
+          "bytes": 38836
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/6767a151591b865a40cc077403f969a4c559c121ac1cf5edc93db8b8072601c1.png",
+        "stone": "/api/files/sample-worlds/4e36f3e0c1c0336a30bd25725a5883cea376bb1e2c5986c08faad5e5ac762c55.png",
+        "roof": "/api/files/sample-worlds/8655a7bfa58acf60d6a771cc1ff53b565f1a9002f7ff50acc20f7a0205633069.png",
+        "plaster": "/api/files/sample-worlds/2e1dc8ff8fca2dd1b420a3a13a23a2fccb4a9a894b34aefbc5cf99aa15974619.png",
+        "glass": "/api/files/sample-worlds/3b6b8435fa98b7c7543d6aed707eabc87ecdc1580ba6f1b79cb06e2df03193db.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 0,
+        "parameters": {
+          "seed": 0,
+          "width": 6.8,
+          "depth": 5.7,
+          "floors": 2,
+          "floorHeight": 2.6,
+          "upperFloorOverhang": 0.28,
+          "roofPitch": 29,
+          "roofOverhang": 0.5,
+          "windowLayout": "paired",
+          "doorPlacement": "center",
+          "timberFrameStyle": "diagonal",
+          "materialPalette": "warm"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.quality.house"
       ],
@@ -1308,17 +1341,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "dfc45aeb0ddb039477a9725a80c16ee78fface9650bfa2530fde0b99dcb52eec",
+      "contentHash": "63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d",
       "status": "ready"
     }
   },
   {
-    "id": "factory-839beed49a98a700b28ab10bc036318f",
+    "id": "factory-1a7ddf8f10d223b7589e2674a1658943",
     "name": "building.quality.house (Environment procedural 1)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b",
+      "sourceAssetId": "dummy-0eb3715bf6a133572c30b0e761348dbca842c9b82f24de8c4af919962a4201ac",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -1331,9 +1364,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/270cd4857bd616bda0ca26f33928f98a6726f5af31e87ed8af17e1ebda6ed571.glb",
-      "runtime": "/api/files/sample-worlds/954fc48062df574d606c4c93e99149aeb86c7889fa16f883b1b5eb34fe5e0032.glb",
-      "thumbnail": "/api/files/sample-worlds/624bddad670455f74391d494b5ef7b9b1eba35b849de26ccc75598b90eb62734.svg"
+      "original": "/api/files/sample-worlds/110fe01f0d409a5e11451651d4c11cef5bcc9e7c6bb1f47ae3eeda67bc99ea52.glb",
+      "runtime": "/api/files/sample-worlds/3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69.glb",
+      "thumbnail": "/api/files/sample-worlds/9b95fda8d9ae5a1dbf8da94b90014abd6be50e2b4eabfc84070b94da936c94f8.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -1343,30 +1376,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b",
-      "generationId": "394d0eaea1597b6f22a0c6e7705bf36d90fe8222d0e1929244127d98ec534f0b"
+      "promptHash": "0eb3715bf6a133572c30b0e761348dbca842c9b82f24de8c4af919962a4201ac",
+      "generationId": "0eb3715bf6a133572c30b0e761348dbca842c9b82f24de8c4af919962a4201ac"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.990000009536743,
+          -4.269999980926514,
           0,
-          -3.549999952316284
+          -3.680000066757202
         ],
         "max": [
-          3.990000009536743,
-          7.71999979019165,
-          3.549999952316284
+          4.269999980926514,
+          7.831597328186035,
+          3.680000066757202
         ]
       },
-      "triangles": 1854,
+      "triangles": 2306,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/af698d76071b4647fbb88b381d4f109beb471f7275b32d0a9e2b53664bbbb218.json",
-      "colliderBytes": 329985,
+      "colliderFile": "/api/files/sample-worlds/ff7f5d5496e26ee1c1bc0946a2e498e3f40d10cc7816bee3bfc4926067e25903.json",
+      "colliderBytes": 421373,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 324620,
-        "runtimeBytes": 88676,
+        "sourceBytes": 368464,
+        "runtimeBytes": 98804,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1378,28 +1411,61 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/954fc48062df574d606c4c93e99149aeb86c7889fa16f883b1b5eb34fe5e0032.glb",
-          "triangles": 1854,
+          "file": "/api/files/sample-worlds/3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69.glb",
+          "triangles": 2306,
           "distance": 0,
-          "bytes": 88676
+          "bytes": 98804
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/954fc48062df574d606c4c93e99149aeb86c7889fa16f883b1b5eb34fe5e0032.glb",
+          "file": "/api/files/sample-worlds/16a2cd8245d006744496cdb37c27c76c02acf681e02e52ad6b4300f134559df1.glb",
           "distance": 45,
-          "triangles": 1854,
-          "bytes": 88676
+          "triangles": 1874,
+          "bytes": 87100
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/120fd79a22c1489fc550be74504ae28f5bf516a33a179ec3e57cf4f15493e4db.glb",
+          "file": "/api/files/sample-worlds/40f70864bb8af2355d7d72aefe7e0146cebf3213084b8366eb16cd4130375864.glb",
           "distance": 110,
-          "triangles": 1518,
-          "bytes": 61040
+          "triangles": 434,
+          "bytes": 39048
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/828790d4868a54862a620d4eb2b4b2166059749144f4b78983bc0b9c82de8ed5.png",
+        "stone": "/api/files/sample-worlds/711ad1972132a9792ee27232ce47f519665da3f400c166186e5de059766d9431.png",
+        "roof": "/api/files/sample-worlds/f9b330241216e2b498c813401f3ca27518838a78bc917ccc6c34f148d574dedd.png",
+        "plaster": "/api/files/sample-worlds/5020ba1f09bcc69e5847c6eae04db86e7e4b5b36ea5445c3eb90218c3611ad20.png",
+        "glass": "/api/files/sample-worlds/a9837fc7eae0e8c32da73d69bcfa23a077c78b2b4c1dc6f069551b96bd58d3c6.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 1,
+        "parameters": {
+          "seed": 1,
+          "width": 6.8,
+          "depth": 5.7,
+          "floors": 2,
+          "floorHeight": 2.6,
+          "upperFloorOverhang": 0.28,
+          "roofPitch": 31,
+          "roofOverhang": 0.5,
+          "windowLayout": "regular",
+          "doorPlacement": "left",
+          "timberFrameStyle": "cross",
+          "materialPalette": "cool"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.quality.house"
       ],
@@ -1415,17 +1481,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "954fc48062df574d606c4c93e99149aeb86c7889fa16f883b1b5eb34fe5e0032",
+      "contentHash": "3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69",
       "status": "ready"
     }
   },
   {
-    "id": "factory-2ab1a7cbb82be86088055d3d4d4151fc",
+    "id": "factory-df2d118d9b063370b3407b28741784ad",
     "name": "building.quality.house (Environment procedural 2)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6",
+      "sourceAssetId": "dummy-db376dd716efe433c6f722274468d9fbfa7653948f739ed0f6d22d65f5a2cc2d",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -1438,9 +1504,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/c33bb0939dfdc9ace88659430d5c51d413b924e3222b03c1fdb432cd0b9f7c59.glb",
-      "runtime": "/api/files/sample-worlds/d18d6731341208c78f60d54f5363a43ac3b4d4102fb084749352d33d70b33d01.glb",
-      "thumbnail": "/api/files/sample-worlds/4193c654a429fb87a178cc8d00a9999289aa939de247eb98a2771bef01786f56.svg"
+      "original": "/api/files/sample-worlds/a18e59fd199f16da08a4fa340b8a3171e506f44163cef0e8b09ff50030d5110e.glb",
+      "runtime": "/api/files/sample-worlds/c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1.glb",
+      "thumbnail": "/api/files/sample-worlds/6d489e6f1497d5143f9f3ded59afb371994622e276efa3cd23937a700164254d.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -1450,30 +1516,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6",
-      "generationId": "ba0626c9cb12fe1cb0c9b4b5219ea133200e1b43695de6fae85e074692d348b6"
+      "promptHash": "db376dd716efe433c6f722274468d9fbfa7653948f739ed0f6d22d65f5a2cc2d",
+      "generationId": "db376dd716efe433c6f722274468d9fbfa7653948f739ed0f6d22d65f5a2cc2d"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.990000009536743,
+          -4.269999980926514,
           0,
-          -3.549999952316284
+          -3.680000066757202
         ],
         "max": [
-          3.990000009536743,
-          7.900000095367432,
-          3.549999952316284
+          4.269999980926514,
+          8.034523963928223,
+          3.680000066757202
         ]
       },
-      "triangles": 1854,
+      "triangles": 2258,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/cc27518161e7fe985210635ca66919a0609d8e11453815ad0fd6cd51fa16f164.json",
-      "colliderBytes": 329571,
+      "colliderFile": "/api/files/sample-worlds/3822ce636e8bcfba70c440cb84dcd2127f9e9b719a8c2c8fa2cac789a6b48f0f.json",
+      "colliderBytes": 413741,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 324620,
-        "runtimeBytes": 88776,
+        "sourceBytes": 363692,
+        "runtimeBytes": 98060,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1485,28 +1551,61 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/d18d6731341208c78f60d54f5363a43ac3b4d4102fb084749352d33d70b33d01.glb",
-          "triangles": 1854,
+          "file": "/api/files/sample-worlds/c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1.glb",
+          "triangles": 2258,
           "distance": 0,
-          "bytes": 88776
+          "bytes": 98060
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/d18d6731341208c78f60d54f5363a43ac3b4d4102fb084749352d33d70b33d01.glb",
+          "file": "/api/files/sample-worlds/328ad88c05a51147b273d48f9ce4252fe1d30b1d9559da10b4a91c0e48d46eb4.glb",
           "distance": 45,
-          "triangles": 1854,
-          "bytes": 88776
+          "triangles": 1874,
+          "bytes": 87944
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/9d502e8e4b000884884b46e008cf129bf70ea1a6cf0657be0d40402293fb1367.glb",
+          "file": "/api/files/sample-worlds/b4128f611cb2bfd41e52bbd1d0029105a2d6b0e3d6c5ec17eb93e08c85169cd3.glb",
           "distance": 110,
-          "triangles": 1518,
-          "bytes": 61144
+          "triangles": 434,
+          "bytes": 38876
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/ef9bf6b12c8969ec57041eb7cc02e7a0808c9be69fdaece737d1fc026aedead6.png",
+        "stone": "/api/files/sample-worlds/2f97e86c3c5610369fa2c2bce1968553bcc90342738a62fb95fa67f7acb1543c.png",
+        "roof": "/api/files/sample-worlds/c5f0d25cee163cc65a4364ddb0b2a161c1833d784b2560a86019436aa25a20c7.png",
+        "plaster": "/api/files/sample-worlds/afd11426320b257a500af1f93d1dbd390daf09b26bb23edf0c04c5b3365c78b6.png",
+        "glass": "/api/files/sample-worlds/fdef9a197a85c72878927696b6fa364f2d92947c65b297c3e1cede51c96c67ad.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 2,
+        "parameters": {
+          "seed": 2,
+          "width": 6.8,
+          "depth": 5.7,
+          "floors": 2,
+          "floorHeight": 2.6,
+          "upperFloorOverhang": 0.28,
+          "roofPitch": 33,
+          "roofOverhang": 0.5,
+          "windowLayout": "paired",
+          "doorPlacement": "right",
+          "timberFrameStyle": "diagonal",
+          "materialPalette": "warm"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.quality.house"
       ],
@@ -1522,7 +1621,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "d18d6731341208c78f60d54f5363a43ac3b4d4102fb084749352d33d70b33d01",
+      "contentHash": "c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1",
       "status": "ready"
     }
   },
@@ -4905,12 +5004,12 @@
     }
   },
   {
-    "id": "factory-4dbd87e5171cbca6bb4c7febba8ad8a0",
+    "id": "factory-97b50d86dde42de91b9feee31a1c19f4",
     "name": "nature.tree.quality.oak (Environment procedural 0)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e",
+      "sourceAssetId": "dummy-d4eeabfe8b4b6b8c18b8ec6d2afe7573a09a4f9e0d9412ce7857929ec875ab83",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -4923,9 +5022,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/bc4dc1f5bf696e1732d8e67cbcd2c62f6ea237aab89d9408bfcc45a552b937c4.glb",
-      "runtime": "/api/files/sample-worlds/f2ad40c7b7881ec0c99246524296cd7d5aa36ba3f16880de608e6f04cfd94747.glb",
-      "thumbnail": "/api/files/sample-worlds/cdba712b2febb21c7cca6020347143a833c80b130fae8b10d06cedf37d6a0437.svg"
+      "original": "/api/files/sample-worlds/79225f6b75059e0e0ad33403e720291ad43e17b9baebbf836a6bbb5a7174b042.glb",
+      "runtime": "/api/files/sample-worlds/ad0030f033ba743d8c394a6da844ab0ca0e49ccfb4249459483c6729991de40b.glb",
+      "thumbnail": "/api/files/sample-worlds/144cfff215f3885409cbf37a10b5d795c781664876dd6e755b751efc87a2ba0a.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -4935,30 +5034,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e",
-      "generationId": "d422a95cc6bddc2a00698963e9fed1fa39104ebcb6a35b27b67cf8eb8913de3e"
+      "promptHash": "d4eeabfe8b4b6b8c18b8ec6d2afe7573a09a4f9e0d9412ce7857929ec875ab83",
+      "generationId": "d4eeabfe8b4b6b8c18b8ec6d2afe7573a09a4f9e0d9412ce7857929ec875ab83"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.435442924499512,
-          -0.008868837729096413,
-          -4.07897424697876
+          -3.8593552112579346,
+          -0.010850286111235619,
+          -3.5245299339294434
         ],
         "max": [
-          3.4150893688201904,
-          9.560419082641602,
-          3.9427731037139893
+          3.189558744430542,
+          8.25192642211914,
+          3.377345323562622
         ]
       },
-      "triangles": 1592,
+      "triangles": 1568,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 216096,
-        "runtimeBytes": 68256,
+        "sourceBytes": 213992,
+        "runtimeBytes": 63308,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -4970,28 +5069,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/f2ad40c7b7881ec0c99246524296cd7d5aa36ba3f16880de608e6f04cfd94747.glb",
-          "triangles": 1592,
+          "file": "/api/files/sample-worlds/ad0030f033ba743d8c394a6da844ab0ca0e49ccfb4249459483c6729991de40b.glb",
+          "triangles": 1568,
           "distance": 0,
-          "bytes": 68256
+          "bytes": 63308
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/2b2e1ac426058513cf1fd73359cbad9ffb6093a248f720da63c2fcbc88eb4ae8.glb",
+          "file": "/api/files/sample-worlds/ca40926bf4728613a00f6d9cf3f4fbe04eabfd03d7539f89368f0bfc7f81a76f.glb",
           "distance": 45,
-          "triangles": 1228,
-          "bytes": 50976
+          "triangles": 672,
+          "bytes": 33340
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/1cb64171b274df946fcd70557b214c7dab6db4ec997a420f500f5f85a04f6221.glb",
+          "file": "/api/files/sample-worlds/8aa7ffbf710554dd135c6ff0d8537b1d9a7ca3ace2321faaeb1975e0c563a1f4.glb",
           "distance": 110,
-          "triangles": 200,
-          "bytes": 11664
+          "triangles": 180,
+          "bytes": 10828
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/3ba5c84d7e2d29b4ac635e8d8d475893b77fb9d492edfee1f8e8a436a7cb5fe8.glb",
+          "distance": 35,
+          "bytes": 10248
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/6eec2eed475ce8b6c476d85bb3fe9186cbe4654100ea1c520c1303bfdf4519e9.glb",
+          "distance": 80,
+          "bytes": 3408
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "oak",
+        "version": 4,
+        "seed": 0,
+        "parameters": {
+          "kind": "oak",
+          "seed": 0,
+          "height": 7.7,
+          "trunkRadius": 0.42,
+          "bend": 0.13,
+          "branches": 8,
+          "branchAngle": 0.65,
+          "crownRadius": 3.6,
+          "crownDensity": 44
+        },
+        "materials": [
+          "bark",
+          "leaf"
+        ]
+      },
       "slots": [
         "nature.tree.quality.oak"
       ],
@@ -5008,17 +5141,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "f2ad40c7b7881ec0c99246524296cd7d5aa36ba3f16880de608e6f04cfd94747",
+      "contentHash": "ad0030f033ba743d8c394a6da844ab0ca0e49ccfb4249459483c6729991de40b",
       "status": "ready"
     }
   },
   {
-    "id": "factory-a289b415e321afa8cde28a8364c84897",
+    "id": "factory-83853788a9902036bb425f18c4da4ba3",
     "name": "nature.tree.quality.oak (Environment procedural 1)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d",
+      "sourceAssetId": "dummy-330714f7f129579b0b5b158bae1e5b9d2ec38c05260f5499e9f05fd0efac20e4",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -5031,9 +5164,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/bfaae9baf8336825ae5f25e714cce53045588e8c8df546c3e4ae698c0bd0ef67.glb",
-      "runtime": "/api/files/sample-worlds/e74b7276a98760d756f6cdd4692ae048f1200c42471c45a52b0bbc3fdf2318ee.glb",
-      "thumbnail": "/api/files/sample-worlds/b41a8b4a0c836d7fbdcb5e8f03f44265f4429af7200c1c0ea4e67e279cdb60a6.svg"
+      "original": "/api/files/sample-worlds/2df36f961798ff2f71ac1ea800c02c9387365bf4ad44e41bddf85f2800baa0ce.glb",
+      "runtime": "/api/files/sample-worlds/b9686f72c5dbe78b399b792de42549d19b4e3128a1ca9cc77c30137d31e813e6.glb",
+      "thumbnail": "/api/files/sample-worlds/5ff0ff3b890fff73c9b84964c2a265a45512c4407431b4345ca2d5819a72001a.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5043,30 +5176,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d",
-      "generationId": "03edb2281ee6038a977dcca0307d21a8d1a2c1df9841dce2f0035db6bbd6272d"
+      "promptHash": "330714f7f129579b0b5b158bae1e5b9d2ec38c05260f5499e9f05fd0efac20e4",
+      "generationId": "330714f7f129579b0b5b158bae1e5b9d2ec38c05260f5499e9f05fd0efac20e4"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.352901458740234,
-          -0.008868837729096413,
-          -3.7311062812805176
+          -3.806696653366089,
+          -0.010850286111235619,
+          -3.4727649688720703
         ],
         "max": [
-          4.005451202392578,
-          9.515348434448242,
-          3.9395716190338135
+          4.131230354309082,
+          8.247167587280273,
+          3.340573787689209
         ]
       },
-      "triangles": 1592,
+      "triangles": 1568,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 216096,
-        "runtimeBytes": 68212,
+        "sourceBytes": 213992,
+        "runtimeBytes": 63404,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5078,28 +5211,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/e74b7276a98760d756f6cdd4692ae048f1200c42471c45a52b0bbc3fdf2318ee.glb",
-          "triangles": 1592,
+          "file": "/api/files/sample-worlds/b9686f72c5dbe78b399b792de42549d19b4e3128a1ca9cc77c30137d31e813e6.glb",
+          "triangles": 1568,
           "distance": 0,
-          "bytes": 68212
+          "bytes": 63404
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/c869a5edb9e07acacaa3c35997541ce336074906863ceadb6a9f970127684cbb.glb",
+          "file": "/api/files/sample-worlds/48bb6b6cc7ac045cb7321458f5c0c89bdd932f7bc45f8cde904c95fac4407e57.glb",
           "distance": 45,
-          "triangles": 1228,
-          "bytes": 50928
+          "triangles": 672,
+          "bytes": 33320
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/ed21800ccad6e69ddbb78c4ddfd70a2e171179045b4399225b83aad6dc85b16e.glb",
+          "file": "/api/files/sample-worlds/1f6604783ba0b5058948a7a839905b859625767afeb543545d095755c4dfd31d.glb",
           "distance": 110,
-          "triangles": 200,
-          "bytes": 11660
+          "triangles": 180,
+          "bytes": 10824
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/3ae715c0b6f186e086e51c73395e99a535ba614d22b844ad691103c885833bf7.glb",
+          "distance": 35,
+          "bytes": 10244
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/4c5c48eb1119d3e80f0b321d1df33a5a065600aa47363706adb0e3202caa7c5c.glb",
+          "distance": 80,
+          "bytes": 3412
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "oak",
+        "version": 4,
+        "seed": 1,
+        "parameters": {
+          "kind": "oak",
+          "seed": 1,
+          "height": 7.7,
+          "trunkRadius": 0.42,
+          "bend": 0.13,
+          "branches": 8,
+          "branchAngle": 0.65,
+          "crownRadius": 3.6,
+          "crownDensity": 44
+        },
+        "materials": [
+          "bark",
+          "leaf"
+        ]
+      },
       "slots": [
         "nature.tree.quality.oak"
       ],
@@ -5116,17 +5283,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "e74b7276a98760d756f6cdd4692ae048f1200c42471c45a52b0bbc3fdf2318ee",
+      "contentHash": "b9686f72c5dbe78b399b792de42549d19b4e3128a1ca9cc77c30137d31e813e6",
       "status": "ready"
     }
   },
   {
-    "id": "factory-5131812c2492c07f9faca6c7811af868",
+    "id": "factory-e68b37b1e7e5bbc26a70d4c087b985f5",
     "name": "nature.tree.quality.oak (Environment procedural 2)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9",
+      "sourceAssetId": "dummy-f998f39111a19e9e79bd2898a8104cd16a303e9b3a5b01f763b12a1db8f9c6e4",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -5139,9 +5306,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/be6350b4f6682e7ad0bcebefbe2bd65c7d434a1a1788fb732760c134c74ba18e.glb",
-      "runtime": "/api/files/sample-worlds/b8ce8a7fcb967a4767504f35a1c07f25fc245ee2afd23f4576313800115ce06e.glb",
-      "thumbnail": "/api/files/sample-worlds/2c964318b919975970e9020877857bbcbea78e9002e2f10fbdfd827cef54430b.svg"
+      "original": "/api/files/sample-worlds/e188a78fe2c7d0ba89ed9065926cc5ac0c7c071361399ec10a870424d3194567.glb",
+      "runtime": "/api/files/sample-worlds/58e3c7e865dc7b92978135cb0a2d21d9283bc677a37a986f1eb0377ff26341f3.glb",
+      "thumbnail": "/api/files/sample-worlds/c7be20774995cf31ffa7162cc5be779b2ca56ccbbd6ff874c3dd910793d8b051.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5151,30 +5318,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9",
-      "generationId": "d61a1db68c28be3c6330c182e57a117c15355f4eb2e571c7ef7ec7b462f2efe9"
+      "promptHash": "f998f39111a19e9e79bd2898a8104cd16a303e9b3a5b01f763b12a1db8f9c6e4",
+      "generationId": "f998f39111a19e9e79bd2898a8104cd16a303e9b3a5b01f763b12a1db8f9c6e4"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.912231206893921,
-          -0.008868837729096413,
-          -3.6855287551879883
+          -3.7541279792785645,
+          -0.010850286111235619,
+          -3.4210245609283447
         ],
         "max": [
-          3.9991090297698975,
-          9.299784660339355,
-          3.8675262928009033
+          4.074499607086182,
+          7.999317646026611,
+          3.2845675945281982
         ]
       },
-      "triangles": 1592,
+      "triangles": 1568,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/17668d41ed05c932c123cf770d5f3e633aebdfd7573f0e3aece1c6a6bac181ea.json",
       "colliderBytes": 3332,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 216096,
-        "runtimeBytes": 68268,
+        "sourceBytes": 213996,
+        "runtimeBytes": 63344,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5186,28 +5353,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/b8ce8a7fcb967a4767504f35a1c07f25fc245ee2afd23f4576313800115ce06e.glb",
-          "triangles": 1592,
+          "file": "/api/files/sample-worlds/58e3c7e865dc7b92978135cb0a2d21d9283bc677a37a986f1eb0377ff26341f3.glb",
+          "triangles": 1568,
           "distance": 0,
-          "bytes": 68268
+          "bytes": 63344
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/ab237f18c86fd1c4d4151585c0734107cefc0313ca467c0c8fa98a3fe2251c5c.glb",
+          "file": "/api/files/sample-worlds/e403d27325a5511290889dcd4571621d4da80fec53e1a1d7cf8525040d6ae302.glb",
           "distance": 45,
-          "triangles": 1228,
-          "bytes": 50984
+          "triangles": 672,
+          "bytes": 33348
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/fcccb7b1e5ea4d9fbdbee6b3542185559155a2da7e2570e8e506be96b7774840.glb",
+          "file": "/api/files/sample-worlds/40faacd70a91344eeb1588b3f04a468b6052e49179a8d40026438e6206c0abc2.glb",
           "distance": 110,
-          "triangles": 200,
-          "bytes": 11660
+          "triangles": 180,
+          "bytes": 10800
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/480d842879e88bd5ace4c1716f8556c1605cc7929a27568e8233dfb92265f6cf.glb",
+          "distance": 35,
+          "bytes": 10228
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/cd28fdaaf0aff4eaf49fc007a0f4ba0e2624cebccc7696993089939fdb516aa4.glb",
+          "distance": 80,
+          "bytes": 3400
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "oak",
+        "version": 4,
+        "seed": 2,
+        "parameters": {
+          "kind": "oak",
+          "seed": 2,
+          "height": 7.7,
+          "trunkRadius": 0.42,
+          "bend": 0.13,
+          "branches": 8,
+          "branchAngle": 0.65,
+          "crownRadius": 3.6,
+          "crownDensity": 44
+        },
+        "materials": [
+          "bark",
+          "leaf"
+        ]
+      },
       "slots": [
         "nature.tree.quality.oak"
       ],
@@ -5224,17 +5425,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.oak",
-      "contentHash": "b8ce8a7fcb967a4767504f35a1c07f25fc245ee2afd23f4576313800115ce06e",
+      "contentHash": "58e3c7e865dc7b92978135cb0a2d21d9283bc677a37a986f1eb0377ff26341f3",
       "status": "ready"
     }
   },
   {
-    "id": "factory-8ca22e673cd72c44baf82c5baa2561eb",
+    "id": "factory-62c9f3a0216d4b3f6aad1ada6b1dc4d2",
     "name": "nature.tree.quality.pine (Environment procedural 0)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6",
+      "sourceAssetId": "dummy-32033c1cdcbc2fbd8b98645b6ab7e77aa84f3e63d336633dee3ee9bbdffd8eee",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -5247,9 +5448,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/ee42d3b3a541a4ec80f548d5577f57c4bf97409fa0b7fa4b9ff905ff73a71bfe.glb",
-      "runtime": "/api/files/sample-worlds/ae42effd2d664cc5e62cd22edd72fc290033aa5bdf822d6c8253ca8c754434bb.glb",
-      "thumbnail": "/api/files/sample-worlds/af41dfcd96baf2a187d1277a6fe0ae4432a1ef75cb4f0ca2efd111a08742c2dc.svg"
+      "original": "/api/files/sample-worlds/e04a4bc6c1621fe72fd5ef352c4826f8630bf3bffbd168ccefaf81dbef947c2d.glb",
+      "runtime": "/api/files/sample-worlds/8a887da777b872a56b31fbe40f74243c9a6395ff038f39f948f78a25e34f941a.glb",
+      "thumbnail": "/api/files/sample-worlds/09db0ec64a8a01d039c2a3db9185a03877473b9a47e7e46b9740de812a084f11.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5259,30 +5460,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6",
-      "generationId": "9a7d9a6aec516d67d776f0d93d26130d579a5bed31b240179946a866b9602ac6"
+      "promptHash": "32033c1cdcbc2fbd8b98645b6ab7e77aa84f3e63d336633dee3ee9bbdffd8eee",
+      "generationId": "32033c1cdcbc2fbd8b98645b6ab7e77aa84f3e63d336633dee3ee9bbdffd8eee"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.6145830154418945,
-          -0.004878044128417969,
-          -3.8355870246887207
+          -2.7500669956207275,
+          -0.005968451499938965,
+          -2.988147258758545
         ],
         "max": [
-          4.18517541885376,
-          10.421784400939941,
-          3.8005261421203613
+          3.406751871109009,
+          10.000426292419434,
+          2.7796216011047363
         ]
       },
-      "triangles": 1952,
+      "triangles": 2956,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 249348,
-        "runtimeBytes": 81384,
+        "sourceBytes": 345932,
+        "runtimeBytes": 93292,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5294,28 +5495,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/ae42effd2d664cc5e62cd22edd72fc290033aa5bdf822d6c8253ca8c754434bb.glb",
-          "triangles": 1952,
+          "file": "/api/files/sample-worlds/8a887da777b872a56b31fbe40f74243c9a6395ff038f39f948f78a25e34f941a.glb",
+          "triangles": 2956,
           "distance": 0,
-          "bytes": 81384
+          "bytes": 93292
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/f56a000b386530a4b2f3f076f78848af24464f8744e786c7b9e7c5459af56434.glb",
+          "file": "/api/files/sample-worlds/9813456532d01be2c5d50faefcdde77390ec70de9924cab116615bde92c6fc04.glb",
           "distance": 45,
-          "triangles": 1568,
-          "bytes": 62844
+          "triangles": 1136,
+          "bytes": 41888
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/6ea69e7473e0e108219989ab0cf068bdea2b62f94f0cff58cea056a5d2a68036.glb",
+          "file": "/api/files/sample-worlds/eec1c22adff8084e531d349fc6763e5ef60f8151587e87c1d91fb1e3d4051f5f.glb",
           "distance": 110,
-          "triangles": 180,
-          "bytes": 10908
+          "triangles": 160,
+          "bytes": 10100
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/e24c81dc131c01cbffd5c29a0307646d8208f458b989ff0ded2e8417f4e6aafc.glb",
+          "distance": 35,
+          "bytes": 9552
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/069fe4b15fb041be12f8729719b5d1a005ef8e4e3a558d4f0ef03e5712107910.glb",
+          "distance": 80,
+          "bytes": 3348
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "pine",
+        "version": 4,
+        "seed": 0,
+        "parameters": {
+          "kind": "pine",
+          "seed": 0,
+          "height": 10,
+          "trunkRadius": 0.3,
+          "bend": 0.13,
+          "branches": 28,
+          "branchAngle": 0.12,
+          "crownRadius": 3,
+          "crownDensity": 18
+        },
+        "materials": [
+          "bark",
+          "needle"
+        ]
+      },
       "slots": [
         "nature.tree.quality.pine"
       ],
@@ -5332,17 +5567,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "ae42effd2d664cc5e62cd22edd72fc290033aa5bdf822d6c8253ca8c754434bb",
+      "contentHash": "8a887da777b872a56b31fbe40f74243c9a6395ff038f39f948f78a25e34f941a",
       "status": "ready"
     }
   },
   {
-    "id": "factory-2c1c02c7966d71b7368d79e8a4fae5a7",
+    "id": "factory-a37b8f6521706e4f8b441517e8dc61aa",
     "name": "nature.tree.quality.pine (Environment procedural 1)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6",
+      "sourceAssetId": "dummy-d7a3443b7e67c49f6a90ff8a8659bf94ffa0857082730b6e9ddf42c61d89f937",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -5355,9 +5590,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/e08135d969a50356e6f63bea22da5a38d43e27f114be5ce00a5263639b6b7526.glb",
-      "runtime": "/api/files/sample-worlds/e6f3e852a7430aa7780055d5d66f5739baa6ae1221b2a0f46005702a75dfc2a9.glb",
-      "thumbnail": "/api/files/sample-worlds/7a180de68008822f189cf5225be31390fa2e3cbaa55859fbd6cec7e001ca4d56.svg"
+      "original": "/api/files/sample-worlds/e29f2e8a89b824201d676de84ff1e58301cf3aa3ef3602857d79ac5b281a770d.glb",
+      "runtime": "/api/files/sample-worlds/b9b0adeb711d358fab8deee9e2dbaaa46e08d1fc26ec6588b63a75c228eacc1e.glb",
+      "thumbnail": "/api/files/sample-worlds/fa23910a707dc0548a54a657eb3a235bc40a3a158fd5486c72287202f8798d51.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5367,30 +5602,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6",
-      "generationId": "e732449d21bb3e1ad931a0d4d8350228ae1666720cff45896ce5a5f0c6e90cc6"
+      "promptHash": "d7a3443b7e67c49f6a90ff8a8659bf94ffa0857082730b6e9ddf42c61d89f937",
+      "generationId": "d7a3443b7e67c49f6a90ff8a8659bf94ffa0857082730b6e9ddf42c61d89f937"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -4.314480781555176,
-          -0.004878044128417969,
-          -3.9624369144439697
+          -2.772156238555908,
+          -0.005968451499938965,
+          -2.9722328186035156
         ],
         "max": [
-          3.811802387237549,
-          10.263211250305176,
-          3.9019241333007812
+          3.3934786319732666,
+          10.000426292419434,
+          2.7970569133758545
         ]
       },
-      "triangles": 1952,
+      "triangles": 2956,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 249348,
-        "runtimeBytes": 81380,
+        "sourceBytes": 345932,
+        "runtimeBytes": 93292,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5402,28 +5637,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/e6f3e852a7430aa7780055d5d66f5739baa6ae1221b2a0f46005702a75dfc2a9.glb",
-          "triangles": 1952,
+          "file": "/api/files/sample-worlds/b9b0adeb711d358fab8deee9e2dbaaa46e08d1fc26ec6588b63a75c228eacc1e.glb",
+          "triangles": 2956,
           "distance": 0,
-          "bytes": 81380
+          "bytes": 93292
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/5820e3fa9e4be7586cd96e8efdfb3ebae19dceeae4399ae94f1702907c014638.glb",
+          "file": "/api/files/sample-worlds/8bb3be289962f2f8b308ce017114df261960c244e8ac82fddcb34f4475443b26.glb",
           "distance": 45,
-          "triangles": 1568,
-          "bytes": 62836
+          "triangles": 1136,
+          "bytes": 41860
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/b0ec853263f1de7c81de2c5591d80b17da45b49e46faffd7dce06630f69d4ec9.glb",
+          "file": "/api/files/sample-worlds/fa66cf0c6428b6321c6d13b3488322fa15e62eda0633ea86dab5308df91fb518.glb",
           "distance": 110,
-          "triangles": 180,
-          "bytes": 10904
+          "triangles": 160,
+          "bytes": 10100
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/ed8e170e0b9250676b277caa01df839625b74517447c67d70e93d5748f1d4fb2.glb",
+          "distance": 35,
+          "bytes": 9552
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/d603a8c0b9537b0910994704ffa57d0bb2f10e556e4f4b6b3f4c197464d16aff.glb",
+          "distance": 80,
+          "bytes": 3348
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "pine",
+        "version": 4,
+        "seed": 1,
+        "parameters": {
+          "kind": "pine",
+          "seed": 1,
+          "height": 10,
+          "trunkRadius": 0.3,
+          "bend": 0.13,
+          "branches": 28,
+          "branchAngle": 0.12,
+          "crownRadius": 3,
+          "crownDensity": 18
+        },
+        "materials": [
+          "bark",
+          "needle"
+        ]
+      },
       "slots": [
         "nature.tree.quality.pine"
       ],
@@ -5440,17 +5709,17 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "e6f3e852a7430aa7780055d5d66f5739baa6ae1221b2a0f46005702a75dfc2a9",
+      "contentHash": "b9b0adeb711d358fab8deee9e2dbaaa46e08d1fc26ec6588b63a75c228eacc1e",
       "status": "ready"
     }
   },
   {
-    "id": "factory-d15fdf285595ceb4a20edd3f3ca72d4f",
+    "id": "factory-bd7d5fa31011276a62fd1751ce6d75f9",
     "name": "nature.tree.quality.pine (Environment procedural 2)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330",
+      "sourceAssetId": "dummy-b0ca6e50acaad11eddb2675007e80eceda114275e9bfa132fa3b041f6a26109d",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -5463,9 +5732,9 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/ac11f641bfa6b2e6f3de445a9ff88d8d76c08d508a045f4ff073462e4fa07c28.glb",
-      "runtime": "/api/files/sample-worlds/df0854fb75ffbdb77c43f2aec3da5f143efb0371f44682325cf4f7b5cf08c98b.glb",
-      "thumbnail": "/api/files/sample-worlds/d7e50ea9784b9f1edfa82d92ea80df494937233c799aaaee2cd7af5f6cc64e9e.svg"
+      "original": "/api/files/sample-worlds/06e57304ca00540891a053890de3d25ee098259d35326b2a721e721e50019b39.glb",
+      "runtime": "/api/files/sample-worlds/495512bda00ab7393aa8d5326dcd1ecf86c1afaf270ec02a44b4336a55aa2a03.glb",
+      "thumbnail": "/api/files/sample-worlds/54828ba40a40d9bd241148038131a2c5c84a168b48110db190376801e5ee7f5a.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -5475,30 +5744,30 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330",
-      "generationId": "bd1ac78f35a6ba0a779e4d3b26d7ef892a7271102dd4068a28a74f70242c8330"
+      "promptHash": "b0ca6e50acaad11eddb2675007e80eceda114275e9bfa132fa3b041f6a26109d",
+      "generationId": "b0ca6e50acaad11eddb2675007e80eceda114275e9bfa132fa3b041f6a26109d"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -3.6525630950927734,
-          -0.004878044128417969,
-          -3.896209955215454
+          -2.7939138412475586,
+          -0.005968451499938965,
+          -2.955961227416992
         ],
         "max": [
-          3.965485095977783,
-          10.376328468322754,
-          4.190479755401611
+          3.379802703857422,
+          10.000426292419434,
+          2.8141653537750244
         ]
       },
-      "triangles": 1952,
+      "triangles": 2956,
       "collider": "convexHull",
       "colliderFile": "/api/files/sample-worlds/775e540e4352ed7339a963501bf19fa04826d6bbd9f1b56a6311b7ec9f643118.json",
       "colliderBytes": 2488,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 249348,
-        "runtimeBytes": 81348,
+        "sourceBytes": 345932,
+        "runtimeBytes": 93308,
         "textureBytes": 349526,
         "warnings": []
       },
@@ -5510,28 +5779,62 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/df0854fb75ffbdb77c43f2aec3da5f143efb0371f44682325cf4f7b5cf08c98b.glb",
-          "triangles": 1952,
+          "file": "/api/files/sample-worlds/495512bda00ab7393aa8d5326dcd1ecf86c1afaf270ec02a44b4336a55aa2a03.glb",
+          "triangles": 2956,
           "distance": 0,
-          "bytes": 81348
+          "bytes": 93308
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/225452bff2742285f1e4b9512b0b046eba31a9fcb6879a5d75cdb25f2fb6843a.glb",
+          "file": "/api/files/sample-worlds/410b6f735a6746f133cd4a55b03796d08d394c49330b5a5d28c62391867c99e2.glb",
           "distance": 45,
-          "triangles": 1568,
-          "bytes": 62908
+          "triangles": 1136,
+          "bytes": 41868
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/31c3efc05df4ab378ff0604906449500d2cbd3b35ca5572b1b3388024d4e4f8c.glb",
+          "file": "/api/files/sample-worlds/d7573052b8020badb3a5ce5218a286a173825f8930c58d48fe5a1f199be56e2b.glb",
           "distance": 110,
-          "triangles": 180,
-          "bytes": 10924
+          "triangles": 160,
+          "bytes": 10100
+        }
+      ],
+      "environmentShadowLods": [
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/83efa65dffba5fc65fee806d25af23679ada75d257aeb498e061eabc8de89b64.glb",
+          "distance": 35,
+          "bytes": 9552
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/46e6cdd1162b0cf1cad17d6211e600ccda9f856340b9fbb778b93be2e5d415d8.glb",
+          "distance": 80,
+          "bytes": 3348
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "pine",
+        "version": 4,
+        "seed": 2,
+        "parameters": {
+          "kind": "pine",
+          "seed": 2,
+          "height": 10,
+          "trunkRadius": 0.3,
+          "bend": 0.13,
+          "branches": 28,
+          "branchAngle": 0.12,
+          "crownRadius": 3,
+          "crownDensity": 18
+        },
+        "materials": [
+          "bark",
+          "needle"
+        ]
+      },
       "slots": [
         "nature.tree.quality.pine"
       ],
@@ -5548,7 +5851,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "nature.tree.quality.pine",
-      "contentHash": "df0854fb75ffbdb77c43f2aec3da5f143efb0371f44682325cf4f7b5cf08c98b",
+      "contentHash": "495512bda00ab7393aa8d5326dcd1ecf86c1afaf270ec02a44b4336a55aa2a03",
       "status": "ready"
     }
   },
@@ -6583,12 +6886,12 @@
     }
   },
   {
-    "id": "factory-d111c26815b024197a8064d0fb3f1000",
+    "id": "factory-b5e30cddeb37b91d0b707ae8b989f8e3",
     "name": "prop.quality.market (Environment procedural 0)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb",
+      "sourceAssetId": "dummy-8ff3326b25801d41d3000dfbac1d1e207a351cb7ccd7605376cb1f1d75b68563",
       "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
@@ -6601,8 +6904,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/3abb7eb9332810c44f930e964bd7b20fcab9757ac01654cd52f63aab1fac5fce.glb",
-      "runtime": "/api/files/sample-worlds/941256d87d8dddfab26af847c81ecd1466876dbc0ea6c66641afd90dae928260.glb",
+      "original": "/api/files/sample-worlds/afedcdea45b31d8586517c02a75ba724ced5ec198acee1929b1895895d1784e7.glb",
+      "runtime": "/api/files/sample-worlds/9ba1ee5d4fa8e4444a6214367ce18a033fd9cebc6804c09bc4c6454a5afc2029.glb",
       "thumbnail": "/api/files/sample-worlds/ddeb906a4fdf9e6e4d1dab96f1f343ad6f314016776d7ede5220722c5fbff40d.svg"
     },
     "processing": {
@@ -6613,8 +6916,8 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb",
-      "generationId": "9a47fc7c98642518ae99e0548792a02c6056f1d07f9f6dd87b147257188992bb"
+      "promptHash": "8ff3326b25801d41d3000dfbac1d1e207a351cb7ccd7605376cb1f1d75b68563",
+      "generationId": "8ff3326b25801d41d3000dfbac1d1e207a351cb7ccd7605376cb1f1d75b68563"
     },
     "runtimeInfo": {
       "bounds": {
@@ -6635,8 +6938,8 @@
       "colliderBytes": 30302,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 86380,
-        "runtimeBytes": 23564,
+        "sourceBytes": 86476,
+        "runtimeBytes": 23660,
         "textureBytes": 524288,
         "warnings": []
       },
@@ -6648,28 +6951,40 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/941256d87d8dddfab26af847c81ecd1466876dbc0ea6c66641afd90dae928260.glb",
+          "file": "/api/files/sample-worlds/9ba1ee5d4fa8e4444a6214367ce18a033fd9cebc6804c09bc4c6454a5afc2029.glb",
           "triangles": 168,
           "distance": 0,
-          "bytes": 23564
+          "bytes": 23660
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/64fc60309e0becdd3c8e3435341af8910ba0f0056154034e147b0b3c5124af50.glb",
+          "file": "/api/files/sample-worlds/f4bc65b37192e9cd70a492c86fcdd629bfceb048a1623c0a2e18124dbc729d54.glb",
           "distance": 45,
           "triangles": 144,
-          "bytes": 23036
+          "bytes": 23132
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/01c8f635107e69e2ab1ed6df193748312b5b63da663a714052e1fcbcb3c72fdf.glb",
+          "file": "/api/files/sample-worlds/d935fa7a1fb7bf52be5228d612dc5629b298629e370de0356befa88dc8463d83.glb",
           "distance": 110,
           "triangles": 72,
-          "bytes": 21236
+          "bytes": 21332
         }
       ]
     },
     "catalog": {
+      "generation": {
+        "kind": "market",
+        "version": 4,
+        "seed": 0,
+        "parameters": {
+          "seed": 0,
+          "kind": "market"
+        },
+        "materials": [
+          "market"
+        ]
+      },
       "slots": [
         "prop.quality.market"
       ],
@@ -6685,7 +7000,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "prop.quality.market",
-      "contentHash": "941256d87d8dddfab26af847c81ecd1466876dbc0ea6c66641afd90dae928260",
+      "contentHash": "9ba1ee5d4fa8e4444a6214367ce18a033fd9cebc6804c09bc4c6454a5afc2029",
       "status": "ready"
     }
   },

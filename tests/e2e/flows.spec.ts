@@ -1,3 +1,4 @@
+import { evidencePath } from "./fixtures";
 import { test, expect, type Page } from "./fixtures";
 import { pickCandidate } from "./placement-helpers";
 import { mkdir } from "node:fs/promises";
@@ -16,14 +17,14 @@ async function studio(page: Page) {
   await page.getByRole("button", { name: "Studio", exact: true }).click();
 }
 async function screenshot(page: Page, name: string) {
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   await page.locator(".side-panel").evaluateAll((elements) =>
     elements.forEach((el) => {
       el.scrollTop = 0;
     }),
   );
   await page.screenshot({
-    path: `docs/screenshots/${name}.png`,
+    path: evidencePath(`docs/screenshots/${name}.png`),
     fullPage: true,
   });
 }

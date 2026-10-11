@@ -25,6 +25,7 @@ export function worldVegetationChunk(
   waterHeight: number,
   landCoverAllowed: (x: number, z: number) => boolean = () => true,
   groundMaterial?: MeshStandardMaterial,
+  initialMode?: "A0" | "A1" | "A2" | "A3",
 ) {
   if (!source.design) return;
   const alpinePlaza = isAlpineVillage(source.design);
@@ -88,11 +89,21 @@ export function worldVegetationChunk(
         },
       };
     };
-    const buildings = remapEnvironmentAssets(
-      settlementEntities(
-        { ...source, chunkX: prepared.chunkX, chunkZ: prepared.chunkZ },
-        layers,
+    // 境界を跨ぐ建物も両側のChunkで同じ除外輪郭を使う。
+    const neighborhood = [-1, 0, 1].flatMap((dx) =>
+      [-1, 0, 1].flatMap((dz) =>
+        settlementEntities(
+          {
+            ...source,
+            chunkX: prepared.chunkX + dx,
+            chunkZ: prepared.chunkZ + dz,
+          },
+          layers,
+        ),
       ),
+    );
+    const buildings = remapEnvironmentAssets(
+      neighborhood,
       source.parameters?.environmentAssets,
     ).map((b) => footprint(b, 0.35));
     const obstacles = [
@@ -102,14 +113,66 @@ export function worldVegetationChunk(
         .map((l) => footprint(l, 0.4)),
     ].filter(
       (o) =>
-        o.placement.position[0] + o.radius >= originX &&
-        o.placement.position[0] - o.radius < originX + prepared.size &&
-        o.placement.position[2] + o.radius >= originZ &&
-        o.placement.position[2] - o.radius < originZ + prepared.size,
+        o.placement.position[0] + o.radius >= originX - 2 &&
+        o.placement.position[0] - o.radius < originX + prepared.size + 2 &&
+        o.placement.position[2] + o.radius >= originZ - 2 &&
+        o.placement.position[2] - o.radius < originZ + prepared.size + 2,
     );
+    const semanticAllowed = (x: number, z: number) =>
+      layers.sampleRoadInfluence(x, z, true).distance > 1 &&
+      !source.design!.noSpawnRegions.some(
+        (r) => Math.hypot(x - r.center[0], z - r.center[2]) <= r.radius,
+      ) &&
+      !layers.sampleRunwayMask(x, z) &&
+      landCoverAllowed(x, z) &&
+      !(alpinePlaza && insideEnvironmentPlaza(x, z)) &&
+      !obstacles.some((o) => o.contains(x, z));
+    // マスク余白も絶対座標を所有する地形セルで評価する。高さキャッシュは作成後に空にする。
+    const heights = new Map<string, number>();
+    const absoluteHeight = (x: number, z: number) => {
+      const key = `${x},${z}`;
+      let value = heights.get(key);
+      if (value === undefined) {
+        value = Math.fround(layers.sampleHeight(x, z));
+        heights.set(key, value);
+      }
+      return value;
+    };
+    const coverageTerrain = (x: number, z: number) => {
+      const step = prepared.size / (prepared.resolution - 1);
+      const ox = Math.floor(x / prepared.size) * prepared.size,
+        oz = Math.floor(z / prepared.size) * prepared.size;
+      const u = (x - ox) / step,
+        v = (z - oz) / step,
+        ix = Math.floor(u),
+        iz = Math.floor(v),
+        a = u - ix,
+        b = v - iz;
+      const x0 = ox + ix * step,
+        z0 = oz + iz * step;
+      const h00 = absoluteHeight(x0, z0),
+        h10 = absoluteHeight(x0 + step, z0),
+        h01 = absoluteHeight(x0, z0 + step),
+        h11 = absoluteHeight(x0 + step, z0 + step);
+      const lower = a + b <= 1;
+      const height = lower
+        ? h00 * (1 - a - b) + h10 * a + h01 * b
+        : h11 * (a + b - 1) + h10 * (1 - b) + h01 * (1 - a);
+      const slope =
+        (Math.atan(
+          Math.hypot(
+            lower ? h10 - h00 : h11 - h01,
+            lower ? h01 - h00 : h11 - h10,
+          ) / step,
+        ) *
+          180) /
+        Math.PI;
+      return { height, slope };
+    };
     return createVegetationChunk({
       seed: source.seed,
       groundMaterial,
+      initialMode,
       area,
       originX,
       originZ,
@@ -129,8 +192,14 @@ export function worldVegetationChunk(
         ),
       roadDistance: (x, z) => layers.sampleRoadInfluence(x, z, true).distance,
       roadside: (x, z) => layers.sampleRoadInfluence(x, z, true).distance < 6,
+      finishCoverage: () => heights.clear(),
+      coverageAllowed: (x, z) => {
+        const { height, slope } = coverageTerrain(x, z);
+        return (
+          slope < 32 && height > waterHeight + 0.5 && semanticAllowed(x, z)
+        );
+      },
       allowed: (x, z) =>
-        layers.sampleRoadInfluence(x, z, true).distance > 1 &&
         vegetationGroundSlope(
           geo.getAttribute("position").array,
           prepared.resolution,
@@ -146,13 +215,7 @@ export function worldVegetationChunk(
           z - originZ,
         ) >
           waterHeight + 0.5 &&
-        !source.design!.noSpawnRegions.some(
-          (r) => Math.hypot(x - r.center[0], z - r.center[2]) <= r.radius,
-        ) &&
-        !layers.sampleRunwayMask(x, z) &&
-        landCoverAllowed(x, z) &&
-        !(alpinePlaza && insideEnvironmentPlaza(x, z)) &&
-        !obstacles.some((o) => o.contains(x, z)),
+        semanticAllowed(x, z),
     });
   }
 }

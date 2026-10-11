@@ -1,10 +1,13 @@
+import { evidencePath } from "./fixtures";
 import { test, expect } from "./fixtures";
 import { mkdir } from "node:fs/promises";
 
 async function screenshot(name: string, page: import("@playwright/test").Page) {
-  await mkdir("docs/evidence/runtime-stability-shadow", { recursive: true });
+  await mkdir(evidencePath("docs/evidence/runtime-stability-shadow"), {
+    recursive: true,
+  });
   await page.screenshot({
-    path: `docs/evidence/runtime-stability-shadow/${name}.png`,
+    path: evidencePath(`docs/evidence/runtime-stability-shadow/${name}.png`),
     fullPage: true,
   });
 }

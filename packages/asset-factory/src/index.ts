@@ -81,6 +81,11 @@ export class AssetFactory {
           })
           .filter(
             (a) =>
+              (a.source.provider !== "dummy-astra" ||
+                this.generator.generationVersion?.(requirement.assetSlot) ===
+                  undefined ||
+                a.catalog?.generation?.version ===
+                  this.generator.generationVersion(requirement.assetSlot)) &&
               this.policy.allowedLicenses.includes(a.license.id) &&
               requirement.biomes.every(
                 (b) =>
@@ -177,12 +182,25 @@ export class AssetFactory {
               requirement,
               result,
               artifact.ai,
+              false,
+              artifact.generation,
             );
           } catch (error) {
             result.errors.push(`dummy-astra: ${String(error)}`);
             break;
           }
         }
+      }
+      const version = this.generator.generationVersion?.(requirement.assetSlot);
+      if (version !== undefined && ready().length >= requirement.minVariants) {
+        for (const asset of this.catalog.project.assets)
+          if (
+            asset.source.provider === "dummy-astra" &&
+            asset.catalog?.slots.includes(requirement.assetSlot) &&
+            asset.catalog.generation?.version !== version
+          )
+            asset.catalog.status = "unsupported";
+        this.catalog.reindex();
       }
       const remaining = requirement.minVariants - ready().length;
       if (remaining > 0)
@@ -201,6 +219,7 @@ export class AssetFactory {
     result: FactoryResult,
     ai?: AssetRecord["ai"],
     allowNetwork = false,
+    generation?: NonNullable<AssetRecord["catalog"]>["generation"],
   ) {
     if (!this.policy.allowedLicenses.includes(candidate.license))
       throw new Error("Asset license is not allowed");
@@ -218,6 +237,7 @@ export class AssetFactory {
       candidate.styleReview === "reviewed" &&
       candidate.style === requirement.style;
     record.catalog = {
+      generation,
       slots: [requirement.assetSlot],
       tags: requirement.assetSlot.split("."),
       biomes: requirement.biomes,

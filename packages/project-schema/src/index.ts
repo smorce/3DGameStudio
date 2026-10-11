@@ -178,6 +178,15 @@ export const assetSchema = z.object({
       requestedStyle: z.string().optional(),
       styleAssessment: z.enum(["unverified", "reviewed", "dummy"]).optional(),
       variantGroup: z.string().optional(),
+      generation: z
+        .object({
+          kind: z.string(),
+          version: z.number().int().positive(),
+          seed: z.number().int(),
+          parameters: z.record(z.string(), z.unknown()),
+          materials: z.array(z.string()),
+        })
+        .optional(),
       contentHash: z.string(),
       status: z.enum(["ready", "unsupported"]),
     })
@@ -223,6 +232,17 @@ export const assetSchema = z.object({
           warnings: z.array(z.string()),
         })
         .optional(),
+      environmentShadowLods: z
+        .array(
+          z.object({
+            level: z.number().int().min(1).max(2),
+            file: assetFile,
+            distance: z.number().nonnegative(),
+            bytes: z.number().int().nonnegative(),
+          }),
+        )
+        .optional(),
+      environmentMaterials: z.record(z.string(), assetFile).optional(),
       lodLevels: z.array(z.number()),
     })
     .optional(),

@@ -1,3 +1,8 @@
+import { foliageWind } from "./foliage-wind";
+import {
+  configureBuildingMaterial,
+  type BuildingMaterialMode,
+} from "./environment-material";
 import { alpineRotorTick } from "./alpine-rotor";
 import * as THREE from "three";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
@@ -30,7 +35,7 @@ export function disposeTemplate(
     }
   });
   materials.forEach((m) => {
-    for (const value of Object.values(m))
+    for (const value of Object.values(m).concat(Object.values(m.userData)))
       if (value instanceof THREE.Texture) textures.add(value);
     m.dispose();
   });
@@ -162,6 +167,19 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
       o.material instanceof THREE.MeshStandardMaterial &&
       ["leaf", "needle"].includes(o.material.name);
     if (foliage) {
+      if (!o.material.userData.environmentWind) {
+        const original = o.material.onBeforeCompile,
+          key = o.material.customProgramCacheKey();
+        o.material.onBeforeCompile = (
+          shader: Parameters<THREE.Material["onBeforeCompile"]>[0],
+          renderer: THREE.WebGLRenderer,
+        ) => {
+          original.call(o.material, shader, renderer);
+          foliageWind(shader);
+        };
+        o.material.customProgramCacheKey = () => key + "-foliage-wind-v1";
+        o.material.userData.environmentWind = true;
+      }
       o.material.alphaToCoverage = true;
       // 葉の裏面の過度な黒さを抑える。透過MASKとMSAAを維持する。
       o.material.emissive.set("#243612");
@@ -179,6 +197,7 @@ export function instanceTemplate(template: THREE.Object3D, entities: Entity[]) {
       rotorTicks.push(alpineRotorTick(mesh));
     mesh.instanceMatrix.needsUpdate = true;
     mesh.computeBoundingSphere();
+    if (foliage) mesh.boundingSphere!.radius += 0.1;
     group.add(mesh);
   });
   if (rotorTicks.length)
@@ -192,6 +211,9 @@ export class AssetTemplates {
     string,
     { refs: number; promise: Promise<THREE.Object3D> }
   >();
+  refreshTextures(template: THREE.Object3D) {
+    this.texturePool.acquire(template);
+  }
   acquire(key: string, load: () => Promise<THREE.Object3D>) {
     let entry = this.entries.get(key);
     if (!entry) {
@@ -231,49 +253,53 @@ export class EnvironmentTexturePool {
   private entries = new Map<string, { texture: THREE.Texture; refs: number }>();
   private held = new WeakMap<THREE.Object3D, Set<string>>();
   acquire(template: THREE.Object3D) {
-    if (
-      ![1, 2, 3].includes(template.userData.environmentRecipeVersion) ||
-      this.held.has(template)
-    )
-      return;
-    const keys = new Set<string>();
+    if (![1, 2, 3].includes(template.userData.environmentRecipeVersion)) return;
+    const keys = this.held.get(template) ?? new Set<string>();
+    const replacements = new Map<THREE.Texture, THREE.Texture>();
     template.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
       for (const material of Array.isArray(object.material)
         ? object.material
         : [object.material]) {
         const properties = material as unknown as Record<string, unknown>;
-        for (const [property, value] of Object.entries(properties)) {
-          if (
-            !(value instanceof THREE.Texture) ||
-            !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness)-v[123]$/.test(
-              value.name,
+        for (const owner of [properties, material.userData])
+          for (const [property, value] of Object.entries(owner)) {
+            if (
+              !(value instanceof THREE.Texture) ||
+              !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness|generated)-v[1234]$/.test(
+                value.name,
+              )
             )
-          )
-            continue;
-          const key = JSON.stringify([
-            value.name,
-            value.colorSpace,
-            value.wrapS,
-            value.wrapT,
-            value.magFilter,
-            value.minFilter,
-            value.flipY,
-            value.channel,
-          ]);
-          let entry = this.entries.get(key);
-          if (!entry) {
-            entry = { texture: value, refs: 0 };
-            this.entries.set(key, entry);
-          } else if (entry.texture !== value) {
-            value.dispose();
-            properties[property] = entry.texture;
+              continue;
+            const key = JSON.stringify([
+              value.name,
+              value.colorSpace,
+              value.wrapS,
+              value.wrapT,
+              value.magFilter,
+              value.minFilter,
+              value.flipY,
+              value.channel,
+            ]);
+            const replaced = replacements.get(value);
+            if (replaced) {
+              owner[property] = replaced;
+              continue;
+            }
+            let entry = this.entries.get(key);
+            if (!entry) {
+              entry = { texture: value, refs: 0 };
+              this.entries.set(key, entry);
+            } else if (entry.texture !== value) {
+              value.dispose();
+              owner[property] = entry.texture;
+              replacements.set(value, entry.texture);
+            }
+            if (!keys.has(key)) {
+              entry.refs++;
+              keys.add(key);
+            }
           }
-          if (!keys.has(key)) {
-            entry.refs++;
-            keys.add(key);
-          }
-        }
       }
     });
     this.held.set(template, keys);
@@ -311,6 +337,7 @@ export function chooseLod(
 export function environmentShadowMaterial(
   source: THREE.Material,
   camera: THREE.Vector3,
+  distance = 85,
 ) {
   const foliage = source as THREE.MeshStandardMaterial;
   const material = new THREE.MeshDepthMaterial({
@@ -320,22 +347,32 @@ export function environmentShadowMaterial(
     alphaTest: foliage.alphaTest ?? 0,
     side: source.side,
   });
+  material.userData.shadowDistance = { value: distance };
+  material.userData.shadowMinimumDistance = { value: 0 };
   material.onBeforeCompile = (shader) => {
+    if (["leaf", "needle"].includes(source.name)) foliageWind(shader);
+    shader.uniforms.environmentShadowDistance =
+      material.userData.shadowDistance;
+    shader.uniforms.environmentShadowMinimumDistance =
+      material.userData.shadowMinimumDistance;
     shader.uniforms.environmentShadowCamera = { value: camera };
     shader.vertexShader =
-      "uniform vec3 environmentShadowCamera;\n" +
+      "uniform vec3 environmentShadowCamera;\nuniform float environmentShadowDistance;\nuniform float environmentShadowMinimumDistance;\n" +
       shader.vertexShader.replace(
         "#include <project_vertex>",
         `#include <project_vertex>
       #ifdef USE_INSTANCING
         vec3 treeOrigin = (modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-        if (distance(treeOrigin, environmentShadowCamera) > 85.0) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+        float shadowDistance = distance(treeOrigin, environmentShadowCamera);
+        if (shadowDistance > environmentShadowDistance || shadowDistance < environmentShadowMinimumDistance) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
       #endif`,
       );
   };
   material.customProgramCacheKey = () => "environment-shadow-distance-v1";
   return material;
 }
+
+export type TreeShadowMode = "B0" | "B1" | "B2" | "B3";
 
 export class WorldAssetBatch {
   readonly group = new THREE.Group();
@@ -349,6 +386,12 @@ export class WorldAssetBatch {
   private center = new THREE.Vector3();
   private radius = 0;
   private shadowCamera = new THREE.Vector3();
+  private shadowMode: TreeShadowMode = "B0";
+  private profile: "quality" | "balanced" | "performance" = "balanced";
+  private shadowProxy?: THREE.Group;
+  private shadowProxyMaterials: THREE.Material[] = [];
+  private shadowReleases: (() => void)[] = [];
+  private materialMode: BuildingMaterialMode = "C0";
   private shadowMaterials: THREE.Material[] = [];
   private levels: {
     level: number;
@@ -385,6 +428,27 @@ export class WorldAssetBatch {
       : asset?.catalog?.slots.some((s) => s.startsWith("building."))
         ? "buildingDetails"
         : undefined;
+    this.group.userData.setEnvironmentModes = (options: {
+      treeShadowMode?: TreeShadowMode;
+      buildingMaterialMode?: BuildingMaterialMode;
+      profile?: "quality" | "balanced" | "performance";
+    }) => {
+      const changed =
+        !!options.buildingMaterialMode &&
+        this.materialMode !== options.buildingMaterialMode;
+      if (options.treeShadowMode) this.shadowMode = options.treeShadowMode;
+      if (options.profile) this.profile = options.profile;
+      if (options.buildingMaterialMode)
+        this.materialMode = options.buildingMaterialMode;
+      if (changed)
+        this.group.traverse((object) => {
+          if (object instanceof THREE.Mesh)
+            for (const material of Array.isArray(object.material)
+              ? object.material
+              : [object.material])
+              material.userData.setBuildingMaterialMode?.(this.materialMode);
+        });
+    };
     this.group.userData.release = () => this.dispose();
     this.group.userData.updateLod = (camera: THREE.Vector3) =>
       this.update(camera);
@@ -396,6 +460,7 @@ export class WorldAssetBatch {
   }
   /** Origin Rebase 時にカメラ・Chunk と同じ delta で中心をずらす。 */
   shiftOrigin(delta: Vec3) {
+    this.shadowCamera.sub(new THREE.Vector3(...delta));
     this.center.x -= delta[0];
     this.center.y -= delta[1];
     this.center.z -= delta[2];
@@ -413,22 +478,91 @@ export class WorldAssetBatch {
         slot.startsWith("nature.tree.quality."),
       )
     ) {
-      const wasCasting = this.group.userData.castingEnvironmentShadow !== false;
-      const casting = distance < (wasCasting ? 90 : 80);
+      const cutoff =
+        this.profile === "performance"
+          ? 45
+          : this.profile === "quality"
+            ? 120
+            : 85;
+      const mode = this.shadowMode;
+      if ((mode === "B2" || mode === "B3") && !this.shadowProxy)
+        this.createShadowProxy();
       if (
-        casting !== wasCasting ||
-        this.group.userData.shadowLod !== this.current
-      ) {
-        this.group.traverse((object) => {
-          if (object instanceof THREE.Mesh) object.castShadow = casting;
-        });
-        this.group.userData.castingEnvironmentShadow = casting;
-        this.group.userData.shadowLod = this.current;
-      }
+        mode === "B3" &&
+        this.shadowProxy &&
+        !this.shadowProxy.userData.loadedShadowLods
+      )
+        this.loadShadowLods(this.shadowProxy);
+      if ((mode === "B0" || mode === "B1") && this.shadowProxy)
+        this.disposeShadowProxy();
+      const wasDetailed = this.group.userData.detailedShadow !== false;
+      const detailed =
+        mode === "B0"
+          ? distance < cutoff + (wasDetailed ? 5 : -5)
+          : mode === "B1"
+            ? distance < (wasDetailed ? 48 : 42)
+            : mode === "B3"
+              ? distance < (wasDetailed ? 38 : 32)
+              : false;
+      this.group.userData.detailedShadow = detailed;
+      this.group.traverse((object) => {
+        if (object instanceof THREE.Mesh && !object.userData.shadowProxy)
+          object.castShadow = detailed;
+      });
+      for (const material of [
+        ...this.shadowMaterials,
+        ...this.shadowProxyMaterials,
+      ])
+        if (material.userData.shadowDistance)
+          material.userData.shadowDistance.value =
+            material.userData.shadowProxyLevel !== undefined
+              ? mode === "B3"
+                ? material.userData.shadowProxyLevel === 1
+                  ? 80
+                  : 130
+                : cutoff
+              : mode === "B0"
+                ? cutoff
+                : mode === "B1"
+                  ? 45
+                  : 35;
+      for (const material of this.shadowProxyMaterials)
+        if (material.userData.shadowMinimumDistance)
+          material.userData.shadowMinimumDistance.value =
+            mode === "B3"
+              ? material.userData.shadowProxyLevel === 1
+                ? 35
+                : 80
+              : 0;
+      if (this.shadowProxy)
+        this.shadowProxy.visible =
+          (mode === "B2" || mode === "B3") &&
+          distance < (mode === "B3" ? 130 : cutoff);
+      this.group.userData.proxyShadowLevel = chooseLod(
+        distance,
+        [0, 35, 80],
+        this.group.userData.proxyShadowLevel ?? 1,
+      );
+      if (this.shadowProxy)
+        for (const child of this.shadowProxy.children)
+          child.visible =
+            mode === "B3"
+              ? child.userData.shadowLevel > 0
+              : child.userData.shadowLevel === 0;
+      this.group.userData.castingEnvironmentShadow =
+        detailed || !!this.shadowProxy?.visible;
     }
     const target = chooseLod(
       distance,
-      this.levels.map((l) => l.distance),
+      this.levels.map(
+        (l) =>
+          l.distance *
+          (this.profile === "performance"
+            ? 0.65
+            : this.profile === "quality"
+              ? 1.35
+              : 1),
+      ),
       Math.max(0, this.requested),
     );
     if (target !== this.requested && !this.failed.has(target))
@@ -449,6 +583,32 @@ export class WorldAssetBatch {
           .loadAsync(lod.file, (event) => {
             bytes = event.loaded;
           });
+        if (this.asset?.runtimeInfo?.environmentMaterials) {
+          gltf.scene.traverse((object) => {
+            if (
+              !(object instanceof THREE.Mesh) ||
+              !(object.material instanceof THREE.MeshStandardMaterial)
+            )
+              return;
+            const material = object.material,
+              file =
+                this.asset!.runtimeInfo!.environmentMaterials![material.name];
+            if (file)
+              configureBuildingMaterial(
+                material,
+                async () => {
+                  const texture = await new THREE.TextureLoader().loadAsync(
+                    file,
+                  );
+                  texture.name = `${material.name}-generated-v4`;
+                  texture.colorSpace = THREE.SRGBColorSpace;
+                  texture.flipY = false;
+                  return texture;
+                },
+                () => this.cache.refreshTextures(gltf.scene),
+              );
+          });
+        }
         gltf.scene.userData.sourceBytes = bytes;
         return gltf.scene;
       } catch {
@@ -460,6 +620,7 @@ export class WorldAssetBatch {
     void entry.promise
       .then((template) => {
         if (this.disposed || ticket !== this.requestTicket) return;
+        this.disposeShadowProxy();
         this.group.traverse((o) => {
           if (o instanceof THREE.InstancedMesh) o.dispose();
         });
@@ -492,12 +653,21 @@ export class WorldAssetBatch {
             const depth = environmentShadowMaterial(
               object.material,
               this.shadowCamera,
+              130,
             );
             object.customDepthMaterial = depth;
             this.shadowMaterials.push(depth);
           });
         }
         this.group.add(instances);
+
+        this.group.traverse((object) => {
+          if (object instanceof THREE.Mesh)
+            for (const material of Array.isArray(object.material)
+              ? object.material
+              : [object.material])
+              material.userData.setBuildingMaterialMode?.(this.materialMode);
+        });
         this.current = index;
         this.group.userData.lodLevel = lod.level;
         this.group.userData.runtimeBytes =
@@ -516,10 +686,124 @@ export class WorldAssetBatch {
         }
       });
   }
+  private createShadowProxy() {
+    const bounds = this.asset?.runtimeInfo?.bounds;
+    if (!bounds) return;
+    const group = new THREE.Group();
+    const height = bounds.max[1],
+      pine = this.asset!.catalog!.slots.some((slot) => slot.endsWith("pine"));
+    const geometry = new THREE.IcosahedronGeometry(1, 0);
+    const radiusX = (bounds.max[0] - bounds.min[0]) / 2,
+      radiusZ = (bounds.max[2] - bounds.min[2]) / 2;
+    geometry.scale(radiusX, height * (pine ? 0.4 : 0.3), radiusZ);
+    geometry.translate(
+      (bounds.max[0] + bounds.min[0]) / 2,
+      height * (pine ? 0.58 : 0.7),
+      (bounds.max[2] + bounds.min[2]) / 2,
+    );
+    const material = new THREE.MeshBasicMaterial({
+      colorWrite: false,
+      depthWrite: false,
+    });
+    const mesh = new THREE.InstancedMesh(
+      geometry,
+      material,
+      this.entities.length,
+    );
+    const transform = new THREE.Object3D();
+    this.entities.forEach((entity, i) => {
+      transform.position.fromArray(entity.transform.position);
+      transform.rotation.set(...entity.transform.rotation);
+      transform.scale.fromArray(entity.transform.scale);
+      transform.updateMatrix();
+      mesh.setMatrixAt(i, transform.matrix);
+    });
+    mesh.castShadow = true;
+    mesh.userData.shadowProxy = true;
+    mesh.userData.shared = true;
+    mesh.customDepthMaterial = environmentShadowMaterial(
+      material,
+      this.shadowCamera,
+      130,
+    );
+    mesh.customDepthMaterial.userData.shadowProxyLevel = 0;
+    this.shadowProxyMaterials.push(mesh.customDepthMaterial);
+    mesh.computeBoundingSphere();
+    const simple = new THREE.Group();
+    simple.userData.shadowLevel = 0;
+    simple.add(mesh);
+    group.add(simple);
+    group.visible = false;
+    this.shadowProxy = group;
+    this.group.add(group);
+  }
+  private loadShadowLods(group: THREE.Group) {
+    group.userData.loadedShadowLods = true;
+    for (const lod of this.asset?.runtimeInfo?.environmentShadowLods ?? []) {
+      const entry = this.cache.acquire(
+        lod.file,
+        async () =>
+          (
+            await new GLTFLoader()
+              .setMeshoptDecoder(MeshoptDecoder)
+              .loadAsync(lod.file)
+          ).scene,
+      );
+      this.shadowReleases.push(entry.release);
+      void entry.promise
+        .then((template) => {
+          if (this.disposed || this.shadowProxy !== group) return;
+          const instances = instanceTemplate(template, this.entities);
+          instances.userData.shadowLevel = lod.level;
+          instances.visible = false;
+          instances.traverse((object) => {
+            if (!(object instanceof THREE.Mesh)) return;
+            const invisible = new THREE.MeshBasicMaterial({
+              colorWrite: false,
+              depthWrite: false,
+            });
+            object.material = invisible;
+            object.userData.shadowProxy = true;
+            object.userData.shadowTemplate = true;
+            object.customDepthMaterial = environmentShadowMaterial(
+              invisible,
+              this.shadowCamera,
+              130,
+            );
+            object.customDepthMaterial.userData.shadowProxyLevel = lod.level;
+            this.shadowProxyMaterials.push(
+              invisible,
+              object.customDepthMaterial,
+            );
+          });
+          group.add(instances);
+        })
+        .catch(() => entry.release());
+    }
+  }
+  private disposeShadowProxy() {
+    this.shadowReleases.forEach((release) => release());
+    this.shadowReleases = [];
+    this.shadowProxyMaterials.forEach((material) => material.dispose());
+    this.shadowProxyMaterials = [];
+    if (!this.shadowProxy) return;
+    this.shadowProxy.traverse((object) => {
+      if (object instanceof THREE.Mesh) {
+        if (object instanceof THREE.InstancedMesh) object.dispose();
+        if (!object.userData.shadowTemplate) {
+          object.geometry.dispose();
+          (object.material as THREE.Material).dispose();
+        }
+      }
+    });
+    this.group.remove(this.shadowProxy);
+    this.shadowProxy = undefined;
+  }
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
     this.pendingRelease?.();
+    this.disposeShadowProxy();
     this.shadowMaterials.forEach((material) => material.dispose());
     this.shadowMaterials = [];
     this.group.traverse((object) => {

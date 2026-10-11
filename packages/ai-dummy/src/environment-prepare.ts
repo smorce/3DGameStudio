@@ -1,3 +1,13 @@
+import { environmentShadowGlb } from "./environment-shadow";
+import {
+  generatedSurfacePng,
+  type EnvironmentSurface,
+} from "./environment-materials";
+import {
+  environmentGeometryVersion,
+  type TreeRules,
+  type HouseRules,
+} from "./environment-rules";
 import type { AssetRecord } from "../../project-schema/src/index";
 import type { AssetStorage } from "../../storage/src/index";
 import { generateRuntime, runtimeIO } from "../../asset-pipeline/src/runtime";
@@ -34,9 +44,64 @@ export async function prepareEnvironmentAssets(
         ?.getExtras().environmentSeed;
       if (typeof variant !== "number" || !Number.isInteger(variant))
         throw new Error("Missing environment recipe seed");
+      const extras = original.getRoot().listScenes()[0].getExtras();
+      const rules = extras.environmentRules as
+        TreeRules | HouseRules | undefined;
+      if (extras.environmentGeometryVersion !== environmentGeometryVersion)
+        throw new Error(
+          "Stale environment geometry recipe; regenerate through Asset Factory",
+        );
+      if (asset.catalog)
+        asset.catalog.generation = {
+          kind: quality,
+          version: environmentGeometryVersion,
+          seed: variant,
+          parameters: rules ? { ...rules } : {},
+          materials:
+            quality === "house"
+              ? ["wood", "stone", "roof", "plaster", "glass"]
+              : quality === "oak"
+                ? ["bark", "leaf"]
+                : quality === "pine"
+                  ? ["bark", "needle"]
+                  : [quality],
+        };
+      if (quality === "oak" || quality === "pine") {
+        asset.runtimeInfo.environmentShadowLods = [];
+        for (const level of [1, 2] as const) {
+          const runtime = await generateRuntime(
+            await runtimeIO().readBinary(
+              await environmentShadowGlb(rules as TreeRules, level),
+            ),
+          );
+          const key = `${asset.id}/shadow-lod${level}.glb`,
+            bytes = runtime.levels[0].bytes;
+          await storage.save(key, bytes);
+          asset.runtimeInfo.environmentShadowLods.push({
+            level,
+            file: `/api/files/${key}`,
+            distance: level === 1 ? 35 : 80,
+            bytes: bytes.length,
+          });
+        }
+      }
+      if (quality === "house") {
+        asset.runtimeInfo.environmentMaterials = {};
+        for (const surface of [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass",
+        ] as EnvironmentSurface[]) {
+          const key = `${asset.id}/generated-${surface}.png`;
+          await storage.save(key, await generatedSurfacePng(surface, variant));
+          asset.runtimeInfo.environmentMaterials[surface] = `/api/files/${key}`;
+        }
+      }
       for (const level of [1, 2]) {
         const doc = await runtimeIO().readBinary(
-          await environmentModelGlb(quality, variant, level),
+          await environmentModelGlb(quality, variant, level, rules),
         );
         const runtime = await generateRuntime(doc);
         const key = `${asset.id}/quality-lod${level}.glb`,

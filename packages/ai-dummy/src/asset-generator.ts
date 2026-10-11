@@ -1,3 +1,8 @@
+import {
+  environmentGeometryVersion,
+  treeRules,
+  houseRules,
+} from "./environment-rules";
 import { alpineModelGlb } from "./alpine-models";
 import { environmentModelGlb, qualityModelKind } from "./environment-models";
 import { demoPrimitiveGlb } from "./demo-primitives";
@@ -12,11 +17,23 @@ import { createHash } from "node:crypto";
 /** 開発時専用。既存placeholderを通し、外部APIやBlenderを呼び出さない。 */
 export class DummyAstraAssetGenerator implements AssetGenerator {
   constructor(private readonly demoPrimitives = false) {}
+  generationVersion(slot: string) {
+    return this.demoPrimitives && qualityModelKind(slot)
+      ? environmentGeometryVersion
+      : undefined;
+  }
   async generate(
     request: AssetGenerationRequest,
   ): Promise<GeneratedAssetArtifact> {
     const promptHash = createHash("sha256")
-      .update(JSON.stringify(request))
+      .update(
+        JSON.stringify({
+          ...request,
+          ...(qualityModelKind(request.assetSlot)
+            ? { environmentGeometryVersion }
+            : {}),
+        }),
+      )
       .digest("hex");
     const quality = qualityModelKind(request.assetSlot);
     const bytes = this.demoPrimitives
@@ -27,6 +44,21 @@ export class DummyAstraAssetGenerator implements AssetGenerator {
           : await demoPrimitiveGlb(request.assetSlot)
       : await placeholderGlb();
     return {
+      generation:
+        quality && this.demoPrimitives
+          ? {
+              kind: quality,
+              version: environmentGeometryVersion,
+              seed: request.variantIndex,
+              parameters:
+                quality === "house"
+                  ? { ...houseRules(request.variantIndex) }
+                  : quality === "oak" || quality === "pine"
+                    ? { ...treeRules(quality, request.variantIndex) }
+                    : {},
+              materials: [],
+            }
+          : undefined,
       candidate: {
         id: `dummy-${promptHash}`,
         name: `${request.assetSlot} (Dummy ${request.variantIndex})`,

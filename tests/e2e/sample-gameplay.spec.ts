@@ -1,3 +1,4 @@
+import { evidencePath } from "./fixtures";
 import { test, expect, type Page } from "./fixtures";
 import type { AgentGameState } from "../../packages/engine-core/src/agent-observation";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -55,9 +56,11 @@ for (const id of [
     expect(samples.some((s) => (s.controls?.throttle ?? 0) > 0)).toBe(true);
     if (id !== "tropical-archipelago")
       expect(samples.some((s) => (s.groundedWheelCount ?? 0) > 0)).toBe(true);
-    await mkdir("docs/evidence/sample-worlds", { recursive: true });
+    await mkdir(evidencePath("docs/evidence/sample-worlds"), {
+      recursive: true,
+    });
     await writeFile(
-      `docs/evidence/sample-worlds/${id}-drive.json`,
+      evidencePath(`docs/evidence/sample-worlds/${id}-drive.json`),
       JSON.stringify({ initial, samples }, null, 2) + "\n",
     );
   });
@@ -181,9 +184,9 @@ test("race-island: 道路を実走して3CheckpointからGoalまで到達する"
     body: JSON.stringify(result, null, 2),
     contentType: "application/json",
   });
-  await mkdir("docs/evidence/sample-worlds", { recursive: true });
+  await mkdir(evidencePath("docs/evidence/sample-worlds"), { recursive: true });
   await writeFile(
-    "docs/evidence/sample-worlds/race-drive.json",
+    evidencePath("docs/evidence/sample-worlds/race-drive.json"),
     JSON.stringify(result, null, 2) + "\n",
   );
   for (const n of [1, 2, 3])

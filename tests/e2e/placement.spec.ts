@@ -1,3 +1,4 @@
+import { evidencePath } from "./fixtures";
 import { test, expect } from "./fixtures";
 import { mkdir } from "node:fs/promises";
 import {
@@ -18,9 +19,9 @@ test("タイヤ候補から取り付けて選択する @smoke", async ({ page })
     page.getByRole("button", { name: /^ここにつける / }),
   ).toHaveCount(4);
   await expect(page.getByText("1 パーツ")).toBeVisible();
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   await page.screenshot({
-    path: "docs/screenshots/placement-01-wheel-candidates.png",
+    path: evidencePath("docs/screenshots/placement-01-wheel-candidates.png"),
   });
   await pickCandidate(page);
   await expect(page.getByText("2 パーツ")).toBeVisible();
@@ -29,7 +30,7 @@ test("タイヤ候補から取り付けて選択する @smoke", async ({ page })
   ).toHaveCount(0);
   await expect(page.locator(".selection-tools")).toContainText("タイヤ");
   await page.screenshot({
-    path: "docs/screenshots/placement-02-wheel-focused.png",
+    path: evidencePath("docs/screenshots/placement-02-wheel-focused.png"),
   });
 });
 
@@ -55,7 +56,9 @@ test("Placement Smoke: 4輪を取り付け、回転・つけ直し・Undo・実�
   await expect(
     page.getByRole("button", { name: /^ここにつける / }),
   ).toHaveCount(4);
-  await page.screenshot({ path: "docs/screenshots/placement-03-reattach.png" });
+  await page.screenshot({
+    path: evidencePath("docs/screenshots/placement-03-reattach.png"),
+  });
   expect(await savedProject(page)).toEqual(before);
   await page.keyboard.press("Escape");
   expect(await savedProject(page)).toEqual(before);

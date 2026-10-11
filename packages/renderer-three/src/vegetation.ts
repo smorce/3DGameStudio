@@ -122,33 +122,47 @@ export function createVegetationChunk(
   options: Parameters<typeof vegetationPlacements>[0] & {
     originX: number;
     originZ: number;
+    coverageAllowed?: (x: number, z: number) => boolean;
+    finishCoverage?: () => void;
     groundMaterial?: THREE.MeshStandardMaterial;
+    initialMode?: "A0" | "A1" | "A2" | "A3";
   },
 ) {
   const group = new THREE.Group();
   group.userData.environmentCategory = "grass";
-  const placements = vegetationPlacements(options);
   const ground = options.groundMaterial
     ? grassGround(options.groundMaterial, options)
     : undefined;
   const resources = acquireVegetationResources();
   const { material, geometries } = resources;
-  const patches = new Map<string, typeof placements>();
-  for (const p of placements) {
-    const key = `${Math.floor(p.position[0] / 16)},${Math.floor(p.position[2] / 16)}`;
-    const list = patches.get(key) ?? [];
-    list.push(p);
-    patches.set(key, list);
-  }
   const dummy = new THREE.Object3D(),
     color = new THREE.Color();
   const colors = ["#8caa48", "#6d9237", "#b6a164", "#9bab65", "#789946"];
   const meshes: THREE.InstancedMesh[] = [];
-  let mode: "A0" | "A1" | "A2" = "A0";
-  group.userData.setGrassMode = (next: "A0" | "A1" | "A2") => {
+  let mode: "A0" | "A1" | "A2" | "A3" = "A0";
+  let nearKey = "";
+  let rangeScale = 1;
+  group.userData.setEnvironmentProfile = (profile: string) => {
+    rangeScale =
+      profile === "performance" ? 0.7 : profile === "quality" ? 1.25 : 1;
+  };
+  const clearMeshes = () => {
+    meshes.forEach((mesh) => {
+      group.remove(mesh);
+      mesh.dispose();
+    });
+    meshes.length = 0;
+  };
+  group.userData.setGrassMode = (next: "A0" | "A1" | "A2" | "A3") => {
     if (mode === next) return;
+    const previous = mode;
     mode = next;
-    ground?.setActive(mode === "A1");
+    ground?.setActive(mode === "A1" || mode === "A3");
+    if (mode === "A3" || previous === "A3") {
+      clearMeshes();
+      nearKey = "";
+      if (mode !== "A3") buildPatches(options.bounds);
+    }
     for (const mesh of meshes) {
       mesh.geometry = geometries[mesh.userData.level + (mode === "A2" ? 2 : 0)];
       mesh.material = mode === "A2" ? resources.windMaterial : material;
@@ -156,37 +170,55 @@ export function createVegetationChunk(
         mesh.userData.baselineRadius + (mode === "A2" ? 0.35 : 0);
     }
   };
-  for (const list of patches.values()) {
-    const mesh = new THREE.InstancedMesh(geometries[0], material, list.length);
-    mesh.userData.shared = true;
-    mesh.receiveShadow = true;
-    mesh.castShadow = false;
-    list.forEach((p, i) => {
-      dummy.position.set(
-        p.position[0] - options.originX,
-        p.position[1] - 0.035,
-        p.position[2] - options.originZ,
+  const buildPatches = (bounds: typeof options.bounds) => {
+    const placements = vegetationPlacements({ ...options, bounds });
+    const patches = new Map<string, typeof placements>();
+    for (const p of placements) {
+      const key = `${Math.floor(p.position[0] / 16)},${Math.floor(p.position[2] / 16)}`;
+      const list = patches.get(key) ?? [];
+      list.push(p);
+      patches.set(key, list);
+    }
+    for (const list of patches.values()) {
+      const mesh = new THREE.InstancedMesh(
+        geometries[0],
+        material,
+        list.length,
       );
-      dummy.rotation.set(0, p.yaw, 0);
-      dummy.scale.set(
-        p.scale * (p.kind === 4 ? 1.55 : 1.15),
-        p.scale * [0.5, 1.15, 0.7, 0.75, 1.15][p.kind],
-        p.scale * (p.kind === 4 ? 1.55 : 1.15),
-      );
-      dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
-      mesh.setColorAt(i, color.set(colors[p.kind]));
-    });
-    mesh.computeBoundingSphere();
-    // 幅広葉と風の最大変位もカリング範囲に含める。
-    mesh.userData.baselineRadius = mesh.boundingSphere!.radius;
+      mesh.userData.shared = true;
+      mesh.receiveShadow = true;
+      mesh.castShadow = false;
+      list.forEach((p, i) => {
+        dummy.position.set(
+          p.position[0] - options.originX,
+          p.position[1] - 0.035,
+          p.position[2] - options.originZ,
+        );
+        dummy.rotation.set(0, p.yaw, 0);
+        dummy.scale.set(
+          p.scale * (p.kind === 4 ? 1.55 : 1.15),
+          p.scale * [0.5, 1.15, 0.7, 0.75, 1.15][p.kind],
+          p.scale * (p.kind === 4 ? 1.55 : 1.15),
+        );
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+        mesh.setColorAt(i, color.set(colors[p.kind]));
+      });
+      mesh.computeBoundingSphere();
+      // 幅広葉と風の最大変位もカリング範囲に含める。
+      mesh.userData.baselineRadius = mesh.boundingSphere!.radius;
 
-    mesh.instanceMatrix.needsUpdate = true;
-    mesh.userData.center = mesh.boundingSphere!.center.clone();
-    mesh.userData.level = 0;
-    meshes.push(mesh);
-    group.add(mesh);
-  }
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.userData.center = mesh.boundingSphere!.center.clone();
+      mesh.userData.level = 0;
+      meshes.push(mesh);
+      group.add(mesh);
+    }
+  };
+  if (options.initialMode === "A3") {
+    mode = "A3";
+    ground?.setActive(true);
+  } else buildPatches(options.bounds);
   const world = new THREE.Vector3();
   const frustum = new THREE.Frustum(),
     projection = new THREE.Matrix4();
@@ -196,6 +228,24 @@ export function createVegetationChunk(
     viewportHeight: number,
   ) => {
     group.updateWorldMatrix(true, false);
+    if (mode === "A3") {
+      const local = group.worldToLocal(camera.position.clone());
+      const x = Math.floor((local.x + options.originX) / 16),
+        z = Math.floor((local.z + options.originZ) / 16);
+      const key = `${x},${z}`;
+      if (key !== nearKey) {
+        nearKey = key;
+        clearMeshes();
+        const bounds = {
+          minX: Math.max(options.bounds.minX, (x - 2) * 16),
+          minZ: Math.max(options.bounds.minZ, (z - 2) * 16),
+          maxX: Math.min(options.bounds.maxX, (x + 3) * 16),
+          maxZ: Math.min(options.bounds.maxZ, (z + 3) * 16),
+        };
+        if (bounds.minX < bounds.maxX && bounds.minZ < bounds.maxZ)
+          buildPatches(bounds);
+      }
+    }
     camera.updateMatrixWorld();
     frustum.setFromProjectionMatrix(
       projection.multiplyMatrices(
@@ -218,8 +268,8 @@ export function createVegetationChunk(
           Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
           Math.max(1, camera.position.distanceTo(world)));
       const level = mesh.userData.level as number;
-      mesh.visible = pixels > (mesh.visible ? 6.5 : 7.5);
-      if (mode === "A1")
+      mesh.visible = pixels * rangeScale > (mesh.visible ? 6.5 : 7.5);
+      if (mode === "A1" || mode === "A3")
         mesh.visible &&=
           camera.position.distanceTo(world) <
           (mesh.userData.nearVisible ? 30 : 26);
@@ -236,6 +286,7 @@ export function createVegetationChunk(
     if (released) return;
     released = true;
     ground?.release();
+    clearMeshes();
     resources.references--;
     if (resources.references === 0) {
       geometries.forEach((g) => g.dispose());

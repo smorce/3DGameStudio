@@ -1,3 +1,4 @@
+import { evidencePath } from "./fixtures";
 import { test, expect, type Page } from "./fixtures";
 import { mkdir } from "node:fs/promises";
 import { pickCandidate } from "./placement-helpers";
@@ -13,7 +14,7 @@ async function zoomScene(page: Page) {
 }
 
 test("Machine PartのVisual Evidenceを保存する", async ({ page }) => {
-  await mkdir("docs/screenshots", { recursive: true });
+  await mkdir(evidencePath("docs/screenshots"), { recursive: true });
   await page.goto("/");
   await page.getByRole("button", { name: "じゆうにつくる" }).click();
   await page.getByRole("button", { name: "▱ 板", exact: true }).click();
@@ -25,11 +26,11 @@ test("Machine PartのVisual Evidenceを保存する", async ({ page }) => {
   ).toHaveCount(2);
   const canvas = await zoomScene(page);
   await canvas.screenshot({
-    path: "docs/screenshots/part-visual-placement-ghost.png",
+    path: evidencePath("docs/screenshots/part-visual-placement-ghost.png"),
   });
   await pickCandidate(page);
   await canvas.screenshot({
-    path: "docs/screenshots/part-visual-thruster.png",
+    path: evidencePath("docs/screenshots/part-visual-thruster.png"),
   });
 
   await page.getByRole("button", { name: "━ 関節", exact: true }).click();
@@ -38,6 +39,6 @@ test("Machine PartのVisual Evidenceを保存する", async ({ page }) => {
   ).toHaveCount(6);
   await pickCandidate(page);
   await canvas.screenshot({
-    path: "docs/screenshots/part-visual-hinge.png",
+    path: evidencePath("docs/screenshots/part-visual-hinge.png"),
   });
 });

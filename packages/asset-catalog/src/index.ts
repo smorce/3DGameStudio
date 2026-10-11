@@ -31,6 +31,9 @@ export function assetMetadataHash(asset: AssetRecord) {
     catalog: asset.catalog,
     type: asset.type,
     runtime: asset.files.runtime,
+    ...(asset.catalog?.generation
+      ? { environmentRuntime: asset.runtimeInfo }
+      : {}),
     license: asset.license,
   });
 }

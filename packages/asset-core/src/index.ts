@@ -96,7 +96,9 @@ export interface GeneratedAssetArtifact {
   bytes: Uint8Array;
   option: DownloadOption;
   ai: NonNullable<AssetRecord["ai"]>;
+  generation?: NonNullable<AssetRecord["catalog"]>["generation"];
 }
 export interface AssetGenerator {
+  generationVersion?(assetSlot: string): number | undefined;
   generate(request: AssetGenerationRequest): Promise<GeneratedAssetArtifact>;
 }

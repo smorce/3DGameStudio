@@ -63,6 +63,8 @@ export interface AgentGameState {
     geometries: number | null;
     textures: number | null;
     gpuTimingMs: number | null;
+    shadowCpuMs?: number | null;
+    shadowGpuMs?: number | null;
   };
   frame: {
     rafMs: number | null;
@@ -85,7 +87,11 @@ export interface MachineStudioAgentApi {
   setEnvironmentDiagnostics(options: {
     trees?: boolean;
     grass?: boolean;
-    grassMode?: "A0" | "A1" | "A2";
+    grassMode?: "A0" | "A1" | "A2" | "A3";
+    runtimeProfile?: "quality" | "balanced" | "performance";
+    shadowPassTiming?: boolean;
+    treeShadowMode?: "B0" | "B1" | "B2" | "B3";
+    buildingMaterialMode?: "C0" | "C1" | "C2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
     shadows?: boolean;
@@ -160,7 +166,11 @@ export interface EngineObservationHost {
     setEnvironmentDiagnostics?(options: {
       trees?: boolean;
       grass?: boolean;
-      grassMode?: "A0" | "A1" | "A2";
+      grassMode?: "A0" | "A1" | "A2" | "A3";
+      runtimeProfile?: "quality" | "balanced" | "performance";
+      shadowPassTiming?: boolean;
+      treeShadowMode?: "B0" | "B1" | "B2" | "B3";
+      buildingMaterialMode?: "C0" | "C1" | "C2";
       buildingDetails?: boolean;
       groundDetails?: boolean;
       shadows?: boolean;
@@ -293,6 +303,8 @@ export function createAgentObservationApi(
           geometries: render.geometryCount ?? render.geometries ?? null,
           textures: render.textureCount ?? render.textures ?? null,
           gpuTimingMs: lastGpu?.gpuMs ?? null,
+          shadowCpuMs: render.shadowCpuMs >= 0 ? render.shadowCpuMs : null,
+          shadowGpuMs: render.shadowGpuMs >= 0 ? render.shadowGpuMs : null,
         },
         frame: {
           rafMs: timing?.rafIntervalMs ?? null,

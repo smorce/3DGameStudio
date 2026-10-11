@@ -1,3 +1,4 @@
+import { ShadowPassProbe } from "./shadow-pass";
 import { semanticContext } from "../../world-generator/src/design-generation";
 import { alpineSurfaceMaterial } from "./alpine-surface";
 import { worldVegetationChunk } from "./world-vegetation";
@@ -191,6 +192,7 @@ export class ThreeRenderer implements RendererAdapter {
   private editWorkspace = true;
   private moved = false;
   private pointers = new Set<number>();
+  private shadowProbe!: ShadowPassProbe;
   private gpuTimer!: DisjointGpuTimer;
   /** GPU Timer begin に渡す診断メタ（Engine が毎フレーム更新）。 */
   private gpuTimerMeta = { frame: 0, timeMs: 0 };
@@ -378,6 +380,10 @@ export class ThreeRenderer implements RendererAdapter {
     this.gpuTimer = new DisjointGpuTimer(
       this.renderer.getContext() as WebGL2RenderingContext | null,
     );
+    this.shadowProbe = new ShadowPassProbe(
+      this.renderer,
+      () => this.gpuTimerMeta,
+    );
     this.camera.position.set(7, 5.5, 8);
     this.controls = new OrbitControls(this.camera, canvas);
     this.controls.target.set(0, 0.6, 0);
@@ -500,14 +506,22 @@ export class ThreeRenderer implements RendererAdapter {
   private environmentDiagnostics: {
     trees?: boolean;
     grass?: boolean;
-    grassMode?: "A0" | "A1" | "A2";
+    grassMode?: "A0" | "A1" | "A2" | "A3";
+    runtimeProfile?: "quality" | "balanced" | "performance";
+    shadowPassTiming?: boolean;
+    treeShadowMode?: "B0" | "B1" | "B2" | "B3";
+    buildingMaterialMode?: "C0" | "C1" | "C2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
   } = {};
   setEnvironmentDiagnostics(options: {
     trees?: boolean;
     grass?: boolean;
-    grassMode?: "A0" | "A1" | "A2";
+    grassMode?: "A0" | "A1" | "A2" | "A3";
+    runtimeProfile?: "quality" | "balanced" | "performance";
+    shadowPassTiming?: boolean;
+    treeShadowMode?: "B0" | "B1" | "B2" | "B3";
+    buildingMaterialMode?: "C0" | "C1" | "C2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
     shadows?: boolean;
@@ -517,6 +531,8 @@ export class ThreeRenderer implements RendererAdapter {
         object.userData.setGrassMode?.(options.grassMode),
       );
     Object.assign(this.environmentDiagnostics, options);
+    this.shadowProbe.enabled =
+      this.environmentDiagnostics.shadowPassTiming === true;
     this.applyDiagnosticsQuality(options);
   }
   /** 高コストなリソース走査は測定時のみ要求する。 */
@@ -524,6 +540,8 @@ export class ThreeRenderer implements RendererAdapter {
     const materials = new Set<THREE.Material>();
     const geometries = new Set<THREE.BufferGeometry>();
     const textures = new Set<THREE.Texture>();
+    let grassInstanceBytes = 0,
+      instanceBufferBytes = 0;
     let grassInstances = 0,
       grassPatches = 0,
       visibleGrassPatches = 0,
@@ -533,12 +551,19 @@ export class ThreeRenderer implements RendererAdapter {
       if (object.userData.environmentCategory === "grass") {
         object.traverse((child) => {
           if (child instanceof THREE.InstancedMesh) {
+            grassInstanceBytes +=
+              child.instanceMatrix.array.byteLength +
+              (child.instanceColor?.array.byteLength ?? 0);
             grassInstances += child.count;
             grassPatches++;
             if (object.visible && child.visible) visibleGrassPatches++;
           }
         });
       }
+      if (object instanceof THREE.InstancedMesh)
+        instanceBufferBytes +=
+          object.instanceMatrix.array.byteLength +
+          (object.instanceColor?.array.byteLength ?? 0);
       if (object instanceof THREE.Mesh) {
         geometries.add(object.geometry);
         for (const material of Array.isArray(object.material)
@@ -562,6 +587,8 @@ export class ThreeRenderer implements RendererAdapter {
       geometries: geometries.size,
       textures: textures.size,
       grassInstances,
+      grassInstanceBytes,
+      instanceBufferBytes,
       grassPatches,
       visibleGrassPatches,
       grassCoveragePreparationMs,
@@ -1091,6 +1118,7 @@ export class ThreeRenderer implements RendererAdapter {
                     alpineFieldAt(x, z)?.crop === "grass"
                 : undefined,
               mesh.material,
+              this.environmentDiagnostics.grassMode,
             );
             if (vegetation) group.add(vegetation);
           }
@@ -1699,10 +1727,12 @@ export class ThreeRenderer implements RendererAdapter {
       const origin = this.worldRuntime?.worldOrigin ?? [0, 0, 0];
       clouds.position.set(-origin[0], -origin[1], -origin[2]);
     }
-    this.gpuTimer.begin(this.gpuTimerMeta);
+    this.shadowProbe.measuring =
+      this.shadowProbe.enabled && this.gpuTimerMeta.frame % 4 === 0;
+    if (!this.shadowProbe.measuring) this.gpuTimer.begin(this.gpuTimerMeta);
     this.applyEnvironmentDiagnostics();
     this.renderer.render(this.scene, this.camera);
-    this.gpuTimer.end();
+    if (!this.shadowProbe.measuring) this.gpuTimer.end();
     if (this.onCandidateScreens) {
       const rect = this.canvas.getBoundingClientRect();
       this.onCandidateScreens(
@@ -1733,6 +1763,8 @@ export class ThreeRenderer implements RendererAdapter {
       loadedChunks: this.chunks.size,
       lodBatchCount: this.lodBatches.size,
       // renderer.info は安価。PLAY HUD / Spike 向けに traverse なしで提供する。
+      shadowCpuMs: this.shadowProbe.enabled ? this.shadowProbe.cpuMs : -1,
+      shadowGpuMs: this.shadowProbe.enabled ? this.shadowProbe.gpuMs : -1,
       drawCalls: this.renderer.info.render.calls,
       triangles: this.renderer.info.render.triangles,
       shaderProgramCount: this.renderer.info.programs?.length ?? 0,
@@ -1796,7 +1828,9 @@ export class ThreeRenderer implements RendererAdapter {
       lod1Batches: lodBatches[1],
       lod2Batches: lodBatches[2],
       runtimeBudgetExceeded: evaluateRuntimeBudget(
-        this.project?.settings.runtimeProfile ?? "balanced",
+        this.environmentDiagnostics.runtimeProfile ??
+          this.project?.settings.runtimeProfile ??
+          "balanced",
         {
           loadedAssetBytes: runtimeAssetBytes,
           textureBytes: textureMemoryEstimate,
@@ -1804,6 +1838,8 @@ export class ThreeRenderer implements RendererAdapter {
           drawCalls: this.renderer.info.render.calls,
         },
       ).length,
+      shadowCpuMs: this.shadowProbe.enabled ? this.shadowProbe.cpuMs : -1,
+      shadowGpuMs: this.shadowProbe.enabled ? this.shadowProbe.gpuMs : -1,
       drawCalls: this.renderer.info.render.calls,
       triangles: this.renderer.info.render.triangles,
       loadedChunks: [...this.chunks.values()].filter((g) => g.visible).length,
@@ -1832,6 +1868,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.dispose();
     this.farProxy?.dispose();
     this.streamer?.dispose();
+    this.shadowProbe.dispose();
     this.gpuTimer.dispose();
     this.chunkBuilders.clear();
     this.clearSharedBuiltinTemplates();
@@ -1866,6 +1903,11 @@ export class ThreeRenderer implements RendererAdapter {
       for (const child of chunk.children) {
         if (this.environmentDiagnostics.grassMode)
           child.userData.setGrassMode?.(this.environmentDiagnostics.grassMode);
+        child.userData.setEnvironmentProfile?.(
+          this.environmentDiagnostics.runtimeProfile ??
+            this.project?.settings.runtimeProfile ??
+            "balanced",
+        );
         child.userData.updateVegetation?.(
           this.camera,
           this.renderer.domElement.height,
@@ -1873,6 +1915,13 @@ export class ThreeRenderer implements RendererAdapter {
       }
     let index = 0;
     for (const batch of this.lodBatches) {
+      batch.group.userData.setEnvironmentModes?.({
+        ...this.environmentDiagnostics,
+        profile:
+          this.environmentDiagnostics.runtimeProfile ??
+          this.project?.settings.runtimeProfile ??
+          "balanced",
+      });
       if (index++ % 4 === this.lodFrameIndex % 4) batch.update(camera);
     }
   }

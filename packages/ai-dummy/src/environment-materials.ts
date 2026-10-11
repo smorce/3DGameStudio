@@ -116,7 +116,10 @@ export function surfacePixels(surface: EnvironmentSurface, size = 128) {
 /** 文書内の同種素材はMaterial/Textureを共有し、GLBに画像を埋め込む。 */
 export class EnvironmentMaterials {
   private materials = new Map<EnvironmentSurface, Promise<Material>>();
-  constructor(private doc: Document) {}
+  constructor(
+    private doc: Document,
+    private palette: "warm" | "cool" = "warm",
+  ) {}
   get(surface: EnvironmentSurface) {
     let result = this.materials.get(surface);
     if (!result) {
@@ -140,6 +143,9 @@ export class EnvironmentMaterials {
         );
     const material = this.doc
       .createMaterial(surface)
+      .setBaseColorFactor(
+        this.palette === "cool" ? [0.9, 0.96, 1, 1] : [1, 1, 1, 1],
+      )
       .setMetallicFactor(0)
       .setRoughnessFactor(surface === "glass" ? 0.32 : 1)
       .setBaseColorTexture(await texture("color"));
@@ -151,4 +157,48 @@ export class EnvironmentMaterials {
         .setMetallicRoughnessTexture(await texture("roughness"));
     return material;
   }
+}
+
+/** C1用の保存画像。木目の節・建材ごとの色むらをSeedから決定する。 */
+export function generatedSurfacePixels(
+  surface: EnvironmentSurface,
+  seed: number,
+  size = 128,
+) {
+  const pixels = surfacePixels(surface, size).color;
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
+      const u = x / size,
+        v = y / size;
+      const knot = Math.exp(
+        -(
+          (Math.sin((u - (seed % 7) / 7) * Math.PI) * 7) ** 2 +
+          (Math.sin((v - 0.42) * Math.PI) * 3) ** 2
+        ),
+      );
+      const variation =
+        surface === "wood"
+          ? 1 - knot * 0.35
+          : 1 +
+            Math.sin(u * Math.PI * 8 + seed) *
+              Math.sin(v * Math.PI * 8) *
+              0.065;
+      const offset = (y * size + x) * 4;
+      for (let c = 0; c < 3; c++)
+        pixels[offset + c] = Math.min(
+          255,
+          Math.round(pixels[offset + c] * variation),
+        );
+    }
+  return pixels;
+}
+export async function generatedSurfacePng(
+  surface: EnvironmentSurface,
+  seed: number,
+) {
+  return sharp(generatedSurfacePixels(surface, seed), {
+    raw: { width: 128, height: 128, channels: 4 },
+  })
+    .png()
+    .toBuffer();
 }

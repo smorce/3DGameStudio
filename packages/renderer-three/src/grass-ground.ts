@@ -7,6 +7,8 @@ import {
 type Options = Parameters<typeof vegetationPlacements>[0] & {
   originX: number;
   originZ: number;
+  coverageAllowed?: (x: number, z: number) => boolean;
+  finishCoverage?: () => void;
 };
 
 /** 既存の除外条件を地表にも適用する。TextureはA1を使うChunkだけが所有する。 */
@@ -30,22 +32,30 @@ export function grassGround(
         material.onBeforeCompile = originalCompile;
         material.customProgramCacheKey = () => originalProgramKey;
         material.needsUpdate = true;
+        texture?.dispose();
+        texture = undefined;
+        delete material.userData.grassCoverageTexture;
+        delete material.userData.grassCoverageBytes;
+        delete material.userData.grassCoveragePreparationMs;
         return;
       }
       if (!texture) {
         const started = performance.now();
-        const resolution = 128;
+        const resolution = 130;
+        const innerResolution = resolution - 2;
         const data = new Uint8Array(resolution * resolution * 4);
         for (let z = 0; z < resolution; z++)
           for (let x = 0; x < resolution; x++) {
-            const wx = options.bounds.minX + ((x + 0.5) / resolution) * sizeX;
-            const wz = options.bounds.minZ + ((z + 0.5) / resolution) * sizeZ;
+            const wx =
+              options.bounds.minX + ((x - 0.5) / innerResolution) * sizeX;
+            const wz =
+              options.bounds.minZ + ((z - 0.5) / innerResolution) * sizeZ;
             const allowed =
               wx >= options.area.minX &&
               wx < options.area.maxX &&
               wz >= options.area.minZ &&
               wz < options.area.maxZ &&
-              options.allowed(wx, wz);
+              (options.coverageAllowed ?? options.allowed)(wx, wz);
             const offset = (z * resolution + x) * 4;
             const distance = options.roadDistance?.(wx, wz);
             data[offset] = allowed
@@ -59,6 +69,7 @@ export function grassGround(
               : 0;
             data[offset + 3] = 255;
           }
+        options.finishCoverage?.();
         texture = new THREE.DataTexture(data, resolution, resolution);
         texture.minFilter = texture.magFilter = THREE.LinearFilter;
         texture.generateMipmaps = false;
@@ -93,7 +104,7 @@ export function grassGround(
           "varying vec2 grassGroundUV;\nuniform sampler2D grassCoverage;\nuniform float grassCoverageEnabled;\nuniform vec2 grassGroundSize;\nuniform vec2 grassGroundOrigin;\nuniform float grassGroundSeed;\n" +
           shader.fragmentShader.replace(
             "#include <opaque_fragment>",
-            `float grassCover = texture2D(grassCoverage, grassGroundUV).r * grassCoverageEnabled;
+            `float grassCover = texture2D(grassCoverage, (grassGroundUV * 128.0 + 1.0) / 130.0).r * grassCoverageEnabled;
           vec2 grassAbsolute = grassGroundUV * grassGroundSize + grassGroundOrigin;
           float grassPattern = sin(grassAbsolute.x * 0.73 + grassGroundSeed) * sin(grassAbsolute.y * 0.91);
           outgoingLight *= mix(vec3(1.0), vec3(0.82, 1.04, 0.73) * (1.0 + grassPattern * 0.10), grassCover * 0.45);
@@ -101,10 +112,11 @@ export function grassGround(
           );
       };
       material.customProgramCacheKey = () =>
-        originalProgramKey + "-grass-coverage-v2";
+        originalProgramKey + "-grass-coverage-v3";
       material.needsUpdate = true;
     },
     release() {
+      this.setActive(false);
       texture?.dispose();
       delete material.userData.grassCoverageTexture;
       delete material.userData.grassCoveragePreparationMs;
