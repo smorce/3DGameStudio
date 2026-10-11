@@ -1,5 +1,7 @@
 # Asset Pipeline
 
+環境描画パイプラインでは、Asset Factoryの直後・Asset Catalogの直前に位置します（正本は[アーキテクチャ](architecture.md#環境描画パイプライン正本)）。樹木・住宅・距離別モデルなどの生成物も、ここを通って保存済みGLBになります。
+
 原本を保持し、Runtime版だけをゲーム実行向けに最適化します。Studio→Server→ProviderまたはBinary Upload→検証→Original保存→Collider Source生成→Runtime／LOD生成→サムネイル→AssetRecordという順序です。
 
 ## 保存ファイル

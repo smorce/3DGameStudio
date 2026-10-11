@@ -1,5 +1,7 @@
 # Asset Factory / Catalog
 
+端から端までの環境描画パイプライン（World Design + Seed → 生成規則 → Factory → Pipeline → Catalog → 保存済みGLB／距離別モデル → World Runtime → Chunk Streaming → Three.js → シェーダー・風・影 → ブラウザ）の正本は[アーキテクチャ](architecture.md#環境描画パイプライン正本)です。本ページはそのうち Factory／Catalog の責務を詳述します。
+
 ```mermaid
 flowchart LR
   WD[World Design] --> P[AssetRequirementPlanner]

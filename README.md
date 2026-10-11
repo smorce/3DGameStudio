@@ -39,6 +39,35 @@ flowchart TD
 
 Project ModelはThree.js／Rapierを参照しません。EngineはReactに依存せず、独立Playerでも同じコードを実行します。
 
+プロシージャル環境は、開発時に素材を用意し実行時は保存済み成果物だけを読む構成です。
+
+```text
+World Design + Seed
+        ↓
+プロシージャル生成規則
+        ↓
+樹木・住宅・材質の生成
+        ↓
+Asset Factory
+        ↓
+Asset Pipeline
+        ↓
+Asset Catalog
+        ↓
+保存済みGLB・距離別モデル
+        ↓
+World Runtime
+        ↓
+Chunk Streaming
+        ↓
+Three.js Renderer
+        ↓
+シェーダー・風・影
+        ↓
+ブラウザで探索できる3D世界
+```
+
+段階ごとの説明は[設計](docs/architecture.md#環境描画パイプライン正本)、環境描画の実装は[プロシージャル環境描画](docs/environment-quality/procedural-rendering.md)を参照してください。
 ## Repository Structure
 
 | ディレクトリ  | 内容                                                                 |
@@ -165,8 +194,9 @@ Phase 0–10でモデル・物理・3段階UI・ワールド・コース・素�
 
 ## World Design / Asset Factory
 
-Designで5島を固定配置した`toy-islands`を、外部APIなしで準備できます。
+環境描画の端到端経路（World Design + Seed → … → ブラウザで探索できる3D世界）は[設計](docs/architecture.md#環境描画パイプライン正本)にまとめています。
 
+Designで5島を固定配置した`toy-islands`を、外部APIなしで準備できます。
 ```bash
 pnpm asset:plan
 pnpm asset:factory -- --mode=offline

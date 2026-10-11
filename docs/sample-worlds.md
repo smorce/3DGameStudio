@@ -2,6 +2,8 @@
 
 fresh checkoutで`pnpm install`、`pnpm dev`を実行すると、開始画面に8ワールドが表示されます。カードを選び「▶ あそぶ」で開始します。手動のAsset Factory実行は不要です。「じゆうにつくる」は空のProjectを作る別枠です。
 
+各Sampleも **World Design + Seed → 生成規則 → Factory → Pipeline → Catalog → 保存済みGLB／距離別モデル → World Runtime → Chunk Streaming → Three.js → シェーダー・風・影 → ブラウザ** の経路で用意されます。全体図は[アーキテクチャ](architecture.md#環境描画パイプライン正本)を参照してください。
+
 ## 構造
 
 ```mermaid

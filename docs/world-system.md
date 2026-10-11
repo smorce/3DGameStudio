@@ -1,5 +1,7 @@
 # World System
 
+環境描画パイプラインでは、保存済みGLB・距離別モデルを読んだあとの **World Runtime → Chunk Streaming → Three.js Renderer → シェーダー・風・影** を担います（正本は[アーキテクチャ](architecture.md#環境描画パイプライン正本)）。実行時はFactoryや外部生成を呼びません。
+
 MachineとWorldは別の保存データです。Worldは標高格子、各点の色、水面、木・岩・建物・Asset配置を持ち、6種類の地形ブラシをCommand経由で編集します。
 
 ## 描画と物理のチャンク

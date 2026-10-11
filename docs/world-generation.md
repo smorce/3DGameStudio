@@ -1,5 +1,7 @@
 # World Designによるワールド生成
 
+環境描画の全体経路は **World Design + Seed → プロシージャル生成規則 → 樹木・住宅・材質の生成 → Asset Factory → Asset Pipeline → Asset Catalog → 保存済みGLB・距離別モデル → World Runtime → Chunk Streaming → Three.js → シェーダー・風・影 → ブラウザで探索できる3D世界** です。正本図は[アーキテクチャ](architecture.md#環境描画パイプライン正本)を参照してください。
+
 `toy-islands`は保存済みのWorld Designを使うGenerator v2です。従来の`grassland`、`airfield`、`archipelago`はv1の地形、seed派生、Entity IDを維持します。Project Schemaはv7です。従来のv6は読込時に移行し、新しい永続データ契約を明確に区別します。
 
 ```mermaid
