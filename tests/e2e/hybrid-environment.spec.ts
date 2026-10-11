@@ -79,7 +79,7 @@ test("ハイブリッド環境: 同一カメラで全方式と6景観を比較�
   await expect(page.getByTestId("runtime-position")).toBeVisible();
   await settle(page);
   const worldPreparationMs = Date.now() - start;
-  const houses = new Set<string>();
+  const buildings = new Set<string>();
   for (let z = -3; z <= 3; z++)
     for (let x = -3; x <= 3; x++)
       for (const entity of generateChunk({
@@ -87,9 +87,8 @@ test("ハイブリッド環境: 同一カメラで全方式と6景観を比較�
         chunkX: x,
         chunkZ: z,
       }).entities)
-        if (entity.assetSlot === "building.quality.house")
-          houses.add(entity.id);
-  expect(houses.size).toBe(14);
+        if (entity.assetSlot?.startsWith("building.")) buildings.add(entity.id);
+  expect(buildings.size).toBe(14);
   await expect
     .poll(
       () =>
@@ -104,7 +103,7 @@ test("ハイブリッド環境: 同一カメラで全方式と6景観を比較�
               (id) => api.getRenderedEntityPosition(id) !== undefined,
             ).length;
           },
-          [...houses],
+          [...buildings],
         ),
       { timeout: 60000 },
     )
@@ -229,7 +228,7 @@ test("ハイブリッド環境: 同一カメラで全方式と6景観を比較�
           .digest("hex"),
         environment,
         worldPreparationMs,
-        validatedHouseCount: houses.size,
+        validatedBuildingCount: buildings.size,
         seed: project.world.source.seed,
         source: project.world.source,
         buildManifest: project.world.buildManifest,

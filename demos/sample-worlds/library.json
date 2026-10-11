@@ -90,13 +90,13 @@
     }
   },
   {
-    "id": "factory-bf5c8379f4e36f58c316e5388e257cf7",
-    "name": "building.alpine-village.barn (Alpine procedural 0)",
+    "id": "factory-1f7c7928c940a161a67fb72a0e759b2a",
+    "name": "building.alpine-village.barn (Environment procedural 0)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3",
-      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "sourceAssetId": "dummy-aef856a1ed0d795ede72c75a25b826772a6885127135d4c2f662dd7c3d08aaf7",
+      "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
     },
@@ -105,12 +105,12 @@
       "name": "project-owned",
       "url": "",
       "attributionRequired": true,
-      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+      "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/9715274f71ddf4b6c218f7acd86ffd56a65e4aa71c53f7fe6ac4512fdd4a69cc.glb",
-      "runtime": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
-      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+      "original": "/api/files/sample-worlds/7d770cb0a971f40b938e282513c5a444a11e42a83e62e7ca2d9e57076aa8a9b9.glb",
+      "runtime": "/api/files/sample-worlds/ef5c3fbfb7deb13fab546f8544b3b245378c47f16dd90afb684cab9794a21bd0.glb",
+      "thumbnail": "/api/files/sample-worlds/abb507d9afe145a6a973501f5b90b6a3e546a7f308b49d29e768b2f0ca21c966.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -120,47 +120,97 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3",
-      "generationId": "42ba09bf0c73a901deb1d285e4bce9b29f8cad777de620fd59b140ad71bf04d3"
+      "promptHash": "aef856a1ed0d795ede72c75a25b826772a6885127135d4c2f662dd7c3d08aaf7",
+      "generationId": "aef856a1ed0d795ede72c75a25b826772a6885127135d4c2f662dd7c3d08aaf7"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -5,
-          -4.7683716530855236e-8,
-          -3.75
+          -5.090000152587891,
+          -2.9802322831784522e-9,
+          -3.799999952316284
         ],
         "max": [
-          5,
-          6.400000095367432,
-          3.75
+          5.090000152587891,
+          6.519999980926514,
+          3.799999952316284
         ]
       },
-      "triangles": 200,
+      "triangles": 1142,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
-      "colliderBytes": 28486,
+      "colliderFile": "/api/files/sample-worlds/1bce8030201724b6e114910da1826fdde8a53fc345ca988f107c56e96fe86753.json",
+      "colliderBytes": 184115,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 22376,
-        "runtimeBytes": 6072,
-        "textureBytes": 0,
+        "sourceBytes": 256448,
+        "runtimeBytes": 66816,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
-        0
+        0,
+        1,
+        2
       ],
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
-          "triangles": 200,
+          "file": "/api/files/sample-worlds/ef5c3fbfb7deb13fab546f8544b3b245378c47f16dd90afb684cab9794a21bd0.glb",
+          "triangles": 1142,
           "distance": 0,
-          "bytes": 6072
+          "bytes": 66816
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/6d1dd2a7d60f029765163ca5e54ac17b040ee14e80e02946c4f9f1ea0e4d896a.glb",
+          "distance": 45,
+          "triangles": 950,
+          "bytes": 61688
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/790b5af4534eeb1c8fe881e84635f68f0555bfc07dca803f1d8526482f7451fd.glb",
+          "distance": 110,
+          "triangles": 278,
+          "bytes": 35412
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/6767a151591b865a40cc077403f969a4c559c121ac1cf5edc93db8b8072601c1.png",
+        "stone": "/api/files/sample-worlds/4e36f3e0c1c0336a30bd25725a5883cea376bb1e2c5986c08faad5e5ac762c55.png",
+        "roof": "/api/files/sample-worlds/8655a7bfa58acf60d6a771cc1ff53b565f1a9002f7ff50acc20f7a0205633069.png",
+        "plaster": "/api/files/sample-worlds/2e1dc8ff8fca2dd1b420a3a13a23a2fccb4a9a894b34aefbc5cf99aa15974619.png",
+        "glass": "/api/files/sample-worlds/3b6b8435fa98b7c7543d6aed707eabc87ecdc1580ba6f1b79cb06e2df03193db.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 0,
+        "parameters": {
+          "buildingType": "barn",
+          "seed": 0,
+          "width": 9,
+          "depth": 6.5,
+          "floors": 1,
+          "floorHeight": 4,
+          "upperFloorOverhang": 0,
+          "roofPitch": 25.64100582430528,
+          "roofOverhang": 0.5,
+          "windowLayout": "paired",
+          "doorPlacement": "center",
+          "timberFrameStyle": "diagonal",
+          "materialPalette": "warm"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.alpine-village.barn"
       ],
@@ -176,18 +226,18 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.alpine-village.barn",
-      "contentHash": "7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd",
+      "contentHash": "ef5c3fbfb7deb13fab546f8544b3b245378c47f16dd90afb684cab9794a21bd0",
       "status": "ready"
     }
   },
   {
-    "id": "factory-55842ba46d6e6e1f3167a4d82a582648",
-    "name": "building.alpine-village.barn (Alpine procedural 1)",
+    "id": "factory-921fae1bdd53b802b9d35b6a5c86a92d",
+    "name": "building.alpine-village.barn (Environment procedural 1)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28",
-      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "sourceAssetId": "dummy-1acfb6a92ce958403438a7cea2a1c842ca1fef636d67aa5f2767ab809f48c415",
+      "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
     },
@@ -196,12 +246,12 @@
       "name": "project-owned",
       "url": "",
       "attributionRequired": true,
-      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+      "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/0e682c722ba6117b3880e52d0d76f24ed3fe31c65a01469d7fe2e45b7109c991.glb",
-      "runtime": "/api/files/sample-worlds/34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564.glb",
-      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+      "original": "/api/files/sample-worlds/39ba0eb677dc59c4bd38191f85b087c5927e63f72c62f2baf2e596e69d7be681.glb",
+      "runtime": "/api/files/sample-worlds/ff5d9961c4f57d0c5abd3be0e82a125a3abdd323aa3e70e318d5ce9c550927c2.glb",
+      "thumbnail": "/api/files/sample-worlds/abb507d9afe145a6a973501f5b90b6a3e546a7f308b49d29e768b2f0ca21c966.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -211,47 +261,97 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28",
-      "generationId": "7795b415412478c93bd06c985b6678f73d9c02bd56395e8d9247046880008b28"
+      "promptHash": "1acfb6a92ce958403438a7cea2a1c842ca1fef636d67aa5f2767ab809f48c415",
+      "generationId": "1acfb6a92ce958403438a7cea2a1c842ca1fef636d67aa5f2767ab809f48c415"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -5,
-          -4.7683716530855236e-8,
-          -3.75
+          -5.090000152587891,
+          -2.9802322831784522e-9,
+          -3.799999952316284
         ],
         "max": [
-          5,
-          6.400000095367432,
-          3.75
+          5.090000152587891,
+          6.519999980926514,
+          3.799999952316284
         ]
       },
-      "triangles": 200,
+      "triangles": 1142,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
-      "colliderBytes": 28486,
+      "colliderFile": "/api/files/sample-worlds/1bce8030201724b6e114910da1826fdde8a53fc345ca988f107c56e96fe86753.json",
+      "colliderBytes": 184115,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 22376,
-        "runtimeBytes": 6076,
-        "textureBytes": 0,
+        "sourceBytes": 256608,
+        "runtimeBytes": 66980,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
-        0
+        0,
+        1,
+        2
       ],
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564.glb",
-          "triangles": 200,
+          "file": "/api/files/sample-worlds/ff5d9961c4f57d0c5abd3be0e82a125a3abdd323aa3e70e318d5ce9c550927c2.glb",
+          "triangles": 1142,
           "distance": 0,
-          "bytes": 6076
+          "bytes": 66980
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/a24621657c65b3685a4f194272b434d8f366ffdacd1ef0909726c682350565f3.glb",
+          "distance": 45,
+          "triangles": 950,
+          "bytes": 61852
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/2b0bd8d32031e8f208568924996e82baa3d8888c151404251dec25e198ec0c0e.glb",
+          "distance": 110,
+          "triangles": 278,
+          "bytes": 35508
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/828790d4868a54862a620d4eb2b4b2166059749144f4b78983bc0b9c82de8ed5.png",
+        "stone": "/api/files/sample-worlds/711ad1972132a9792ee27232ce47f519665da3f400c166186e5de059766d9431.png",
+        "roof": "/api/files/sample-worlds/f9b330241216e2b498c813401f3ca27518838a78bc917ccc6c34f148d574dedd.png",
+        "plaster": "/api/files/sample-worlds/5020ba1f09bcc69e5847c6eae04db86e7e4b5b36ea5445c3eb90218c3611ad20.png",
+        "glass": "/api/files/sample-worlds/a9837fc7eae0e8c32da73d69bcfa23a077c78b2b4c1dc6f069551b96bd58d3c6.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 1,
+        "parameters": {
+          "buildingType": "barn",
+          "seed": 1,
+          "width": 9,
+          "depth": 6.5,
+          "floors": 1,
+          "floorHeight": 4,
+          "upperFloorOverhang": 0,
+          "roofPitch": 25.64100582430528,
+          "roofOverhang": 0.5,
+          "windowLayout": "regular",
+          "doorPlacement": "center",
+          "timberFrameStyle": "cross",
+          "materialPalette": "cool"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.alpine-village.barn"
       ],
@@ -267,18 +367,18 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.alpine-village.barn",
-      "contentHash": "34036f8c717c72a9166200a29dab261f0687a6fddb45e8d8a9385b156b64d564",
+      "contentHash": "ff5d9961c4f57d0c5abd3be0e82a125a3abdd323aa3e70e318d5ce9c550927c2",
       "status": "ready"
     }
   },
   {
-    "id": "factory-cb511ceda2644b227baccea431ef50af",
-    "name": "building.alpine-village.barn (Alpine procedural 2)",
+    "id": "factory-3e5c8a7fa49fb0ee7f32904e101a895b",
+    "name": "building.alpine-village.barn (Environment procedural 2)",
     "type": "model",
     "source": {
       "provider": "dummy-astra",
-      "sourceAssetId": "dummy-718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30",
-      "sourceUrl": "repository:packages/ai-dummy/src/alpine-models.ts",
+      "sourceAssetId": "dummy-b39dee244c3f420df9e87d359b73bb66d37f9d07020b7d534e66098b2e053730",
+      "sourceUrl": "repository:packages/ai-dummy/src/environment-models.ts",
       "author": "3DGameStudio",
       "retrievedAt": "2026-01-01T00:00:00.000Z"
     },
@@ -287,12 +387,12 @@
       "name": "project-owned",
       "url": "",
       "attributionRequired": true,
-      "attributionText": "3DGameStudio: repository-generated geometry (project-owned)"
+      "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/9715274f71ddf4b6c218f7acd86ffd56a65e4aa71c53f7fe6ac4512fdd4a69cc.glb",
-      "runtime": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
-      "thumbnail": "/api/files/sample-worlds/e552d88e10997b15cfb1f7e939fa625cb6cdcff62382c4afe8e518a9d7dac58b.svg"
+      "original": "/api/files/sample-worlds/c2e290892df53b2fe1d9bdaadf7683c228f685b8e7db9db1f20392b343187840.glb",
+      "runtime": "/api/files/sample-worlds/aff7cd19ed556e8816ce7dc05131053c08d5db50848978b98c065e396fcbb461.glb",
+      "thumbnail": "/api/files/sample-worlds/abb507d9afe145a6a973501f5b90b6a3e546a7f308b49d29e768b2f0ca21c966.svg"
     },
     "processing": {
       "importedAt": "2026-01-01T00:00:00.000Z",
@@ -302,47 +402,97 @@
     "ai": {
       "provider": "dummy-astra",
       "model": "dummy",
-      "promptHash": "718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30",
-      "generationId": "718f1f0bf6305194221f0969b349c6a604d47b52747f32684183b07a42705b30"
+      "promptHash": "b39dee244c3f420df9e87d359b73bb66d37f9d07020b7d534e66098b2e053730",
+      "generationId": "b39dee244c3f420df9e87d359b73bb66d37f9d07020b7d534e66098b2e053730"
     },
     "runtimeInfo": {
       "bounds": {
         "min": [
-          -5,
-          -4.7683716530855236e-8,
-          -3.75
+          -5.090000152587891,
+          -2.9802322831784522e-9,
+          -3.799999952316284
         ],
         "max": [
-          5,
-          6.400000095367432,
-          3.75
+          5.090000152587891,
+          6.519999980926514,
+          3.799999952316284
         ]
       },
-      "triangles": 200,
+      "triangles": 1142,
       "collider": "trimesh",
-      "colliderFile": "/api/files/sample-worlds/e85fb67e2c39307d641c3b59cc03a06025fd8405eaba49af6339b946754aeb7a.json",
-      "colliderBytes": 28486,
+      "colliderFile": "/api/files/sample-worlds/1bce8030201724b6e114910da1826fdde8a53fc345ca988f107c56e96fe86753.json",
+      "colliderBytes": 184115,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 22376,
-        "runtimeBytes": 6072,
-        "textureBytes": 0,
+        "sourceBytes": 256448,
+        "runtimeBytes": 66816,
+        "textureBytes": 1135958,
         "warnings": []
       },
       "lodLevels": [
-        0
+        0,
+        1,
+        2
       ],
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd.glb",
-          "triangles": 200,
+          "file": "/api/files/sample-worlds/aff7cd19ed556e8816ce7dc05131053c08d5db50848978b98c065e396fcbb461.glb",
+          "triangles": 1142,
           "distance": 0,
-          "bytes": 6072
+          "bytes": 66816
+        },
+        {
+          "level": 1,
+          "file": "/api/files/sample-worlds/f6b45f735a76053ffdcdc71a3eb3d447c65af2ee0eab92fa18b5d0739cc44c67.glb",
+          "distance": 45,
+          "triangles": 950,
+          "bytes": 61688
+        },
+        {
+          "level": 2,
+          "file": "/api/files/sample-worlds/986627fa931867cc2f11a346e6691497bf2d2a6238a0107756304695b89ea8ec.glb",
+          "distance": 110,
+          "triangles": 278,
+          "bytes": 35412
         }
-      ]
+      ],
+      "environmentMaterials": {
+        "wood": "/api/files/sample-worlds/ef9bf6b12c8969ec57041eb7cc02e7a0808c9be69fdaece737d1fc026aedead6.png",
+        "stone": "/api/files/sample-worlds/2f97e86c3c5610369fa2c2bce1968553bcc90342738a62fb95fa67f7acb1543c.png",
+        "roof": "/api/files/sample-worlds/c5f0d25cee163cc65a4364ddb0b2a161c1833d784b2560a86019436aa25a20c7.png",
+        "plaster": "/api/files/sample-worlds/afd11426320b257a500af1f93d1dbd390daf09b26bb23edf0c04c5b3365c78b6.png",
+        "glass": "/api/files/sample-worlds/fdef9a197a85c72878927696b6fa364f2d92947c65b297c3e1cede51c96c67ad.png"
+      }
     },
     "catalog": {
+      "generation": {
+        "kind": "house",
+        "version": 4,
+        "seed": 2,
+        "parameters": {
+          "buildingType": "barn",
+          "seed": 2,
+          "width": 9,
+          "depth": 6.5,
+          "floors": 1,
+          "floorHeight": 4,
+          "upperFloorOverhang": 0,
+          "roofPitch": 25.64100582430528,
+          "roofOverhang": 0.5,
+          "windowLayout": "paired",
+          "doorPlacement": "center",
+          "timberFrameStyle": "diagonal",
+          "materialPalette": "warm"
+        },
+        "materials": [
+          "wood",
+          "stone",
+          "roof",
+          "plaster",
+          "glass"
+        ]
+      },
       "slots": [
         "building.alpine-village.barn"
       ],
@@ -358,7 +508,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.alpine-village.barn",
-      "contentHash": "7b887be30ce9c5453742f9ec3cf1c83c4f5c4c539eca3ff1e3a1b2fbfab525dd",
+      "contentHash": "aff7cd19ed556e8816ce7dc05131053c08d5db50848978b98c065e396fcbb461",
       "status": "ready"
     }
   },
@@ -1206,7 +1356,7 @@
     }
   },
   {
-    "id": "factory-885f43d3cd1feecfb6bdfd016c3e8970",
+    "id": "factory-c2f381fbd0505eb9ff076b3da4caeb8a",
     "name": "building.quality.house (Environment procedural 0)",
     "type": "model",
     "source": {
@@ -1224,8 +1374,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/a8320ac6a3cababbcd247088bb304388a615f4c752676490f7f08188e30ce56b.glb",
-      "runtime": "/api/files/sample-worlds/63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d.glb",
+      "original": "/api/files/sample-worlds/b1b8aa4c86cccd6b0346277e8e2c53223e2918b9e38f9750e385ec0e620e382b.glb",
+      "runtime": "/api/files/sample-worlds/ecdeb201e8d21278ef40af0e73e7f119be296fcd05be743a5f9c995d52cea2a0.glb",
       "thumbnail": "/api/files/sample-worlds/ff200b2d9ee1c38f197c218df204174fda1441b46a5d81bcbfed4298f67e8684.svg"
     },
     "processing": {
@@ -1258,8 +1408,8 @@
       "colliderBytes": 414227,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 363696,
-        "runtimeBytes": 98024,
+        "sourceBytes": 363720,
+        "runtimeBytes": 98048,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1271,24 +1421,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d.glb",
+          "file": "/api/files/sample-worlds/ecdeb201e8d21278ef40af0e73e7f119be296fcd05be743a5f9c995d52cea2a0.glb",
           "triangles": 2258,
           "distance": 0,
-          "bytes": 98024
+          "bytes": 98048
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/c9b19105f0093ba0574c7e8dd5b25831ee2b976589ea15b20f0e07d097fa8b0e.glb",
+          "file": "/api/files/sample-worlds/dd168836195fd00c4ad1d4c7b37017a6c38d0faa18899abae5808a0243151704.glb",
           "distance": 45,
           "triangles": 1874,
-          "bytes": 87908
+          "bytes": 87932
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/de3ad84a5b9f6ef4537eba4c6adae5343d14d3757b85a52e0d20891121177834.glb",
+          "file": "/api/files/sample-worlds/723ca14d68906aea3939e9aa203deef3ecf81b7e1b441675e4263b6915045c43.glb",
           "distance": 110,
           "triangles": 434,
-          "bytes": 38836
+          "bytes": 38856
         }
       ],
       "environmentMaterials": {
@@ -1305,6 +1455,7 @@
         "version": 4,
         "seed": 0,
         "parameters": {
+          "buildingType": "house",
           "seed": 0,
           "width": 6.8,
           "depth": 5.7,
@@ -1341,12 +1492,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "63c040d66ba3a06737a70913bde247eda783de0d37d8d2d650f7c12b29ca0f8d",
+      "contentHash": "ecdeb201e8d21278ef40af0e73e7f119be296fcd05be743a5f9c995d52cea2a0",
       "status": "ready"
     }
   },
   {
-    "id": "factory-1a7ddf8f10d223b7589e2674a1658943",
+    "id": "factory-181617b3f7bd13d2b24bda8ddd5a3611",
     "name": "building.quality.house (Environment procedural 1)",
     "type": "model",
     "source": {
@@ -1364,8 +1515,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/110fe01f0d409a5e11451651d4c11cef5bcc9e7c6bb1f47ae3eeda67bc99ea52.glb",
-      "runtime": "/api/files/sample-worlds/3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69.glb",
+      "original": "/api/files/sample-worlds/2fa6bad4dff35a4de5df9557dce594dddb6251cdd9497748b0b51c6f14196d43.glb",
+      "runtime": "/api/files/sample-worlds/dda9026642d7cdeec6504e407a77cecc538817bd55e80dc91094ff41316b09cd.glb",
       "thumbnail": "/api/files/sample-worlds/9b95fda8d9ae5a1dbf8da94b90014abd6be50e2b4eabfc84070b94da936c94f8.svg"
     },
     "processing": {
@@ -1398,8 +1549,8 @@
       "colliderBytes": 421373,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 368464,
-        "runtimeBytes": 98804,
+        "sourceBytes": 368488,
+        "runtimeBytes": 98828,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1411,24 +1562,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69.glb",
+          "file": "/api/files/sample-worlds/dda9026642d7cdeec6504e407a77cecc538817bd55e80dc91094ff41316b09cd.glb",
           "triangles": 2306,
           "distance": 0,
-          "bytes": 98804
+          "bytes": 98828
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/16a2cd8245d006744496cdb37c27c76c02acf681e02e52ad6b4300f134559df1.glb",
+          "file": "/api/files/sample-worlds/e065cb40b7ee5c62959c913d7950b65a75f5b4815d2895766c680230a78dc198.glb",
           "distance": 45,
           "triangles": 1874,
-          "bytes": 87100
+          "bytes": 87124
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/40f70864bb8af2355d7d72aefe7e0146cebf3213084b8366eb16cd4130375864.glb",
+          "file": "/api/files/sample-worlds/a49974bcec6f7d4e906a71e8b864c003802cddfa85834b6f5c75d8fc8f58b4b9.glb",
           "distance": 110,
           "triangles": 434,
-          "bytes": 39048
+          "bytes": 39072
         }
       ],
       "environmentMaterials": {
@@ -1445,6 +1596,7 @@
         "version": 4,
         "seed": 1,
         "parameters": {
+          "buildingType": "house",
           "seed": 1,
           "width": 6.8,
           "depth": 5.7,
@@ -1481,12 +1633,12 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "3b10bf571e972ee152ed43528bf78fcf17aebc595ab7778caa0197b3cf454d69",
+      "contentHash": "dda9026642d7cdeec6504e407a77cecc538817bd55e80dc91094ff41316b09cd",
       "status": "ready"
     }
   },
   {
-    "id": "factory-df2d118d9b063370b3407b28741784ad",
+    "id": "factory-6da098692888710da0182fe04b5bdf31",
     "name": "building.quality.house (Environment procedural 2)",
     "type": "model",
     "source": {
@@ -1504,8 +1656,8 @@
       "attributionText": "3DGameStudio: original procedural geometry and textures (project-owned)"
     },
     "files": {
-      "original": "/api/files/sample-worlds/a18e59fd199f16da08a4fa340b8a3171e506f44163cef0e8b09ff50030d5110e.glb",
-      "runtime": "/api/files/sample-worlds/c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1.glb",
+      "original": "/api/files/sample-worlds/ac44d805dd975218f86fbd1254525f286c0a9d970c6326fd16e4ddc773bac6bf.glb",
+      "runtime": "/api/files/sample-worlds/4897a11f4d46b1634bdbf38a46ee03e2453d51d118a825bd9a56f7a34a009ab7.glb",
       "thumbnail": "/api/files/sample-worlds/6d489e6f1497d5143f9f3ded59afb371994622e276efa3cd23937a700164254d.svg"
     },
     "processing": {
@@ -1538,8 +1690,8 @@
       "colliderBytes": 413741,
       "optimization": {
         "profile": "balanced",
-        "sourceBytes": 363692,
-        "runtimeBytes": 98060,
+        "sourceBytes": 363716,
+        "runtimeBytes": 98084,
         "textureBytes": 1135958,
         "warnings": []
       },
@@ -1551,24 +1703,24 @@
       "lods": [
         {
           "level": 0,
-          "file": "/api/files/sample-worlds/c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1.glb",
+          "file": "/api/files/sample-worlds/4897a11f4d46b1634bdbf38a46ee03e2453d51d118a825bd9a56f7a34a009ab7.glb",
           "triangles": 2258,
           "distance": 0,
-          "bytes": 98060
+          "bytes": 98084
         },
         {
           "level": 1,
-          "file": "/api/files/sample-worlds/328ad88c05a51147b273d48f9ce4252fe1d30b1d9559da10b4a91c0e48d46eb4.glb",
+          "file": "/api/files/sample-worlds/eb498acc215ed4674f7630a17bbbeaa032452f632bc46ab389453a9343175f5c.glb",
           "distance": 45,
           "triangles": 1874,
-          "bytes": 87944
+          "bytes": 87968
         },
         {
           "level": 2,
-          "file": "/api/files/sample-worlds/b4128f611cb2bfd41e52bbd1d0029105a2d6b0e3d6c5ec17eb93e08c85169cd3.glb",
+          "file": "/api/files/sample-worlds/c9ed61a5ad65b9c7726a2cb0bf621b210bd69b9cda38ffbd8b7d835817b70eda.glb",
           "distance": 110,
           "triangles": 434,
-          "bytes": 38876
+          "bytes": 38896
         }
       ],
       "environmentMaterials": {
@@ -1585,6 +1737,7 @@
         "version": 4,
         "seed": 2,
         "parameters": {
+          "buildingType": "house",
           "seed": 2,
           "width": 6.8,
           "depth": 5.7,
@@ -1621,7 +1774,7 @@
       "requestedStyle": "stylized-low-poly",
       "styleAssessment": "dummy",
       "variantGroup": "building.quality.house",
-      "contentHash": "c2f014eabf0bbbee32e81d297a75b14996d4a816202acd20dbf053c4ab93ebc1",
+      "contentHash": "4897a11f4d46b1634bdbf38a46ee03e2453d51d118a825bd9a56f7a34a009ab7",
       "status": "ready"
     }
   },

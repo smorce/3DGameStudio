@@ -30,6 +30,7 @@ export type EnvironmentModel = "oak" | "pine" | "house" | "grass" | "market";
 export function qualityModelKind(slot: string): EnvironmentModel | undefined {
   if (slot === "nature.tree.quality.oak") return "oak";
   if (slot === "nature.tree.quality.pine") return "pine";
+  if (slot === "building.alpine-village.barn") return "house";
   if (slot === "building.quality.house") return "house";
   if (slot === "nature.grass.quality.grass") return "grass";
   if (slot === "prop.quality.market") return "market";

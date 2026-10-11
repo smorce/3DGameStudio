@@ -2,6 +2,7 @@ import {
   environmentGeometryVersion,
   treeRules,
   houseRules,
+  barnRules,
 } from "./environment-rules";
 import { alpineModelGlb } from "./alpine-models";
 import { environmentModelGlb, qualityModelKind } from "./environment-models";
@@ -36,9 +37,17 @@ export class DummyAstraAssetGenerator implements AssetGenerator {
       )
       .digest("hex");
     const quality = qualityModelKind(request.assetSlot);
+    const house = request.assetSlot.endsWith(".barn")
+      ? barnRules(request.variantIndex)
+      : houseRules(request.variantIndex);
     const bytes = this.demoPrimitives
       ? quality
-        ? await environmentModelGlb(quality, request.variantIndex)
+        ? await environmentModelGlb(
+            quality,
+            request.variantIndex,
+            0,
+            quality === "house" ? house : undefined,
+          )
         : request.assetSlot.includes("alpine-village")
           ? await alpineModelGlb(request.assetSlot, request.variantIndex)
           : await demoPrimitiveGlb(request.assetSlot)
@@ -52,7 +61,7 @@ export class DummyAstraAssetGenerator implements AssetGenerator {
               seed: request.variantIndex,
               parameters:
                 quality === "house"
-                  ? { ...houseRules(request.variantIndex) }
+                  ? { ...house }
                   : quality === "oak" || quality === "pine"
                     ? { ...treeRules(quality, request.variantIndex) }
                     : {},

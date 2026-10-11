@@ -14,6 +14,7 @@ export interface TreeRules {
   crownDensity: number;
 }
 export interface HouseRules {
+  buildingType: "house" | "barn";
   seed: number;
   width: number;
   depth: number;
@@ -42,6 +43,7 @@ export function treeRules(kind: TreeRules["kind"], seed: number): TreeRules {
 }
 export function houseRules(seed: number): HouseRules {
   return {
+    buildingType: "house",
     seed,
     width: 6.8,
     depth: 5.7,
@@ -56,6 +58,20 @@ export function houseRules(seed: number): HouseRules {
     ] as HouseRules["doorPlacement"],
     timberFrameStyle: seed % 2 ? "cross" : "diagonal",
     materialPalette: seed % 2 ? "cool" : "warm",
+  };
+}
+/** 納屋の用途と既存の幅・階高を維持して共通規則へ接続する。 */
+export function barnRules(seed: number): HouseRules {
+  return {
+    ...houseRules(seed),
+    buildingType: "barn",
+    width: 9,
+    depth: 6.5,
+    floors: 1,
+    floorHeight: 4,
+    upperFloorOverhang: 0,
+    roofPitch: (Math.atan2(2.4, 5) * 180) / Math.PI,
+    doorPlacement: "center",
   };
 }
 /** 個体・枝・葉ごとに独立した乱数列を使う。LODで処理数が変わっても骨格を保つ。 */

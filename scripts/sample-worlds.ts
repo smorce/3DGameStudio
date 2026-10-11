@@ -1,3 +1,4 @@
+import { qualityModelKind } from "../packages/ai-dummy/src/environment-models";
 import { prepareAlpineLods } from "../packages/sample-worlds/src/alpine-prepare";
 import { prepareEnvironmentAssets } from "../packages/ai-dummy/src/environment-prepare";
 import { assertPreparedSampleCurrent } from "../packages/sample-worlds/src/freshness";
@@ -47,7 +48,7 @@ if (process.argv[2] === "prepare") {
   await prepareAlpineLods(library.assets, new LocalAssetStorage(temp));
   await prepareEnvironmentAssets(library.assets, new LocalAssetStorage(temp));
   for (const asset of library.assets) {
-    if (asset.catalog?.slots.some((slot) => slot.includes(".quality."))) {
+    if (asset.catalog?.slots.some((slot) => qualityModelKind(slot))) {
       asset.name = asset.name.replace("Dummy", "Environment procedural");
       asset.source.sourceUrl =
         "repository:packages/ai-dummy/src/environment-models.ts";

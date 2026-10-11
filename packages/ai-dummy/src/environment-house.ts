@@ -47,8 +47,9 @@ export function buildHouse(
     const overhang = floor > 0 ? r.upperFloorOverhang : 0;
     const w = r.width + 2 * overhang,
       d = r.depth + 2 * overhang;
+    if (r.buildingType === "barn") box("stone", w, 0.4, d, 0, 0.2, 0);
     box(
-      floor ? "plaster" : "stone",
+      r.buildingType === "barn" ? "wood" : floor ? "plaster" : "stone",
       w,
       r.floorHeight,
       d,
@@ -230,15 +231,24 @@ export function buildHouse(
       : r.doorPlacement === "right"
         ? r.width / 4
         : 0;
-  box("wood", 1.15, 2.25, 0.2, doorX, 1.125, r.depth / 2 + 0.13);
-  box("stone", 1.65, 0.16, 0.58, doorX, 0.08, r.depth / 2 + 0.25);
   box(
-    "stone",
-    0.8,
-    3,
-    0.8,
-    r.seed % 2 ? -r.width / 4 : r.width / 4,
-    height + rise * 0.45,
-    0,
+    "wood",
+    r.buildingType === "barn" ? 2.8 : 1.15,
+    r.buildingType === "barn" ? 3 : 2.25,
+    0.2,
+    doorX,
+    r.buildingType === "barn" ? 1.5 : 1.125,
+    r.depth / 2 + 0.13,
   );
+  box("stone", 1.65, 0.16, 0.58, doorX, 0.08, r.depth / 2 + 0.25);
+  if (r.buildingType !== "barn")
+    box(
+      "stone",
+      0.8,
+      3,
+      0.8,
+      r.seed % 2 ? -r.width / 4 : r.width / 4,
+      height + rise * 0.45,
+      0,
+    );
 }
