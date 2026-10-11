@@ -1,0 +1,332 @@
+{
+  "before": {
+    "state": {
+      "engine": {
+        "mode": "PLAY",
+        "frame": 153
+      },
+      "machine": {
+        "id": "sample-alpine-village-machine",
+        "physicsStep": 912,
+        "position": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "simulationPosition": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "worldOrigin": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          9.191572850064667e-12,
+          0,
+          0,
+          1
+        ],
+        "velocity": [
+          0,
+          -0.0612579882144928,
+          1.760983191407585e-15
+        ],
+        "speed": 0.0612579882144928,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "world": {
+        "currentChunk": "0,0",
+        "loadedRenderChunks": 169,
+        "loadedPhysicsChunks": 49,
+        "readyQueues": {
+          "render": 49,
+          "physics": 0
+        },
+        "generationQueue": 0,
+        "workerQueued": 0,
+        "workerInFlight": 0,
+        "cacheHitRate": 0.1323529411764706,
+        "rebaseCount": 0
+      },
+      "renderer": {
+        "activeVaporParticles": 0,
+        "activeGroundSmokeParticles": 0,
+        "vaporEmitters": 0,
+        "groundSmokeEmitters": 4,
+        "drawCalls": 346,
+        "triangles": 425957,
+        "geometries": 154,
+        "textures": 27,
+        "gpuTimingMs": 241.236854,
+        "shadowCpuMs": null,
+        "shadowGpuMs": null
+      },
+      "frame": {
+        "rafMs": 250,
+        "cpuWorkMs": 11.699999988079071,
+        "physicsMs": 2.0999999940395355,
+        "renderMs": 9.599999994039536,
+        "streamingRequestMs": 0,
+        "streamingCommitMs": 0
+      }
+    },
+    "mill": [
+      -205,
+      15.314640998840332,
+      -65
+    ],
+    "resources": {
+      "materials": 1838,
+      "geometries": 800,
+      "textures": 123,
+      "grassInstances": 3088,
+      "grassInstanceBytes": 234688,
+      "instanceBufferBytes": 806016,
+      "grassPatches": 25,
+      "visibleGrassPatches": 6,
+      "grassCoveragePreparationMs": 1861.7000000178814,
+      "grassCoverageBytes": 6084000
+    },
+    "heap": 237598826
+  },
+  "after": {
+    "state": {
+      "engine": {
+        "mode": "PLAY",
+        "frame": 483
+      },
+      "machine": {
+        "id": "sample-alpine-village-machine",
+        "physicsStep": 2892,
+        "position": [
+          5.2289652824401855,
+          11.699016571044922,
+          321.98329162597656
+        ],
+        "simulationPosition": [
+          5.2289652824401855,
+          11.699016571044922,
+          129.98329162597656
+        ],
+        "worldOrigin": [
+          0,
+          0,
+          192
+        ],
+        "rotation": [
+          0.03865518793463707,
+          -0.004779785871505737,
+          -0.01483661774545908,
+          0.9991310834884644
+        ],
+        "velocity": [
+          -0.11860761791467667,
+          -0.7783835530281067,
+          10.477495193481445
+        ],
+        "speed": 10.507038319720683,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "camera": {
+        "position": [
+          72.09866357858643,
+          19.29635277066178,
+          -329.0315723451477
+        ],
+        "target": [
+          122.00000000000001,
+          15.999999999999998,
+          -345.00000000000006
+        ],
+        "followMode": "instant"
+      },
+      "world": {
+        "currentChunk": "0,5",
+        "loadedRenderChunks": 169,
+        "loadedPhysicsChunks": 56,
+        "readyQueues": {
+          "render": 28,
+          "physics": 0
+        },
+        "generationQueue": 0,
+        "workerQueued": 0,
+        "workerInFlight": 3,
+        "cacheHitRate": 0.1323529411764706,
+        "rebaseCount": 1
+      },
+      "renderer": {
+        "activeVaporParticles": 0,
+        "activeGroundSmokeParticles": 14,
+        "vaporEmitters": 0,
+        "groundSmokeEmitters": 4,
+        "drawCalls": 347,
+        "triangles": 425957,
+        "geometries": 154,
+        "textures": 27,
+        "gpuTimingMs": 246.029971,
+        "shadowCpuMs": null,
+        "shadowGpuMs": null
+      },
+      "frame": {
+        "rafMs": 250,
+        "cpuWorkMs": 17.5,
+        "physicsMs": 7.299999982118607,
+        "renderMs": 10.099999994039536,
+        "streamingRequestMs": 0,
+        "streamingCommitMs": 0
+      }
+    },
+    "mill": [
+      -205,
+      15.314640998840332,
+      -65
+    ],
+    "resources": {
+      "materials": 1838,
+      "geometries": 800,
+      "textures": 123,
+      "grassInstances": 3088,
+      "grassInstanceBytes": 234688,
+      "instanceBufferBytes": 806016,
+      "grassPatches": 25,
+      "visibleGrassPatches": 6,
+      "grassCoveragePreparationMs": 1861.7000000178814,
+      "grassCoverageBytes": 6084000
+    },
+    "heap": 184607013
+  },
+  "restored": {
+    "state": {
+      "engine": {
+        "mode": "PLAY",
+        "frame": 154
+      },
+      "machine": {
+        "id": "sample-alpine-village-machine",
+        "physicsStep": 920,
+        "position": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "simulationPosition": [
+          6,
+          11.950977325439453,
+          60
+        ],
+        "worldOrigin": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          9.191572850064667e-12,
+          0,
+          0,
+          1
+        ],
+        "velocity": [
+          0,
+          -0.0612579882144928,
+          1.7370663691089125e-15
+        ],
+        "speed": 0.0612579882144928,
+        "groundedWheelCount": 4,
+        "controls": {
+          "throttle": 0,
+          "steering": 0
+        }
+      },
+      "camera": {
+        "position": [
+          72.09866357858641,
+          19.296352770661777,
+          -137.03157234514765
+        ],
+        "target": [
+          122,
+          15.999999999999996,
+          -153
+        ],
+        "followMode": "instant"
+      },
+      "world": {
+        "currentChunk": "0,0",
+        "loadedRenderChunks": 169,
+        "loadedPhysicsChunks": 49,
+        "readyQueues": {
+          "render": 49,
+          "physics": 0
+        },
+        "generationQueue": 0,
+        "workerQueued": 0,
+        "workerInFlight": 0,
+        "cacheHitRate": 0.13333333333333333,
+        "rebaseCount": 0
+      },
+      "renderer": {
+        "activeVaporParticles": 0,
+        "activeGroundSmokeParticles": 0,
+        "vaporEmitters": 0,
+        "groundSmokeEmitters": 4,
+        "drawCalls": 309,
+        "triangles": 422697,
+        "geometries": 141,
+        "textures": 6,
+        "gpuTimingMs": 235.63904,
+        "shadowCpuMs": null,
+        "shadowGpuMs": null
+      },
+      "frame": {
+        "rafMs": 250,
+        "cpuWorkMs": 9.099999994039536,
+        "physicsMs": 2.9000000059604645,
+        "renderMs": 6.199999988079071,
+        "streamingRequestMs": 0.09999999403953552,
+        "streamingCommitMs": 0
+      }
+    },
+    "mill": [
+      -205,
+      15.314640998840332,
+      -65
+    ],
+    "resources": {
+      "materials": 260,
+      "geometries": 262,
+      "textures": 18,
+      "grassInstances": 120946,
+      "grassInstanceBytes": 9191896,
+      "instanceBufferBytes": 9557720,
+      "grassPatches": 1026,
+      "visibleGrassPatches": 11,
+      "grassCoveragePreparationMs": 0,
+      "grassCoverageBytes": 0
+    },
+    "heap": 232525017
+  }
+}

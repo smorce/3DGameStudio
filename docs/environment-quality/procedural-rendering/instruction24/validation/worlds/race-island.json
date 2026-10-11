@@ -1,0 +1,127 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 47
+  },
+  "machine": {
+    "id": "sample-race-island-machine",
+    "physicsStep": 132,
+    "position": [
+      1.4432899320127035e-14,
+      8.186545372009277,
+      0.006888715550303459
+    ],
+    "simulationPosition": [
+      1.4432899320127035e-14,
+      8.186545372009277,
+      0.006888715550303459
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.00020971080812159926,
+      -7.077933074708942e-13,
+      3.3634280731105297e-16,
+      1
+    ],
+    "velocity": [
+      -1.83746814896228e-15,
+      -0.06125836819410324,
+      0.007541685365140438
+    ],
+    "speed": 0.061720861075904423,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.0000000000000195,
+      13.086545372009278,
+      8.006888212272903
+    ],
+    "target": [
+      1.4432899320127035e-14,
+      8.186545372009277,
+      0.006888212272897363
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 117,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.6785714285714286,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 0,
+    "groundSmokeEmitters": 4,
+    "drawCalls": 96,
+    "triangles": 63710,
+    "geometries": 78,
+    "textures": 1,
+    "gpuTimingMs": 41.307222,
+    "shadowCpuMs": null,
+    "shadowGpuMs": null
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 3.9000000059604645,
+    "physicsMs": 1.7000000178813934,
+    "renderMs": 2,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "temperate",
+      "road": {
+        "distance": -4.9985909363620324,
+        "weight": 1,
+        "height": 7.999996351669671,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 7.999996351669671,
+      "chunkKey": "0,0",
+      "chunkBounds": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:main:nature.rock.small:1:1:1",
+          "position": [
+            25.958686884026974,
+            8.556899877529306,
+            18.60026198066771
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-8e1bfb06d54354534f98aa7ab1e14184",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 1,
+    "renderPending": 73,
+    "renderedChunks": 96
+  }
+}

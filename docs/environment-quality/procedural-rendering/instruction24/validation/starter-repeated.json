@@ -1,0 +1,211 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/smorce/env2/work/3DGameStudio/node_modules/.pnpm/@playwright+test@1.63.0/node_modules/@playwright/test/cli.js",
+      "test",
+      "--grep",
+      "Starter 3種",
+      "--repeat-each=3",
+      "--output=test-results/instruction24-starter",
+      "--reporter=line,json"
+    ],
+    "configFile": "/home/smorce/env2/work/3DGameStudio/playwright.config.ts",
+    "rootDir": "/home/smorce/env2/work/3DGameStudio/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/smorce/env2/work/3DGameStudio/test-results/instruction24-starter",
+        "repeatEach": 3,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/smorce/env2/work/3DGameStudio/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm build && PORT=8788 ASSET_DATA_DIR=.data/e2e EVIDENCE_DATA_DIR=test-results/generated-evidence pnpm start:server",
+      "url": "http://127.0.0.1:8788/api/health",
+      "reuseExistingServer": false,
+      "timeout": 60000
+    }
+  },
+  "suites": [
+    {
+      "title": "procedural-world.spec.ts",
+      "file": "procedural-world.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Starter 3種は同じProcedural World Runtimeを使う",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3330,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T15:25:47.302Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "browser-console",
+                      "contentType": "text/plain",
+                      "body": ""
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77fc914ab0d2fd245310-581dfccd9a29195ebb5c",
+          "file": "procedural-world.spec.ts",
+          "line": 5,
+          "column": 1
+        },
+        {
+          "title": "Starter 3種は同じProcedural World Runtimeを使う",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3287,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T15:25:51.280Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "browser-console",
+                      "contentType": "text/plain",
+                      "body": ""
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77fc914ab0d2fd245310-904a56e1fb8c2b4df143",
+          "file": "procedural-world.spec.ts",
+          "line": 5,
+          "column": 1
+        },
+        {
+          "title": "Starter 3種は同じProcedural World Runtimeを使う",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3513,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-11T15:25:55.195Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "browser-console",
+                      "contentType": "text/plain",
+                      "body": ""
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "77fc914ab0d2fd245310-8b9e12a191f6ff37fff1",
+          "file": "procedural-world.spec.ts",
+          "line": 5,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-11T15:25:39.775Z",
+    "duration": 19268.338,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

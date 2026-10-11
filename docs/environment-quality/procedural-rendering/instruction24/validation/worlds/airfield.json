@@ -1,0 +1,95 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 44
+  },
+  "machine": {
+    "id": "sample-airfield-machine",
+    "physicsStep": 115,
+    "position": [
+      0.005960846785455942,
+      -0.08646249771118164,
+      0.02230137586593628
+    ],
+    "simulationPosition": [
+      0.005960846785455942,
+      -0.08646249771118164,
+      0.02230137586593628
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -0.011285715736448765,
+      -0.000009740730092744343,
+      0.001318461261689663,
+      0.9999354481697083
+    ],
+    "velocity": [
+      0.005525273736566305,
+      -0.05650429427623749,
+      0.0006112453411333263
+    ],
+    "speed": 0.056777086420374656,
+    "groundedWheelCount": 3,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.005960456036044,
+      4.813536144256597,
+      8.022302380442637
+    ],
+    "target": [
+      0.005960456036031248,
+      -0.08646385574340819,
+      0.022302380442619316
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 120,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.72,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 2,
+    "groundSmokeEmitters": 5,
+    "drawCalls": 109,
+    "triangles": 61056,
+    "geometries": 122,
+    "textures": 1,
+    "gpuTimingMs": 43.184737,
+    "shadowCpuMs": null,
+    "shadowGpuMs": null
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 3.699999988079071,
+    "physicsMs": 1.5,
+    "renderMs": 2.199999988079071,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "farWorldProxyCount": 0,
+    "renderPending": 81,
+    "renderedChunks": 88
+  }
+}

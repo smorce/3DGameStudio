@@ -1,0 +1,115 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 47
+  },
+  "machine": {
+    "id": "sample-snow-island-machine",
+    "physicsStep": 126,
+    "position": [
+      0.014223948121070862,
+      7.992681503295898,
+      0.32128849625587463
+    ],
+    "simulationPosition": [
+      0.014223948121070862,
+      7.992681503295898,
+      0.32128849625587463
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.008280863985419273,
+      0.0003026680205948651,
+      0.013955413363873959,
+      0.9998682737350464
+    ],
+    "velocity": [
+      -0.0026582672726362944,
+      -0.06782083958387375,
+      0.34738004207611084
+    ],
+    "speed": 0.3539486209883503,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      7.014270760118974,
+      12.89279308319092,
+      8.315437287092225
+    ],
+    "target": [
+      0.014270760118961334,
+      7.992793083190918,
+      0.31543728709220886
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "0,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 114,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.6923076923076923,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 0,
+    "groundSmokeEmitters": 4,
+    "drawCalls": 100,
+    "triangles": 63774,
+    "geometries": 60,
+    "textures": 1,
+    "gpuTimingMs": 42.36549,
+    "shadowCpuMs": null,
+    "shadowGpuMs": null
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 3.0999999940395355,
+    "physicsMs": 1.0999999940395355,
+    "renderMs": 2,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "snow",
+      "road": {
+        "distance": -4.678396799570477,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "0,0",
+      "chunkBounds": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "props": []
+    },
+    "farWorldProxyCount": 1,
+    "renderPending": 73,
+    "renderedChunks": 96
+  }
+}

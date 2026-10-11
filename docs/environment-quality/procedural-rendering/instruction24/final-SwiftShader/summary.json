@@ -1,0 +1,5026 @@
+{
+  "tag": "final-SwiftShader",
+  "revision": "0eef01811318de7f29d9a6b7c7211870c8401850",
+  "studioBuildHash": "e088944835f18d84560088a9d6ab06d4480071d95654481e5b2f4059e6d6c668",
+  "environment": {
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "canvas": [
+      1440,
+      771
+    ],
+    "pixelRatio": 1,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36"
+  },
+  "seed": 42,
+  "worldSourceHash": "6dcc7c284f4ea0820b3205ec74f46908218d270b18a565df87b05e1793267ecf",
+  "worldPreparationMs": 31327,
+  "sampleWindowMs": 10000,
+  "repetitions": 3,
+  "rawSha256": "0f457b34c9eadf8270a172114038b32a8cde7a8b49dbb0286f74305a6739c821",
+  "results": [
+    {
+      "name": "forest-path",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 14636,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 333.29999999999563,
+              "min": 283.29999999999563,
+              "max": 333.3000000000029
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 9.5,
+              "p95": 13,
+              "min": 7.700000017881393,
+              "max": 13.600000023841858
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 6.5999999940395355,
+              "p95": 9.5,
+              "min": 5.100000023841858,
+              "max": 10.900000005960464
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.9000000059604645,
+              "p95": 3.4000000059604645,
+              "min": 1.9000000059604645,
+              "max": 3.4000000059604645
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 34,
+              "median": 391663,
+              "p95": 391663,
+              "min": 391663,
+              "max": 391663
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 281.375133,
+              "p95": 309.794579,
+              "min": 274.917894,
+              "max": 319.380756
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.699999988079071,
+              "p95": 1.4000000059604645,
+              "min": 0.5,
+              "max": 1.5
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 9.867009,
+              "p95": 10.192088,
+              "min": 9.309004,
+              "max": 10.192088
+            }
+          },
+          "resources": {
+            "materials": 287,
+            "geometries": 289,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9560856,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 201764943
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.40000000000873,
+              "p95": 300.1000000000058,
+              "min": 283.1999999999971,
+              "max": 316.59999999999127
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 9.199999988079071,
+              "p95": 12.400000005960464,
+              "min": 7.100000023841858,
+              "max": 12.5
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.200000017881393,
+              "p95": 9.5,
+              "min": 5.199999988079071,
+              "max": 10.299999982118607
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.699999988079071,
+              "p95": 3.5999999940395355,
+              "min": 1.800000011920929,
+              "max": 4.100000023841858
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 35,
+              "median": 391663,
+              "p95": 391663,
+              "min": 391663,
+              "max": 391663
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 282.032709,
+              "p95": 290.658075,
+              "min": 274.55175,
+              "max": 292.25341
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.6000000238418579,
+              "p95": 1.100000023841858,
+              "min": 0.5,
+              "max": 1.5
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.845363,
+              "p95": 11.011509,
+              "min": 9.184415,
+              "max": 11.011509
+            }
+          },
+          "resources": {
+            "materials": 287,
+            "geometries": 289,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9560856,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 223877589
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 316.6999999999971,
+              "min": 283.29999999998836,
+              "max": 333.3000000000029
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 9.5,
+              "p95": 12.599999994039536,
+              "min": 7.800000011920929,
+              "max": 16.599999994039536
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 6.699999988079071,
+              "p95": 9.800000011920929,
+              "min": 5.5,
+              "max": 12.900000005960464
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.9000000059604645,
+              "p95": 3.699999988079071,
+              "min": 1.7999999821186066,
+              "max": 3.7000000178813934
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 34,
+              "median": 391663,
+              "p95": 391663,
+              "min": 391663,
+              "max": 391663
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 288.862967,
+              "p95": 303.584668,
+              "min": 274.609747,
+              "max": 321.551894
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.6000000238418579,
+              "p95": 1.5999999940395355,
+              "min": 0.5,
+              "max": 1.7999999821186066
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 10.240269,
+              "p95": 11.221322,
+              "min": 9.628929,
+              "max": 11.221322
+            }
+          },
+          "resources": {
+            "materials": 287,
+            "geometries": 289,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9560856,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 204391495
+        }
+      ]
+    },
+    {
+      "name": "tree-close",
+      "view": {
+        "name": "tree-close",
+        "position": [
+          105,
+          18,
+          -141
+        ],
+        "target": [
+          122,
+          18,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 7344,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 38,
+          "camera": {
+            "position": [
+              105.0335456167194,
+              19.30658607271605,
+              -141.02367925886074
+            ],
+            "target": [
+              122.00000000000001,
+              18,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 38,
+              "median": 266.6999999999971,
+              "p95": 283.3999999999942,
+              "min": 249.89999999999418,
+              "max": 283.40000000000873
+            },
+            "cpuWorkMs": {
+              "count": 38,
+              "median": 9.599999994039536,
+              "p95": 11.900000005960464,
+              "min": 6.4000000059604645,
+              "max": 12.300000011920929
+            },
+            "renderMs": {
+              "count": 38,
+              "median": 6.5999999940395355,
+              "p95": 9.199999988079071,
+              "min": 4.699999988079071,
+              "max": 9.200000017881393
+            },
+            "physicsMs": {
+              "count": 38,
+              "median": 2.800000011920929,
+              "p95": 3.4000000059604645,
+              "min": 1.5999999940395355,
+              "max": 3.699999988079071
+            },
+            "streamingRequestMs": {
+              "count": 38,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 38,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 38,
+              "median": 266,
+              "p95": 266,
+              "min": 266,
+              "max": 266
+            },
+            "triangles": {
+              "count": 38,
+              "median": 377870,
+              "p95": 377870,
+              "min": 377870,
+              "max": 377870
+            },
+            "gpuTimingMs": {
+              "count": 38,
+              "median": 254.911522,
+              "p95": 262.382965,
+              "min": 249.199378,
+              "max": 264.29447
+            },
+            "shadowCpuMs": {
+              "count": 38,
+              "median": 0.699999988079071,
+              "p95": 1.4000000059604645,
+              "min": 0.4000000059604645,
+              "max": 1.5999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 38,
+              "median": 12.303635,
+              "p95": 13.516858,
+              "min": 11.257647,
+              "max": 13.516858
+            }
+          },
+          "resources": {
+            "materials": 291,
+            "geometries": 293,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561432,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 14,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 199852595
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 37,
+          "camera": {
+            "position": [
+              105.0335456167194,
+              19.30658607271605,
+              -141.02367925886074
+            ],
+            "target": [
+              122.00000000000001,
+              18,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 37,
+              "median": 266.6999999999971,
+              "p95": 300,
+              "min": 250,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 37,
+              "median": 9,
+              "p95": 10.599999994039536,
+              "min": 7.300000011920929,
+              "max": 11
+            },
+            "renderMs": {
+              "count": 37,
+              "median": 6.299999982118607,
+              "p95": 7.699999988079071,
+              "min": 5,
+              "max": 8.300000011920929
+            },
+            "physicsMs": {
+              "count": 37,
+              "median": 2.5999999940395355,
+              "p95": 3.2999999821186066,
+              "min": 1.800000011920929,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 37,
+              "median": 0,
+              "p95": 0.10000002384185791,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 37,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 37,
+              "median": 266,
+              "p95": 266,
+              "min": 266,
+              "max": 266
+            },
+            "triangles": {
+              "count": 37,
+              "median": 377870,
+              "p95": 377870,
+              "min": 377870,
+              "max": 377870
+            },
+            "gpuTimingMs": {
+              "count": 37,
+              "median": 256.478962,
+              "p95": 278.635783,
+              "min": 249.925951,
+              "max": 286.083744
+            },
+            "shadowCpuMs": {
+              "count": 37,
+              "median": 0.5999999940395355,
+              "p95": 1.0999999940395355,
+              "min": 0.4000000059604645,
+              "max": 1.699999988079071
+            },
+            "shadowGpuMs": {
+              "count": 37,
+              "median": 12.280311,
+              "p95": 12.524322,
+              "min": 11.255778,
+              "max": 12.524322
+            }
+          },
+          "resources": {
+            "materials": 291,
+            "geometries": 293,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561432,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 14,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 195736667
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 38,
+          "camera": {
+            "position": [
+              105.0335456167194,
+              19.30658607271605,
+              -141.02367925886074
+            ],
+            "target": [
+              122.00000000000001,
+              18,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 38,
+              "median": 266.6999999999971,
+              "p95": 283.3999999999942,
+              "min": 249.89999999999418,
+              "max": 283.3999999999942
+            },
+            "cpuWorkMs": {
+              "count": 38,
+              "median": 9.199999988079071,
+              "p95": 12.199999988079071,
+              "min": 7.200000017881393,
+              "max": 12.200000017881393
+            },
+            "renderMs": {
+              "count": 38,
+              "median": 6.4000000059604645,
+              "p95": 8.599999994039536,
+              "min": 4.799999982118607,
+              "max": 9.800000011920929
+            },
+            "physicsMs": {
+              "count": 38,
+              "median": 2.7000000178813934,
+              "p95": 3.5,
+              "min": 1.899999976158142,
+              "max": 3.699999988079071
+            },
+            "streamingRequestMs": {
+              "count": 38,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 38,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 38,
+              "median": 266,
+              "p95": 266,
+              "min": 266,
+              "max": 266
+            },
+            "triangles": {
+              "count": 38,
+              "median": 377870,
+              "p95": 377870,
+              "min": 377870,
+              "max": 377870
+            },
+            "gpuTimingMs": {
+              "count": 38,
+              "median": 255.476229,
+              "p95": 272.651808,
+              "min": 250.340573,
+              "max": 272.651808
+            },
+            "shadowCpuMs": {
+              "count": 38,
+              "median": 0.6000000238418579,
+              "p95": 1.600000023841858,
+              "min": 0.3999999761581421,
+              "max": 1.800000011920929
+            },
+            "shadowGpuMs": {
+              "count": 38,
+              "median": 11.442423,
+              "p95": 12.42248,
+              "min": 11.030427,
+              "max": 13.153358
+            }
+          },
+          "resources": {
+            "materials": 291,
+            "geometries": 293,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561432,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 14,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 186866694
+        }
+      ]
+    },
+    {
+      "name": "house-close",
+      "view": {
+        "name": "house-close",
+        "position": [
+          -30,
+          14,
+          -67
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 10617,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.29999999998836,
+              "p95": 350.1000000000058,
+              "min": 316.5,
+              "max": 366.6000000000058
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 9.799999982118607,
+              "p95": 13,
+              "min": 7.4000000059604645,
+              "max": 14.699999988079071
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 7,
+              "p95": 10.100000023841858,
+              "min": 5.5,
+              "max": 11.399999976158142
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.699999988079071,
+              "p95": 3.300000011920929,
+              "min": 1.7999999821186066,
+              "max": 4.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 31,
+              "median": 436535,
+              "p95": 436535,
+              "min": 436535,
+              "max": 436535
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 317.090681,
+              "p95": 329.057305,
+              "min": 308.137281,
+              "max": 337.691641
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.699999988079071,
+              "p95": 1.100000023841858,
+              "min": 0.5,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 9.067695,
+              "p95": 9.732727,
+              "min": 8.637595,
+              "max": 10.463669
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 205485329
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 30,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 30,
+              "median": 333.3999999999942,
+              "p95": 366.6000000000058,
+              "min": 316.5999999999767,
+              "max": 366.6000000000058
+            },
+            "cpuWorkMs": {
+              "count": 30,
+              "median": 9.400000005960464,
+              "p95": 12.199999988079071,
+              "min": 7.9000000059604645,
+              "max": 12.699999988079071
+            },
+            "renderMs": {
+              "count": 30,
+              "median": 6.4000000059604645,
+              "p95": 8.900000005960464,
+              "min": 5.5999999940395355,
+              "max": 9.299999982118607
+            },
+            "physicsMs": {
+              "count": 30,
+              "median": 2.899999976158142,
+              "p95": 4.4000000059604645,
+              "min": 1.9000000059604645,
+              "max": 5.0999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 30,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 30,
+              "median": 436535,
+              "p95": 436535,
+              "min": 436535,
+              "max": 436535
+            },
+            "gpuTimingMs": {
+              "count": 30,
+              "median": 319.836866,
+              "p95": 356.718177,
+              "min": 311.245644,
+              "max": 356.718177
+            },
+            "shadowCpuMs": {
+              "count": 30,
+              "median": 0.6000000238418579,
+              "p95": 1.199999988079071,
+              "min": 0.5,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 30,
+              "median": 9.146631,
+              "p95": 11.882018,
+              "min": 8.651203,
+              "max": 11.882018
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 217001744
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 30,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 30,
+              "median": 333.30000000001746,
+              "p95": 366.70000000001164,
+              "min": 316.6000000000058,
+              "max": 433.20000000001164
+            },
+            "cpuWorkMs": {
+              "count": 30,
+              "median": 9.799999982118607,
+              "p95": 15.800000011920929,
+              "min": 8.199999988079071,
+              "max": 18
+            },
+            "renderMs": {
+              "count": 30,
+              "median": 6.9000000059604645,
+              "p95": 11.300000011920929,
+              "min": 5.9000000059604645,
+              "max": 14.299999982118607
+            },
+            "physicsMs": {
+              "count": 30,
+              "median": 2.9000000059604645,
+              "p95": 4,
+              "min": 1.800000011920929,
+              "max": 4.5
+            },
+            "streamingRequestMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 30,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 30,
+              "median": 436535,
+              "p95": 436535,
+              "min": 436535,
+              "max": 436535
+            },
+            "gpuTimingMs": {
+              "count": 30,
+              "median": 322.64671,
+              "p95": 359.913095,
+              "min": 316.335893,
+              "max": 424.677248
+            },
+            "shadowCpuMs": {
+              "count": 30,
+              "median": 0.7000000178813934,
+              "p95": 1.5999999940395355,
+              "min": 0.5,
+              "max": 2.9000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 30,
+              "median": 9.586515,
+              "p95": 12.746673,
+              "min": 8.788077,
+              "max": 12.746673
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 179963538
+        }
+      ]
+    },
+    {
+      "name": "village-square",
+      "view": {
+        "name": "village-square",
+        "position": [
+          39,
+          16,
+          -7
+        ],
+        "target": [
+          37,
+          15,
+          -50
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 10355,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 27,
+          "camera": {
+            "position": [
+              38.99659198471117,
+              17.70364048672879,
+              -7.073272328709848
+            ],
+            "target": [
+              37,
+              15,
+              -50
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 27,
+              "median": 383.20000000001164,
+              "p95": 400,
+              "min": 350,
+              "max": 400
+            },
+            "cpuWorkMs": {
+              "count": 27,
+              "median": 10.400000005960464,
+              "p95": 14,
+              "min": 7.699999988079071,
+              "max": 14.699999988079071
+            },
+            "renderMs": {
+              "count": 27,
+              "median": 7.5,
+              "p95": 11.199999988079071,
+              "min": 5.9000000059604645,
+              "max": 11.599999994039536
+            },
+            "physicsMs": {
+              "count": 27,
+              "median": 2.9000000059604645,
+              "p95": 4,
+              "min": 1.7999999821186066,
+              "max": 4.100000023841858
+            },
+            "streamingRequestMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 27,
+              "median": 381,
+              "p95": 381,
+              "min": 381,
+              "max": 381
+            },
+            "triangles": {
+              "count": 27,
+              "median": 435200,
+              "p95": 435200,
+              "min": 435200,
+              "max": 435200
+            },
+            "gpuTimingMs": {
+              "count": 27,
+              "median": 366.062382,
+              "p95": 385.975592,
+              "min": 353.042337,
+              "max": 385.975592
+            },
+            "shadowCpuMs": {
+              "count": 27,
+              "median": 0.699999988079071,
+              "p95": 1.5999999940395355,
+              "min": 0.5,
+              "max": 5
+            },
+            "shadowGpuMs": {
+              "count": 27,
+              "median": 9.217611,
+              "p95": 11.344465,
+              "min": 8.481228,
+              "max": 11.344465
+            }
+          },
+          "resources": {
+            "materials": 300,
+            "geometries": 302,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9558232,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 195462991
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 27,
+          "camera": {
+            "position": [
+              38.99659198471117,
+              17.70364048672879,
+              -7.073272328709848
+            ],
+            "target": [
+              37,
+              15,
+              -50
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 27,
+              "median": 366.80000000001746,
+              "p95": 400,
+              "min": 366.5,
+              "max": 400
+            },
+            "cpuWorkMs": {
+              "count": 27,
+              "median": 10.399999976158142,
+              "p95": 14,
+              "min": 8.599999994039536,
+              "max": 15.099999994039536
+            },
+            "renderMs": {
+              "count": 27,
+              "median": 7.300000011920929,
+              "p95": 10.600000023841858,
+              "min": 6.5,
+              "max": 11.900000005960464
+            },
+            "physicsMs": {
+              "count": 27,
+              "median": 2.9000000059604645,
+              "p95": 3.9000000059604645,
+              "min": 1.800000011920929,
+              "max": 4.4000000059604645
+            },
+            "streamingRequestMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 27,
+              "median": 381,
+              "p95": 381,
+              "min": 381,
+              "max": 381
+            },
+            "triangles": {
+              "count": 27,
+              "median": 435200,
+              "p95": 435200,
+              "min": 435200,
+              "max": 435200
+            },
+            "gpuTimingMs": {
+              "count": 27,
+              "median": 363.400782,
+              "p95": 382.482831,
+              "min": 349.184077,
+              "max": 383.575558
+            },
+            "shadowCpuMs": {
+              "count": 27,
+              "median": 0.699999988079071,
+              "p95": 1.0999999940395355,
+              "min": 0.4000000059604645,
+              "max": 1.5
+            },
+            "shadowGpuMs": {
+              "count": 27,
+              "median": 9.127934,
+              "p95": 10.078302,
+              "min": 8.080244,
+              "max": 10.078302
+            }
+          },
+          "resources": {
+            "materials": 300,
+            "geometries": 302,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9558232,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 201158055
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 27,
+          "camera": {
+            "position": [
+              38.99659198471117,
+              17.70364048672879,
+              -7.073272328709848
+            ],
+            "target": [
+              37,
+              15,
+              -50
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 27,
+              "median": 366.70000000001164,
+              "p95": 400,
+              "min": 350,
+              "max": 466.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 27,
+              "median": 10.300000011920929,
+              "p95": 14.599999994039536,
+              "min": 7.700000017881393,
+              "max": 16.399999976158142
+            },
+            "renderMs": {
+              "count": 27,
+              "median": 7.5999999940395355,
+              "p95": 11.5,
+              "min": 5.700000017881393,
+              "max": 13
+            },
+            "physicsMs": {
+              "count": 27,
+              "median": 2.800000011920929,
+              "p95": 3.4000000059604645,
+              "min": 1.699999988079071,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 27,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 27,
+              "median": 381,
+              "p95": 381,
+              "min": 381,
+              "max": 381
+            },
+            "triangles": {
+              "count": 27,
+              "median": 435200,
+              "p95": 435200,
+              "min": 435200,
+              "max": 435200
+            },
+            "gpuTimingMs": {
+              "count": 27,
+              "median": 363.10389,
+              "p95": 456.93398,
+              "min": 349.732272,
+              "max": 456.93398
+            },
+            "shadowCpuMs": {
+              "count": 27,
+              "median": 0.699999988079071,
+              "p95": 1.7000000178813934,
+              "min": 0.5,
+              "max": 2
+            },
+            "shadowGpuMs": {
+              "count": 27,
+              "median": 9.042907,
+              "p95": 10.846593,
+              "min": 8.499739,
+              "max": 10.846593
+            }
+          },
+          "resources": {
+            "materials": 300,
+            "geometries": 302,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9558232,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 198689371
+        }
+      ]
+    },
+    {
+      "name": "farmland",
+      "view": {
+        "name": "farmland",
+        "position": [
+          -85,
+          25,
+          30
+        ],
+        "target": [
+          -75,
+          15,
+          -20
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 10662,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 30,
+          "camera": {
+            "position": [
+              -85,
+              25,
+              30
+            ],
+            "target": [
+              -75,
+              15,
+              -20
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 30,
+              "median": 333.3999999999651,
+              "p95": 366.6000000000349,
+              "min": 316.70000000001164,
+              "max": 366.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 30,
+              "median": 9.400000005960464,
+              "p95": 13.099999994039536,
+              "min": 8.199999988079071,
+              "max": 14.099999994039536
+            },
+            "renderMs": {
+              "count": 30,
+              "median": 6.700000017881393,
+              "p95": 9.400000005960464,
+              "min": 5.600000023841858,
+              "max": 9.5
+            },
+            "physicsMs": {
+              "count": 30,
+              "median": 2.4000000059604645,
+              "p95": 4.5,
+              "min": 1.7999999821186066,
+              "max": 5.0999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 30,
+              "median": 413,
+              "p95": 413,
+              "min": 413,
+              "max": 413
+            },
+            "triangles": {
+              "count": 30,
+              "median": 484415,
+              "p95": 484415,
+              "min": 484415,
+              "max": 484415
+            },
+            "gpuTimingMs": {
+              "count": 30,
+              "median": 323.3828,
+              "p95": 343.705005,
+              "min": 316.468555,
+              "max": 367.848594
+            },
+            "shadowCpuMs": {
+              "count": 30,
+              "median": 0.5,
+              "p95": 0.800000011920929,
+              "min": 0.3999999761581421,
+              "max": 0.800000011920929
+            },
+            "shadowGpuMs": {
+              "count": 30,
+              "median": 7.526417,
+              "p95": 8.361689,
+              "min": 7.013873,
+              "max": 8.361689
+            }
+          },
+          "resources": {
+            "materials": 275,
+            "geometries": 277,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556696,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 197736930
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 30,
+          "camera": {
+            "position": [
+              -85,
+              25,
+              30
+            ],
+            "target": [
+              -75,
+              15,
+              -20
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 30,
+              "median": 333.29999999998836,
+              "p95": 366.80000000004657,
+              "min": 316.5999999999767,
+              "max": 383.19999999995343
+            },
+            "cpuWorkMs": {
+              "count": 30,
+              "median": 9.599999994039536,
+              "p95": 11.400000005960464,
+              "min": 7.700000017881393,
+              "max": 12
+            },
+            "renderMs": {
+              "count": 30,
+              "median": 6.5999999940395355,
+              "p95": 8.899999976158142,
+              "min": 5.899999976158142,
+              "max": 8.900000005960464
+            },
+            "physicsMs": {
+              "count": 30,
+              "median": 2.5999999940395355,
+              "p95": 3.4000000059604645,
+              "min": 1.800000011920929,
+              "max": 3.5
+            },
+            "streamingRequestMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 30,
+              "median": 413,
+              "p95": 413,
+              "min": 413,
+              "max": 413
+            },
+            "triangles": {
+              "count": 30,
+              "median": 484415,
+              "p95": 484415,
+              "min": 484415,
+              "max": 484415
+            },
+            "gpuTimingMs": {
+              "count": 30,
+              "median": 325.908917,
+              "p95": 347.735066,
+              "min": 312.977617,
+              "max": 347.735066
+            },
+            "shadowCpuMs": {
+              "count": 30,
+              "median": 0.5,
+              "p95": 0.9000000059604645,
+              "min": 0.29999998211860657,
+              "max": 0.9000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 30,
+              "median": 7.493146,
+              "p95": 8.824601,
+              "min": 6.61129,
+              "max": 8.824601
+            }
+          },
+          "resources": {
+            "materials": 275,
+            "geometries": 277,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556696,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 217678361
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -85,
+              25,
+              30
+            ],
+            "target": [
+              -75,
+              15,
+              -20
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.29999999998836,
+              "p95": 350,
+              "min": 316.5999999999767,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 9.099999994039536,
+              "p95": 13.099999994039536,
+              "min": 7.5999999940395355,
+              "max": 15.200000017881393
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 6.4000000059604645,
+              "p95": 10.099999994039536,
+              "min": 5.399999976158142,
+              "max": 12.099999994039536
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.600000023841858,
+              "p95": 3.100000023841858,
+              "min": 1.699999988079071,
+              "max": 3.199999988079071
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 413,
+              "p95": 413,
+              "min": 413,
+              "max": 413
+            },
+            "triangles": {
+              "count": 31,
+              "median": 484415,
+              "p95": 484415,
+              "min": 484415,
+              "max": 484415
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 315.831528,
+              "p95": 327.917919,
+              "min": 303.517537,
+              "max": 332.531685
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.5,
+              "p95": 1.4000000059604645,
+              "min": 0.29999998211860657,
+              "max": 2.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 7.117633,
+              "p95": 9.147055,
+              "min": 6.900877,
+              "max": 9.147055
+            }
+          },
+          "resources": {
+            "materials": 275,
+            "geometries": 277,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556696,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 16,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 189812045
+        }
+      ]
+    },
+    {
+      "name": "overview",
+      "view": {
+        "name": "overview",
+        "position": [
+          0,
+          170,
+          300
+        ],
+        "target": [
+          0,
+          15,
+          -100
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 11895,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 25,
+          "camera": {
+            "position": [
+              0,
+              170.00000000000003,
+              300
+            ],
+            "target": [
+              0,
+              15.000000000000004,
+              -100.00000000000001
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 25,
+              "median": 400,
+              "p95": 416.70000000001164,
+              "min": 399.8999999999651,
+              "max": 416.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 25,
+              "median": 10.099999994039536,
+              "p95": 11.299999982118607,
+              "min": 8,
+              "max": 11.900000005960464
+            },
+            "renderMs": {
+              "count": 25,
+              "median": 7.699999988079071,
+              "p95": 8.799999982118607,
+              "min": 6.299999982118607,
+              "max": 9.399999976158142
+            },
+            "physicsMs": {
+              "count": 25,
+              "median": 2.0999999940395355,
+              "p95": 3,
+              "min": 1.5999999940395355,
+              "max": 3.2000000178813934
+            },
+            "streamingRequestMs": {
+              "count": 25,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 25,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 25,
+              "median": 690,
+              "p95": 690,
+              "min": 690,
+              "max": 690
+            },
+            "triangles": {
+              "count": 25,
+              "median": 655122,
+              "p95": 655122,
+              "min": 655122,
+              "max": 655122
+            },
+            "gpuTimingMs": {
+              "count": 25,
+              "median": 396.837423,
+              "p95": 405.245499,
+              "min": 387.298021,
+              "max": 405.245499
+            },
+            "shadowCpuMs": {
+              "count": 25,
+              "median": 0.7000000178813934,
+              "p95": 0.9000000059604645,
+              "min": 0.5,
+              "max": 1.0999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 25,
+              "median": 11.395061,
+              "p95": 14.51403,
+              "min": 9.740753,
+              "max": 14.51403
+            }
+          },
+          "resources": {
+            "materials": 258,
+            "geometries": 260,
+            "textures": 11,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556568,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 0,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 205939889
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 24,
+          "camera": {
+            "position": [
+              0,
+              170.00000000000003,
+              300
+            ],
+            "target": [
+              0,
+              15.000000000000004,
+              -100.00000000000001
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 24,
+              "median": 416.5999999999767,
+              "p95": 450,
+              "min": 400,
+              "max": 450.1000000000349
+            },
+            "cpuWorkMs": {
+              "count": 24,
+              "median": 10.800000011920929,
+              "p95": 14.400000005960464,
+              "min": 8.5,
+              "max": 14.700000017881393
+            },
+            "renderMs": {
+              "count": 24,
+              "median": 8.199999988079071,
+              "p95": 11.5,
+              "min": 6.699999988079071,
+              "max": 12.099999994039536
+            },
+            "physicsMs": {
+              "count": 24,
+              "median": 2.5,
+              "p95": 3.2000000178813934,
+              "min": 1.699999988079071,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 24,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            },
+            "streamingCommitMs": {
+              "count": 24,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 24,
+              "median": 690,
+              "p95": 690,
+              "min": 690,
+              "max": 690
+            },
+            "triangles": {
+              "count": 24,
+              "median": 655122,
+              "p95": 655122,
+              "min": 655122,
+              "max": 655122
+            },
+            "gpuTimingMs": {
+              "count": 24,
+              "median": 401.209023,
+              "p95": 428.928275,
+              "min": 388.124588,
+              "max": 437.945863
+            },
+            "shadowCpuMs": {
+              "count": 24,
+              "median": 0.7999999821186066,
+              "p95": 1.199999988079071,
+              "min": 0.5,
+              "max": 1.300000011920929
+            },
+            "shadowGpuMs": {
+              "count": 24,
+              "median": 12.040509,
+              "p95": 13.510636,
+              "min": 10.646569,
+              "max": 13.510636
+            }
+          },
+          "resources": {
+            "materials": 258,
+            "geometries": 260,
+            "textures": 11,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556568,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 0,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 205663999
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 25,
+          "camera": {
+            "position": [
+              0,
+              170.00000000000003,
+              300
+            ],
+            "target": [
+              0,
+              15.000000000000004,
+              -100.00000000000001
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 25,
+              "median": 400,
+              "p95": 416.70000000001164,
+              "min": 383.29999999998836,
+              "max": 433.29999999998836
+            },
+            "cpuWorkMs": {
+              "count": 25,
+              "median": 10.200000017881393,
+              "p95": 19.30000001192093,
+              "min": 7.9000000059604645,
+              "max": 20.600000023841858
+            },
+            "renderMs": {
+              "count": 25,
+              "median": 7.799999982118607,
+              "p95": 16.100000023841858,
+              "min": 6.0999999940395355,
+              "max": 16.299999982118607
+            },
+            "physicsMs": {
+              "count": 25,
+              "median": 2.5,
+              "p95": 4,
+              "min": 1.7000000178813934,
+              "max": 4.200000017881393
+            },
+            "streamingRequestMs": {
+              "count": 25,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 25,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 25,
+              "median": 690,
+              "p95": 690,
+              "min": 690,
+              "max": 690
+            },
+            "triangles": {
+              "count": 25,
+              "median": 655122,
+              "p95": 655122,
+              "min": 655122,
+              "max": 655122
+            },
+            "gpuTimingMs": {
+              "count": 25,
+              "median": 394.507095,
+              "p95": 402.149018,
+              "min": 386.423907,
+              "max": 408.791229
+            },
+            "shadowCpuMs": {
+              "count": 25,
+              "median": 0.699999988079071,
+              "p95": 1.100000023841858,
+              "min": 0.5,
+              "max": 2.0999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 25,
+              "median": 12.041244,
+              "p95": 14.101004,
+              "min": 10.390124,
+              "max": 14.101004
+            }
+          },
+          "resources": {
+            "materials": 258,
+            "geometries": 260,
+            "textures": 11,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9556568,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 0,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 200790562
+        }
+      ]
+    },
+    {
+      "name": "A1",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A1",
+        "treeShadowMode": "B0",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 8939,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 299.9000000000233,
+              "p95": 316.6000000000349,
+              "min": 266.5999999999767,
+              "max": 316.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.799999982118607,
+              "p95": 12.299999982118607,
+              "min": 6.9000000059604645,
+              "max": 13.400000005960464
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.199999988079071,
+              "p95": 9,
+              "min": 5,
+              "max": 10.199999988079071
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.5,
+              "p95": 3.5,
+              "min": 1.5999999940395355,
+              "max": 3.800000011920929
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 35,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 282.52557,
+              "p95": 297.964383,
+              "min": 256.631634,
+              "max": 297.964383
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 1.199999988079071,
+              "min": 0.4000000059604645,
+              "max": 1.5
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.612477,
+              "p95": 12.310934,
+              "min": 8.954721,
+              "max": 12.310934
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1366.800000011921,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 194836647
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.4000000000233,
+              "p95": 316.70000000001164,
+              "min": 266.70000000001164,
+              "max": 316.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 9.599999994039536,
+              "p95": 12,
+              "min": 7.300000011920929,
+              "max": 12.300000011920929
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.799999982118607,
+              "p95": 8.5,
+              "min": 5.100000023841858,
+              "max": 8.900000005960464
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.9000000059604645,
+              "p95": 3.600000023841858,
+              "min": 1.800000011920929,
+              "max": 4
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 35,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 276.991122,
+              "p95": 304.42946,
+              "min": 270.387213,
+              "max": 304.42946
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 0.8999999761581421,
+              "min": 0.4000000059604645,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.857847,
+              "p95": 11.308058,
+              "min": 8.994789,
+              "max": 11.308058
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1366.800000011921,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 217840395
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 283.4000000000233,
+              "p95": 333.30000000004657,
+              "min": 283.20000000001164,
+              "max": 333.3999999999651
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 9.200000017881393,
+              "p95": 10.699999988079071,
+              "min": 6.700000017881393,
+              "max": 11.099999994039536
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 6.299999982118607,
+              "p95": 8.099999994039536,
+              "min": 5.0999999940395355,
+              "max": 8.199999988079071
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.5999999940395355,
+              "p95": 3.5999999940395355,
+              "min": 1.5,
+              "max": 5
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 34,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 280.054281,
+              "p95": 297.286801,
+              "min": 272.915165,
+              "max": 314.789138
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.5999999940395355,
+              "p95": 1,
+              "min": 0.5,
+              "max": 1
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 9.905738,
+              "p95": 10.960981,
+              "min": 9.277269,
+              "max": 10.960981
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1366.800000011921,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 205024051
+        }
+      ]
+    },
+    {
+      "name": "A2",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A2",
+        "treeShadowMode": "B0",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 6121,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.3999999999651,
+              "p95": 300,
+              "min": 283.29999999998836,
+              "max": 300.1000000000349
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.900000005960464,
+              "p95": 10.699999988079071,
+              "min": 6.799999982118607,
+              "max": 12.400000005960464
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.100000023841858,
+              "p95": 7.5,
+              "min": 4.9000000059604645,
+              "max": 9.700000017881393
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.5,
+              "p95": 3.399999976158142,
+              "min": 1.699999988079071,
+              "max": 3.399999976158142
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 35,
+              "median": 385119,
+              "p95": 385119,
+              "min": 385119,
+              "max": 385119
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 278.838955,
+              "p95": 289.044511,
+              "min": 272.218543,
+              "max": 289.044511
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 1,
+              "min": 0.4000000059604645,
+              "max": 1.199999988079071
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.850521,
+              "p95": 10.495832,
+              "min": 9.272444,
+              "max": 10.495832
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 217639555
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 299.8999999999651,
+              "p95": 316.6000000000349,
+              "min": 283.29999999998836,
+              "max": 316.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 9.099999994039536,
+              "p95": 11.700000017881393,
+              "min": 7,
+              "max": 12.599999994039536
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.4000000059604645,
+              "p95": 8.800000011920929,
+              "min": 4.9000000059604645,
+              "max": 9.599999994039536
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.5,
+              "p95": 3.2999999821186066,
+              "min": 1.699999988079071,
+              "max": 3.699999988079071
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 35,
+              "median": 385119,
+              "p95": 385119,
+              "min": 385119,
+              "max": 385119
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 283.239377,
+              "p95": 308.816163,
+              "min": 270.420788,
+              "max": 308.816163
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 1.0999999940395355,
+              "min": 0.5,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.778154,
+              "p95": 10.50529,
+              "min": 9.241914,
+              "max": 10.50529
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 206690137
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.3999999999651,
+              "p95": 300.0999999999767,
+              "min": 283.19999999995343,
+              "max": 316.70000000001164
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.700000017881393,
+              "p95": 10.900000005960464,
+              "min": 6.700000017881393,
+              "max": 13.199999988079071
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 6.199999988079071,
+              "p95": 8.099999994039536,
+              "min": 4.799999982118607,
+              "max": 10.699999988079071
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.4000000059604645,
+              "p95": 3.0999999940395355,
+              "min": 1.600000023841858,
+              "max": 3.100000023841858
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 265,
+              "p95": 265,
+              "min": 265,
+              "max": 265
+            },
+            "triangles": {
+              "count": 35,
+              "median": 385119,
+              "p95": 385119,
+              "min": 385119,
+              "max": 385119
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 279.97729,
+              "p95": 292.579363,
+              "min": 271.931737,
+              "max": 292.579363
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 1.300000011920929,
+              "min": 0.5,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.567844,
+              "p95": 10.37861,
+              "min": 9.156013,
+              "max": 10.37861
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 17,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 195811177
+        }
+      ]
+    },
+    {
+      "name": "A3",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A3",
+        "treeShadowMode": "B0",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 6157,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.30000000004657,
+              "p95": 300,
+              "min": 266.69999999995343,
+              "max": 300.1000000000349
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.400000005960464,
+              "p95": 10.899999976158142,
+              "min": 6.4000000059604645,
+              "max": 14.399999976158142
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 5.5,
+              "p95": 7.5,
+              "min": 4.5,
+              "max": 10.399999976158142
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.600000023841858,
+              "p95": 3.5999999940395355,
+              "min": 1.699999988079071,
+              "max": 3.9000000059604645
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 35,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 274.653987,
+              "p95": 289.230441,
+              "min": 269.109714,
+              "max": 289.300453
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 1.2000000178813934,
+              "min": 0.4000000059604645,
+              "max": 1.5
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.713541,
+              "p95": 10.414488,
+              "min": 9.380471,
+              "max": 10.414488
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 3088,
+            "grassInstanceBytes": 234688,
+            "instanceBufferBytes": 605184,
+            "grassPatches": 25,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1627.9000000059605,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 193139449
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.30000000004657,
+              "p95": 300,
+              "min": 266.69999999995343,
+              "max": 300
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.300000011920929,
+              "p95": 12.700000017881393,
+              "min": 6.199999988079071,
+              "max": 13.599999994039536
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 5.5,
+              "p95": 8.5,
+              "min": 4.299999982118607,
+              "max": 11.099999994039536
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.7999999821186066,
+              "p95": 4,
+              "min": 1.7000000178813934,
+              "max": 4
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 35,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 274.447767,
+              "p95": 289.778624,
+              "min": 270.956422,
+              "max": 292.09762
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.6000000238418579,
+              "p95": 1.100000023841858,
+              "min": 0.4000000059604645,
+              "max": 1.699999988079071
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.545554,
+              "p95": 11.508777,
+              "min": 8.917097,
+              "max": 11.508777
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 3088,
+            "grassInstanceBytes": 234688,
+            "instanceBufferBytes": 605184,
+            "grassPatches": 25,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1627.9000000059605,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 212430699
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.3999999999651,
+              "p95": 300,
+              "min": 283.20000000001164,
+              "max": 300
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.299999982118607,
+              "p95": 10.599999994039536,
+              "min": 6.699999988079071,
+              "max": 11.099999994039536
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 5.4000000059604645,
+              "p95": 7.200000017881393,
+              "min": 4.699999988079071,
+              "max": 7.299999982118607
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.699999988079071,
+              "p95": 4.5,
+              "min": 1.9000000059604645,
+              "max": 4.699999988079071
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 254,
+              "p95": 254,
+              "min": 254,
+              "max": 254
+            },
+            "triangles": {
+              "count": 35,
+              "median": 369314,
+              "p95": 369314,
+              "min": 369314,
+              "max": 369314
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 273.588936,
+              "p95": 280.412944,
+              "min": 269.255539,
+              "max": 284.878393
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5999999940395355,
+              "p95": 0.9000000059604645,
+              "min": 0.3999999761581421,
+              "max": 1.2000000178813934
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 9.536047,
+              "p95": 10.703768,
+              "min": 8.90255,
+              "max": 10.703768
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 108,
+            "grassInstances": 3088,
+            "grassInstanceBytes": 234688,
+            "instanceBufferBytes": 605184,
+            "grassPatches": 25,
+            "visibleGrassPatches": 6,
+            "grassCoveragePreparationMs": 1627.9000000059605,
+            "grassCoverageBytes": 6084000
+          },
+          "heap": 198276044
+        }
+      ]
+    },
+    {
+      "name": "B1",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "treeShadowMode": "B1",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 6363,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 33,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 33,
+              "median": 300,
+              "p95": 366.5999999999767,
+              "min": 283.29999999993015,
+              "max": 400
+            },
+            "cpuWorkMs": {
+              "count": 33,
+              "median": 8.899999976158142,
+              "p95": 11.800000011920929,
+              "min": 7,
+              "max": 12.699999988079071
+            },
+            "renderMs": {
+              "count": 33,
+              "median": 5.9000000059604645,
+              "p95": 8.799999982118607,
+              "min": 5.0999999940395355,
+              "max": 9.5
+            },
+            "physicsMs": {
+              "count": 33,
+              "median": 2.4000000059604645,
+              "p95": 3.4000000059604645,
+              "min": 1.5999999940395355,
+              "max": 3.699999988079071
+            },
+            "streamingRequestMs": {
+              "count": 33,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 33,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 33,
+              "median": 270,
+              "p95": 270,
+              "min": 270,
+              "max": 270
+            },
+            "triangles": {
+              "count": 33,
+              "median": 396809,
+              "p95": 396809,
+              "min": 396809,
+              "max": 396809
+            },
+            "gpuTimingMs": {
+              "count": 33,
+              "median": 286.825627,
+              "p95": 315.792186,
+              "min": 274.081888,
+              "max": 390.257574
+            },
+            "shadowCpuMs": {
+              "count": 33,
+              "median": 0.5,
+              "p95": 0.9000000059604645,
+              "min": 0.4000000059604645,
+              "max": 1.0999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 33,
+              "median": 7.357106,
+              "p95": 8.379574,
+              "min": 6.439787,
+              "max": 8.379574
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 224801345
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 333.29999999993015,
+              "min": 283.20000000006985,
+              "max": 333.30000000004657
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 8.299999982118607,
+              "p95": 13,
+              "min": 7,
+              "max": 17.399999976158142
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 5.799999982118607,
+              "p95": 11.199999988079071,
+              "min": 4.9000000059604645,
+              "max": 12.399999976158142
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.5,
+              "p95": 3.300000011920929,
+              "min": 1.7000000178813934,
+              "max": 5
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 270,
+              "p95": 270,
+              "min": 270,
+              "max": 270
+            },
+            "triangles": {
+              "count": 34,
+              "median": 396809,
+              "p95": 396809,
+              "min": 396809,
+              "max": 396809
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 284.579719,
+              "p95": 301.023877,
+              "min": 273.736388,
+              "max": 301.023877
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.5,
+              "p95": 0.9000000059604645,
+              "min": 0.30000001192092896,
+              "max": 2.5
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 7.600216,
+              "p95": 8.422569,
+              "min": 6.357673,
+              "max": 8.971317
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 242055885
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 299.9000000000233,
+              "p95": 300.0999999999767,
+              "min": 283.29999999993015,
+              "max": 316.5999999999767
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 8.200000017881393,
+              "p95": 9.900000005960464,
+              "min": 7,
+              "max": 13.400000005960464
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 5.799999982118607,
+              "p95": 7.4000000059604645,
+              "min": 5,
+              "max": 9.900000005960464
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2.100000023841858,
+              "p95": 3.5,
+              "min": 1.699999988079071,
+              "max": 4.299999982118607
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 270,
+              "p95": 270,
+              "min": 270,
+              "max": 270
+            },
+            "triangles": {
+              "count": 35,
+              "median": 396809,
+              "p95": 396809,
+              "min": 396809,
+              "max": 396809
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 280.578831,
+              "p95": 300.203548,
+              "min": 276.309674,
+              "max": 300.203548
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.5,
+              "p95": 0.800000011920929,
+              "min": 0.29999998211860657,
+              "max": 1
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 6.844083,
+              "p95": 8.886904,
+              "min": 6.510204,
+              "max": 8.886904
+            }
+          },
+          "resources": {
+            "materials": 289,
+            "geometries": 291,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9562392,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 227502056
+        }
+      ]
+    },
+    {
+      "name": "B2",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "treeShadowMode": "B2",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 7917,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 299.89999999990687,
+              "p95": 333.30000000004657,
+              "min": 283.19999999995343,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 10.200000017881393,
+              "p95": 16.799999982118607,
+              "min": 8.299999982118607,
+              "max": 25.099999994039536
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 7.9000000059604645,
+              "p95": 14.300000011920929,
+              "min": 6.5,
+              "max": 21.5
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.0999999940395355,
+              "p95": 3.4000000059604645,
+              "min": 1.7999999821186066,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 277,
+              "p95": 277,
+              "min": 277,
+              "max": 277
+            },
+            "triangles": {
+              "count": 34,
+              "median": 397169,
+              "p95": 397169,
+              "min": 397169,
+              "max": 397169
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 280.145856,
+              "p95": 323.000355,
+              "min": 272.561966,
+              "max": 323.000355
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.7000000178813934,
+              "p95": 1.899999976158142,
+              "min": 0.3999999761581421,
+              "max": 1.9000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 4.553738,
+              "p95": 6.08791,
+              "min": 3.960095,
+              "max": 6.08791
+            }
+          },
+          "resources": {
+            "materials": 881,
+            "geometries": 883,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9637720,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 190863005
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 35,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 35,
+              "median": 283.39999999990687,
+              "p95": 300.0999999999767,
+              "min": 283.20000000006985,
+              "max": 333.29999999993015
+            },
+            "cpuWorkMs": {
+              "count": 35,
+              "median": 9.900000005960464,
+              "p95": 13.199999988079071,
+              "min": 8.5,
+              "max": 14.900000005960464
+            },
+            "renderMs": {
+              "count": 35,
+              "median": 7.899999976158142,
+              "p95": 10.5,
+              "min": 6.5,
+              "max": 11.400000005960464
+            },
+            "physicsMs": {
+              "count": 35,
+              "median": 2,
+              "p95": 3.0999999940395355,
+              "min": 1.699999988079071,
+              "max": 4.700000017881393
+            },
+            "streamingRequestMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 35,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 35,
+              "median": 277,
+              "p95": 277,
+              "min": 277,
+              "max": 277
+            },
+            "triangles": {
+              "count": 35,
+              "median": 397169,
+              "p95": 397169,
+              "min": 397169,
+              "max": 397169
+            },
+            "gpuTimingMs": {
+              "count": 35,
+              "median": 278.834009,
+              "p95": 316.191008,
+              "min": 274.105592,
+              "max": 316.191008
+            },
+            "shadowCpuMs": {
+              "count": 35,
+              "median": 0.699999988079071,
+              "p95": 1,
+              "min": 0.3999999761581421,
+              "max": 1.4000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 35,
+              "median": 4.387713,
+              "p95": 5.703396,
+              "min": 4.083127,
+              "max": 5.703396
+            }
+          },
+          "resources": {
+            "materials": 881,
+            "geometries": 883,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9637720,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 216165517
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 333.4000000000233,
+              "min": 266.69999999995343,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 10.599999994039536,
+              "p95": 14.800000011920929,
+              "min": 8.5,
+              "max": 17.69999998807907
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 8,
+              "p95": 11.300000011920929,
+              "min": 6.5,
+              "max": 14.599999994039536
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.0999999940395355,
+              "p95": 3.5,
+              "min": 1.5999999940395355,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 277,
+              "p95": 277,
+              "min": 277,
+              "max": 277
+            },
+            "triangles": {
+              "count": 34,
+              "median": 397169,
+              "p95": 397169,
+              "min": 397169,
+              "max": 397169
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 287.995504,
+              "p95": 306.351642,
+              "min": 266.721345,
+              "max": 306.351642
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 0.699999988079071,
+              "p95": 1.199999988079071,
+              "min": 0.3999999761581421,
+              "max": 1.5999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 4.413134,
+              "p95": 5.865594,
+              "min": 4.143876,
+              "max": 5.865594
+            }
+          },
+          "resources": {
+            "materials": 881,
+            "geometries": 883,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9637720,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 200417580
+        }
+      ]
+    },
+    {
+      "name": "B3",
+      "view": {
+        "name": "forest-path",
+        "position": [
+          72,
+          16,
+          -137
+        ],
+        "target": [
+          122,
+          16,
+          -153
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "treeShadowMode": "B3",
+        "buildingMaterialMode": "C0",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 7949,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 299.9000000000233,
+              "p95": 316.60000000009313,
+              "min": 283.20000000006985,
+              "max": 316.69999999995343
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 13.400000005960464,
+              "p95": 17.5,
+              "min": 11.400000005960464,
+              "max": 18
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 11.099999994039536,
+              "p95": 14.300000011920929,
+              "min": 9,
+              "max": 15.299999982118607
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.7000000178813934,
+              "p95": 4,
+              "min": 1.699999988079071,
+              "max": 4.399999976158142
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 298,
+              "p95": 298,
+              "min": 298,
+              "max": 298
+            },
+            "triangles": {
+              "count": 34,
+              "median": 403749,
+              "p95": 403749,
+              "min": 403749,
+              "max": 403749
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 285.251996,
+              "p95": 293.810854,
+              "min": 275.68423,
+              "max": 299.319509
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 1.0999999940395355,
+              "p95": 1.7999999821186066,
+              "min": 0.5999999940395355,
+              "max": 1.899999976158142
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 6.80387,
+              "p95": 7.970178,
+              "min": 6.389796,
+              "max": 7.970178
+            }
+          },
+          "resources": {
+            "materials": 2065,
+            "geometries": 895,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9788376,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 221561780
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 316.80000000004657,
+              "min": 283.19999999995343,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 14,
+              "p95": 17.900000005960464,
+              "min": 10.700000017881393,
+              "max": 19.19999998807907
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 11.200000017881393,
+              "p95": 15.099999994039536,
+              "min": 9,
+              "max": 16.299999982118607
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.5999999940395355,
+              "p95": 3.5,
+              "min": 1.699999988079071,
+              "max": 3.5
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.10000002384185791
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 298,
+              "p95": 298,
+              "min": 298,
+              "max": 298
+            },
+            "triangles": {
+              "count": 34,
+              "median": 403749,
+              "p95": 403749,
+              "min": 403749,
+              "max": 403749
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 286.848623,
+              "p95": 307.213517,
+              "min": 276.416735,
+              "max": 307.635553
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 1,
+              "p95": 2,
+              "min": 0.5,
+              "max": 2.0999999940395355
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 7.242487,
+              "p95": 9.324388,
+              "min": 6.631207,
+              "max": 9.324388
+            }
+          },
+          "resources": {
+            "materials": 2065,
+            "geometries": 895,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9788376,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 214884316
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 34,
+          "camera": {
+            "position": [
+              72.09866357858641,
+              19.296352770661777,
+              -137.03157234514765
+            ],
+            "target": [
+              122,
+              15.999999999999996,
+              -153
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 34,
+              "median": 300,
+              "p95": 316.69999999995343,
+              "min": 283.19999999995343,
+              "max": 316.70000000006985
+            },
+            "cpuWorkMs": {
+              "count": 34,
+              "median": 13.5,
+              "p95": 16.30000001192093,
+              "min": 11.200000017881393,
+              "max": 17.799999982118607
+            },
+            "renderMs": {
+              "count": 34,
+              "median": 11.199999988079071,
+              "p95": 13.800000011920929,
+              "min": 8.799999982118607,
+              "max": 14.799999982118607
+            },
+            "physicsMs": {
+              "count": 34,
+              "median": 2.5,
+              "p95": 3,
+              "min": 1.7999999821186066,
+              "max": 3.100000023841858
+            },
+            "streamingRequestMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 34,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 34,
+              "median": 298,
+              "p95": 298,
+              "min": 298,
+              "max": 298
+            },
+            "triangles": {
+              "count": 34,
+              "median": 403749,
+              "p95": 403749,
+              "min": 403749,
+              "max": 403749
+            },
+            "gpuTimingMs": {
+              "count": 34,
+              "median": 287.808625,
+              "p95": 300.103201,
+              "min": 277.270398,
+              "max": 300.103201
+            },
+            "shadowCpuMs": {
+              "count": 34,
+              "median": 1,
+              "p95": 2.0999999940395355,
+              "min": 0.5999999940395355,
+              "max": 2.300000011920929
+            },
+            "shadowGpuMs": {
+              "count": 34,
+              "median": 6.815051,
+              "p95": 7.434316,
+              "min": 6.697103,
+              "max": 8.189667
+            }
+          },
+          "resources": {
+            "materials": 2065,
+            "geometries": 895,
+            "textures": 18,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9788376,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 22,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 201542732
+        }
+      ]
+    },
+    {
+      "name": "C1",
+      "view": {
+        "name": "house-close",
+        "position": [
+          -30,
+          14,
+          -67
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "treeShadowMode": "B0",
+        "buildingMaterialMode": "C1",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 11079,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.30000000004657,
+              "p95": 350,
+              "min": 316.5,
+              "max": 350.10000000009313
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 10,
+              "p95": 12.200000017881393,
+              "min": 8.199999988079071,
+              "max": 12.299999982118607
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 7.199999988079071,
+              "p95": 9.299999982118607,
+              "min": 5.9000000059604645,
+              "max": 9.400000005960464
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.7999999821186066,
+              "p95": 3.7000000178813934,
+              "min": 1.699999988079071,
+              "max": 3.9000000059604645
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 31,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 319.457919,
+              "p95": 327.242504,
+              "min": 310.400884,
+              "max": 335.908554
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.7000000178813934,
+              "p95": 1.199999988079071,
+              "min": 0.5,
+              "max": 1.2999999821186066
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 8.69988,
+              "p95": 9.47562,
+              "min": 8.580986,
+              "max": 9.47562
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 228471270
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.30000000004657,
+              "p95": 350,
+              "min": 316.5999999999767,
+              "max": 350.0999999999767
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 9.699999988079071,
+              "p95": 12.400000005960464,
+              "min": 7.800000011920929,
+              "max": 15.599999994039536
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 6.9000000059604645,
+              "p95": 9.400000005960464,
+              "min": 5.9000000059604645,
+              "max": 13
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.699999988079071,
+              "p95": 3.2000000178813934,
+              "min": 1.800000011920929,
+              "max": 3.300000011920929
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 31,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 323.492197,
+              "p95": 336.101371,
+              "min": 313.948046,
+              "max": 336.101371
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.699999988079071,
+              "p95": 1.199999988079071,
+              "min": 0.5,
+              "max": 1.9000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 9.004516,
+              "p95": 10.502216,
+              "min": 8.867897,
+              "max": 10.502216
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 210954560
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.30000000004657,
+              "p95": 333.4000000000233,
+              "min": 316.5999999999767,
+              "max": 350
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 9.900000005960464,
+              "p95": 12.699999988079071,
+              "min": 7.799999982118607,
+              "max": 14.600000023841858
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 7,
+              "p95": 9.900000005960464,
+              "min": 6,
+              "max": 11.5
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.5999999940395355,
+              "p95": 3.199999988079071,
+              "min": 1.699999988079071,
+              "max": 3.2000000178813934
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 31,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 318.735243,
+              "p95": 325.30277,
+              "min": 311.080844,
+              "max": 326.431375
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.699999988079071,
+              "p95": 1.199999988079071,
+              "min": 0.5,
+              "max": 1.899999976158142
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 9.027574,
+              "p95": 10.847348,
+              "min": 8.720934,
+              "max": 10.847348
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 226114355
+        }
+      ]
+    },
+    {
+      "name": "C2",
+      "view": {
+        "name": "house-close",
+        "position": [
+          -30,
+          14,
+          -67
+        ],
+        "target": [
+          -19.6,
+          16,
+          -83.6
+        ]
+      },
+      "modes": {
+        "grassMode": "A0",
+        "treeShadowMode": "B0",
+        "buildingMaterialMode": "C2",
+        "shadowPassTiming": true
+      },
+      "conditionPreparationMs": 6741,
+      "windows": [
+        {
+          "repetition": 0,
+          "sampleCount": 33,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 33,
+              "median": 300,
+              "p95": 349.9000000000233,
+              "min": 283.29999999993015,
+              "max": 383.39999999990687
+            },
+            "cpuWorkMs": {
+              "count": 33,
+              "median": 8.900000005960464,
+              "p95": 11.899999976158142,
+              "min": 7,
+              "max": 12.099999994039536
+            },
+            "renderMs": {
+              "count": 33,
+              "median": 6.5999999940395355,
+              "p95": 9,
+              "min": 5.199999988079071,
+              "max": 9.5
+            },
+            "physicsMs": {
+              "count": 33,
+              "median": 2.4000000059604645,
+              "p95": 3,
+              "min": 1.5999999940395355,
+              "max": 4
+            },
+            "streamingRequestMs": {
+              "count": 33,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.09999999403953552
+            },
+            "streamingCommitMs": {
+              "count": 33,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 33,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 33,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 33,
+              "median": 293.927765,
+              "p95": 331.80508,
+              "min": 286.380013,
+              "max": 331.80508
+            },
+            "shadowCpuMs": {
+              "count": 33,
+              "median": 0.5999999940395355,
+              "p95": 0.8999999761581421,
+              "min": 0.4000000059604645,
+              "max": 0.9000000059604645
+            },
+            "shadowGpuMs": {
+              "count": 33,
+              "median": 8.303581,
+              "p95": 13.101376,
+              "min": 7.836586,
+              "max": 13.101376
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 200714726
+        },
+        {
+          "repetition": 1,
+          "sampleCount": 31,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 31,
+              "median": 333.29999999993015,
+              "p95": 350,
+              "min": 283.30000000004657,
+              "max": 366.5999999999767
+            },
+            "cpuWorkMs": {
+              "count": 31,
+              "median": 9.199999988079071,
+              "p95": 12.900000005960464,
+              "min": 7.200000017881393,
+              "max": 13.900000005960464
+            },
+            "renderMs": {
+              "count": 31,
+              "median": 6.799999982118607,
+              "p95": 10,
+              "min": 5.4000000059604645,
+              "max": 10.400000005960464
+            },
+            "physicsMs": {
+              "count": 31,
+              "median": 2.5999999940395355,
+              "p95": 3.300000011920929,
+              "min": 1.5999999940395355,
+              "max": 4
+            },
+            "streamingRequestMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0.09999999403953552,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 31,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 31,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 31,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 31,
+              "median": 324.670171,
+              "p95": 331.043591,
+              "min": 287.5373,
+              "max": 331.043591
+            },
+            "shadowCpuMs": {
+              "count": 31,
+              "median": 0.5999999940395355,
+              "p95": 1.2000000178813934,
+              "min": 0.5,
+              "max": 1.699999988079071
+            },
+            "shadowGpuMs": {
+              "count": 31,
+              "median": 9.046171,
+              "p95": 10.217427,
+              "min": 7.981578,
+              "max": 10.217427
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 182608205
+        },
+        {
+          "repetition": 2,
+          "sampleCount": 30,
+          "camera": {
+            "position": [
+              -30.03343694800744,
+              17.236383436954466,
+              -66.94662948683427
+            ],
+            "target": [
+              -19.6,
+              16,
+              -83.6
+            ],
+            "followMode": "instant"
+          },
+          "metrics": {
+            "rafMs": {
+              "count": 30,
+              "median": 333.30000000004657,
+              "p95": 366.69999999995343,
+              "min": 316.5999999999767,
+              "max": 383.4000000000233
+            },
+            "cpuWorkMs": {
+              "count": 30,
+              "median": 9.799999982118607,
+              "p95": 13.099999994039536,
+              "min": 8.300000011920929,
+              "max": 14.600000023841858
+            },
+            "renderMs": {
+              "count": 30,
+              "median": 7.199999988079071,
+              "p95": 9.400000005960464,
+              "min": 5.800000011920929,
+              "max": 11.699999988079071
+            },
+            "physicsMs": {
+              "count": 30,
+              "median": 2.7999999821186066,
+              "p95": 3.5,
+              "min": 1.699999988079071,
+              "max": 3.5999999940395355
+            },
+            "streamingRequestMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0.10000002384185791
+            },
+            "streamingCommitMs": {
+              "count": 30,
+              "median": 0,
+              "p95": 0,
+              "min": 0,
+              "max": 0
+            }
+          },
+          "renderer": {
+            "drawCalls": {
+              "count": 30,
+              "median": 362,
+              "p95": 362,
+              "min": 362,
+              "max": 362
+            },
+            "triangles": {
+              "count": 30,
+              "median": 438590,
+              "p95": 438590,
+              "min": 438590,
+              "max": 438590
+            },
+            "gpuTimingMs": {
+              "count": 30,
+              "median": 324.178033,
+              "p95": 347.334058,
+              "min": 313.825755,
+              "max": 368.892297
+            },
+            "shadowCpuMs": {
+              "count": 30,
+              "median": 0.6000000238418579,
+              "p95": 1.2000000178813934,
+              "min": 0.5,
+              "max": 2.199999988079071
+            },
+            "shadowGpuMs": {
+              "count": 30,
+              "median": 9.077896,
+              "p95": 9.832211,
+              "min": 8.410095,
+              "max": 10.685241
+            }
+          },
+          "resources": {
+            "materials": 288,
+            "geometries": 290,
+            "textures": 33,
+            "grassInstances": 120946,
+            "grassInstanceBytes": 9191896,
+            "instanceBufferBytes": 9561496,
+            "grassPatches": 1026,
+            "visibleGrassPatches": 19,
+            "grassCoveragePreparationMs": 0,
+            "grassCoverageBytes": 0
+          },
+          "heap": 195393865
+        }
+      ]
+    }
+  ]
+}

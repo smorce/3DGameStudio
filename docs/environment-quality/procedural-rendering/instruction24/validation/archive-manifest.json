@@ -1,0 +1,72 @@
+[
+  {
+    "file": "e2e-initial.log.gz",
+    "rawSha256": "a37291e065ec4883e6a8180623442de317c429ccd28b1e8aa72d1e62bca66418",
+    "rawBytes": 34431
+  },
+  {
+    "file": "starter-repeated.log.gz",
+    "rawSha256": "19c6054abb79fd1153ad18e342da36fa88d7be716e74b1ec2b7027b06c8431e8",
+    "rawBytes": 10135
+  },
+  {
+    "file": "prepare.log.gz",
+    "rawSha256": "2be113274d2bbb0445a5d0d5ec14de1a0ac9b90a07f2232a82c790eb7ed19d21",
+    "rawBytes": 11676
+  },
+  {
+    "file": "e2e-final.log.gz",
+    "rawSha256": "94f3b1d75934fc02d70235984d77b95ecee3d12eadcac1a60baf34d054246dc4",
+    "rawBytes": 31591
+  },
+  {
+    "file": "validate.log.gz",
+    "rawSha256": "d2af5717315b3acbcbd7e002d5aa2611af128017c2aabcc9485475283e71d44a",
+    "rawBytes": 3421
+  },
+  {
+    "file": "typecheck.log.gz",
+    "rawSha256": "05f9ee177cab298d87f792355574f1831b47f5e0e7554162ab8fa7bda4efd82a",
+    "rawBytes": 81
+  },
+  {
+    "file": "lint.log.gz",
+    "rawSha256": "e8bb5db6ad0a0184e5966a9767742905194f6ef1fdc7da1f1667b623a3f1cd70",
+    "rawBytes": 321
+  },
+  {
+    "file": "ground-swiftshader.log.gz",
+    "rawSha256": "1d926840f986987698902dc24e18df39846dd823bfc835fa4f1fe1095159dd02",
+    "rawBytes": 1071
+  },
+  {
+    "file": "build.log.gz",
+    "rawSha256": "6ee2d54649bec3d7dded01940e3146b757dfc30015a3df718d1bbaa02eefff47",
+    "rawBytes": 8145
+  },
+  {
+    "file": "unit-integration.log.gz",
+    "rawSha256": "044fb8eaa576a296db9122536cccfe35a1cb7e13c0de7d04b495dc8a1f0d0ba8",
+    "rawBytes": 16111
+  },
+  {
+    "file": "gpu-final.log.gz",
+    "rawSha256": "4ec6e83186887ea03d104f43d4cb3295a8302cbf0b7d2debfe4073b610b43a9b",
+    "rawBytes": 1581
+  },
+  {
+    "file": "ground-gpu.log.gz",
+    "rawSha256": "d051682b41ff37365e61910c437b52fd429173e1725e96db09e723703f87de1d",
+    "rawBytes": 1071
+  },
+  {
+    "file": "swiftshader-final.log.gz",
+    "rawSha256": "87a97e20c0c65ea37211b6e25310e9bff8660e4a521435e4b64489f678b2fc24",
+    "rawBytes": 1581
+  },
+  {
+    "file": "starter-initial-failure/error-context.md.gz",
+    "rawSha256": "db5a68721608febb45883f40fbfca1c42d8924ca13e882c35f2d89c9b3492f1c",
+    "rawBytes": 4838
+  }
+]

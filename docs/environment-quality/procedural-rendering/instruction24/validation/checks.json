@@ -1,0 +1,54 @@
+{
+  "revision": "0ccd4b4508f03ca52febac4d09920f40e1afc85c",
+  "studioBuildHash": "e088944835f18d84560088a9d6ab06d4480071d95654481e5b2f4059e6d6c668",
+  "unitIntegration": {
+    "files": 54,
+    "passed": 417
+  },
+  "runs": {
+    "e2e-initial": {
+      "startTime": "2026-10-11T14:53:50.732Z",
+      "duration": 1871830.602,
+      "expected": 52,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "starter-repeated": {
+      "startTime": "2026-10-11T15:25:39.775Z",
+      "duration": 19268.338,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "e2e-final": {
+      "startTime": "2026-10-11T15:25:59.688Z",
+      "duration": 1864643.233,
+      "expected": 53,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "worldCount": 9,
+  "uniqueAssetCount": 69,
+  "uniqueRuntimeFileCount": 36,
+  "skippedTests": 0,
+  "comparison": {
+    "seed": 42,
+    "viewport": [
+      1440,
+      1000
+    ],
+    "canvas": [
+      1440,
+      771
+    ],
+    "fov": 45,
+    "pixelRatio": 1,
+    "runtimeProfile": "balanced",
+    "windowMs": 10000,
+    "repetitions": 3
+  }
+}

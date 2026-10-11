@@ -1,0 +1,115 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 50
+  },
+  "machine": {
+    "id": "sample-mountain-island-machine",
+    "physicsStep": 129,
+    "position": [
+      -0.01405325811356306,
+      7.986971855163574,
+      0.28439024090766907
+    ],
+    "simulationPosition": [
+      -0.01405325811356306,
+      7.986971855163574,
+      0.28439024090766907
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      0.007193245925009251,
+      -0.00023857362975832075,
+      -0.009999404661357403,
+      0.9999241232872009
+    ],
+    "velocity": [
+      0.001558201271109283,
+      -0.06598013639450073,
+      0.2982029318809509
+    ],
+    "speed": 0.305419048148987,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      6.985946641452616,
+      12.886972177505493,
+      8.284370177030569
+    ],
+    "target": [
+      -0.014053358547389507,
+      7.986972177505493,
+      0.28437017703056344
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "-1,0",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 120,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.72,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 0,
+    "groundSmokeEmitters": 4,
+    "drawCalls": 87,
+    "triangles": 77844,
+    "geometries": 67,
+    "textures": 1,
+    "gpuTimingMs": 39.853605,
+    "shadowCpuMs": null,
+    "shadowGpuMs": null
+  },
+  "frame": {
+    "rafMs": 33.30000000000018,
+    "cpuWorkMs": 4.199999988079071,
+    "physicsMs": 1.300000011920929,
+    "renderMs": 2.899999976158142,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0.09999999403953552
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "alpine",
+      "road": {
+        "distance": -4.715262747103354,
+        "weight": 1,
+        "height": 8,
+        "roadId": "main-road"
+      },
+      "noSpawn": true,
+      "height": 8,
+      "chunkKey": "-1,0",
+      "chunkBounds": [
+        -32,
+        0,
+        0,
+        32
+      ],
+      "props": []
+    },
+    "farWorldProxyCount": 1,
+    "renderPending": 71,
+    "renderedChunks": 98
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "origin": -256,
+  "seam": {
+    "max": 1,
+    "changed": 3
+  },
+  "rebase": {
+    "max": 0,
+    "changed": 0
+  },
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "memory": {
+    "geometries": 0,
+    "textures": 0
+  },
+  "programs": 0
+}

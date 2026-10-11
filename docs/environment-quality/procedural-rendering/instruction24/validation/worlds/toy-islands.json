@@ -1,0 +1,193 @@
+{
+  "engine": {
+    "mode": "PLAY",
+    "frame": 45
+  },
+  "machine": {
+    "id": "75f21af3-c767-4003-b1b8-f1d758ff5d75",
+    "physicsStep": 128,
+    "position": [
+      -0.0030489452183246613,
+      5.337686061859131,
+      -0.4575372636318207
+    ],
+    "simulationPosition": [
+      -0.0030489452183246613,
+      5.337686061859131,
+      -0.4575372636318207
+    ],
+    "worldOrigin": [
+      0,
+      0,
+      0
+    ],
+    "rotation": [
+      -0.002242242218926549,
+      0.0004363484331406653,
+      0.004872333724051714,
+      0.9999855756759644
+    ],
+    "velocity": [
+      -0.001172252930700779,
+      -0.07566174864768982,
+      -0.5115781426429749
+    ],
+    "speed": 0.517144341954348,
+    "groundedWheelCount": 4,
+    "controls": {
+      "throttle": 0,
+      "steering": 0
+    }
+  },
+  "camera": {
+    "position": [
+      6.996968723654751,
+      10.237927326202392,
+      7.551212012052543
+    ],
+    "target": [
+      -0.0030312763452529905,
+      5.337927326202393,
+      -0.44878798794746394
+    ],
+    "followMode": "instant"
+  },
+  "world": {
+    "currentChunk": "-1,-1",
+    "loadedRenderChunks": 169,
+    "loadedPhysicsChunks": 49,
+    "readyQueues": {
+      "render": 119,
+      "physics": 0
+    },
+    "generationQueue": 0,
+    "workerQueued": 0,
+    "workerInFlight": 0,
+    "cacheHitRate": 0.6428571428571429,
+    "rebaseCount": 0
+  },
+  "renderer": {
+    "activeVaporParticles": 0,
+    "activeGroundSmokeParticles": 0,
+    "vaporEmitters": 0,
+    "groundSmokeEmitters": 4,
+    "drawCalls": 127,
+    "triangles": 86108,
+    "geometries": 78,
+    "textures": 1,
+    "gpuTimingMs": 45.485395,
+    "shadowCpuMs": null,
+    "shadowGpuMs": null
+  },
+  "frame": {
+    "rafMs": 50,
+    "cpuWorkMs": 3.899999976158142,
+    "physicsMs": 1.399999976158142,
+    "renderMs": 2.5,
+    "streamingRequestMs": 0,
+    "streamingCommitMs": 0
+  },
+  "design": {
+    "sample": {
+      "island": 1,
+      "biome": "temperate",
+      "road": {
+        "distance": 458.9435257761692,
+        "weight": 0,
+        "height": 8,
+        "roadId": "race-road"
+      },
+      "noSpawn": true,
+      "height": 5.30484047876385,
+      "chunkKey": "-1,-1",
+      "chunkBounds": [
+        -32,
+        -32,
+        0,
+        0
+      ],
+      "props": [
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-1:-5",
+          "position": [
+            -1.7967743235640228,
+            5.7071837698267185,
+            -30.944479257799685
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cd572bed5c49e0d1d2b507d188453f9b",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-2:-3",
+          "position": [
+            -7.249339924892411,
+            5.887417630298593,
+            -16.53642248106189
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cf37f63ea6de75a788b9e0ac1989ad78",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-4:-2",
+          "position": [
+            -24.403507363516837,
+            6.3156065186671455,
+            -7.206541965715587
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cd572bed5c49e0d1d2b507d188453f9b",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-4:-4",
+          "position": [
+            -27.628289509564638,
+            5.900083746118778,
+            -22.159722743090242
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-6330f03f0b22756dfc0f0b640aa960f8",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-5:-3",
+          "position": [
+            -28.1781640984118,
+            6.05662560884414,
+            -14.295481702778488
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-6330f03f0b22756dfc0f0b640aa960f8",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.rock.small:1:-5:-5",
+          "position": [
+            -31.953381952363998,
+            5.6910364091054735,
+            -31.55414500646293
+          ],
+          "assetSlot": "nature.rock.small",
+          "assetId": "factory-cd572bed5c49e0d1d2b507d188453f9b",
+          "missingAsset": false
+        },
+        {
+          "id": "gen:2:42:prop:central:nature.tree.temperate:0:-2:-3",
+          "position": [
+            -10.079208150040358,
+            6.371309988673383,
+            -26.911100537516177
+          ],
+          "assetSlot": "nature.tree.temperate",
+          "assetId": "factory-700b0e955e28e7032b2863906df947e8",
+          "missingAsset": false
+        }
+      ]
+    },
+    "farWorldProxyCount": 5,
+    "renderPending": 81,
+    "renderedChunks": 88
+  }
+}
