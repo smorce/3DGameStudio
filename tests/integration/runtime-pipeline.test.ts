@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { it, expect, afterEach, vi } from "vitest";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, rm, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -63,8 +63,13 @@ it("Originalの完全一致、LOD三段階の削減、MeshoptのThree.jsデコ�
   expect(regenerated.levels.map((l) => l.triangles)).toEqual(
     lods.map((l) => l.triangles),
   );
+  const evidencePath =
+    process.env.UPDATE_UNIT_EVIDENCE === "1"
+      ? "docs/evidence/runtime-optimization.json"
+      : "test-results/generated-unit-evidence/runtime-optimization.json";
+  await mkdir("test-results/generated-unit-evidence", { recursive: true });
   await writeFile(
-    "docs/evidence/runtime-optimization.json",
+    evidencePath,
     JSON.stringify(
       {
         sourceBytes: original.length,

@@ -33,6 +33,7 @@ import { writeSpikeFlightSummaryFromDisk } from "../../../scripts/spike-flight-s
 import { writeTurnMotionSummaryFromDisk } from "../../../scripts/turn-motion-summary";
 export async function createApp(
   dataDir = process.env.ASSET_DATA_DIR ?? ".data",
+  evidenceOutputDirectory = "docs/evidence",
 ) {
   const app = express(),
     storage = new LocalAssetStorage(
@@ -374,7 +375,7 @@ export async function createApp(
       res.status(400).json({ error: "Invalid evidence label" });
       return;
     }
-    const evidenceDir = path.resolve("docs/evidence");
+    const evidenceDir = path.resolve(evidenceOutputDirectory);
     await mkdir(evidenceDir, { recursive: true });
     const fileName =
       family === "camera-follow-toggle"
@@ -382,7 +383,7 @@ export async function createApp(
         : family === "turn-motion-diagnostics"
           ? `turn-motion-diagnostics-${label}.json`
           : `spike-flight-${label}.json`;
-    const relativePath = `docs/evidence/${fileName}`;
+    const relativePath = path.join(evidenceOutputDirectory, fileName);
     const absolutePath = path.join(evidenceDir, fileName);
     const payload = {
       label,

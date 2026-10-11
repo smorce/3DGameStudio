@@ -1,5 +1,5 @@
 import { format } from "prettier";
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { it, expect } from "vitest";
 import {
   emptyProject,
@@ -55,8 +55,13 @@ it("Machineの移動で近傍Colliderだけを維持し、遠方は増え続け�
         origins.filter((n) => n !== 0).every((n) => Math.abs(n - x) < 140),
       ).toBe(true);
     }
+    const evidencePath =
+      process.env.UPDATE_UNIT_EVIDENCE === "1"
+        ? "docs/evidence/physics-streaming.json"
+        : "test-results/generated-unit-evidence/physics-streaming.json";
+    await mkdir("test-results/generated-unit-evidence", { recursive: true });
     await writeFile(
-      "docs/evidence/physics-streaming.json",
+      evidencePath,
       await format(
         JSON.stringify({ worldEntities: 900, terrainChunks: 1024, samples }),
         { parser: "json" },

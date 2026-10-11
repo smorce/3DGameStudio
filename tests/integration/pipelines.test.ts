@@ -122,7 +122,7 @@ it("生成Jobが成功・失敗を報告する", async () => {
 it("サーバーの検索→取込→キャッシュ→GLB配信と永続化", async () => {
   const dir = await mkdtemp(path.join(tmpdir(), "machine-server-"));
   dirs.push(dir);
-  const app = await createApp(dir),
+  const app = await createApp(dir, path.join(dir, "evidence")),
     server = app.listen(0, "127.0.0.1");
   await new Promise<void>((r) => server.on("listening", r));
   const address = server.address() as { port: number },
@@ -168,9 +168,9 @@ it("サーバーの検索→取込→キャッシュ→GLB配信と永続化", a
       summaryMissing?: string[];
     };
     expect(evidenceBody.path).toBe(
-      "docs/evidence/spike-flight-test-pipeline.json",
+      path.join(dir, "evidence/spike-flight-test-pipeline.json"),
     );
-    // summary は docs/evidence 上の4ケース有無で決まる（このラベル自体は対象外）。
+    // summary は隔離した証跡ディレクトリ上の4ケース有無で決まる。
     expect(typeof evidenceBody.summaryUpdated).toBe("boolean");
     const forbidden = await fetch(`${base}/api/jobs`, {
       method: "POST",
