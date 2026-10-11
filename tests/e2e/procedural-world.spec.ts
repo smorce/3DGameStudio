@@ -4,15 +4,21 @@ import { mkdir } from "node:fs/promises";
 
 test("Starter 3種は同じProcedural World Runtimeを使う", async ({ page }) => {
   await mkdir(evidencePath("docs/screenshots"), { recursive: true });
-  for (const [label, preset, generatorVersion] of [
-    ["くるま", "grassland", 1],
-    ["ひこうき", "airfield", 1],
-    ["ボート", "designed-world", 2],
+  for (const [label, worldId, preset, generatorVersion] of [
+    ["くるま", "starter-grassland", "grassland", 1],
+    ["ひこうき", "airfield", "airfield", 1],
+    ["ボート", "tropical-archipelago", "designed-world", 2],
   ] as const) {
     await page.goto("/");
     await page.evaluate(() => localStorage.clear());
     await page.reload();
+    const response = page.waitForResponse(`**/api/worlds/${worldId}`);
     await page.getByRole("button", { name: label, exact: false }).click();
+    const loaded = await (await response).json();
+    // パーツ数は読込前にも表示されるため、Worldの完了メッセージを待つ。
+    await expect(
+      page.getByText(`${loaded.world.name}を読み込みました`, { exact: true }),
+    ).toBeVisible();
     await expect(page.getByText(/パーツ$/)).toBeVisible();
     await page.getByRole("button", { name: "保存", exact: true }).click();
     const project = await page.evaluate(() =>
