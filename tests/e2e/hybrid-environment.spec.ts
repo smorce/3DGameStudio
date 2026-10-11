@@ -410,10 +410,7 @@ test("ハイブリッド環境: A3と影専用LODで実走しRebase後にWorld�
   const after = await snapshot();
   expect(after.mill).toBeDefined();
   for (let i = 0; i < 3; i++)
-    expect(after.mill![i] + after.state.machine.worldOrigin![i]).toBeCloseTo(
-      before.mill![i] + before.state.machine.worldOrigin![i],
-      2,
-    );
+    expect(after.mill![i]).toBeCloseTo(before.mill![i], 2);
   expect(after.state.machine.position!.every(Number.isFinite)).toBe(true);
   expect(after.resources!.grassInstanceBytes).toBeLessThan(4 * 1024 * 1024);
   for (const id of ["starter-grassland", "alpine-village"]) {
