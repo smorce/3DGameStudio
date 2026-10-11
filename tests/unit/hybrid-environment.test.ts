@@ -373,3 +373,47 @@ it("壊れた生成設定をGLBへ保存しない", async () => {
     environmentModelGlb("oak", 42, 0, treeRules("oak", 43)),
   ).rejects.toThrow("Invalid environment rule parameters");
 });
+
+it("異なるSeedのC1画像を誤って共有せず、中断した画像を破棄する", async () => {
+  const pool = new EnvironmentTexturePool(),
+    groups: THREE.Group[] = [];
+  for (const hash of ["seed-a", "seed-b"]) {
+    const group = new THREE.Group();
+    group.userData.environmentRecipeVersion = 3;
+    const texture = new THREE.Texture();
+    texture.name = `wood-generated-v4:${hash}`;
+    const material = new THREE.MeshStandardMaterial();
+    material.userData.generatedMap = texture;
+    group.add(new THREE.Mesh(new THREE.BoxGeometry(), material));
+    pool.acquire(group);
+    groups.push(group);
+  }
+  expect(
+    ((groups[0].children[0] as THREE.Mesh).material as THREE.Material).userData
+      .generatedMap,
+  ).not.toBe(
+    ((groups[1].children[0] as THREE.Mesh).material as THREE.Material).userData
+      .generatedMap,
+  );
+  groups.forEach((group) => disposeTemplate(group, pool.release(group)));
+  const material = new THREE.MeshStandardMaterial({ map: new THREE.Texture() });
+  let resolve!: (t: THREE.Texture) => void;
+  const ready = vi.fn();
+  configureBuildingMaterial(
+    material,
+    () =>
+      new Promise((finish) => {
+        resolve = finish;
+      }),
+    ready,
+  );
+  material.userData.setBuildingMaterialMode("C1");
+  material.dispose();
+  const texture = new THREE.Texture(),
+    dispose = vi.spyOn(texture, "dispose");
+  resolve(texture);
+  for (let i = 0; i < 3; i++) await Promise.resolve();
+  expect(dispose).toHaveBeenCalledTimes(1);
+  expect(ready).not.toHaveBeenCalled();
+  material.map!.dispose();
+});

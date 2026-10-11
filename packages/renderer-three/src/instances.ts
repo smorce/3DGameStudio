@@ -266,7 +266,7 @@ export class EnvironmentTexturePool {
           for (const [property, value] of Object.entries(owner)) {
             if (
               !(value instanceof THREE.Texture) ||
-              !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness|generated)-v[1234]$/.test(
+              !/^(bark|wood|stone|roof|leaf|needle|grass|plaster|glass)-(color|normal|roughness|generated)-v[1234](?::.+)?$/.test(
                 value.name,
               )
             )
@@ -600,7 +600,7 @@ export class WorldAssetBatch {
                   const texture = await new THREE.TextureLoader().loadAsync(
                     file,
                   );
-                  texture.name = `${material.name}-generated-v4`;
+                  texture.name = `${material.name}-generated-v4:${file}`;
                   texture.colorSpace = THREE.SRGBColorSpace;
                   texture.flipY = false;
                   return texture;
