@@ -85,6 +85,7 @@ export interface MachineStudioAgentApi {
   setEnvironmentDiagnostics(options: {
     trees?: boolean;
     grass?: boolean;
+    grassMode?: "A0" | "A1" | "A2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
     shadows?: boolean;
@@ -120,6 +121,12 @@ export interface EngineObservationHost {
   position: Vec3;
   observation?: ObservationHub;
   currentTelemetry: MachineTelemetrySample | undefined;
+  latestFrameTiming?: {
+    rafIntervalMs: number;
+    cpuWorkMs: number;
+    physicsStepMs: number;
+    renderMs: number;
+  };
   recentSpikes: ReadonlyArray<{
     rafIntervalMs: number;
     cpuWorkMs: number;
@@ -153,6 +160,7 @@ export interface EngineObservationHost {
     setEnvironmentDiagnostics?(options: {
       trees?: boolean;
       grass?: boolean;
+      grassMode?: "A0" | "A1" | "A2";
       buildingDetails?: boolean;
       groundDetails?: boolean;
       shadows?: boolean;
@@ -221,6 +229,7 @@ export function createAgentObservationApi(
       };
     },
     getState(): AgentGameState {
+      const timing = engine.latestFrameTiming;
       const sample = engine.currentTelemetry;
       const world = engine.worldRuntime?.stats(engine.position);
       const render = engine.renderer.fastStats;
@@ -286,10 +295,10 @@ export function createAgentObservationApi(
           gpuTimingMs: lastGpu?.gpuMs ?? null,
         },
         frame: {
-          rafMs: engine.recentSpikes.at(-1)?.rafIntervalMs ?? null,
-          cpuWorkMs: engine.recentSpikes.at(-1)?.cpuWorkMs ?? null,
-          physicsMs: engine.recentSpikes.at(-1)?.physicsStepMs ?? null,
-          renderMs: engine.recentSpikes.at(-1)?.renderMs ?? null,
+          rafMs: timing?.rafIntervalMs ?? null,
+          cpuWorkMs: timing?.cpuWorkMs ?? null,
+          physicsMs: timing?.physicsStepMs ?? null,
+          renderMs: timing?.renderMs ?? null,
           streamingRequestMs: world?.streamingRequestMs ?? null,
           streamingCommitMs: world?.streamingCommitMs ?? null,
         },

@@ -893,6 +893,15 @@ export class Engine {
   get recentSpikes(): readonly FrameSpikeSample[] {
     return this.spikeRing;
   }
+  /** 過去のSpikeではなく、直近に完了したフレームの測定値を返す。 */
+  get latestFrameTiming() {
+    return {
+      rafIntervalMs: this.rafIntervalMs,
+      cpuWorkMs: this.cpuWorkMs,
+      physicsStepMs: this.physicsStepMs,
+      renderMs: this.renderMs,
+    };
+  }
   /** Agent API 向けの PLAY フレーム番号。 */
   get playFramePublic() {
     return this.playFrameIndex;

@@ -1,5 +1,6 @@
 import { test, expect } from "./fixtures";
 import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import type { MachineStudioAgentApi } from "../../packages/engine-core/src/agent-observation";
 import type { Vec3 } from "../../packages/project-schema/src/index";
 
@@ -59,10 +60,31 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       errors.push(`${response.status()} ${response.url()}`);
   });
   await page.setViewportSize({ width: 1440, height: 1000 });
+  const startupStarted = Date.now();
   await page.goto("/?agent=1");
+  const worldResponse = page.waitForResponse("**/api/worlds/alpine-village");
   await page.getByTestId("sample-world-alpine-village").click();
+  const preparedWorld = await (await worldResponse).json();
+  expect(preparedWorld.world.source.seed).toBe(42);
+  const worldSourceHash = createHash("sha256")
+    .update(JSON.stringify(preparedWorld.world.source))
+    .digest("hex");
   await page.getByRole("button", { name: "▶ あそぶ", exact: true }).click();
   await expect(page.getByTestId("runtime-position")).toBeVisible();
+  const startupUntilRuntimeHudMs = Date.now() - startupStarted;
+  const grassMode = process.env.PROCEDURAL_GRASS_MODE;
+  if (grassMode === "A0" || grassMode === "A1" || grassMode === "A2")
+    await page.evaluate(
+      (grassMode) =>
+        (
+          window as unknown as {
+            __MACHINE_STUDIO_AGENT__: MachineStudioAgentApi;
+          }
+        ).__MACHINE_STUDIO_AGENT__.setEnvironmentDiagnostics({
+          grassMode: grassMode as "A0" | "A1" | "A2",
+        }),
+      grassMode,
+    );
   const states = [];
   const loading = [];
   const diagnostics = [];
@@ -83,7 +105,10 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
       { name: "aerial", position: [0, 450, 0], target: [0, 12, -80] },
     );
   // 実GPUは代表4視点を同じSeed・画角・10秒×3回で補助測定する。
-  if (process.env.GEOMETRY_GPU_CAPTURE === "1")
+  if (
+    process.env.GEOMETRY_GPU_CAPTURE === "1" &&
+    !process.env.PROCEDURAL_GRASS_MODE
+  )
     selected.splice(
       0,
       selected.length,
@@ -237,6 +262,7 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
     }
     if (
       fidelity &&
+      !process.env.PROCEDURAL_GRASS_MODE &&
       ["forest-path", "house-close", "village-square"].includes(view.name)
     ) {
       for (const category of [
@@ -319,12 +345,18 @@ test("環境品質: 実Studioの材質・草・景観をPhaseごとに比較す�
     JSON.stringify(
       {
         phase,
+        measurementVersion: 2,
+        worldSeed: preparedWorld.world.source.seed,
+        worldGeneratorVersion: preparedWorld.world.source.generatorVersion,
+        worldSourceHash,
         environment,
         backend:
           process.env.GEOMETRY_GPU_CAPTURE === "1"
             ? environment.renderer
             : "Chromium ANGLE SwiftShader (software)",
         sampleWindowMs,
+        startupUntilRuntimeHudMs,
+        grassMode: grassMode ?? "A0",
         loading,
         diagnostics,
         runs: [{ id: "alpine-village", states }],

@@ -1,6 +1,6 @@
 import { insideEnvironmentPlaza } from "./environment-plaza";
 import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
-import type { BufferGeometry } from "three";
+import type { BufferGeometry, MeshStandardMaterial } from "three";
 import type {
   Project,
   AssetRecord,
@@ -24,6 +24,7 @@ export function worldVegetationChunk(
   geo: BufferGeometry,
   waterHeight: number,
   landCoverAllowed: (x: number, z: number) => boolean = () => true,
+  groundMaterial?: MeshStandardMaterial,
 ) {
   if (!source.design) return;
   const alpinePlaza = isAlpineVillage(source.design);
@@ -108,6 +109,7 @@ export function worldVegetationChunk(
     );
     return createVegetationChunk({
       seed: source.seed,
+      groundMaterial,
       area,
       originX,
       originZ,

@@ -500,16 +500,22 @@ export class ThreeRenderer implements RendererAdapter {
   private environmentDiagnostics: {
     trees?: boolean;
     grass?: boolean;
+    grassMode?: "A0" | "A1" | "A2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
   } = {};
   setEnvironmentDiagnostics(options: {
     trees?: boolean;
     grass?: boolean;
+    grassMode?: "A0" | "A1" | "A2";
     buildingDetails?: boolean;
     groundDetails?: boolean;
     shadows?: boolean;
   }) {
+    if (options.grassMode)
+      this.root.traverse((object) =>
+        object.userData.setGrassMode?.(options.grassMode),
+      );
     Object.assign(this.environmentDiagnostics, options);
     this.applyDiagnosticsQuality(options);
   }
@@ -520,7 +526,9 @@ export class ThreeRenderer implements RendererAdapter {
     const textures = new Set<THREE.Texture>();
     let grassInstances = 0,
       grassPatches = 0,
-      visibleGrassPatches = 0;
+      visibleGrassPatches = 0,
+      grassCoveragePreparationMs = 0,
+      grassCoverageBytes = 0;
     this.root.traverse((object) => {
       if (object.userData.environmentCategory === "grass") {
         object.traverse((child) => {
@@ -539,9 +547,16 @@ export class ThreeRenderer implements RendererAdapter {
           materials.add(material);
           for (const value of Object.values(material))
             if (value instanceof THREE.Texture) textures.add(value);
+          for (const value of Object.values(material.userData))
+            if (value instanceof THREE.Texture) textures.add(value);
         }
       }
     });
+    for (const material of materials) {
+      grassCoveragePreparationMs +=
+        material.userData.grassCoveragePreparationMs ?? 0;
+      grassCoverageBytes += material.userData.grassCoverageBytes ?? 0;
+    }
     return {
       materials: materials.size,
       geometries: geometries.size,
@@ -549,6 +564,8 @@ export class ThreeRenderer implements RendererAdapter {
       grassInstances,
       grassPatches,
       visibleGrassPatches,
+      grassCoveragePreparationMs,
+      grassCoverageBytes,
     };
   }
 
@@ -1073,6 +1090,7 @@ export class ThreeRenderer implements RendererAdapter {
                     !alpineFieldAt(x, z) ||
                     alpineFieldAt(x, z)?.crop === "grass"
                 : undefined,
+              mesh.material,
             );
             if (vegetation) group.add(vegetation);
           }
@@ -1845,11 +1863,14 @@ export class ThreeRenderer implements RendererAdapter {
     this.lodFrameIndex++;
     const camera = this.camera.position;
     for (const chunk of this.chunks.values())
-      for (const child of chunk.children)
+      for (const child of chunk.children) {
+        if (this.environmentDiagnostics.grassMode)
+          child.userData.setGrassMode?.(this.environmentDiagnostics.grassMode);
         child.userData.updateVegetation?.(
           this.camera,
           this.renderer.domElement.height,
         );
+      }
     let index = 0;
     for (const batch of this.lodBatches) {
       if (index++ % 4 === this.lodFrameIndex % 4) batch.update(camera);

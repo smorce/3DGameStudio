@@ -1,0 +1,131 @@
+{
+  "stage": "GPU-A1",
+  "measurementVersion": 2,
+  "worldSeed": 42,
+  "worldGeneratorVersion": 2,
+  "worldSourceHash": "6dcc7c284f4ea0820b3205ec74f46908218d270b18a565df87b05e1793267ecf",
+  "startupUntilRuntimeHudMs": 3357,
+  "baselineCommit": "c044b914",
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+    "viewport": [
+      1440,
+      1000
+    ],
+    "pixelRatio": 1,
+    "antialias": true,
+    "msaaSamples": 4,
+    "renderer": "ANGLE (Microsoft Corporation, D3D12 (NVIDIA GeForce RTX 4090), OpenGL 4.6)"
+  },
+  "backend": "ANGLE (Microsoft Corporation, D3D12 (NVIDIA GeForce RTX 4090), OpenGL 4.6)",
+  "sampleWindowMs": 10000,
+  "method": "Distinct rendered frames, nearest-rank median/p95; CPU renderMs measures submission. Loading snapshots do not measure cold startup. GPU unavailable values stay null.",
+  "views": {
+    "forest-path": {
+      "drawCalls": {
+        "samples": 1796,
+        "median": 257,
+        "p95": 257
+      },
+      "triangles": {
+        "samples": 1796,
+        "median": 396572,
+        "p95": 396572
+      },
+      "geometries": {
+        "samples": 1796,
+        "median": 135,
+        "p95": 135
+      },
+      "textures": {
+        "samples": 1796,
+        "median": 30,
+        "p95": 30
+      },
+      "gpuTimingMs": {
+        "samples": 1796,
+        "median": 0.171008,
+        "p95": 0.182272
+      },
+      "rafMs": {
+        "samples": 1796,
+        "median": 16.69999999999709,
+        "p95": 16.799999999999272
+      },
+      "renderMs": {
+        "samples": 1796,
+        "median": 4.300000011920929,
+        "p95": 7.5
+      },
+      "streamingRequestMs": {
+        "samples": 1796,
+        "median": 0,
+        "p95": 0.09999999403953552
+      },
+      "streamingCommitMs": {
+        "samples": 1796,
+        "median": 0,
+        "p95": 0
+      },
+      "generationLatencyMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null
+      },
+      "workerGenerationMs": {
+        "samples": 0,
+        "median": null,
+        "p95": null
+      },
+      "resources": [
+        {
+          "materials": 250,
+          "geometries": 252,
+          "textures": 108,
+          "grassInstances": 121033,
+          "grassPatches": 1026,
+          "visibleGrassPatches": 6,
+          "grassCoveragePreparationMs": 974.2000001966953,
+          "grassCoverageBytes": 5898240
+        },
+        {
+          "materials": 250,
+          "geometries": 252,
+          "textures": 108,
+          "grassInstances": 121033,
+          "grassPatches": 1026,
+          "visibleGrassPatches": 6,
+          "grassCoveragePreparationMs": 974.2000001966953,
+          "grassCoverageBytes": 5898240
+        },
+        {
+          "materials": 250,
+          "geometries": 252,
+          "textures": 108,
+          "grassInstances": 121033,
+          "grassPatches": 1026,
+          "visibleGrassPatches": 6,
+          "grassCoveragePreparationMs": 974.2000001966953,
+          "grassCoverageBytes": 5898240
+        }
+      ],
+      "memory": [
+        {
+          "usedJSHeapSize": 249493212,
+          "totalJSHeapSize": 301971016,
+          "jsHeapSizeLimit": 4395630592
+        },
+        {
+          "usedJSHeapSize": 184284346,
+          "totalJSHeapSize": 264990362,
+          "jsHeapSizeLimit": 4395630592
+        },
+        {
+          "usedJSHeapSize": 196072381,
+          "totalJSHeapSize": 265252513,
+          "jsHeapSizeLimit": 4395630592
+        }
+      ]
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import * as THREE from "three";
+import { grassGround } from "./grass-ground";
 import { vegetationPlacements } from "../../world-generator/src/vegetation";
 export { vegetationArea } from "../../world-generator/src/vegetation";
 
 /** 曲がった草葉を三角形で描く。透明面の重なりと草のShadow Passを避ける。 */
-export function grassGeometry(blades: number) {
+export function grassGeometry(blades: number, broad = false) {
   const positions: number[] = [],
     colors: number[] = [];
   for (let i = 0; i < blades; i++) {
@@ -11,7 +12,7 @@ export function grassGeometry(blades: number) {
       x = Math.cos(a) * (0.32 + (i % 3) * 0.06),
       z = Math.sin(a) * (0.32 + (i % 3) * 0.06);
     const h = 0.35 + (i % 4) * 0.11,
-      w = 0.026 + (i % 3) * 0.006;
+      w = (0.026 + (i % 3) * 0.006) * (broad ? 2.8 : 1);
     const wx = Math.cos(a + Math.PI / 2) * w,
       wz = Math.sin(a + Math.PI / 2) * w;
     const left = [x - wx, 0, z - wz],
@@ -64,20 +65,54 @@ let sharedVegetationResources:
   | {
       geometries: THREE.BufferGeometry[];
       material: THREE.MeshStandardMaterial;
+      windMaterial: THREE.MeshStandardMaterial;
       references: number;
     }
   | undefined;
 function acquireVegetationResources() {
-  if (!sharedVegetationResources)
+  if (!sharedVegetationResources) {
+    const windMaterial = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 1,
+      side: THREE.DoubleSide,
+    });
+    // 位相に絶対座標とSeedで決まった回転を使い、Rebaseで変えない。
+    windMaterial.onBeforeCompile = (shader) => {
+      shader.uniforms.grassTime = {
+        get value() {
+          return performance.now() / 1000;
+        },
+      };
+      shader.vertexShader =
+        "uniform float grassTime;\n" +
+        shader.vertexShader.replace(
+          "#include <begin_vertex>",
+          `#include <begin_vertex>
+        #ifdef USE_INSTANCING
+          float grassPhase = atan(instanceMatrix[0].z, instanceMatrix[0].x);
+          float grassBend = sin(grassTime * 1.7 + grassPhase) * position.y * position.y * 0.12;
+          transformed.x += grassBend;
+          transformed.z += grassBend * 0.5;
+        #endif`,
+        );
+    };
+    windMaterial.customProgramCacheKey = () => "grass-wind-v1";
     sharedVegetationResources = {
-      geometries: [grassGeometry(8), grassGeometry(3)],
+      geometries: [
+        grassGeometry(8),
+        grassGeometry(3),
+        grassGeometry(8, true),
+        grassGeometry(3, true),
+      ],
       material: new THREE.MeshStandardMaterial({
         vertexColors: true,
         roughness: 1,
         side: THREE.DoubleSide,
       }),
+      windMaterial,
       references: 0,
     };
+  }
   sharedVegetationResources.references++;
   return sharedVegetationResources;
 }
@@ -87,11 +122,15 @@ export function createVegetationChunk(
   options: Parameters<typeof vegetationPlacements>[0] & {
     originX: number;
     originZ: number;
+    groundMaterial?: THREE.MeshStandardMaterial;
   },
 ) {
   const group = new THREE.Group();
   group.userData.environmentCategory = "grass";
   const placements = vegetationPlacements(options);
+  const ground = options.groundMaterial
+    ? grassGround(options.groundMaterial, options)
+    : undefined;
   const resources = acquireVegetationResources();
   const { material, geometries } = resources;
   const patches = new Map<string, typeof placements>();
@@ -105,6 +144,18 @@ export function createVegetationChunk(
     color = new THREE.Color();
   const colors = ["#8caa48", "#6d9237", "#b6a164", "#9bab65", "#789946"];
   const meshes: THREE.InstancedMesh[] = [];
+  let mode: "A0" | "A1" | "A2" = "A0";
+  group.userData.setGrassMode = (next: "A0" | "A1" | "A2") => {
+    if (mode === next) return;
+    mode = next;
+    ground?.setActive(mode === "A1");
+    for (const mesh of meshes) {
+      mesh.geometry = geometries[mesh.userData.level + (mode === "A2" ? 2 : 0)];
+      mesh.material = mode === "A2" ? resources.windMaterial : material;
+      mesh.boundingSphere!.radius =
+        mesh.userData.baselineRadius + (mode === "A2" ? 0.35 : 0);
+    }
+  };
   for (const list of patches.values()) {
     const mesh = new THREE.InstancedMesh(geometries[0], material, list.length);
     mesh.userData.shared = true;
@@ -127,6 +178,9 @@ export function createVegetationChunk(
       mesh.setColorAt(i, color.set(colors[p.kind]));
     });
     mesh.computeBoundingSphere();
+    // 幅広葉と風の最大変位もカリング範囲に含める。
+    mesh.userData.baselineRadius = mesh.boundingSphere!.radius;
+
     mesh.instanceMatrix.needsUpdate = true;
     mesh.userData.center = mesh.boundingSphere!.center.clone();
     mesh.userData.level = 0;
@@ -165,9 +219,14 @@ export function createVegetationChunk(
           Math.max(1, camera.position.distanceTo(world)));
       const level = mesh.userData.level as number;
       mesh.visible = pixels > (mesh.visible ? 6.5 : 7.5);
+      if (mode === "A1")
+        mesh.visible &&=
+          camera.position.distanceTo(world) <
+          (mesh.userData.nearVisible ? 30 : 26);
+      mesh.userData.nearVisible = mesh.visible;
       const next = pixels > (level === 0 ? 12 : 14) ? 0 : 1;
       if (level !== next) {
-        mesh.geometry = geometries[next];
+        mesh.geometry = geometries[next + (mode === "A2" ? 2 : 0)];
         mesh.userData.level = next;
       }
     }
@@ -176,10 +235,12 @@ export function createVegetationChunk(
   group.userData.release = () => {
     if (released) return;
     released = true;
+    ground?.release();
     resources.references--;
     if (resources.references === 0) {
       geometries.forEach((g) => g.dispose());
       material.dispose();
+      resources.windMaterial.dispose();
       sharedVegetationResources = undefined;
     }
   };

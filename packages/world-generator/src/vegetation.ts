@@ -14,6 +14,21 @@ export interface VegetationArea {
   maxX: number;
   maxZ: number;
 }
+/** 配置と地表模様が同じ絶対座標セルの被覆分布を使う。 */
+export function vegetationCoverage(
+  seed: number,
+  x: number,
+  z: number,
+  roadDistance: number | undefined,
+  spacing = 1.2,
+) {
+  const id = `${Math.floor(x / spacing)},${Math.floor(z / spacing)}`;
+  return roadDistance !== undefined &&
+    roadDistance > 6 &&
+    seedUnit(seed, "grass-cover", id) < 0.22
+    ? 0
+    : 1;
+}
 export function vegetationArea(value: unknown): VegetationArea | undefined {
   if (!value || typeof value !== "object") return;
   const area = value as VegetationArea;
@@ -97,12 +112,7 @@ export function vegetationPlacements(options: {
       if (!Number.isFinite(y)) continue;
       const distance = options.roadDistance?.(x, z);
       // 道路外側へ株の覆いを集中し、森林内部は同じ候補セルから間引く。
-      if (
-        distance !== undefined &&
-        distance > 6 &&
-        seedUnit(seed, "grass-cover", id) < 0.22
-      )
-        continue;
+      if (!vegetationCoverage(seed, x, z, distance, spacing)) continue;
       result.push({
         position: [x, y, z],
         yaw: seedUnit(seed, "grass-yaw", id) * Math.PI * 2,
