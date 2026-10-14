@@ -848,7 +848,7 @@ export function carTemplate() {
   }
   return m;
 }
-export function starterCarTemplate() {
+export function starterCarTemplate(withJets = false) {
   // 2×5(幅2m×全長5m)のPanelグリッドで縦長シャシーを組む。
   const m = createMachine("はじめてのくるま"),
     root = createPart("Panel", [-0.5, 0.85, -2]);
@@ -905,6 +905,18 @@ export function starterCarTemplate() {
   if (!blockCandidate)
     throw new Error("Starter block attachment is unavailable");
   commitAttachment(m, createPart("Block"), blockCandidate);
+  if (withJets) {
+    // 後端の左右Panelへ既存ジェットを固定し、前進操作で推力を加える。
+    for (const panel of [rearLeft, rearRight]) {
+      const candidate = findAttachmentCandidates(m, "Thruster").find(
+        (item) =>
+          item.parentPartId === panel.id && item.parentConnectorId === "jet--1",
+      );
+      if (!candidate)
+        throw new Error("Starter car jet attachment is unavailable");
+      commitAttachment(m, createPart("Thruster"), candidate);
+    }
+  }
   return m;
 }
 export function compileMachine(machine: Machine) {

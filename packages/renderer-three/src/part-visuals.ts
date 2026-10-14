@@ -10,6 +10,8 @@ export interface PartVisualOptions {
 }
 
 const visualOptions = (options: PartVisualOptions) => ({
+  // 機体は常にカメラ近傍にある。PLAY開始時の濃霧でも機体を見失わないよう霧を受けない。
+  fog: false,
   transparent: options.ghost === true,
   opacity: options.ghost ? (options.opacity ?? 0.35) : 1,
   depthWrite: !options.ghost,

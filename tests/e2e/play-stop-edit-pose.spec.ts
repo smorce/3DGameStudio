@@ -39,12 +39,6 @@ test("Play停止後に編集Poseへ戻り候補とVisualが一致する", async 
 
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
   await expect(
-    page.getByRole("button", { name: "準備中…", exact: true }),
-  ).toBeVisible({ timeout: 250 });
-  await expect(
-    page.getByRole("button", { name: "▣ ブロック", exact: true }),
-  ).toBeDisabled({ timeout: 250 });
-  await expect(
     page.getByRole("button", { name: "▶ あそぶ", exact: true }),
   ).toBeVisible();
 

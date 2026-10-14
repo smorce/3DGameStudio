@@ -68,6 +68,11 @@ import {
 } from "./follow";
 import { interpolatePhysicsRenderState } from "./interpolation";
 import { DisjointGpuTimer } from "./gpu-timer";
+import {
+  WorldReveal,
+  revealFrontier,
+  type WorldRevealFrame,
+} from "./world-reveal";
 export { createPartVisual };
 export type { PartVisualOptions } from "./part-visuals";
 export {
@@ -87,7 +92,7 @@ export const PLAY_MAX_POLAR_ANGLE = Math.PI * 0.48;
 /** 編集中は下面も見られるよう、ほぼ全周まで回せる。 */
 export const EDIT_MAX_POLAR_ANGLE = Math.PI * 0.95;
 export interface RenderFrameOptions {
-  /** DROPなど、姿勢だけ描画する場合は演出を停止する。 */
+  /** 姿勢だけ描画する場合は演出を停止する。 */
   effectsEnabled?: boolean;
   previous?: PhysicsRenderState;
   alpha?: number;
@@ -158,6 +163,12 @@ export class ThreeRenderer implements RendererAdapter {
   private alpineLakeMesh?: THREE.Mesh;
   private readonly alpineSunDirection = new THREE.Vector3();
   private alpineSmoke = new Set<THREE.InstancedMesh>();
+  /** PLAY開始時の霧晴れ演出。完了後は FogExp2 へ戻す。 */
+  private worldReveal?: WorldReveal;
+  private readonly revealFog = new THREE.Fog("#cfe8f5", 1, 2);
+  private readonly revealPendingSeen = new Map<string, number>();
+  /** 診断・比較用。false で PLAY 開始時の霧晴れ演出を省く。 */
+  worldRevealEnabled = true;
   camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2500);
   controls: OrbitControls;
   root = new THREE.Group();
@@ -656,6 +667,55 @@ export class ThreeRenderer implements RendererAdapter {
     this.controls.update();
   }
 
+  /**
+   * PLAY開始時、編集画面と同じ空色の中から機体の周りへ地面が現れ、
+   * 読込済みの範囲に合わせて霧が晴れていく演出を始める。
+   */
+  beginWorldReveal(now = performance.now()) {
+    this.revealPendingSeen.clear();
+    if (!this.worldRevealEnabled || !this.project) {
+      this.worldReveal = undefined;
+      return;
+    }
+    this.worldReveal = new WorldReveal({
+      cameraDistance: this.camera.position.distanceTo(this.controls.target),
+      fogDensity: this.project.world.environment.fog,
+      now,
+    });
+    this.revealFog.color.set(this.project.world.environment.sky);
+    this.applyWorldRevealFrame(this.worldReveal.update(now, 0));
+    if (!this.editWorkspace) this.applyEditWorkspaceVisuals();
+  }
+
+  get worldRevealActive() {
+    return this.worldReveal !== undefined;
+  }
+
+  private applyWorldRevealFrame(frame: WorldRevealFrame) {
+    this.revealFog.near = frame.near;
+    this.revealFog.far = frame.far;
+    this.setSkyOpacity(frame.sky);
+  }
+
+  private setSkyOpacity(value: number) {
+    const sky = this.alpineSky?.material as THREE.Material | undefined;
+    if (sky) sky.opacity = value;
+    this.alpineCloudGroup?.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const material = object.material as THREE.Material;
+      material.userData.baseOpacity ??= material.opacity;
+      material.opacity = material.userData.baseOpacity * value;
+    });
+  }
+
+  private endWorldReveal() {
+    if (!this.worldReveal) return;
+    this.worldReveal = undefined;
+    this.revealPendingSeen.clear();
+    this.setSkyOpacity(1);
+    this.applyEditWorkspaceVisuals();
+  }
+
   /** Motion 診断用: 描画直後の機体位置・Camera・画面投影。 */
   getMotionProbe() {
     const rect = this.canvas.getBoundingClientRect();
@@ -805,6 +865,16 @@ export class ThreeRenderer implements RendererAdapter {
         const first = poses.values().next().value;
         if (first) this.snapCameraFollow(first.position);
       }
+      if (this.worldReveal && this.project) {
+        // 霧晴れ後に戻す FogExp2 の Program も先に作り、切替時の Shader Compile を避ける。
+        const revealFog = this.scene.fog;
+        this.scene.fog = new THREE.FogExp2(
+          this.project.world.environment.sky,
+          this.project.world.environment.fog,
+        );
+        await this.renderer.compileAsync(this.scene, this.camera);
+        this.scene.fog = revealFog;
+      }
       await this.renderer.compileAsync(this.scene, this.camera);
       this.applyEnvironmentDiagnostics();
       this.renderer.render(this.scene, this.camera);
@@ -864,6 +934,8 @@ export class ThreeRenderer implements RendererAdapter {
     this.inspectionView = false;
     this.project = p;
     this.editWorkspace = true;
+    this.worldReveal = undefined;
+    this.revealPendingSeen.clear();
     ++this.generation;
     this.ownsRuntime = !options?.world;
     this.worldRuntime =
@@ -1362,7 +1434,11 @@ export class ThreeRenderer implements RendererAdapter {
       : PLAY_MAX_POLAR_ANGLE;
     const sky = this.project?.world.environment.sky ?? "#cfe8f5";
     const fogDensity = this.project?.world.environment.fog ?? 0.01;
-    this.scene.fog = showWorld ? new THREE.FogExp2(sky, fogDensity) : null;
+    this.scene.fog = showWorld
+      ? this.worldReveal
+        ? this.revealFog
+        : new THREE.FogExp2(sky, fogDensity)
+      : null;
     if (this.gridHelper) this.gridHelper.visible = showWorld;
     if (this.waterMesh) this.waterMesh.visible = showWorld;
     const chunkGroups = new Set(this.chunks.values());
@@ -1485,6 +1561,7 @@ export class ThreeRenderer implements RendererAdapter {
     this.inspectionView = false;
     this.project = p;
     this.editWorkspace = true;
+    this.endWorldReveal();
     this.syncProjectPartTransforms(p);
     this.applyEditWorkspaceVisuals();
     // Play中はカメラがPhysics位置を追従するため、編集位置へ戻したマシンが
@@ -1740,6 +1817,32 @@ export class ThreeRenderer implements RendererAdapter {
         Math.round(this.controls.target.x / size) * size;
       this.gridHelper.position.z =
         Math.round(this.controls.target.z / size) * size;
+    }
+    if (this.worldReveal && poses) {
+      const now = performance.now();
+      let frontier = this.streamer
+        ? revealFrontier(
+            this.streamer.pending,
+            global,
+            this.worldRuntime?.chunkSize ??
+              (this.project ? worldChunkSize(this.project.world) : 64),
+            now,
+            this.revealPendingSeen,
+          )
+        : Number.POSITIVE_INFINITY;
+      // Chunk作成後に非同期で届く家・木のモデルも、霧の向こうで待たせる。
+      const target = this.controls.target;
+      for (const batch of this.lodBatches) {
+        if (!batch.awaitingFirstModel) continue;
+        const [x, , z] = batch.lodCenter;
+        frontier = Math.min(
+          frontier,
+          Math.max(0, Math.hypot(x - target.x, z - target.z) - batch.lodRadius),
+        );
+      }
+      const frame = this.worldReveal.update(now, frontier);
+      this.applyWorldRevealFrame(frame);
+      if (frame.done) this.endWorldReveal();
     }
     this.controls.update();
     this.updateShadowFollow(this.controls.target.toArray() as Vec3);

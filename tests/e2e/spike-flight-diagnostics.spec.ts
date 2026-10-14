@@ -100,7 +100,7 @@ async function flyAndDump(
     ),
   );
   await page.getByRole("button", { name: "■ やめる", exact: true }).click();
-  // 終了時の診断保存・ダイアログ・DROPが完了してから次の画面へ移動する。
+  // 終了時の診断保存・ダイアログ・編集復帰が完了してから次の画面へ移動する。
   await expect(
     page.getByRole("button", { name: "▶ あそぶ", exact: true }),
   ).toBeEnabled();

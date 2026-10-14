@@ -21511,6 +21511,166 @@
             "enabled": true
           },
           "metadata": {}
+        },
+        {
+          "id": "sample-alpine-village-15",
+          "definitionId": "Thruster",
+          "transform": {
+            "position": [
+              -0.5,
+              1.1600000000000001,
+              -2.8
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "visual": {
+            "color": "#ef8354"
+          },
+          "physics": {
+            "mass": 3,
+            "friction": 1.2,
+            "restitution": 0.05,
+            "collider": "box",
+            "size": [
+              0.6,
+              0.6,
+              0.6
+            ]
+          },
+          "connectors": [
+            {
+              "id": "0",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "axis": [
+                1,
+                0,
+                0
+              ],
+              "type": "mount",
+              "accepts": []
+            },
+            {
+              "id": "mount",
+              "position": [
+                0,
+                0,
+                0.3
+              ],
+              "axis": [
+                1,
+                0,
+                0
+              ],
+              "type": "mount",
+              "accepts": []
+            }
+          ],
+          "actuator": {
+            "motorTorque": 600,
+            "targetAngularVelocity": 0,
+            "motorMode": "velocity",
+            "controlChannel": "throttle",
+            "controlGain": 1,
+            "neutralAngleRad": 0,
+            "positionStiffness": 20,
+            "positionDamping": 5,
+            "steering": 0.45,
+            "enabled": true
+          },
+          "metadata": {}
+        },
+        {
+          "id": "sample-alpine-village-16",
+          "definitionId": "Thruster",
+          "transform": {
+            "position": [
+              0.5,
+              1.1600000000000001,
+              -2.8
+            ],
+            "rotation": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "visual": {
+            "color": "#ef8354"
+          },
+          "physics": {
+            "mass": 3,
+            "friction": 1.2,
+            "restitution": 0.05,
+            "collider": "box",
+            "size": [
+              0.6,
+              0.6,
+              0.6
+            ]
+          },
+          "connectors": [
+            {
+              "id": "0",
+              "position": [
+                0,
+                0,
+                0
+              ],
+              "axis": [
+                1,
+                0,
+                0
+              ],
+              "type": "mount",
+              "accepts": []
+            },
+            {
+              "id": "mount",
+              "position": [
+                0,
+                0,
+                0.3
+              ],
+              "axis": [
+                1,
+                0,
+                0
+              ],
+              "type": "mount",
+              "accepts": []
+            }
+          ],
+          "actuator": {
+            "motorTorque": 600,
+            "targetAngularVelocity": 0,
+            "motorMode": "velocity",
+            "controlChannel": "throttle",
+            "controlGain": 1,
+            "neutralAngleRad": 0,
+            "positionStiffness": 20,
+            "positionDamping": 5,
+            "steering": 0.45,
+            "enabled": true
+          },
+          "metadata": {}
         }
       ],
       "connections": [
@@ -21706,6 +21866,34 @@
           "axis": [
             1,
             0,
+            0
+          ],
+          "damping": 0.2
+        },
+        {
+          "id": "joint-sample-alpine-village-0-sample-alpine-village-15",
+          "a": "sample-alpine-village-0",
+          "b": "sample-alpine-village-15",
+          "connectorA": "jet--1",
+          "connectorB": "mount",
+          "type": "fixed",
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "damping": 0.2
+        },
+        {
+          "id": "joint-sample-alpine-village-1-sample-alpine-village-16",
+          "a": "sample-alpine-village-1",
+          "b": "sample-alpine-village-16",
+          "connectorA": "jet--1",
+          "connectorB": "mount",
+          "type": "fixed",
+          "axis": [
+            0,
+            1,
             0
           ],
           "damping": 0.2

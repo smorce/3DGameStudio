@@ -17,6 +17,39 @@ import {
 import { buildIslandProxies } from "../../packages/world-generator/src/far-proxy";
 
 describe("Sample World Catalog", () => {
+  it("Alpine Villageのデフォルト車は後ろの2枚のPanelに前向きのジェットを持つ", () => {
+    const machine = sampleWorldCatalog
+      .find((world) => world.id === "alpine-village")!
+      .buildProject().machines[0];
+    const jets = machine.parts.filter(
+      (part) => part.definitionId === "Thruster",
+    );
+    expect(jets).toHaveLength(2);
+    expect(jets.map((jet) => jet.transform.position[0]).sort()).toEqual([
+      -0.5, 0.5,
+    ]);
+    const rearZ = Math.min(
+      ...machine.parts
+        .filter((part) => part.definitionId === "Panel")
+        .map((part) => part.transform.position[2]),
+    );
+    for (const jet of jets) {
+      expect(jet.transform.position[2]).toBeLessThan(rearZ);
+      expect(jet.transform.rotation).toEqual([0, 0, 0]);
+      expect(jet.actuator.enabled).toBe(true);
+      expect(jet.actuator.controlChannel).toBe("throttle");
+      expect(jet.actuator.motorTorque).toBeGreaterThan(0);
+      const mount = machine.connections.find(
+        (connection) => connection.b === jet.id,
+      )!;
+      expect(mount.type).toBe("fixed");
+      expect(mount.connectorA).toBe("jet--1");
+      expect(
+        machine.parts.find((part) => part.id === mount.a)!.transform
+          .position[2],
+      ).toBe(rearZ);
+    }
+  });
   it("9個のID・表示順がuniqueで全DraftをSchemaで読める", () => {
     expect(sampleWorldCatalog).toHaveLength(9);
     expect(new Set(sampleWorldCatalog.map((w) => w.id)).size).toBe(9);

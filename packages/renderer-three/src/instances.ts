@@ -458,6 +458,13 @@ export class WorldAssetBatch {
   get lodCenter(): Vec3 {
     return [this.center.x, this.center.y, this.center.z];
   }
+  get lodRadius() {
+    return this.radius;
+  }
+  /** 最初のモデルがまだ読込中で、何も表示していない。 */
+  get awaitingFirstModel() {
+    return !this.disposed && this.current < 0;
+  }
   /** Origin Rebase 時にカメラ・Chunk と同じ delta で中心をずらす。 */
   shiftOrigin(delta: Vec3) {
     this.shadowCamera.sub(new THREE.Vector3(...delta));

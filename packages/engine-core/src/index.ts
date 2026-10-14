@@ -174,10 +174,7 @@ export class Engine {
   private keys = new Set<string>();
   private disposed = false;
   private ticket = 0;
-  private dropUntil = 0;
-  private dropPromise?: Promise<void>;
-  private resolveDrop?: () => void;
-  mode: "EDIT" | "PLAY" | "DROP" = "EDIT";
+  mode: "EDIT" | "PLAY" = "EDIT";
   fps = 0;
   course?: CourseProgress;
   input = { throttle: 0, steering: 0 };
@@ -298,8 +295,7 @@ export class Engine {
     assertBakedProject(parsed);
     this.ticket++;
     this.project = parsed;
-    // PLAY/DROP中の再読込はドロップ演出を経由せず即Editへ戻す。
-    // DROPのまま物理を破棄するとtickが破棄済みWorldをstepして停止するため。
+    // 再読込時は物理を破棄する前に編集状態へ戻す。
     this.mode = "EDIT";
     this.blur();
     this.course = undefined;
@@ -314,7 +310,6 @@ export class Engine {
     });
     this.worldRuntime.setPlayHotPath(false);
     this.renderer.load(this.project, { world: this.worldRuntime });
-    this.resolveDropWaiter();
   }
   async play(options: { courseId?: string | null } = {}) {
     if (!this.project || this.mode !== "EDIT") return;
@@ -344,6 +339,7 @@ export class Engine {
       courseId: course?.id ?? null,
       world,
     });
+    this.renderer.beginWorldReveal();
     this.renderer.setEditMachineLift(false);
     if (this.course) this.physics.respawn(this.course.course.start);
     const playState = this.physics.renderState();
@@ -413,35 +409,19 @@ export class Engine {
     this.physics.respawn(point);
   }
   stop(): Promise<void> {
-    if (this.mode === "DROP") return this.dropPromise ?? Promise.resolve();
     if (this.mode === "EDIT") return Promise.resolve();
     this.ticket++;
     this.blur();
     this.worldRuntime?.setPlayHotPath(false);
-    if (!this.project) {
-      this.mode = "EDIT";
-      this.physics.dispose();
-      return Promise.resolve();
-    }
-    const target = this.renderer.viewTarget;
     this.course = undefined;
-    this.worldRuntime?.reload(this.project.world);
-    this.renderer.load(this.project, { world: this.worldRuntime });
-    this.renderer.setEditMachineLift(false);
-    this.physics.respawn(target);
-    this.mode = "DROP";
-    this.dropUntil = performance.now() + 1200;
+    this.mode = "EDIT";
     this.accumulator = 0;
-    this.dropPromise = new Promise<void>((resolve) => {
-      this.resolveDrop = resolve;
-    });
-    return this.dropPromise;
-  }
-  private resolveDropWaiter() {
-    const resolve = this.resolveDrop;
-    this.resolveDrop = undefined;
-    this.dropPromise = undefined;
-    resolve?.();
+    this.previousRenderState = undefined;
+    this.currentRenderState = undefined;
+    this.physics.dispose();
+    // 地形を再読込せず、姿勢・カメラ・背景をまとめて編集状態へ戻す。
+    if (this.project) this.renderer.restoreEditTransforms(this.project);
+    return Promise.resolve();
   }
   private tick = (now: number) => {
     if (this.disposed) return;
@@ -455,20 +435,17 @@ export class Engine {
     let velocity: Vec3 | undefined;
     this.rebaseThisFrame = false;
     this.frameRebaseTiming = undefined;
-    if (this.mode === "PLAY" || this.mode === "DROP") {
-      const dropping = this.mode === "DROP";
+    if (this.mode === "PLAY") {
       this.accumulator += dt;
       const pad = navigator.getGamepads?.()[0],
         machine = this.project?.machines[0],
         controls = aggregateControlChannels(
-          dropping ? [] : (machine?.controlBindings ?? []),
+          machine?.controlBindings ?? [],
           this.keys,
-          dropping
-            ? {}
-            : {
-                throttle: this.input.throttle - (pad?.axes[1] ?? 0),
-                steering: this.input.steering - (pad?.axes[0] ?? 0),
-              },
+          {
+            throttle: this.input.throttle - (pad?.axes[1] ?? 0),
+            steering: this.input.steering - (pad?.axes[0] ?? 0),
+          },
         );
       this.observedControls = controls;
       const physicsStarted = performance.now();
@@ -539,7 +516,7 @@ export class Engine {
               );
           }
         }
-        if (global && !dropping) {
+        if (global) {
           this.course?.update(global, 1 / 60);
           if (global[1] < -20) void this.respawnWithPhysicsReady();
         }
@@ -551,7 +528,7 @@ export class Engine {
       const linvel = body?.linvel();
       if (linvel) velocity = [linvel.x, linvel.y, linvel.z];
       this.interpolationAlpha = this.accumulator / (1 / 60);
-      const throttle = dropping ? 0 : (controls.throttle ?? 0);
+      const throttle = controls.throttle ?? 0;
       const thrustActive = Math.abs(throttle) > 0.01;
       this.lastThrustBecameActive = thrustActive && !this.previousThrustActive;
       this.lastThrustActive = thrustActive;
@@ -566,7 +543,7 @@ export class Engine {
         this.currentRenderState ?? this.physics.renderState(),
         throttle,
         {
-          effectsEnabled: !dropping,
+          effectsEnabled: true,
           previous: this.previousRenderState,
           alpha: this.interpolationAlpha,
           dt,
@@ -628,13 +605,6 @@ export class Engine {
         cameraQuaternion: probe.quaternion,
         vehicleScreenXY: probe.vehicleScreenXY,
       });
-      if (dropping && now >= this.dropUntil) {
-        this.physics.dispose();
-        if (this.project) this.renderer.restoreEditTransforms(this.project);
-        this.mode = "EDIT";
-        this.accumulator = 0;
-        this.resolveDropWaiter();
-      }
     } else {
       this.physicsStepMs = 0;
       this.lastThrustActive = false;
@@ -1095,6 +1065,5 @@ export class Engine {
     this.physics.dispose();
     this.renderer.dispose();
     this.worldRuntime?.dispose();
-    this.resolveDropWaiter();
   }
 }

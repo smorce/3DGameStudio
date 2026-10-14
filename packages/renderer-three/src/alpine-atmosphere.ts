@@ -87,6 +87,8 @@ export function alpineSkyDome(sunDirection: readonly number[], radius = 2200) {
       vertexColors: true,
       side: THREE.BackSide,
       fog: false,
+      // PLAY開始時の霧晴れ演出で、編集画面の単色背景から空へ溶け込ませる。
+      transparent: true,
       depthWrite: false,
     }),
   );

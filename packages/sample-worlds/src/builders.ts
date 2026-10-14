@@ -153,7 +153,7 @@ function build(definition: Definition): Project {
   }
   p.world.lighting = definition.lighting ?? { intensity: 2, timeOfDay: 14 };
   const templates = {
-    car: starterCarTemplate,
+    car: () => starterCarTemplate(definition.id === "alpine-village"),
     plane: planeTemplate,
     boat: boatTemplate,
   };

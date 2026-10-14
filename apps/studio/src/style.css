@@ -196,10 +196,11 @@ input[type="color"] {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%);
+  transform: translate(-50%, -50%);
   width: min(680px, calc(100vw - 48px));
-  max-height: calc(100vh - 100px);
+  max-height: calc(100% - 32px);
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   background: #fffdf4f5;
   box-shadow: 0 20px 80px #29423325;
   border: 1px solid #fff;
