@@ -62,6 +62,37 @@ export function alpineMountainHeight(
     (38 + 22 * alpineNoise(x, z, 100, seed + 19, cache));
   return (main + front) * smooth((-z - 205) / 160);
 }
+/** 東の窪地にある湖。水面は描画専用で、物理と配置は湖底の地形だけを参照する。 */
+export const alpineLake = {
+  center: [265, 5] as const,
+  radius: 66,
+  waterLevel: 8.6,
+  depth: 3.4,
+};
+/** 湖心0・汀線1となる正規化距離。角度ごとの揺らぎで円形の輪郭を崩す。 */
+export function alpineLakeDistance(x: number, z: number) {
+  const dx = x - alpineLake.center[0],
+    dz = z - alpineLake.center[1];
+  const angle = Math.atan2(dz, dx);
+  const shore =
+    alpineLake.radius *
+    (1 +
+      0.16 * Math.sin(angle * 2 + 1.1) +
+      0.09 * Math.sin(angle * 3 + 2.3) +
+      0.05 * Math.sin(angle * 5 + 0.4));
+  return Math.hypot(dx, dz) / shore;
+}
+/** 汀線の外側は緩い浜、内側は湖底へ下げる。範囲外では元の高さを返す。 */
+export function alpineLakeHeight(x: number, z: number, height: number) {
+  const t = alpineLakeDistance(x, z);
+  if (t >= 1.35) return height;
+  const target =
+    alpineLake.waterLevel -
+    alpineLake.depth * smooth((1 - t) / 0.55) +
+    Math.max(0, t - 1) * 7;
+  const weight = 1 - smooth((t - 1) / 0.35);
+  return height + (Math.min(height, target) - height) * weight;
+}
 /** 草地の開口部と林の群落を近景・遠景で共有する。 */
 export function alpineForestDensity(
   x: number,
@@ -70,8 +101,14 @@ export function alpineForestDensity(
   seed: number,
   cache?: Map<string, number>,
 ) {
-  if (height > 150) return 0;
-  const foothill = smooth((-z - 135) / 135);
+  const lake = alpineLakeDistance(x, z);
+  if (height > 150 || lake < 1.12) return 0;
+  // 湖の北岸だけ林を寄せ、水面越しに森が見える岸辺を作る。
+  const grove =
+    smooth((2.4 - lake) / 0.9) *
+    smooth((alpineLake.center[1] + 15 - z) / 45) *
+    0.75;
+  const foothill = Math.max(smooth((-z - 135) / 135), grove);
   const treeline = 1 - smooth((height - 75) / 75);
   if (foothill === 0) return 0.035 * treeline;
   const patch =

@@ -1,4 +1,4 @@
-import { alpineNoise } from "./alpine-landscape";
+import { alpineLakeDistance, alpineNoise } from "./alpine-landscape";
 import type { WorldDesign } from "../../project-schema/src/index";
 
 /** 内陸ワールドだけに適用する景観定義。既存Schemaの拡張は不要。 */
@@ -107,14 +107,18 @@ export function alpineSurfaceColor(
           : "#9ab76d";
   }
   const variation = alpineNoise(x, z, 55, 42, cache);
+  const lake = alpineLakeDistance(x, z);
+  if (lake < 1.04)
+    return lake < 0.95 ? "#5f6b4c" : variation > 0 ? "#8b8e63" : "#7f845b";
   if (height < 65)
     return variation > 0.15
-      ? "#718b45"
+      ? "#7a8c47"
       : variation < -0.2
-        ? "#839750"
-        : "#7c914b";
-  if (height > 210 + variation * 25) return "#dedfd7";
-  if (height > 130 + variation * 30)
-    return variation > 0 ? "#9b9c90" : "#878d80";
-  return height > 80 ? "#778568" : fallback;
+        ? "#8e9856"
+        : "#83914d";
+  // 主稜線は雪と淡い岩肌を多くし、遠景の霞で白く抜けるようにする。
+  if (height > 182 + variation * 28) return "#eceeee";
+  if (height > 118 + variation * 26)
+    return variation > 0 ? "#a4a49d" : "#92948d";
+  return height > 75 ? "#7d8a62" : fallback;
 }

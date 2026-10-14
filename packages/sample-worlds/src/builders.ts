@@ -51,7 +51,7 @@ const configurations: Record<
 > = {
   "alpine-village": {
     design: alpineVillageDesign,
-    sky: "#86b4cc",
+    sky: "#cfdfe6",
     spawn: [6, 14, 60],
     lighting: { intensity: 2.8, timeOfDay: 15.5 },
   },
@@ -149,7 +149,7 @@ function build(definition: Definition): Project {
         },
       ],
     };
-    p.world.environment.fog = 0.00048;
+    p.world.environment.fog = 0.001;
   }
   p.world.lighting = definition.lighting ?? { intensity: 2, timeOfDay: 14 };
   const templates = {

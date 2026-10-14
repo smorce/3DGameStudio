@@ -12,7 +12,9 @@ export async function prepareAlpineLods(
     const slot = asset.catalog?.slots[0];
     if (
       !slot?.includes("alpine-village") ||
-      ![".wheat", ".wall", ".oak"].some((suffix) => slot.endsWith(suffix)) ||
+      ![".wheat", ".wall", ".oak", ".fence", ".sheep"].some((suffix) =>
+        slot.endsWith(suffix),
+      ) ||
       !asset.runtimeInfo
     )
       continue;

@@ -98,7 +98,8 @@ export function buildTree(
         .multiplyScalar(radius)
         .multiply(cluster.radius)
         .add(cluster.center);
-      const g = new PlaneGeometry(pine ? 1.3 : 1.1, pine ? 0.65 : 0.9);
+      // 葉カードを広めに取り、三角形数を増やさずに樹冠内部の透けを減らす。
+      const g = new PlaneGeometry(pine ? 1.5 : 1.5, pine ? 0.8 : 1.22);
       g.rotateX((random() - 0.5) * 2);
       g.rotateY(random() * Math.PI * 2);
       g.rotateZ(random() - 0.5);

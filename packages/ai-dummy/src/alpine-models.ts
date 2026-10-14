@@ -66,7 +66,7 @@ export async function alpineModelGlb(slot: string, variant = 0, level = 0) {
       );
     }
   } else if (slot.includes(".wall")) {
-    if (level > 0) box(3, 0.7, 0.6, "#c9c4af");
+    if (level > 0) box(3, 0.7, 0.6, "#9d9a8e");
     else
       for (let row = 0; row < 3; row++)
         for (let i = 0; i < 5; i++) {
@@ -74,12 +74,56 @@ export async function alpineModelGlb(slot: string, variant = 0, level = 0) {
           g.scale(0.79, 0.45, 0.7);
           add(
             g,
-            row % 2 ? "#afa995" : "#d0cbb7",
+            row % 2 ? "#8e8b7f" : (i + row) % 3 ? "#aba798" : "#7f8470",
             -1.2 + i * 0.6 + (row % 2 ? 0.12 : 0),
             0.16 + row * 0.25,
             ((i % 2) - 0.5) * 0.07,
           );
         }
+  } else if (slot.includes(".fence")) {
+    // 3mの横木と杭。遠景は横木だけにして杭の細部を省く。
+    const rail = "#7a5f40",
+      post = "#5f4930";
+    if (level < 2)
+      for (const x of [-1.38, 1.38]) box(0.13, 1.15, 0.13, post, x, 0.575, 0);
+    for (const y of level < 2 ? [0.52, 0.94] : [0.75])
+      box(3, level < 2 ? 0.09 : 0.32, 0.06, rail, 0, y, 0);
+  } else if (slot.includes(".well")) {
+    const segments = level ? 8 : 14;
+    add(new CylinderGeometry(1, 1.08, 0.85, segments), "#9b988c", 0, 0.425);
+    add(new CylinderGeometry(0.82, 0.82, 0.04, segments), "#2f4a55", 0, 0.8);
+    for (const x of [-0.95, 0.95]) box(0.14, 2.1, 0.14, timber, x, 1.05);
+    box(2.1, 0.1, 0.1, timber, 0, 1.75);
+    const shape = new Shape();
+    shape.moveTo(-1.35, 0);
+    shape.lineTo(0, 0.75);
+    shape.lineTo(1.35, 0);
+    shape.closePath();
+    const cover = new ExtrudeGeometry(shape, {
+      depth: 1.6,
+      bevelEnabled: false,
+    });
+    cover.translate(0, 0, -0.8);
+    add(cover, roof, 0, 2.05);
+  } else if (slot.includes(".sheep")) {
+    const wool = "#ebe7dc",
+      face = "#3d3631";
+    add(
+      new IcosahedronGeometry(0.55, level ? 0 : 1).scale(1.3, 0.85, 0.85),
+      wool,
+      0,
+      0.78,
+      0,
+    );
+    box(0.3, 0.32, 0.26, face, 0.78, 0.92, 0);
+    if (level < 2)
+      for (const [x, z] of [
+        [0.38, 0.2],
+        [0.38, -0.2],
+        [-0.38, 0.2],
+        [-0.38, -0.2],
+      ])
+        box(0.09, 0.42, 0.09, face, x, 0.21, z);
   } else if (slot.includes(".wheat")) {
     // 4m四方に畝と穂の小群を作り、近景で立体感を保つ。
     const count = level > 1 ? 1 : level ? 3 : 7;

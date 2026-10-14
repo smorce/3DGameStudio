@@ -4,7 +4,11 @@ import type {
   PropRule,
   Vec3,
 } from "../../project-schema/src/index";
-import { alpineFields } from "../../world-generator/src/alpine-farmland";
+import {
+  alpineFieldAt,
+  alpineFields,
+} from "../../world-generator/src/alpine-farmland";
+import { seedUnit } from "../../world-generator/src/seed";
 import { settlementEntities } from "../../world-generator/src/settlement-generation";
 
 /** 大きな陸地の内側を活動範囲にし、既存の島生成を内陸景観へ再利用する。 */
@@ -112,6 +116,7 @@ export function alpineVillageDesign(): WorldDesign {
     noSpawnRegions: [
       { id: "arrival", center: [0, 0, 60], radius: 16 },
       { id: "mill-clearing", center: [-205, 0, -65], radius: 24 },
+      { id: "lakeside-cabin", center: [252, 0, -62], radius: 11 },
     ],
     gameplayRegions: [
       {
@@ -137,17 +142,68 @@ export function alpineVillageDesign(): WorldDesign {
         const x = a[0] + (b[0] - a[0]) * t,
           z = a[1] + (b[1] - a[1]) * t;
         if (layers.sampleRoadInfluence(x, z, true).distance < 2.3) continue;
+        // 牧草地は木柵、畑は低い石垣で囲む。
+        const pasture = field.crop === "grass";
         d.landmarks.push({
-          id: `${field.id}-wall-${i}-${j}`,
-          assetSlot: "landscape.alpine-village.wall",
-          position: [x, -0.12, z],
+          id: `${field.id}-${pasture ? "fence" : "wall"}-${i}-${j}`,
+          assetSlot: pasture
+            ? "landscape.alpine-village.fence"
+            : "landscape.alpine-village.wall",
+          position: [x, pasture ? -0.05 : -0.12, z],
           rotation: [0, -Math.atan2(b[1] - a[1], b[0] - a[0]), 0],
-          scale: [length / count / 3, 1.5 + (j % 3) * 0.12, 1.7],
+          scale: pasture
+            ? [length / count / 3, 1, 1]
+            : [length / count / 3, 1.05 + (j % 3) * 0.08, 1.5],
           snapToTerrain: true,
         });
       }
     });
   }
+  const pasture = alpineFields.find((field) => field.crop === "grass")!;
+  let sheep = 0;
+  for (let i = 0; sheep < 16 && i < 200; i++) {
+    // 2つの群れに寄せ、道と柵から離して置く。
+    const flock = i % 2 ? [-128, -10] : [-95, -20];
+    const angle = seedUnit(42, "sheep-angle", String(i)) * Math.PI * 2,
+      radius = 2 + seedUnit(42, "sheep-radius", String(i)) * 15;
+    const x = flock[0] + Math.cos(angle) * radius,
+      z = flock[1] + Math.sin(angle) * radius;
+    if (
+      alpineFieldAt(x, z)?.id !== pasture.id ||
+      layers.sampleRoadInfluence(x, z, true).distance < 5 ||
+      d.landmarks.some(
+        (l) =>
+          l.assetSlot.endsWith(".sheep") &&
+          Math.hypot(l.position[0] - x, l.position[2] - z) < 2.6,
+      )
+    )
+      continue;
+    d.landmarks.push({
+      id: `pasture-sheep-${sheep++}`,
+      assetSlot: "prop.alpine-village.sheep",
+      position: [x, 0, z],
+      rotation: [0, seedUnit(42, "sheep-yaw", String(i)) * Math.PI * 2, 0],
+      scale: [1, 1, 1],
+      snapToTerrain: true,
+    });
+  }
+  d.landmarks.push({
+    id: "plaza-well",
+    assetSlot: "landscape.alpine-village.well",
+    position: [13, 0, -21],
+    rotation: [0, 0.35, 0],
+    scale: [1, 1, 1],
+    snapToTerrain: true,
+  });
+  // 湖の北岸の木造小屋。集落の建物数には含めず、扉を湖へ向ける。
+  d.landmarks.push({
+    id: "lakeside-cabin",
+    assetSlot: "landscape.alpine-village.cabin-timber",
+    position: [252, 0, -62],
+    rotation: [0, 0.18, 0],
+    scale: [0.9, 0.9, 0.9],
+    snapToTerrain: true,
+  });
   // 作物の配置はChunk生成で行い、Plannerには密度0のRuleで必要Slotを宣言する。
   d.islands[0].propRules.push({
     ...tree("landscape.alpine-village.wheat", 0),

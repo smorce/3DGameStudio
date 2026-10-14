@@ -7,6 +7,15 @@
 「Executable doesn't exist … playwright/chromium_headless_shell-…」と出ても、Chromium が無いとは限らない。多くの場合 `PLAYWRIGHT_BROWSERS_PATH` が空のサンドボックスキャッシュ（例: `/tmp/cursor-sandbox-cache/<別hash>/playwright`）を指しているだけ。
 
 対処:
-1. 既存キャッシュを探す（例: `/tmp/cursor-sandbox-cache/*/playwright`、`~/.cache/ms-playwright`）。`chromium-1243` / `chromium_headless_shell-1243` が入っているディレクトリを使う。
+1. 既存キャッシュを探す（例: `/tmp/cursor-sandbox-cache/*/playwright`、`~/.cache/ms-playwright`、リポジトリ内の `.cache/ms-playwright`）。`chromium-1243` / `chromium_headless_shell-1243` が入っているディレクトリを使う。
 2. 空の `PLAYWRIGHT_BROWSERS_PATH` 先へ、実体があるキャッシュへ symlink する（またはその実行だけ `PLAYWRIGHT_BROWSERS_PATH=<実体>` を付けて走らせる）。
 3. そのうえで `pnpm observe run <scenario>` などを再実行する。
+
+### 既存キャッシュが無い場合
+
+`~/.cache/ms-playwright` もサンドボックス側の実体も無いときは、リポジトリ内へ入れる。グローバルには入れない。`.cache/` は `.gitignore` と ESLint の除外対象。
+
+```sh
+PLAYWRIGHT_BROWSERS_PATH=$PWD/.cache/ms-playwright pnpm exec playwright install chromium
+PLAYWRIGHT_BROWSERS_PATH=$PWD/.cache/ms-playwright pnpm test:e2e
+```

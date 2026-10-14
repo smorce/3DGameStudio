@@ -31,7 +31,7 @@ pnpm --silent observe compare <beforeRunId> <afterRunId> --json
 - 失敗時も証拠が残る（`result: error` + error screenshot / trace）
 - 入力切替は Physics Step 基準。同じ seed・同じ Step で同じ入力を再現できる
 - 高速な物理だけの切り分けは `pnpm observe run <scenario> --mode=simulation`
-- Chromium が「無い」と出ても空キャッシュのことが多い → [AGENTS.md](AGENTS.md)
+- Chromium が「無い」と出ても空キャッシュのことが多い。実体も無いときは `.cache/ms-playwright` へ入れる → [AGENTS.md](AGENTS.md)
 
 人間向けの旧診断（Spike フライト / 旋回 Motion など）は下記セクション 7 以降も使えますが、**新規の調査・修正ループは `pnpm observe` を優先**してください。
 

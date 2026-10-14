@@ -1,5 +1,6 @@
 import { insideEnvironmentPlaza } from "./environment-plaza";
 import { isAlpineVillage } from "../../world-generator/src/alpine-farmland";
+import { alpineLakeDistance } from "../../world-generator/src/alpine-landscape";
 import type { BufferGeometry, MeshStandardMaterial } from "three";
 import type {
   Project,
@@ -126,6 +127,7 @@ export function worldVegetationChunk(
       !layers.sampleRunwayMask(x, z) &&
       landCoverAllowed(x, z) &&
       !(alpinePlaza && insideEnvironmentPlaza(x, z)) &&
+      !(alpinePlaza && alpineLakeDistance(x, z) < 1.04) &&
       !obstacles.some((o) => o.contains(x, z));
     // マスク余白も絶対座標を所有する地形セルで評価する。高さキャッシュは作成後に空にする。
     const heights = new Map<string, number>();

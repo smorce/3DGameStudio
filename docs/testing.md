@@ -1,6 +1,6 @@
 # テストと検証
 
-`pnpm install`後に`pnpm exec playwright install chromium --no-shell`でChromiumを準備します。グローバルインストールは不要です。
+`pnpm install`後にChromiumを準備します。グローバルインストールは不要です。既定は`pnpm exec playwright install chromium --no-shell`です。`~/.cache/ms-playwright`やサンドボックスキャッシュが無い環境では、リポジトリ内の`.cache/ms-playwright`へ入れて`PLAYWRIGHT_BROWSERS_PATH`で指定します（手順は[AGENTS.md](../AGENTS.md)）。
 
 | 層          | コマンド                | 検証すること                                                          |
 | ----------- | ----------------------- | --------------------------------------------------------------------- |

@@ -2,6 +2,7 @@ import {
   alpineMountainHeight,
   alpineNoise,
   alpineForestDensity,
+  alpineLakeHeight,
 } from "./alpine-landscape";
 import { isAlpineVillage, alpineSurfaceColor } from "./alpine-farmland";
 import type {
@@ -188,7 +189,9 @@ export class SemanticLayers {
             mask,
       );
     }
-    return height;
+    return isAlpineVillage(this.design)
+      ? alpineLakeHeight(x, z, height)
+      : height;
   }
   sampleAlpineForestDensity(x: number, z: number, height: number) {
     return alpineForestDensity(x, z, height, this.seed, this.alpineNoiseCache);

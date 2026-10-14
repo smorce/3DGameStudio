@@ -7,7 +7,13 @@ import {
   alignAlpineTerrainBoundary,
 } from "./alpine-terrain";
 import { alpineRenderChunk } from "./alpine-ready";
-import { alpineClouds, alpineChimneySmoke } from "./alpine-atmosphere";
+import {
+  alpineClouds,
+  alpineChimneySmoke,
+  alpineSkyDome,
+} from "./alpine-atmosphere";
+import { alpineLakeSurface } from "./alpine-lake";
+import { alpineLake } from "../../world-generator/src/alpine-landscape";
 import {
   isAlpineVillage,
   alpineFieldAt,
@@ -54,7 +60,12 @@ import {
   updateSuspensionVisual,
   updateThrusterFlame,
 } from "./part-visuals";
-import { SHADOW_EXTENT_M, cameraFollowAlpha, sunFollowPose } from "./follow";
+import {
+  SHADOW_EXTENT_M,
+  cameraFollowAlpha,
+  sunDirectionFromTimeOfDay,
+  sunFollowPose,
+} from "./follow";
 import { interpolatePhysicsRenderState } from "./interpolation";
 import { DisjointGpuTimer } from "./gpu-timer";
 export { createPartVisual };
@@ -143,6 +154,9 @@ export class ThreeRenderer implements RendererAdapter {
   scene = new THREE.Scene();
   private inspectionView = false;
   private alpineCloudGroup?: THREE.Group;
+  private alpineSky?: THREE.Mesh;
+  private alpineLakeMesh?: THREE.Mesh;
+  private readonly alpineSunDirection = new THREE.Vector3();
   private alpineSmoke = new Set<THREE.InstancedMesh>();
   camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2500);
   controls: OrbitControls;
@@ -868,8 +882,16 @@ export class ThreeRenderer implements RendererAdapter {
       isAlpineVillage(p.world.source.design)
     ) {
       this.alpineCloudGroup = alpineClouds();
-      this.root.add(this.alpineCloudGroup);
-    } else this.alpineCloudGroup = undefined;
+      this.alpineSky = alpineSkyDome(
+        sunDirectionFromTimeOfDay(p.world.lighting.timeOfDay),
+      );
+      this.alpineLakeMesh = alpineLakeSurface();
+      this.root.add(this.alpineCloudGroup, this.alpineSky, this.alpineLakeMesh);
+    } else {
+      this.alpineCloudGroup = undefined;
+      this.alpineSky = undefined;
+      this.alpineLakeMesh = undefined;
+    }
     this.showAttachmentCandidates([]);
     this.parts.clear();
     this.machines.clear();
@@ -884,9 +906,18 @@ export class ThreeRenderer implements RendererAdapter {
       p.world.source.design &&
       isAlpineVillage(p.world.source.design);
     for (const light of this.scene.children) {
-      if (light instanceof THREE.HemisphereLight)
-        light.intensity = alpineLighting ? 0.9 : 2;
+      if (light instanceof THREE.HemisphereLight) {
+        light.intensity = alpineLighting ? 0.95 : 2;
+        light.color.set(alpineLighting ? 0xd8ebff : 0xe4f4ff);
+        light.groundColor.set(alpineLighting ? 0x7d8551 : 0x6b7253);
+      }
     }
+    // 参考画像の柔らかい階調に寄せる。色相を保つNeutralを使い、他Worldは従来のまま。
+    this.sun.color.set(alpineLighting ? 0xfff0d6 : 0xfff0d0);
+    this.renderer.toneMapping = alpineLighting
+      ? THREE.NeutralToneMapping
+      : THREE.NoToneMapping;
+    this.renderer.toneMappingExposure = 1;
     this.updateShadowFollow([0, 0, 0]);
     const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
     grid.position.y = 0.015;
@@ -1726,6 +1757,22 @@ export class ThreeRenderer implements RendererAdapter {
     if (clouds) {
       const origin = this.worldRuntime?.worldOrigin ?? [0, 0, 0];
       clouds.position.set(-origin[0], -origin[1], -origin[2]);
+    }
+    this.alpineSky?.position.copy(this.camera.position);
+    const lake = this.alpineLakeMesh;
+    if (lake) {
+      const origin = this.worldRuntime?.worldOrigin ?? [0, 0, 0];
+      lake.position.set(
+        alpineLake.center[0] - origin[0],
+        alpineLake.waterLevel - origin[1],
+        alpineLake.center[1] - origin[2],
+      );
+      lake.userData.alpineLakeTick(
+        this.effects.time,
+        this.alpineSunDirection
+          .subVectors(this.sun.position, this.sun.target.position)
+          .normalize(),
+      );
     }
     this.shadowProbe.measuring =
       this.shadowProbe.enabled && this.gpuTimerMeta.frame % 4 === 0;
