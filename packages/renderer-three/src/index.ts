@@ -206,7 +206,6 @@ export class ThreeRenderer implements RendererAdapter {
   worldRuntime?: WorldRuntime;
   private ownsRuntime = false;
   private waterMesh?: THREE.Mesh;
-  private gridHelper?: THREE.Object3D;
   private sun!: THREE.DirectionalLight;
   private highlighted = new THREE.Group();
   private selectionOutline = new THREE.Group();
@@ -944,7 +943,6 @@ export class ThreeRenderer implements RendererAdapter {
     this.streamer?.dispose();
     this.chunkBuilders.clear();
     this.waterMesh = undefined;
-    this.gridHelper = undefined;
     this.clear(this.root);
     this.farProxy = new FarWorldProxy(p.world);
     this.root.add(this.farProxy.group);
@@ -991,12 +989,6 @@ export class ThreeRenderer implements RendererAdapter {
       : THREE.NoToneMapping;
     this.renderer.toneMappingExposure = 1;
     this.updateShadowFollow([0, 0, 0]);
-    const grid = new THREE.GridHelper(128, 64, 0x9cae85, 0x9cae85);
-    grid.position.y = 0.015;
-    (grid.material as THREE.Material).transparent = true;
-    (grid.material as THREE.Material).opacity = 0.18;
-    this.root.add(grid);
-    this.gridHelper = grid;
     if (p.world.water.enabled) {
       const designWorld =
         p.world.source.kind === "procedural" && !!p.world.source.design;
@@ -1439,14 +1431,13 @@ export class ThreeRenderer implements RendererAdapter {
         ? this.revealFog
         : new THREE.FogExp2(sky, fogDensity)
       : null;
-    if (this.gridHelper) this.gridHelper.visible = showWorld;
     if (this.waterMesh) this.waterMesh.visible = showWorld;
     const chunkGroups = new Set(this.chunks.values());
     for (const chunk of chunkGroups) chunk.visible = showWorld;
     const machines = new Set(this.machines.values());
     for (const child of this.root.children) {
       if (machines.has(child as THREE.Group)) continue;
-      if (child === this.gridHelper || child === this.waterMesh) continue;
+      if (child === this.waterMesh) continue;
       if (chunkGroups.has(child as THREE.Group)) continue;
       // 道路・ゲートなど地形まわりも編集中は出さない。
       child.visible = showWorld;
@@ -1482,7 +1473,7 @@ export class ThreeRenderer implements RendererAdapter {
     const machines = new Set(this.machines.values());
     for (const child of this.root.children) {
       if (machines.has(child as THREE.Group)) continue;
-      if (child === this.gridHelper || child === this.waterMesh) continue;
+      if (child === this.waterMesh) continue;
       if (chunkGroups.has(child as THREE.Group)) continue;
       child.position.x -= delta[0];
       child.position.z -= delta[2];
@@ -1810,13 +1801,6 @@ export class ThreeRenderer implements RendererAdapter {
     if (this.waterMesh) {
       this.waterMesh.position.x = this.camera.position.x;
       this.waterMesh.position.z = this.camera.position.z;
-    }
-    if (this.gridHelper) {
-      const size = 32;
-      this.gridHelper.position.x =
-        Math.round(this.controls.target.x / size) * size;
-      this.gridHelper.position.z =
-        Math.round(this.controls.target.z / size) * size;
     }
     if (this.worldReveal && poses) {
       const now = performance.now();
