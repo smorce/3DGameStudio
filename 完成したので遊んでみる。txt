@@ -1,7 +1,17 @@
-codex resume --last --yolo
+codex --sandbox danger-full-access --yolo resume --last
+
+codex --sandbox danger-full-access --yolo
 で月曜日に再開する
 
 ↓
 
 2026/09/24
 完成したので遊んでみる。
+見た目の改善はOpus 5.5 に任せる。アーキテクチャは「docs/architecture.md」にあることも伝えて、プロシージャルに改善できるならやってもらう。
+https://claude.ai/artifact/FTUS2WmKKUFaqTKVHE7k4f
+
+# チェックポイントブランチ
+
+- `feat/environment-geometry-and-performance`
+  - プロシージャルなハイブリッド型の環境描画基盤 Procedural Environment Rendering の実装前
+
